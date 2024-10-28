@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -36,13 +36,13 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer<? extends LayerContext>> {
+        Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<?, ?> higherLayer = null;
+    private ProtocolLayer<Hint, Container> higherLayer = null;
 
-    private ProtocolLayer<?, ?> lowerLayer = null;
+    private ProtocolLayer<Hint, Container> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -62,19 +62,19 @@ public abstract class ProtocolLayer<
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer<?, ?> getHigherLayer() {
+    public ProtocolLayer<Hint, Container> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer<?, ?> getLowerLayer() {
+    public ProtocolLayer<Hint, Container> getLowerLayer() {
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer<?, ?> higherLayer) {
+    public void setHigherLayer(ProtocolLayer<Hint, Container> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer<?, ?> lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<Hint, Container> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
@@ -235,7 +235,7 @@ public abstract class ProtocolLayer<
      * @param container The container to handle.
      * @param context The context of the connection. Keeps parsed and handled values.
      */
-    protected void readDataContainer(Container container, LayerContext context) {
+    protected void readDataContainer(Container container, Context context) {
         HintedInputStream inputStream;
         try {
             inputStream = getLowerLayer().getDataStream();
@@ -254,8 +254,8 @@ public abstract class ProtocolLayer<
      * @param context The context of the connection. Keeps parsed and handled values.
      */
     protected void readDataContainer(
-            DataContainer container, LayerContext context, InputStream inputStream) {
-        Parser parser = container.getParser((LayerContext) context, inputStream);
+            DataContainer container, Context context, InputStream inputStream) {
+        Parser parser = container.getParser(context, inputStream);
 
         try {
             parser.parse(container);
@@ -277,7 +277,7 @@ public abstract class ProtocolLayer<
         this.unreadBytes = unreadBytes;
     }
 
-    public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
+    public boolean prepareDataContainer(DataContainer dataContainer, Context context) {
         if (dataContainer.shouldPrepare()) {
             Preparator<?> preparator = dataContainer.getPreparator(context);
             try {

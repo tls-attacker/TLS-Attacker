@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 
-public class IgnoreLayerConfiguration<Container extends DataContainer<?>>
+public class IgnoreLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {
 
     public IgnoreLayerConfiguration(LayerType layerType) {

@@ -38,7 +38,9 @@ public enum KeyExchangeAlgorithm {
     ECMQV_ECNRA,
     ECDH_ECNRA,
     CECPQ1_ECDSA,
-    ECCPWD, CECPQ1_RSA, GOSTR341112_256;
+    ECCPWD,
+    CECPQ1_RSA,
+    GOSTR341112_256;
 
     public boolean isKeyExchangeRsa() {
         switch (this) {

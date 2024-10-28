@@ -8,20 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 /** Pseudo random function computation for SSL3, TLS 1.0 - 1.2 */
 public class PseudoRandomFunction {
@@ -154,7 +152,8 @@ public class PseudoRandomFunction {
     private static byte[] computeTls10(byte[] secret, String label, byte[] seed, int size)
             throws CryptoException {
         try {
-            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
+            byte[] labelSeed =
+                    ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             byte[] pseudoRandomBitStream = new byte[size];
 
             HMAC hmacMd5 = new HMAC(MacAlgorithm.HMAC_MD5);
@@ -209,7 +208,8 @@ public class PseudoRandomFunction {
             byte[] secret, String label, byte[] seed, int size, MacAlgorithm macAlgorithm)
             throws CryptoException {
         try {
-            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
+            byte[] labelSeed =
+                    ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac = new HMAC(macAlgorithm);
             hmac.init(secret);
 
@@ -266,6 +266,5 @@ public class PseudoRandomFunction {
         return Arrays.copyOf(extendedSecret.toByteArray(), size);
     }
 
-    private PseudoRandomFunction() {
-    }
+    private PseudoRandomFunction() {}
 }

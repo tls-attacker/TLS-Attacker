@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -53,27 +53,27 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public RSAServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new RSAServerKeyExchangeHandler(tlsContext);
+    public RSAServerKeyExchangeHandler getHandler(Context context) {
+        return new RSAServerKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
     public RSAServerKeyExchangeParser<RSAServerKeyExchangeMessage> getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new RSAServerKeyExchangeParser<>(stream, tlsContext);
+            Context context, InputStream stream) {
+        return new RSAServerKeyExchangeParser<>(stream, context.getTlsContext());
     }
 
     @Override
     public RSAServerKeyExchangePreparator<RSAServerKeyExchangeMessage> getPreparator(
-            TlsContext tlsContext) {
-        return new RSAServerKeyExchangePreparator<>(tlsContext.getChooser(), this);
+            Context context) {
+        return new RSAServerKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
     public RSAServerKeyExchangeSerializer<RSAServerKeyExchangeMessage> getSerializer(
-            TlsContext tlsContext) {
+            Context context) {
         return new RSAServerKeyExchangeSerializer<>(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

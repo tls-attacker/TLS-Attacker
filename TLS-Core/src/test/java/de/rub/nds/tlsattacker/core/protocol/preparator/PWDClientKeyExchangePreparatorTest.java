@@ -47,28 +47,30 @@ public class PWDClientKeyExchangePreparatorTest
 
     public PWDClientKeyExchangePreparatorTest() {
         super(PWDClientKeyExchangeMessage::new, PWDClientKeyExchangePreparator::new);
-        context.setSelectedGroup(NamedGroup.BRAINPOOLP256R1);
-        context.setClientRandom(
+        tlsContext.setSelectedGroup(NamedGroup.BRAINPOOLP256R1);
+        tlsContext.setClientRandom(
                 ArrayConverter.hexStringToByteArray(
                         "528fbf52175de2c869845fdbfa8344f7d732712ebfa679d8643cd31a880e043d"));
-        context.setServerRandom(
+        tlsContext.setServerRandom(
                 ArrayConverter.hexStringToByteArray(
                         "528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
-        context.getConfig().setDefaultServerPWDSalt(salt);
-        context.getConfig().setDefaultClientPWDUsername("fred");
-        context.getConfig().setDefaultPWDPassword("barney");
-        context.setServerPWDScalar(new BigInteger(scalar));
-        context.setServerPWDElement(
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
+        tlsContext.getConfig().setDefaultServerPWDSalt(salt);
+        tlsContext.getConfig().setDefaultClientPWDUsername("fred");
+        tlsContext.getConfig().setDefaultPWDPassword("barney");
+        tlsContext.setServerPWDScalar(new BigInteger(scalar));
+        tlsContext.setServerPWDElement(
                 PointFormatter.formatFromByteArray(
                         (NamedEllipticCurveParameters)
                                 NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
                         element));
-        context.getConfig()
+        tlsContext
+                .getConfig()
                 .setDefaultClientPWDMask(
                         ArrayConverter.hexStringToByteArray(
                                 "3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB"));
-        context.getConfig()
+        tlsContext
+                .getConfig()
                 .setDefaultClientPWDPrivate(
                         ArrayConverter.hexStringToByteArray(
                                 "081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E"));

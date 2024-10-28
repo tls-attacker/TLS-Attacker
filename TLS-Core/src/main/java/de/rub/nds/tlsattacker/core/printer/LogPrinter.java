@@ -56,7 +56,7 @@ public class LogPrinter {
     }
 
     public static String toHumanReadableContainerList(
-            List<DataContainer<?>> containerList, Level level) {
+            List<DataContainer> containerList, Level level) {
         if (containerList == null) {
             return "null";
         }
@@ -66,7 +66,7 @@ public class LogPrinter {
 
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (DataContainer<?> container : containerList) {
+        for (DataContainer container : containerList) {
             joiner.add(container.toCompactString());
         }
         sb.trimToSize();
@@ -74,12 +74,12 @@ public class LogPrinter {
     }
 
     public static String toHumanReadableMultiLineContainerListArray(
-            List<List<DataContainer<?>>> containerListList, Level level) {
+            List<List<DataContainer>> containerListList, Level level) {
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (List<DataContainer<?>> containerList : containerListList) {
+        for (List<DataContainer> containerList : containerListList) {
             if (containerList != null) {
-                for (DataContainer<?> container : containerList) {
+                for (DataContainer container : containerList) {
                     joiner.add(container.toCompactString());
                 }
             }

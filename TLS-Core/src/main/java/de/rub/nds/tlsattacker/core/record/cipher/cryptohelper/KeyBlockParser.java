@@ -45,8 +45,7 @@ public class KeyBlockParser extends Parser<KeySet> {
         }
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
-        if ((suite.getCipherType() == CipherType.BLOCK
-                && !version.usesExplicitIv())
+        if ((suite.getCipherType() == CipherType.BLOCK && !version.usesExplicitIv())
                 || suite.isSteamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
@@ -101,7 +100,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getMacKeySize() {
-        return AlgorithmResolver.getMacAlgorithm(version, suite).getKeySize() ;
+        return AlgorithmResolver.getMacAlgorithm(version, suite).getKeySize();
     }
 
     private int getKeySize() {

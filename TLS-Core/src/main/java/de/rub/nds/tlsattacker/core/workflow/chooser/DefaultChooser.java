@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -1130,7 +1129,8 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchClientPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator =
+                    new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {
@@ -1149,7 +1149,8 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchServerPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator =
+                    new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {

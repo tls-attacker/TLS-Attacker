@@ -42,10 +42,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,11 +60,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final Context context;
+    private final TlsContext tlsContext;
 
-    public MessageLayer(TlsContext context) {
+    public MessageLayer(Context context) {
         super(ImplementedLayers.MESSAGE);
         this.context = context;
+        this.tlsContext = context.getTlsContext();
     }
 
     /**
@@ -74,7 +79,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     public LayerProcessingResult<ProtocolMessage> sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ProtocolMessageType runningProtocolMessageType = null;
-        ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
+        List<byte[]> bufferedMessages = new LinkedList<>();
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : getUnprocessedConfiguredContainers()) {
                 if (containerAlreadyUsedByHigherLayer(message)
@@ -83,21 +88,19 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 }
                 if (!message.isHandshakeMessage()) {
                     // only handshake messages may share a record
-                    flushCollectedMessages(
-                            runningProtocolMessageType, collectedMessageStream, false);
+                    flushCollectedMessages(runningProtocolMessageType, bufferedMessages, false);
                 }
                 runningProtocolMessageType = message.getProtocolMessageType();
-                processMessage(message, collectedMessageStream);
+                processMessage(message, bufferedMessages);
                 addProducedContainer(message);
             }
         }
         // hand remaining serialized to record layer
-        flushCollectedMessages(runningProtocolMessageType, collectedMessageStream, false);
+        flushCollectedMessages(runningProtocolMessageType, bufferedMessages, false);
         return getLayerResult();
     }
 
-    private void processMessage(
-            ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
+    private void processMessage(ProtocolMessage message, List<byte[]> bufferedMessages)
             throws IOException {
         ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
                 message.getSerializer(context);
@@ -108,13 +111,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         if (message.getAdjustContext()) {
             handler.adjustContext(message);
         }
-        collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
+        bufferedMessages.add(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
             boolean isFirstMessage =
                     (message.getClass() == ClientHelloMessage.class
                             || message.getClass() == ServerHelloMessage.class);
             flushCollectedMessages(
-                    message.getProtocolMessageType(), collectedMessageStream, isFirstMessage);
+                    message.getProtocolMessageType(), bufferedMessages, isFirstMessage);
         }
         if (message.getAdjustContext()) {
             handler.adjustContextAfterSerialize(message);
@@ -123,23 +126,40 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void flushCollectedMessages(
             ProtocolMessageType runningProtocolMessageType,
-            ByteArrayOutputStream byteStream,
+            List<byte[]> bufferedMessages,
             boolean isFirstMessage)
             throws IOException {
-        if (byteStream.size() > 0) {
+        if (bufferedMessages.size() > 0) {
+            byte[] allBufferedMessageBytes = collectBufferedBytes(bufferedMessages);
+            LOGGER.debug(
+                    "Handing {} serialized message(s) ({} bytes) down to lower layer",
+                    bufferedMessages.size(),
+                    allBufferedMessageBytes.length);
             if (context.getLayerStack().getLayer(QuicFrameLayer.class) != null) {
                 getLowerLayer()
                         .sendData(
                                 new QuicFrameLayerHint(runningProtocolMessageType, isFirstMessage),
-                                byteStream.toByteArray());
+                                allBufferedMessageBytes);
             } else {
                 getLowerLayer()
                         .sendData(
                                 new RecordLayerHint(runningProtocolMessageType),
-                                byteStream.toByteArray());
+                                allBufferedMessageBytes);
             }
-            byteStream.reset();
+            bufferedMessages.clear();
         }
+    }
+
+    private byte[] collectBufferedBytes(List<byte[]> bufferedMessages) {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        for (byte[] message : bufferedMessages) {
+            try {
+                byteStream.write(message);
+            } catch (IOException e) {
+                LOGGER.error("Could not write buffered messages to byte stream: ", e);
+            }
+        }
+        return byteStream.toByteArray();
     }
 
     /**
@@ -158,7 +178,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             // CCS is the only message for its content type, so we can/must always flush immediately
             return true;
         } else if (message.isHandshakeMessage()
-                && (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13)) {
+                && (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13)) {
             // TODO: add DTLS 1.3 above once implemented
             HandshakeMessage handshakeMessage = (HandshakeMessage) message;
             if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO) {
@@ -172,7 +192,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             } else if (handshakeMessage.getHandshakeMessageType()
                             == HandshakeMessageType.CLIENT_HELLO
                     && context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
-                    && context.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+                    && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
                 return true;
             }
         }
@@ -302,13 +322,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readCcsProtocolData(Integer epoch) {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        if (context.getSelectedProtocolVersion() != null
-                && context.getSelectedProtocolVersion().isDTLS()) {
-            if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
-                    && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
+        if (tlsContext.getSelectedProtocolVersion() != null
+                && tlsContext.getSelectedProtocolVersion().isDTLS()) {
+            if (tlsContext.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
+                    && tlsContext.getConfig().isIgnoreRetransmittedCcsInDtls()) {
                 message.setAdjustContext(false);
             } else {
-                context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
+                tlsContext.addDtlsReceivedChangeCipherSpecEpochs(epoch);
             }
         }
         readDataContainer(message, context);
@@ -333,7 +353,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             readBytesStream.write(new byte[] {type});
             handshakeMessage =
                     MessageFactory.generateHandshakeMessage(
-                            HandshakeMessageType.getMessageType(type), context);
+                            HandshakeMessageType.getMessageType(type), tlsContext);
             handshakeMessage.setType(type);
             byte[] lengthBytes =
                     handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);

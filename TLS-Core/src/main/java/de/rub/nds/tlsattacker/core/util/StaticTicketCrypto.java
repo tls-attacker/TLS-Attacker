@@ -8,13 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,21 +26,15 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 public class StaticTicketCrypto {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static Map<MacAlgorithm, ThreadLocal<Mac>> algorithmCache = new EnumMap<>(MacAlgorithm.class);
+    private static Map<MacAlgorithm, ThreadLocal<Mac>> algorithmCache =
+            new EnumMap<>(MacAlgorithm.class);
 
     private static Mac getInstance(MacAlgorithm macAlgorithm) {
         return algorithmCache
@@ -67,7 +65,8 @@ public class StaticTicketCrypto {
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
-            BulkCipherAlgorithm bulkCipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
+            BulkCipherAlgorithm bulkCipher =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
             SecretKeySpec secretKey = new SecretKeySpec(key, bulkCipher.getJavaName());
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
@@ -91,7 +90,8 @@ public class StaticTicketCrypto {
         byte[] result = new byte[0];
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
-            BulkCipherAlgorithm bulkCipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
+            BulkCipherAlgorithm bulkCipher =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
             SecretKeySpec secretKey = new SecretKeySpec(key, bulkCipher.getJavaName());
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
@@ -158,6 +158,5 @@ public class StaticTicketCrypto {
         return Arrays.copyOf(result, result.length - padLen);
     }
 
-    private StaticTicketCrypto() {
-    }
+    private StaticTicketCrypto() {}
 }

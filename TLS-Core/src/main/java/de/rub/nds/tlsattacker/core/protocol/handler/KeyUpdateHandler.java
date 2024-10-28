@@ -36,7 +36,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
     @Override
     public void adjustContext(KeyUpdateMessage message) {
-        if (tlsContext.getChooser().getTalkingConnectionEnd() != tlsContext.getChooser().getConnectionEndType()) {
+        if (tlsContext.getChooser().getTalkingConnectionEnd()
+                != tlsContext.getChooser().getConnectionEndType()) {
             adjustApplicationTrafficSecrets();
             setRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
         }
@@ -49,20 +50,22 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     }
 
     private void adjustApplicationTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(
-                tlsContext.getChooser().getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgortihm =
+                AlgorithmResolver.getHKDFAlgorithm(
+                        tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
 
             if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
 
-                byte[] clientApplicationTrafficSecret = HKDFunction.expandLabel(
-                        hkdfAlgortihm,
-                        tlsContext.getChooser().getClientApplicationTrafficSecret(),
-                        HKDFunction.TRAFFICUPD,
-                        new byte[0],
-                        mac.getMacLength());
+                byte[] clientApplicationTrafficSecret =
+                        HKDFunction.expandLabel(
+                                hkdfAlgortihm,
+                                tlsContext.getChooser().getClientApplicationTrafficSecret(),
+                                HKDFunction.TRAFFICUPD,
+                                new byte[0],
+                                mac.getMacLength());
 
                 tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
                 LOGGER.debug(
@@ -71,12 +74,13 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
             } else {
 
-                byte[] serverApplicationTrafficSecret = HKDFunction.expandLabel(
-                        hkdfAlgortihm,
-                        tlsContext.getChooser().getServerApplicationTrafficSecret(),
-                        HKDFunction.TRAFFICUPD,
-                        new byte[0],
-                        mac.getMacLength());
+                byte[] serverApplicationTrafficSecret =
+                        HKDFunction.expandLabel(
+                                hkdfAlgortihm,
+                                tlsContext.getChooser().getServerApplicationTrafficSecret(),
+                                HKDFunction.TRAFFICUPD,
+                                new byte[0],
+                                mac.getMacLength());
 
                 tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
                 LOGGER.debug(
@@ -108,8 +112,9 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
         try {
             int AEAD_IV_LENGTH = 12;
             KeySet keySet;
-            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(
-                    tlsContext.getChooser().getSelectedCipherSuite());
+            HKDFAlgorithm hkdfAlgortihm =
+                    AlgorithmResolver.getHKDFAlgorithm(
+                            tlsContext.getChooser().getSelectedCipherSuite());
 
             if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
 
@@ -123,7 +128,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                 keySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
             }
 
-            if (tlsContext.getChooser().getTalkingConnectionEnd() == tlsContext.getChooser().getConnectionEndType()) {
+            if (tlsContext.getChooser().getTalkingConnectionEnd()
+                    == tlsContext.getChooser().getConnectionEndType()) {
 
                 if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
 
@@ -143,7 +149,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     new byte[0],
                                     tlsContext
                                             .getChooser()
-                                            .getSelectedCipherSuite().getCipherAlgorithm()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
                 } else {
 
@@ -163,15 +170,17 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     new byte[0],
                                     tlsContext
                                             .getChooser()
-                                            .getSelectedCipherSuite().getCipherAlgorithm()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
                 }
 
-                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, true);
+                RecordCipher recordCipherClient =
+                        RecordCipherFactory.getRecordCipher(tlsContext, keySet, true);
                 tlsContext.getRecordLayer().updateEncryptionCipher(recordCipherClient);
 
-            } else if (tlsContext.getChooser().getTalkingConnectionEnd() != tlsContext.getChooser()
-                    .getConnectionEndType()) {
+            } else if (tlsContext.getChooser().getTalkingConnectionEnd()
+                    != tlsContext.getChooser().getConnectionEndType()) {
 
                 if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
 
@@ -191,7 +200,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     new byte[0],
                                     tlsContext
                                             .getChooser()
-                                            .getSelectedCipherSuite().getCipherAlgorithm()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
 
                 } else {
@@ -212,11 +222,13 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     new byte[0],
                                     tlsContext
                                             .getChooser()
-                                            .getSelectedCipherSuite().getCipherAlgorithm()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
                 }
 
-                RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, keySet, false);
+                RecordCipher recordCipherClient =
+                        RecordCipherFactory.getRecordCipher(tlsContext, keySet, false);
                 tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
             }
 

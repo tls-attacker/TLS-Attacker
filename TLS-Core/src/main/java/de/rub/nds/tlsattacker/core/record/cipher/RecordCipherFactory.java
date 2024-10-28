@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -29,12 +28,13 @@ public class RecordCipherFactory {
                 LOGGER.warn("Cipher {} not implemented. Using Null Cipher instead", cipherSuite);
                 return getNullCipher(tlsContext);
             } else {
-                CipherState state = new CipherState(
-                        tlsContext.getChooser().getSelectedProtocolVersion(),
-                        cipherSuite,
-                        keySet,
-                        tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC),
-                        connectionId);
+                CipherState state =
+                        new CipherState(
+                                tlsContext.getChooser().getSelectedProtocolVersion(),
+                                cipherSuite,
+                                keySet,
+                                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC),
+                                connectionId);
                 CipherType cipherType = cipherSuite.getCipherType();
                 if (cipherType == null) {
                     LOGGER.warn("CipherType is null. Using Null Cipher instead");
@@ -82,6 +82,5 @@ public class RecordCipherFactory {
                         null));
     }
 
-    private RecordCipherFactory() {
-    }
+    private RecordCipherFactory() {}
 }

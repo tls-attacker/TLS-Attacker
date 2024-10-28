@@ -517,7 +517,9 @@ public class AlgorithmResolverTest {
             value = CipherSuite.class,
             names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"})
     public void testUnresolvableMac(CipherSuite providedCipherSuite) {
-        assertNull(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, providedCipherSuite));
+        assertSame(
+                MacAlgorithm.NONE,
+                AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, providedCipherSuite));
     }
 
     @ParameterizedTest

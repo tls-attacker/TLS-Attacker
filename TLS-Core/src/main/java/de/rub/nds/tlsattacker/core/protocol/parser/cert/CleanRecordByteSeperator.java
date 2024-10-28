@@ -23,11 +23,18 @@ public class CleanRecordByteSeperator extends Parser<List<Record>> {
     private final int defaultMaxSize;
     private final boolean createRecordsDynamically;
 
+    // ensures that we write at least one record when an empty stream was handed down
+    private boolean mustStillCoverEmptyMessageFromUpperLayer;
+
     public CleanRecordByteSeperator(
-            int defaultMaxSize, InputStream stream, boolean createRecordsDynamically) {
+            int defaultMaxSize,
+            InputStream stream,
+            boolean createRecordsDynamically,
+            boolean mustStillCoverEmptyMessageFromUpperLayer) {
         super(stream);
         this.defaultMaxSize = defaultMaxSize;
         this.createRecordsDynamically = createRecordsDynamically;
+        this.mustStillCoverEmptyMessageFromUpperLayer = mustStillCoverEmptyMessageFromUpperLayer;
     }
 
     @Override
@@ -38,13 +45,15 @@ public class CleanRecordByteSeperator extends Parser<List<Record>> {
                 maxData = defaultMaxSize;
             }
             record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(maxData));
+            mustStillCoverEmptyMessageFromUpperLayer = false;
         }
         if (createRecordsDynamically) {
-            while (getBytesLeft() > 0) {
+            while (getBytesLeft() > 0 || mustStillCoverEmptyMessageFromUpperLayer) {
                 // There are still bytes left, we need to create additional records
                 Record record = new Record(defaultMaxSize);
                 record.setCleanProtocolMessageBytes(parseArrayOrTillEnd(defaultMaxSize));
                 records.add(record);
+                mustStillCoverEmptyMessageFromUpperLayer = false;
             }
         }
     }

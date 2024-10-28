@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -88,9 +87,13 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        ClientKeyExchangeMessage clientKeyExchangeMessage = new WorkflowConfigurationFactory(tlsContext.getConfig())
-                .createClientKeyExchangeMessage(
-                        tlsContext.getChooser().getSelectedCipherSuite().getKeyExchangeAlgorithm());
+        ClientKeyExchangeMessage clientKeyExchangeMessage =
+                new WorkflowConfigurationFactory(tlsContext.getConfig())
+                        .createClientKeyExchangeMessage(
+                                tlsContext
+                                        .getChooser()
+                                        .getSelectedCipherSuite()
+                                        .getKeyExchangeAlgorithm());
         if (clientKeyExchangeMessage != null) {
             List<LayerConfiguration<?>> configurationList = new LinkedList<>();
             configurationList.add(

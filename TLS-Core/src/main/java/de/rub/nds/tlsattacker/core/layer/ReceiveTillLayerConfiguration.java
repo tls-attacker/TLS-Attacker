@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     private boolean processTrailingContainers = true;
