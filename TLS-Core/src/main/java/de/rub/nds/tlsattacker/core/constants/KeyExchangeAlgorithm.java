@@ -262,8 +262,10 @@ public enum KeyExchangeAlgorithm {
 
     public boolean isGost() {
         switch (this) {
+            case VKO_GOST94
             case VKO_GOST01:
             case VKO_GOST12:
+            case GOSTR341112_256:
                 return true;
             default:
                 return false;
