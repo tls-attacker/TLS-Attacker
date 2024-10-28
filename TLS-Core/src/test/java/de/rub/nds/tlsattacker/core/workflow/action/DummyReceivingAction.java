@@ -130,13 +130,13 @@ public class DummyReceivingAction extends MessageAction
     }
 
     @Override
-    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
-        List<List<DataContainer<?>>> lists = new LinkedList<>();
+    public List<List<DataContainer>> getExpectedDataContainerLists() {
+        List<List<DataContainer>> lists = new LinkedList<>();
         if (expectedMessages != null) {
-            lists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+            lists.add((List<DataContainer>) (List<?>) expectedMessages);
         }
         if (expectedRecords != null) {
-            lists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
+            lists.add((List<DataContainer>) (List<?>) expectedRecords);
         }
         return lists;
     }

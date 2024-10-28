@@ -28,6 +28,6 @@ public class HelloVerifyRequestHandlerTest
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
         message.setCookie(new byte[] {0, 1, 2, 3});
         handler.adjustContext(message);
-        assertArrayEquals(new byte[] {0, 1, 2, 3}, context.getDtlsCookie());
+        assertArrayEquals(new byte[] {0, 1, 2, 3}, tlsContext.getDtlsCookie());
     }
 }

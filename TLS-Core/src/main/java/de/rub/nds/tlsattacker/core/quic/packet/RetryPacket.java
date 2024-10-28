@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.packet.RetryPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.RetryPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.RetryPacketSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -137,23 +138,23 @@ public class RetryPacket extends LongHeaderPacket {
     }
 
     @Override
-    public RetryPacketHandler getHandler(QuicContext context) {
-        return new RetryPacketHandler(context);
+    public RetryPacketHandler getHandler(Context context) {
+        return new RetryPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public Serializer<RetryPacket> getSerializer(QuicContext context) {
+    public Serializer<RetryPacket> getSerializer(Context context) {
         return new RetryPacketSerializer(this);
     }
 
     @Override
-    public Preparator<RetryPacket> getPreparator(QuicContext context) {
+    public Preparator<RetryPacket> getPreparator(Context context) {
         return new RetryPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public RetryPacketParser getParser(QuicContext context, InputStream stream) {
-        return new RetryPacketParser(stream, context);
+    public RetryPacketParser getParser(Context context, InputStream stream) {
+        return new RetryPacketParser(stream, context.getQuicContext());
     }
 
     public ModifiableByteArray getRetryToken() {

@@ -36,10 +36,9 @@ public class EncryptedExtensionsHandler
             LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {
                 LOGGER.debug("Adjusting " + message.toCompactString());
-                Handler handler = extension.getHandler(tlsContext);
+                Handler handler = extension.getHandler(tlsContext.getContext());
                 handler.adjustContext(extension);
             }
-
             warnOnConflictingExtensions();
         }
     }

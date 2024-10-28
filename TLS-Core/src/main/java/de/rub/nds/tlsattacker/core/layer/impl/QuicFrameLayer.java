@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,7 +58,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final QuicContext context;
+    private final Context context;
+    private final QuicContext quicContext;
+
     private final int MAX_FRAME_SIZE;
     private final int DEFAULT_STREAM_ID = 2;
     private final int MIN_FRAME_SIZE = 32;
@@ -70,9 +73,10 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private boolean hasExperiencedTimeout = false;
 
-    public QuicFrameLayer(QuicContext context) {
+    public QuicFrameLayer(Context context) {
         super(ImplementedLayers.QUICFRAME);
         this.context = context;
+        this.quicContext = context.getQuicContext();
         this.MAX_FRAME_SIZE = context.getConfig().getQuicMaximumFrameSize();
     }
 
@@ -194,7 +198,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                 case APPLICATION_DATA:
                     // TODO: Use existing STREAM frames from the configuration first
                     // prepare hint
-                    if (context.isApplicationSecretsInitialized()) {
+                    if (quicContext.isApplicationSecretsInitialized()) {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.ONE_RTT_PACKET);
                     } else {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.ZERO_RTT_PACKET);
@@ -368,9 +372,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                 CryptoFrame lastFrame = cryptoFrameBuffer.get(cryptoFrameBuffer.size() - 1);
                 long nextExpectedCryptoOffset =
                         lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
-                if (!context.isHandshakeSecretsInitialized()) {
+                if (!quicContext.isHandshakeSecretsInitialized()) {
                     initialPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                } else if (!context.isApplicationSecretsInitialized()) {
+                } else if (!quicContext.isApplicationSecretsInitialized()) {
                     handshakePhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
                 } else {
                     applicationPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
@@ -382,8 +386,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         if (isAckEliciting) {
             sendAck(null);
         } else {
-            if (!context.getReceivedPackets().isEmpty()) {
-                context.getReceivedPackets().removeLast();
+            if (!quicContext.getReceivedPackets().isEmpty()) {
+                quicContext.getReceivedPackets().removeLast();
             }
         }
 
@@ -400,9 +404,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private boolean isCryptoBufferConsecutive() {
         long lastSeenCryptoOffset;
-        if (!context.isHandshakeSecretsInitialized()) {
+        if (!quicContext.isHandshakeSecretsInitialized()) {
             lastSeenCryptoOffset = initialPhaseExpectedCryptoFrameOffset;
-        } else if (!context.isApplicationSecretsInitialized()) {
+        } else if (!quicContext.isApplicationSecretsInitialized()) {
             lastSeenCryptoOffset = handshakePhaseExpectedCryptoFrameOffset;
         } else {
             lastSeenCryptoOffset = applicationPhaseExpectedCryptoFrameOffset;
@@ -445,12 +449,13 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     }
 
     private QuicPacketLayerHint getHintForFrame() {
-        if (context.isInitialSecretsInitialized() && !context.isHandshakeSecretsInitialized()) {
+        if (quicContext.isInitialSecretsInitialized()
+                && !quicContext.isHandshakeSecretsInitialized()) {
             return new QuicPacketLayerHint(QuicPacketType.INITIAL_PACKET);
-        } else if (context.isHandshakeSecretsInitialized()
-                && !context.isApplicationSecretsInitialized()) {
+        } else if (quicContext.isHandshakeSecretsInitialized()
+                && !quicContext.isApplicationSecretsInitialized()) {
             return new QuicPacketLayerHint(QuicPacketType.HANDSHAKE_PACKET);
-        } else if (context.isApplicationSecretsInitialized()) {
+        } else if (quicContext.isApplicationSecretsInitialized()) {
             return new QuicPacketLayerHint(QuicPacketType.ONE_RTT_PACKET);
         }
         return null;
@@ -459,15 +464,17 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     @Override
     public void sendAck(byte[] data) {
         AckFrame frame = new AckFrame(false);
-        if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-            frame.setLargestAcknowledgedConfig(context.getReceivedInitialPacketNumbers().getLast());
-            LOGGER.debug("Send Ack for Initial Packet #{}", frame.getLargestAcknowledgedConfig());
-        } else if (context.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
+        if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
             frame.setLargestAcknowledgedConfig(
-                    context.getReceivedHandshakePacketNumbers().getLast());
+                    quicContext.getReceivedInitialPacketNumbers().getLast());
+            LOGGER.debug("Send Ack for Initial Packet #{}", frame.getLargestAcknowledgedConfig());
+        } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
+            frame.setLargestAcknowledgedConfig(
+                    quicContext.getReceivedHandshakePacketNumbers().getLast());
             LOGGER.debug("Send Ack for Handshake Packet #{}", frame.getLargestAcknowledgedConfig());
-        } else if (context.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-            frame.setLargestAcknowledgedConfig(context.getReceivedOneRTTPacketNumbers().getLast());
+        } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
+            frame.setLargestAcknowledgedConfig(
+                    quicContext.getReceivedOneRTTPacketNumbers().getLast());
             LOGGER.debug("Send Ack for 1RTT Packet #{}", frame.getLargestAcknowledgedConfig());
         }
 

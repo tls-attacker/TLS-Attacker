@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
@@ -80,22 +80,22 @@ public class UnknownExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public UnknownExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownExtensionParser(stream, tlsContext);
+    public UnknownExtensionParser getParser(Context context, InputStream stream) {
+        return new UnknownExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public UnknownExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownExtensionPreparator(tlsContext.getChooser(), this);
+    public UnknownExtensionPreparator getPreparator(Context context) {
+        return new UnknownExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public UnknownExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public UnknownExtensionSerializer getSerializer(Context context) {
         return new UnknownExtensionSerializer(this);
     }
 
     @Override
-    public UnknownExtensionHandler getHandler(TlsContext tlsContext) {
-        return new UnknownExtensionHandler(tlsContext);
+    public UnknownExtensionHandler getHandler(Context context) {
+        return new UnknownExtensionHandler(context.getTlsContext());
     }
 }

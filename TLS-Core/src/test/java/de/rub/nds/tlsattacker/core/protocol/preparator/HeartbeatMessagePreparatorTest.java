@@ -29,9 +29,9 @@ public class HeartbeatMessagePreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        context.getConfig().setHeartbeatPayloadLength(11);
-        context.getConfig().setHeartbeatPaddingLength(11);
-        context.setRandom(
+        tlsContext.getConfig().setHeartbeatPayloadLength(11);
+        tlsContext.getConfig().setHeartbeatPaddingLength(11);
+        tlsContext.setRandom(
                 new FixedSecureRandom(
                         ArrayConverter.hexStringToByteArray(
                                 "F6C92DA33AF01D4FB770AA60B420BB3851D9D47ACB93")));

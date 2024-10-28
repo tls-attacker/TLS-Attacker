@@ -51,7 +51,7 @@ public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     @BeforeAll
     public static void setUpClass() {
@@ -60,7 +60,7 @@ public class CyclicParserSerializerTest {
 
     @BeforeEach
     public void setUp() {
-        context = new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
+        tlsContext = new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
     }
 
     public static Stream<Arguments> provideParserSerializerTestVectors() {
@@ -165,11 +165,11 @@ public class CyclicParserSerializerTest {
         ProtocolMessagePreparator<? extends ProtocolMessage> preparator = null;
         ProtocolMessageSerializer<? extends ProtocolMessage> serializer = null;
 
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        context.setSelectedProtocolVersion(protocolVersion);
-        context.getConfig().setHighestProtocolVersion(protocolVersion);
-        context.setLastRecordVersion(protocolVersion);
-        context.getConfig().setDefaultHighestClientProtocolVersion(protocolVersion);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setSelectedProtocolVersion(protocolVersion);
+        tlsContext.getConfig().setHighestProtocolVersion(protocolVersion);
+        tlsContext.setLastRecordVersion(protocolVersion);
+        tlsContext.getConfig().setDefaultHighestClientProtocolVersion(protocolVersion);
 
         Constructor<? extends ProtocolMessage> messageConstructor;
         if (useDefaultMessageConstructor) {
@@ -186,7 +186,7 @@ public class CyclicParserSerializerTest {
             fail("Could not create message instance for test " + testName);
         }
 
-        preparator = message.getPreparator(context);
+        preparator = message.getPreparator(tlsContext.getContext());
 
         // Skip test if preparation is not supported yet
         try {
@@ -197,7 +197,7 @@ public class CyclicParserSerializerTest {
                     "Preparator for test " + testName + " is not yet supported");
         }
 
-        serializer = message.getSerializer(context);
+        serializer = message.getSerializer(tlsContext.getContext());
         byte[] serializedMessage = serializer.serialize();
 
         byte[] messageHeader = null;
@@ -215,7 +215,9 @@ public class CyclicParserSerializerTest {
                     Arrays.copyOfRange(
                             serializedMessage, handshakeHeaderLength, serializedMessage.length);
         }
-        parser = message.getParser(context, new ByteArrayInputStream(serializedMessage));
+        parser =
+                message.getParser(
+                        tlsContext.getContext(), new ByteArrayInputStream(serializedMessage));
         try {
             parser.parse(message);
         } catch (UnsupportedOperationException e) {
@@ -225,7 +227,7 @@ public class CyclicParserSerializerTest {
             LOGGER.info("EOS");
         }
 
-        serializer = message.getSerializer(context);
+        serializer = message.getSerializer(tlsContext.getContext());
         if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
                 || message instanceof SSL2Message) {
             assertArrayEquals(

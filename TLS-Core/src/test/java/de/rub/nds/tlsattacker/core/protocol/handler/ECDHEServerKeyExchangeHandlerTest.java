@@ -41,7 +41,7 @@ public class ECDHEServerKeyExchangeHandlerTest
         message.getKeyExchangeComputations().setPremasterSecret(new byte[] {0, 1, 2, 3});
         message.getKeyExchangeComputations().setPrivateKey(new BigInteger("12345"));
         handler.adjustContext(message);
-        assertNull(context.getPreMasterSecret());
+        assertNull(tlsContext.getPreMasterSecret());
         // assertNull(context.getMasterSecret());//TODO assert master secret was
         // computed correctly
     }
@@ -56,7 +56,7 @@ public class ECDHEServerKeyExchangeHandlerTest
                         "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);
         handler.adjustContext(message);
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
+        assertNull(tlsContext.getPreMasterSecret());
+        assertNull(tlsContext.getMasterSecret());
     }
 }

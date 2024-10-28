@@ -282,25 +282,25 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     }
 
     @Override
-    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
-        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+    public List<List<DataContainer>> getExpectedDataContainerLists() {
+        List<List<DataContainer>> dataContainerLists = new LinkedList<>();
         if (expectedHttpMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedHttpMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedHttpMessages);
         }
         if (expectedMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedMessages);
         }
         if (expectedDtlsFragments != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedDtlsFragments);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedDtlsFragments);
         }
         if (expectedRecords != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedRecords);
         }
         if (expectedQuicFrames != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedQuicFrames);
         }
         if (expectedQuicPackets != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicPackets);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedQuicPackets);
         }
         return dataContainerLists;
     }

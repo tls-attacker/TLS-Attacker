@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 abstract class AbstractProtocolMessageHandlerTest<
         MT extends ProtocolMessage, HT extends ProtocolMessageHandler<MT>> {
 
-    protected TlsContext context;
+    protected TlsContext tlsContext;
 
     private final Supplier<MT> messageConstructor;
 
@@ -33,38 +33,40 @@ abstract class AbstractProtocolMessageHandlerTest<
 
     AbstractProtocolMessageHandlerTest(
             Supplier<MT> messageConstructor, Function<TlsContext, HT> handlerConstructor) {
-        this.context =
+        this.tlsContext =
                 new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
-        this.handler = handlerConstructor.apply(context);
+        this.handler = handlerConstructor.apply(tlsContext);
     }
 
     AbstractProtocolMessageHandlerTest(
             Supplier<MT> messageConstructor,
             Function<TlsContext, HT> handlerConstructor,
-            TlsContext context) {
-        this.context = context;
+            TlsContext tlsContext) {
+        this.tlsContext = tlsContext;
         this.messageConstructor = messageConstructor;
-        this.handler = handlerConstructor.apply(context);
+        this.handler = handlerConstructor.apply(tlsContext);
     }
 
     /** Test of getParser method, of class TlsMessageHandler. */
     @Test
     public void testGetParser() {
         assertNotNull(
-                messageConstructor.get().getParser(context, new ByteArrayInputStream(new byte[0])));
+                messageConstructor
+                        .get()
+                        .getParser(tlsContext.getContext(), new ByteArrayInputStream(new byte[0])));
     }
 
     /** Test of getPreparator method, of class TlsMessageHandler. */
     @Test
     public void testGetPreparator() {
-        assertNotNull(messageConstructor.get().getPreparator(context));
+        assertNotNull(messageConstructor.get().getPreparator(tlsContext.getContext()));
     }
 
     /** Test of getSerializer method, of class TlsMessageHandler. */
     @Test
     public void testGetSerializer() {
-        assertNotNull(messageConstructor.get().getSerializer(context));
+        assertNotNull(messageConstructor.get().getSerializer(tlsContext.getContext()));
     }
 
     @Test

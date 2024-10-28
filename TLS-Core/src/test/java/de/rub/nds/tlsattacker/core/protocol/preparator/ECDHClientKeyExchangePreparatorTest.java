@@ -59,21 +59,21 @@ public class ECDHClientKeyExchangePreparatorTest
                     NoSuchProviderException,
                     InvalidAlgorithmParameterException {
         // prepare context
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
-        context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
+        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
-        context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
-        context.setSelectedGroup(NamedGroup.SECP192R1);
-        context.setServerEphemeralEcPublicKey(
+        tlsContext.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
+        tlsContext.setSelectedGroup(NamedGroup.SECP192R1);
+        tlsContext.setServerEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "1336698681267683560144780033483217462176613397209956026562"),
                         new BigInteger(
                                 "4390496211885670837594012513791855863576256216444143941964"),
                         (NamedEllipticCurveParameters) NamedGroup.SECP192R1.getGroupParameters()));
-        context.getConfig().setDefaultClientEphemeralEcPrivateKey(new BigInteger("3"));
+        tlsContext.getConfig().setDefaultClientEphemeralEcPrivateKey(new BigInteger("3"));
 
         preparator.prepare();
         assertNotNull(message.getComputations().getPublicKeyX());

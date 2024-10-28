@@ -70,8 +70,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
     }
 
     public void prepareEncapsulatingFields() {
-        HandshakeMessageSerializer<?> serializer =
-                message.getSerializer(chooser.getContext().getTlsContext());
+        HandshakeMessageSerializer<?> serializer = message.getSerializer(chooser.getContext());
         byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
         prepareMessageLength(content.length);
@@ -140,7 +139,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                         ksExt.setRetryRequestMode(true);
                     }
                 }
-                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
+                extensionMessage.getPreparator(chooser.getContext()).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
@@ -156,8 +155,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                Preparator preparator =
-                        extensionMessage.getPreparator(chooser.getContext().getTlsContext());
+                Preparator preparator = extensionMessage.getPreparator(chooser.getContext());
                 if (extensionMessage instanceof PreSharedKeyExtensionMessage
                         && message instanceof ClientHelloMessage
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {

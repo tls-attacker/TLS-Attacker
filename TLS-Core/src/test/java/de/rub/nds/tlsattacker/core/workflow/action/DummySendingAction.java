@@ -62,9 +62,9 @@ public class DummySendingAction extends MessageAction
     }
 
     @Override
-    public List<List<DataContainer<?>>> getConfiguredDataContainerLists() {
-        List<List<DataContainer<?>>> lists = new LinkedList<>();
-        lists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
+    public List<List<DataContainer>> getConfiguredDataContainerLists() {
+        List<List<DataContainer>> lists = new LinkedList<>();
+        lists.add((List<DataContainer>) (List<?>) configuredMessages);
         return lists;
     }
 

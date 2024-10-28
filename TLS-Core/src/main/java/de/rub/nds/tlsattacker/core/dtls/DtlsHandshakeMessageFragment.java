@@ -20,8 +20,8 @@ import de.rub.nds.tlsattacker.core.dtls.handler.DtlsHandshakeMessageFragmentHand
 import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import java.util.Objects;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
-        implements DataContainer<TlsContext> {
+        implements DataContainer {
 
     @ModifiableVariableProperty private ModifiableInteger fragmentOffset = null;
 
@@ -89,22 +89,22 @@ public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentHandler(tlsContext);
+    public DtlsHandshakeMessageFragmentHandler getHandler(Context context) {
+        return new DtlsHandshakeMessageFragmentHandler(context.getTlsContext());
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext);
+    public DtlsHandshakeMessageFragmentParser getParser(Context context, InputStream stream) {
+        return new DtlsHandshakeMessageFragmentParser(stream, context.getTlsContext());
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentPreparator getPreparator(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentPreparator(tlsContext.getChooser(), this);
+    public DtlsHandshakeMessageFragmentPreparator getPreparator(Context context) {
+        return new DtlsHandshakeMessageFragmentPreparator(context.getChooser(), this);
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext tlsContext) {
+    public DtlsHandshakeMessageFragmentSerializer getSerializer(Context context) {
         return new DtlsHandshakeMessageFragmentSerializer(this);
     }
 

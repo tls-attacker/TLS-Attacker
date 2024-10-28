@@ -33,7 +33,7 @@ public class ActionHelperUtil {
 
     private ActionHelperUtil() {}
 
-    public static List<DataContainer<?>> getDataContainersForLayer(
+    public static List<DataContainer> getDataContainersForLayer(
             LayerType type, LayerStackProcessingResult processingResult) {
         if (processingResult == null) {
             return null;
@@ -41,7 +41,7 @@ public class ActionHelperUtil {
             for (LayerProcessingResult<?> result :
                     processingResult.getLayerProcessingResultList()) {
                 if (result.getLayerType() == type) {
-                    return (List<DataContainer<?>>) result.getUsedContainers();
+                    return (List<DataContainer>) result.getUsedContainers();
                 }
             }
             return new LinkedList<>();
@@ -69,7 +69,7 @@ public class ActionHelperUtil {
 
     public static LayerConfiguration<?> applyMessageFilters(
             LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
-        List<DataContainerFilter<?>> containerFilters = new LinkedList<>();
+        List<DataContainerFilter> containerFilters = new LinkedList<>();
         if (actionOptions != null) {
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
                 containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
