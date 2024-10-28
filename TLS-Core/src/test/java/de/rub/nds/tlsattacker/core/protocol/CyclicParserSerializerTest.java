@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -77,11 +76,6 @@ public class CyclicParserSerializerTest {
             String testName = messageClass.getSimpleName().replace("Message", "");
             if (Modifier.isAbstract(messageClass.getModifiers())) {
                 LOGGER.info("Encountered abstract message class, skipping it: {}", testName);
-                continue;
-            }
-            if (messageClass == DtlsHandshakeMessageFragment.class) {
-                LOGGER.debug(
-                        "Message class is DtlsHandshakeMessageFragment, will not be included in the provided test vectors");
                 continue;
             }
 

@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -26,10 +25,14 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends Message {
 
-    @XmlTransient protected boolean goingToBeSentDefault = true;
-    @XmlTransient protected boolean requiredDefault = true;
-    @XmlTransient protected boolean adjustContextDefault = true;
-    @XmlTransient protected boolean shouldPrepareDefault = true;
+    @XmlTransient
+    protected boolean goingToBeSentDefault = true;
+    @XmlTransient
+    protected boolean requiredDefault = true;
+    @XmlTransient
+    protected boolean adjustContextDefault = true;
+    @XmlTransient
+    protected boolean shouldPrepareDefault = true;
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
@@ -48,7 +51,8 @@ public abstract class ProtocolMessage extends Message {
     private ModifiableBoolean adjustContext;
 
     /** content type */
-    @XmlTransient protected ProtocolMessageType protocolMessageType;
+    @XmlTransient
+    protected ProtocolMessageType protocolMessageType;
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return protocolMessageTypes.add(getProtocolMessageType());
@@ -83,8 +87,7 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public void setGoingToBeSent(boolean goingToBeSent) {
-        this.goingToBeSent =
-                ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
+        this.goingToBeSent = ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
     }
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
@@ -100,9 +103,8 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-        this.completeResultingMessage =
-                ModifiableVariableFactory.safelySetValue(
-                        this.completeResultingMessage, completeResultingMessage);
+        this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(
+                this.completeResultingMessage, completeResultingMessage);
     }
 
     public boolean getAdjustContext() {
@@ -117,16 +119,11 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public void setAdjustContext(Boolean adjustContext) {
-        this.adjustContext =
-                ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
+        this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
-    }
-
-    public boolean isDtlsHandshakeMessageFragment() {
-        return this instanceof DtlsHandshakeMessageFragment;
     }
 
     public ProtocolMessageType getProtocolMessageType() {

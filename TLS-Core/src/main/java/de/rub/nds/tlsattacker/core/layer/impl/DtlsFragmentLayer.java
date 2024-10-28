@@ -15,7 +15,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
+import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
+import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
+import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -26,12 +30,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -82,7 +81,7 @@ public class DtlsFragmentLayer
                 fragment.setCompleteResultingMessage(serializedMessage);
                 getLowerLayer()
                         .sendData(
-                                new RecordLayerHint(fragment.getProtocolMessageType()),
+                                new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
                                 serializedMessage);
                 addProducedContainer(fragment);
             }
@@ -218,13 +217,13 @@ public class DtlsFragmentLayer
                         addProducedContainer(uninterpretedMessageFragment);
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(
-                                        uninterpretedMessageFragment.getProtocolMessageType(),
+                                        ProtocolMessageType.HANDSHAKE,
                                         uninterpretedMessageFragment
                                                 .getMessageSequence()
                                                 .getValue());
                         byte type = uninterpretedMessageFragment.getType().getValue();
                         byte[] content =
-                                uninterpretedMessageFragment.getMessageContent().getValue();
+                                uninterpretedMessageFragment.getFragmentContent().getValue();
                         byte[] message =
                                 ArrayConverter.concatenate(
                                         new byte[] {type},
