@@ -31,7 +31,7 @@ public abstract class Pop3MessageParser<MessageT extends Pop3Message> extends Pa
      * line from the input. It will parse the line until the CRLF is reached or the end of the
      * stream is reached. Will remove the CRLF from the returned string.
      *
-     * @return
+     * @return a single line from the input
      */
     public String parseSingleLine() {
         String lineUntilLF = parseStringTill(LF);

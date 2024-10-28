@@ -1,0 +1,43 @@
+package de.rub.nds.tlsattacker.core.pop3.command;
+
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
+import de.rub.nds.tlsattacker.core.pop3.handler.Pop3CommandHandler;
+import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
+import java.io.InputStream;
+
+/**
+ * Inital Greeting of the POP3 Server when a connection is established
+ * Its only use is to be able to distinguish between the initial greeting and truly unknown commands
+ * when `receiving` in Pop3Layer. It should never be included in a Workflow.
+ */
+public class Pop3InitalGreetingDummy extends Pop3Command {
+
+    @Override
+    public Pop3CommandParser<? extends Pop3Message> getParser(Pop3Context context, InputStream stream) {
+        throw new UnsupportedOperationException(
+                "this is a dummy class that should not be included in a Workflow."
+        );
+    }
+
+    @Override
+    public Pop3CommandPreparator<? extends Pop3Command> getPreparator(Pop3Context context) {
+        throw new UnsupportedOperationException(
+                "This is a dummy class that should not be included in a Workflow."
+        );
+    }
+
+    @Override
+    public Pop3CommandSerializer<? extends Pop3Command> getSerializer(Pop3Context context) {
+        throw new UnsupportedOperationException(
+                "This is a dummy class that should not be included in a Workflow.");
+    }
+
+    @Override
+    public Pop3CommandHandler<? extends Pop3Message> getHandler(Pop3Context smtpContext) {
+        throw new UnsupportedOperationException(
+                "This is a dummy class that should not be included in a Workflow.");
+    }
+}

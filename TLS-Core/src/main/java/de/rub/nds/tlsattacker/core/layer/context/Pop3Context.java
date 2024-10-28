@@ -8,11 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3InitalGreetingDummy;
 import de.rub.nds.tlsattacker.core.state.Context;
 
 public class Pop3Context extends LayerContext {
 
+    private Pop3Command lastCommand = new Pop3InitalGreetingDummy();
+
     public Pop3Context(Context context) {
         super(context);
+    }
+
+    public Pop3Command getLastCommand() {
+        return lastCommand;
+    }
+
+    public void setLastCommand(Pop3Command lastCommand) {
+        this.lastCommand = lastCommand;
     }
 }
