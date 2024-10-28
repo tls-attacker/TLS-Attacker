@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.constants;
 /** Symmetric cipher algorithm and its mapping to Java names */
 public enum CipherAlgorithm {
     NULL(0, 0, 0, 0),
-    RC2_40(5, 8, 0, 8, "RC2/CBC/NoPadding"), // TODO Not sure this is correct
+    RC2_40(16, 8, 0, 8, "RC2/CBC/NoPadding"), // Uses RC2 40 but uses different kdf
     RC2_128(16, 8, 0, 8, "RC2/CBC/NoPadding"),
     RC4_128(16, 0, 0, 0, "RC4"),
     DES_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"),
@@ -30,7 +30,12 @@ public enum CipherAlgorithm {
     AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
     CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
     UNOFFICIAL_CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
-    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
+    DES40_CBC(
+            8,
+            8,
+            0,
+            8,
+            "DES/CBC/NoPadding"), // Uses DES56 Bit but uses different Key Derivation function
     ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"),
     ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"),
     ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"),
@@ -44,7 +49,7 @@ public enum CipherAlgorithm {
     SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding"),
     RC4_40(5, 0, 0, 0, "RC4"), // TODO check
     RC4_56(7, 0, 0, 0, "RC4"), // TODO check
-    RC2_56(7, 8, 0, 8, "RC2/CBC/NoPadding"), // TODO check
+    RC2_56(16, 8, 0, 8, "RC2/CBC/NoPadding"), // Uses RC2 but uses different kdf
     AES_128_CCM_8(16, 4, 8, 16, "AES/CCM/NoPadding"), // TODO check
     AES_256_CCM_8(32, 4, 8, 16, "AES/CCM/NoPadding"); // TODO check
 
