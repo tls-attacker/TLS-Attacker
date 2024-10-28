@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
@@ -26,57 +24,58 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import java.io.InputStream;
 
 @XmlSeeAlso({
-        EncryptedServerNameIndicationExtensionMessage.class,
-        ECPointFormatExtensionMessage.class,
-        EllipticCurvesExtensionMessage.class,
-        EllipticCurvesExtensionMessage.class,
-        ExtendedMasterSecretExtensionMessage.class,
-        GreaseExtensionMessage.class,
-        HeartbeatExtensionMessage.class,
-        MaxFragmentLengthExtensionMessage.class,
-        RecordSizeLimitExtensionMessage.class,
-        PaddingExtensionMessage.class,
-        RenegotiationInfoExtensionMessage.class,
-        ServerNameIndicationExtensionMessage.class,
-        SessionTicketTLSExtensionMessage.class,
-        SignatureAndHashAlgorithmsExtensionMessage.class,
-        SignatureAlgorithmsCertExtensionMessage.class,
-        SignedCertificateTimestampExtensionMessage.class,
-        ExtendedRandomExtensionMessage.class,
-        TokenBindingExtensionMessage.class,
-        KeyShareExtensionMessage.class,
-        SupportedVersionsExtensionMessage.class,
-        AlpnExtensionMessage.class,
-        CertificateStatusRequestExtensionMessage.class,
-        CertificateStatusRequestV2ExtensionMessage.class,
-        CertificateTypeExtensionMessage.class,
-        ClientCertificateUrlExtensionMessage.class,
-        ClientCertificateTypeExtensionMessage.class,
-        ClientAuthzExtensionMessage.class,
-        EncryptThenMacExtensionMessage.class,
-        ServerAuthzExtensionMessage.class,
-        ServerCertificateTypeExtensionMessage.class,
-        SrtpExtensionMessage.class,
-        TrustedCaIndicationExtensionMessage.class,
-        TruncatedHmacExtensionMessage.class,
-        EarlyDataExtensionMessage.class,
-        PSKKeyExchangeModesExtensionMessage.class,
-        PreSharedKeyExtensionMessage.class,
-        UnknownExtensionMessage.class,
-        PWDClearExtensionMessage.class,
-        PWDProtectExtensionMessage.class,
-        PasswordSaltExtensionMessage.class,
-        CachedInfoExtensionMessage.class,
-        CookieExtensionMessage.class,
-        DtlsHandshakeMessageFragment.class,
-        UserMappingExtensionMessage.class,
-        SRPExtensionMessage.class,
-        CachedInfoExtensionMessage.class,
-        ConnectionIdExtensionMessage.class,
-        QuicTransportParametersExtensionMessage.class,
-        EncryptedClientHelloExtensionMessage.class
+    EncryptedServerNameIndicationExtensionMessage.class,
+    ECPointFormatExtensionMessage.class,
+    EllipticCurvesExtensionMessage.class,
+    EllipticCurvesExtensionMessage.class,
+    ExtendedMasterSecretExtensionMessage.class,
+    GreaseExtensionMessage.class,
+    HeartbeatExtensionMessage.class,
+    MaxFragmentLengthExtensionMessage.class,
+    RecordSizeLimitExtensionMessage.class,
+    PaddingExtensionMessage.class,
+    RenegotiationInfoExtensionMessage.class,
+    ServerNameIndicationExtensionMessage.class,
+    SessionTicketTLSExtensionMessage.class,
+    SignatureAndHashAlgorithmsExtensionMessage.class,
+    SignatureAlgorithmsCertExtensionMessage.class,
+    SignedCertificateTimestampExtensionMessage.class,
+    ExtendedRandomExtensionMessage.class,
+    TokenBindingExtensionMessage.class,
+    KeyShareExtensionMessage.class,
+    SupportedVersionsExtensionMessage.class,
+    AlpnExtensionMessage.class,
+    CertificateStatusRequestExtensionMessage.class,
+    CertificateStatusRequestV2ExtensionMessage.class,
+    CertificateTypeExtensionMessage.class,
+    ClientCertificateUrlExtensionMessage.class,
+    ClientCertificateTypeExtensionMessage.class,
+    ClientAuthzExtensionMessage.class,
+    EncryptThenMacExtensionMessage.class,
+    ServerAuthzExtensionMessage.class,
+    ServerCertificateTypeExtensionMessage.class,
+    SrtpExtensionMessage.class,
+    TrustedCaIndicationExtensionMessage.class,
+    TruncatedHmacExtensionMessage.class,
+    EarlyDataExtensionMessage.class,
+    PSKKeyExchangeModesExtensionMessage.class,
+    PreSharedKeyExtensionMessage.class,
+    UnknownExtensionMessage.class,
+    PWDClearExtensionMessage.class,
+    PWDProtectExtensionMessage.class,
+    PasswordSaltExtensionMessage.class,
+    CachedInfoExtensionMessage.class,
+    CookieExtensionMessage.class,
+    DtlsHandshakeMessageFragment.class,
+    UserMappingExtensionMessage.class,
+    SRPExtensionMessage.class,
+    CachedInfoExtensionMessage.class,
+    ConnectionIdExtensionMessage.class,
+    QuicTransportParametersExtensionMessage.class,
+    EncryptedClientHelloExtensionMessage.class
 })
 public abstract class ExtensionMessage extends ModifiableVariableHolder implements DataContainer {
 
@@ -88,14 +87,11 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray extensionBytes;
+    @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray extensionContent;
+    @ModifiableVariableProperty private ModifiableByteArray extensionContent;
 
-    public ExtensionMessage() {
-    }
+    public ExtensionMessage() {}
 
     public ExtensionMessage(ExtensionType type) {
         this.extensionTypeConstant = type;
@@ -168,7 +164,8 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
     }
 
     public void setExtensionContent(byte[] content) {
-        this.extensionContent = ModifiableVariableFactory.safelySetValue(this.extensionContent, content);
+        this.extensionContent =
+                ModifiableVariableFactory.safelySetValue(this.extensionContent, content);
     }
 
     @Override

@@ -25,14 +25,10 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends Message {
 
-    @XmlTransient
-    protected boolean goingToBeSentDefault = true;
-    @XmlTransient
-    protected boolean requiredDefault = true;
-    @XmlTransient
-    protected boolean adjustContextDefault = true;
-    @XmlTransient
-    protected boolean shouldPrepareDefault = true;
+    @XmlTransient protected boolean goingToBeSentDefault = true;
+    @XmlTransient protected boolean requiredDefault = true;
+    @XmlTransient protected boolean adjustContextDefault = true;
+    @XmlTransient protected boolean shouldPrepareDefault = true;
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
@@ -51,8 +47,7 @@ public abstract class ProtocolMessage extends Message {
     private ModifiableBoolean adjustContext;
 
     /** content type */
-    @XmlTransient
-    protected ProtocolMessageType protocolMessageType;
+    @XmlTransient protected ProtocolMessageType protocolMessageType;
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return protocolMessageTypes.add(getProtocolMessageType());
@@ -87,7 +82,8 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public void setGoingToBeSent(boolean goingToBeSent) {
-        this.goingToBeSent = ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
+        this.goingToBeSent =
+                ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
     }
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
@@ -103,8 +99,9 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-        this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(
-                this.completeResultingMessage, completeResultingMessage);
+        this.completeResultingMessage =
+                ModifiableVariableFactory.safelySetValue(
+                        this.completeResultingMessage, completeResultingMessage);
     }
 
     public boolean getAdjustContext() {
@@ -119,7 +116,8 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public void setAdjustContext(Boolean adjustContext) {
-        this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
+        this.adjustContext =
+                ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
     public boolean isHandshakeMessage() {

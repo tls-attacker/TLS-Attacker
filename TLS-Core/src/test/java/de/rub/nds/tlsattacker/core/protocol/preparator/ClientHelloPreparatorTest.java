@@ -191,30 +191,31 @@ public class ClientHelloPreparatorTest
 
     @Test
     public void testPrepareRetainedClientRandomHrr() {
-        context.getConfig().setUseFreshRandom(true);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-        context.getDigest()
+        tlsContext.getConfig().setUseFreshRandom(true);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext
+                .getDigest()
                 .setRawBytes(new byte[] {HandshakeMessageType.MESSAGE_HASH.getValue(), 1, 2, 3});
         byte[] firstRandom =
                 new byte[] {
                     1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
                     4, 1, 2, 3, 4
                 };
-        context.setClientRandom(firstRandom);
+        tlsContext.setClientRandom(firstRandom);
         preparator.prepare();
         assertArrayEquals(firstRandom, message.getRandom().getValue());
     }
 
     @Test
     public void testPrepareRetainedClientRandomDtls() {
-        context.getConfig().setUseFreshRandom(false);
-        context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+        tlsContext.getConfig().setUseFreshRandom(false);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         byte[] firstRandom =
                 new byte[] {
                     1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
                     4, 1, 2, 3, 4
                 };
-        context.setClientRandom(firstRandom);
+        tlsContext.setClientRandom(firstRandom);
         preparator.prepare();
         assertArrayEquals(firstRandom, message.getRandom().getValue());
     }

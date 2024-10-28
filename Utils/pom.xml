@@ -4,6 +4,11 @@
     <parent>
         <groupId>de.rub.nds.tls.attacker</groupId>
         <artifactId>tls-attacker</artifactId>
+        <version>6.1.10-SNAPSHOT</version>
+    </parent>
+    <artifactId>utils</artifactId>
+
+    <name>Utils</name>
 
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/TLS-Attacker.git</connection>
@@ -18,12 +23,14 @@
 
     <build>
         <plugins>
-            <!--################## clean lifecycle plugins ##################-->
+            <!--##################
+            clean lifecycle plugins ##################-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
             </plugin>
-            <!--################# default lifecycle plugins #################-->
+            <!--#################
+            default lifecycle plugins #################-->
             <!-- Copy project resources to output directory -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

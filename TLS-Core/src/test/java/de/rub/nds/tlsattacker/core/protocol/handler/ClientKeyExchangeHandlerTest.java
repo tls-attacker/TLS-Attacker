@@ -96,7 +96,7 @@ public class ClientKeyExchangeHandlerTest
 
         byte[] calculatedMasterSecret =
                 KeyDerivator.calculateMasterSecret(
-                        context, message.getComputations().getClientServerRandom().getValue());
+                        tlsContext, message.getComputations().getClientServerRandom().getValue());
 
         assertArrayEquals(expectedMasterSecret, calculatedMasterSecret);
     }

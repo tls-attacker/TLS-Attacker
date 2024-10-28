@@ -66,7 +66,7 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
         quicContext.setFirstDestinationConnectionId(destinationConnectionId);
         quicContext.setDestinationConnectionId(destinationConnectionId);
         context.setLayerStack(
-                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
+                new LayerStack(context, new QuicFrameLayer(context), new UdpLayer(context)));
         try {
             QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
         } catch (NoSuchAlgorithmException | CryptoException e) {

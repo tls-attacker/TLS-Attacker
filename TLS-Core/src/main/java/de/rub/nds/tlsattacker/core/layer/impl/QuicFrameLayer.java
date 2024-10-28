@@ -58,6 +58,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final Context context;
     private final QuicContext quicContext;
 
     private final int MAX_FRAME_SIZE;
@@ -72,9 +73,10 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private boolean hasExperiencedTimeout = false;
 
-    public QuicFrameLayer(QuicContext context) {
+    public QuicFrameLayer(Context context) {
         super(ImplementedLayers.QUICFRAME);
-        this.quicContext = context;
+        this.context = context;
+        this.quicContext = context.getQuicContext();
         this.MAX_FRAME_SIZE = context.getConfig().getQuicMaximumFrameSize();
     }
 
@@ -132,17 +134,21 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     List<QuicFrame> givenFrames = getUnprocessedConfiguredContainers();
                     if (getLayerConfiguration().getContainerList() != null
                             && givenFrames.size() > 0) {
-                        givenFrames = givenFrames.stream()
-                                .filter(
-                                        frame -> QuicFrameType.getFrameType(
-                                                frame.getFrameType()
-                                                        .getValue()) == QuicFrameType.CRYPTO_FRAME)
-                                .collect(Collectors.toList());
+                        givenFrames =
+                                givenFrames.stream()
+                                        .filter(
+                                                frame ->
+                                                        QuicFrameType.getFrameType(
+                                                                        frame.getFrameType()
+                                                                                .getValue())
+                                                                == QuicFrameType.CRYPTO_FRAME)
+                                        .collect(Collectors.toList());
                         int offset = 0;
                         for (QuicFrame frame : givenFrames) {
-                            int toCopy = ((CryptoFrame) frame).getMaxFrameLengthConfig() != 0
-                                    ? ((CryptoFrame) frame).getMaxFrameLengthConfig()
-                                    : MAX_FRAME_SIZE;
+                            int toCopy =
+                                    ((CryptoFrame) frame).getMaxFrameLengthConfig() != 0
+                                            ? ((CryptoFrame) frame).getMaxFrameLengthConfig()
+                                            : MAX_FRAME_SIZE;
                             byte[] payload = Arrays.copyOfRange(data, offset, offset + toCopy);
                             ((CryptoFrame) frame).setCryptoDataConfig(payload);
                             ((CryptoFrame) frame).setOffsetConfig(offset);
@@ -160,10 +166,11 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                         }
                         // Not enough crypto frames
                         for (; offset < data.length; offset += MAX_FRAME_SIZE) {
-                            byte[] payload = Arrays.copyOfRange(
-                                    data,
-                                    offset,
-                                    Math.min(offset + MAX_FRAME_SIZE, data.length));
+                            byte[] payload =
+                                    Arrays.copyOfRange(
+                                            data,
+                                            offset,
+                                            Math.min(offset + MAX_FRAME_SIZE, data.length));
                             CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
@@ -174,10 +181,11 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     } else {
                         // produce enough crypto frames
                         for (int offset = 0; offset < data.length; offset += MAX_FRAME_SIZE) {
-                            byte[] payload = Arrays.copyOfRange(
-                                    data,
-                                    offset,
-                                    Math.min(offset + MAX_FRAME_SIZE, data.length));
+                            byte[] payload =
+                                    Arrays.copyOfRange(
+                                            data,
+                                            offset,
+                                            Math.min(offset + MAX_FRAME_SIZE, data.length));
                             CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
@@ -362,7 +370,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     outputStream.write(frame.getCryptoData().getValue());
                 }
                 CryptoFrame lastFrame = cryptoFrameBuffer.get(cryptoFrameBuffer.size() - 1);
-                long nextExpectedCryptoOffset = lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
+                long nextExpectedCryptoOffset =
+                        lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
                 if (!quicContext.isHandshakeSecretsInitialized()) {
                     initialPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
                 } else if (!quicContext.isApplicationSecretsInitialized()) {
@@ -410,8 +419,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             return false;
         }
         for (int i = 1; i < cryptoFrameBuffer.size(); i++) {
-            if (cryptoFrameBuffer.get(i).getOffset().getValue() != cryptoFrameBuffer.get(i - 1).getOffset().getValue()
-                    + cryptoFrameBuffer.get(i - 1).getLength().getValue()) {
+            if (cryptoFrameBuffer.get(i).getOffset().getValue()
+                    != cryptoFrameBuffer.get(i - 1).getOffset().getValue()
+                            + cryptoFrameBuffer.get(i - 1).getLength().getValue()) {
                 LOGGER.warn(
                         "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
                         cryptoBufferToString(),
@@ -425,10 +435,11 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     private String cryptoBufferToString() {
         return cryptoFrameBuffer.stream()
                 .map(
-                        cryptoFrame -> "o: "
-                                + cryptoFrame.getOffset().getValue()
-                                + ", l: "
-                                + cryptoFrame.getLength().getValue())
+                        cryptoFrame ->
+                                "o: "
+                                        + cryptoFrame.getOffset().getValue()
+                                        + ", l: "
+                                        + cryptoFrame.getLength().getValue())
                 .collect(Collectors.joining(" | "));
     }
 
@@ -454,14 +465,16 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     public void sendAck(byte[] data) {
         AckFrame frame = new AckFrame(false);
         if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-            frame.setLargestAcknowledgedConfig(quicContext.getReceivedInitialPacketNumbers().getLast());
+            frame.setLargestAcknowledgedConfig(
+                    quicContext.getReceivedInitialPacketNumbers().getLast());
             LOGGER.debug("Send Ack for Initial Packet #{}", frame.getLargestAcknowledgedConfig());
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
             frame.setLargestAcknowledgedConfig(
                     quicContext.getReceivedHandshakePacketNumbers().getLast());
             LOGGER.debug("Send Ack for Handshake Packet #{}", frame.getLargestAcknowledgedConfig());
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-            frame.setLargestAcknowledgedConfig(quicContext.getReceivedOneRTTPacketNumbers().getLast());
+            frame.setLargestAcknowledgedConfig(
+                    quicContext.getReceivedOneRTTPacketNumbers().getLast());
             LOGGER.debug("Send Ack for 1RTT Packet #{}", frame.getLargestAcknowledgedConfig());
         }
 
