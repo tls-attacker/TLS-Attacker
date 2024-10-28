@@ -23,9 +23,9 @@ public class SrtpExtensionHandlerTest
     private final List<SrtpProtectionProfile> profiles =
             Arrays.asList(
                     SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80,
-                            SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32,
+                    SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32,
                     SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_80,
-                            SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
+                    SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
     private final byte[] profilesAsBytes =
             new byte[] {0x00, 0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x06};
     private final byte[] mki = new byte[] {};
@@ -41,7 +41,7 @@ public class SrtpExtensionHandlerTest
         msg.setSrtpProtectionProfiles(profilesAsBytes);
         msg.setSrtpMki(mki);
         handler.adjustContext(msg);
-        assertEquals(context.getClientSupportedSrtpProtectionProfiles(), profiles);
-        assertArrayEquals(mki, context.getSecureRealTimeProtocolMasterKeyIdentifier());
+        assertEquals(tlsContext.getClientSupportedSrtpProtectionProfiles(), profiles);
+        assertArrayEquals(mki, tlsContext.getSecureRealTimeProtocolMasterKeyIdentifier());
     }
 }

@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -62,22 +62,22 @@ public class SRPExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public SRPExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SRPExtensionParser(stream, tlsContext);
+    public SRPExtensionParser getParser(Context context, InputStream stream) {
+        return new SRPExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SRPExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SRPExtensionPreparator(tlsContext.getChooser(), this);
+    public SRPExtensionPreparator getPreparator(Context context) {
+        return new SRPExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SRPExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SRPExtensionSerializer getSerializer(Context context) {
         return new SRPExtensionSerializer(this);
     }
 
     @Override
-    public SRPExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SRPExtensionHandler(tlsContext);
+    public SRPExtensionHandler getHandler(Context context) {
+        return new SRPExtensionHandler(context.getTlsContext());
     }
 }

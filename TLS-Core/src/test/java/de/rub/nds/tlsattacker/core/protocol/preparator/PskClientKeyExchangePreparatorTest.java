@@ -34,10 +34,10 @@ public class PskClientKeyExchangePreparatorTest
     @Override
     public void testPrepare() {
         // prepare context
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-        context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
+        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         preparator.prepareHandshakeMessageContents();
 
         // Tests

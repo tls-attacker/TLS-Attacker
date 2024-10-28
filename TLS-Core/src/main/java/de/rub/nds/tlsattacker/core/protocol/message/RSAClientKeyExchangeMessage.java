@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -44,27 +44,27 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public RSAClientKeyExchangeHandler<? extends RSAClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
-        return new RSAClientKeyExchangeHandler<>(tlsContext);
+            Context context) {
+        return new RSAClientKeyExchangeHandler<>(context.getTlsContext());
     }
 
     @Override
     public RSAClientKeyExchangeParser<? extends RSAClientKeyExchangeMessage> getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new RSAClientKeyExchangeParser<>(stream, tlsContext);
+            Context context, InputStream stream) {
+        return new RSAClientKeyExchangeParser<>(stream, context.getTlsContext());
     }
 
     @Override
     public RSAClientKeyExchangePreparator<? extends RSAClientKeyExchangeMessage> getPreparator(
-            TlsContext tlsContext) {
-        return new RSAClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
+            Context context) {
+        return new RSAClientKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
     public RSAClientKeyExchangeSerializer<? extends RSAClientKeyExchangeMessage> getSerializer(
-            TlsContext tlsContext) {
+            Context context) {
         return new RSAClientKeyExchangeSerializer<>(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

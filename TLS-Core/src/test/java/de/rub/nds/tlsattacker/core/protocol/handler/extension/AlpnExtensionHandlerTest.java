@@ -39,10 +39,10 @@ public class AlpnExtensionHandlerTest
         alpnEntryList.add(new AlpnEntry(new String(announcedProtocols)));
         alpnEntryList.get(0).setAlpnEntry(new String(announcedProtocols));
         msg.setAlpnEntryList(alpnEntryList);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(msg);
         List<String> alpnStringList = new LinkedList<>();
         alpnStringList.add(new String(announcedProtocols));
-        assertEquals(alpnStringList, context.getProposedAlpnProtocols());
+        assertEquals(alpnStringList, tlsContext.getProposedAlpnProtocols());
     }
 }

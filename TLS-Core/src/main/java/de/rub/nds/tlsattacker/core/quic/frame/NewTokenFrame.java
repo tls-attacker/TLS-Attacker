@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.NewTokenFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.NewTokenFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.NewTokenFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.NewTokenFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -37,22 +37,22 @@ public class NewTokenFrame extends QuicFrame {
     }
 
     @Override
-    public NewTokenFrameHandler getHandler(QuicContext context) {
-        return new NewTokenFrameHandler(context);
+    public NewTokenFrameHandler getHandler(Context context) {
+        return new NewTokenFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public NewTokenFrameSerializer getSerializer(QuicContext context) {
+    public NewTokenFrameSerializer getSerializer(Context context) {
         return new NewTokenFrameSerializer(this);
     }
 
     @Override
-    public NewTokenFramePreparator getPreparator(QuicContext context) {
+    public NewTokenFramePreparator getPreparator(Context context) {
         return new NewTokenFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public NewTokenFrameParser getParser(QuicContext context, InputStream stream) {
+    public NewTokenFrameParser getParser(Context context, InputStream stream) {
         return new NewTokenFrameParser(stream);
     }
 

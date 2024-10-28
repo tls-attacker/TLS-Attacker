@@ -37,6 +37,6 @@ public class ClientCertificateTypeExtensionHandlerTest
 
         handler.adjustContext(msg);
 
-        assertEquals(certList, context.getClientCertificateTypeDesiredTypes());
+        assertEquals(certList, tlsContext.getClientCertificateTypeDesiredTypes());
     }
 }

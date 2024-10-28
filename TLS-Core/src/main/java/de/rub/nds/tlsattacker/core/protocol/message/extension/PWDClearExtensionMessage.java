@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDClearExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDClearExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDClearExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -59,22 +59,22 @@ public class PWDClearExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public PWDClearExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClearExtensionParser(stream, tlsContext);
+    public PWDClearExtensionParser getParser(Context context, InputStream stream) {
+        return new PWDClearExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PWDClearExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDClearExtensionPreparator(tlsContext.getChooser(), this);
+    public PWDClearExtensionPreparator getPreparator(Context context) {
+        return new PWDClearExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public PWDClearExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PWDClearExtensionSerializer getSerializer(Context context) {
         return new PWDClearExtensionSerializer(this);
     }
 
     @Override
-    public PWDClearExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PWDClearExtensionHandler(tlsContext);
+    public PWDClearExtensionHandler getHandler(Context context) {
+        return new PWDClearExtensionHandler(context.getTlsContext());
     }
 }
