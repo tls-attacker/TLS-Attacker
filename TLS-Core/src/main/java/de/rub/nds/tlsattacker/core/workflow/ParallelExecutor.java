@@ -48,32 +48,38 @@ public class ParallelExecutor {
 
     private Function<State, Integer> defaultAfterExecutionCallback = null;
 
-    public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
-        this.executorService = executorService;
-        this.reexecutions = reexecutions;
-        this.size = size;
+    // Builder pattern to avoid throwing exceptions in the constructor
+    public static ParallelExecutor create(
+            int size, int reexecutions, ThreadPoolExecutor executorService) {
         if (reexecutions < 0) {
             throw new IllegalArgumentException("Reexecutions is below zero");
         }
+        return new ParallelExecutor(size, reexecutions, executorService);
     }
 
-    public ParallelExecutor(ThreadPoolExecutor executorService, int reexecutions) {
-        this(-1, reexecutions, executorService);
+    public static ParallelExecutor create(ThreadPoolExecutor executorService, int reexecutions) {
+        return create(-1, reexecutions, executorService);
     }
 
-    public ParallelExecutor(int size, int reexecutions) {
-        this(
+    public static ParallelExecutor create(int size, int reexecutions) {
+        return create(
                 size,
                 reexecutions,
                 new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<>()));
     }
 
-    public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        this(
+    public static ParallelExecutor create(int size, int reexecutions, ThreadFactory factory) {
+        return create(
                 size,
                 reexecutions,
                 new ThreadPoolExecutor(
                         size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
+    }
+
+    private ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
+        this.executorService = executorService;
+        this.reexecutions = reexecutions;
+        this.size = size;
     }
 
     private Future<ITask> addTask(TlsTask task) {
