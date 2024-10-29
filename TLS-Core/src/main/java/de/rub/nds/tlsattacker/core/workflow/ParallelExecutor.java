@@ -65,8 +65,7 @@ public class ParallelExecutor {
         this(
                 size,
                 reexecutions,
-                new ThreadPoolExecutor(
-                        size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>()));
+                new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<>()));
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
@@ -74,12 +73,7 @@ public class ParallelExecutor {
                 size,
                 reexecutions,
                 new ThreadPoolExecutor(
-                        size,
-                        size,
-                        5,
-                        TimeUnit.MINUTES,
-                        new LinkedBlockingDeque<Runnable>(),
-                        factory));
+                        size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
     }
 
     private Future<ITask> addTask(TlsTask task) {
