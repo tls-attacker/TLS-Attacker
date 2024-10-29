@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.AckFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.AckFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.AckFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.AckFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -64,22 +64,22 @@ public class AckFrame extends QuicFrame {
     }
 
     @Override
-    public AckFrameHandler getHandler(QuicContext context) {
-        return new AckFrameHandler(context);
+    public AckFrameHandler getHandler(Context context) {
+        return new AckFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public AckFrameSerializer getSerializer(QuicContext context) {
+    public AckFrameSerializer getSerializer(Context context) {
         return new AckFrameSerializer(this);
     }
 
     @Override
-    public AckFramePreparator getPreparator(QuicContext context) {
+    public AckFramePreparator getPreparator(Context context) {
         return new AckFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public AckFrameParser getParser(QuicContext context, InputStream stream) {
+    public AckFrameParser getParser(Context context, InputStream stream) {
         return new AckFrameParser(stream);
     }
 

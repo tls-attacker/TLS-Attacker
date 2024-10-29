@@ -37,10 +37,10 @@ public class FinishedPreparatorTest
     /** Test of prepareHandshakeMessageContents method, of class FinishedPreparator. */
     @Test
     public void testPrepare() {
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
-        context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
+        tlsContext.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
         preparator.prepare();
 
         // TODO Did not check if this is calculated correctly, just made sure it
@@ -63,15 +63,15 @@ public class FinishedPreparatorTest
                 "1000008200807431f17d9c25a9e56809040950bb7122f3564b3c50ea9537a1b4f57af7350c39c3d6729e098cefa805ad6b5a2079b665980534d0a5dacd9d11e7ff57b224ab0268387a4d4dcbbc460aace7e4d4543249bafed5f2e6bcf22465dde88ab86a198b05090578a6131be51922b8448ca62705131db5f48211147c68c07425c883d7b3";
         String finishedHex = "0e1e6bd7845c5a971778234b";
 
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_SHA256);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setMasterSecret(
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_SHA256);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setMasterSecret(
                 ArrayConverter.hexStringToByteArray(
                         "E9BBE684A991D223F49A3CBB675B32355A671C8DA5620291FF911D88C0456DC539BEE2C51FA69F1D1C76EF9875E6DA6C"));
-        context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
+        tlsContext.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
 
         registerPreviousMessages(
-                context,
+                tlsContext,
                 clientHelloHex,
                 serverHelloHex,
                 certificateHex,
@@ -99,14 +99,14 @@ public class FinishedPreparatorTest
         String finishedHex =
                 "ca89059c0d65ae7d5e0c11d99e7de49f830776fa43be27550285015fe254946754b8306f";
 
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setMasterSecret(
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        tlsContext.setMasterSecret(
                 ArrayConverter.hexStringToByteArray(
                         "91709DA9667796D3B0EFB3C0E920279A5F2EB76F4B9C84E2E89A2A4BF236CB8BE64AAA53CA30A3CF29B563B246DF7FFC"));
 
         registerPreviousMessages(
-                context,
+                tlsContext,
                 clientHelloHex,
                 serverHelloHex,
                 certificateHex,
@@ -123,13 +123,14 @@ public class FinishedPreparatorTest
     /** Test of prepareHandshakeMessageContents method for TLS 1.3, of class FinishedPreparator. */
     @Test
     public void testPrepareTLS13() {
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-        context.setConnection(new OutboundConnection());
-        context.setClientHandshakeTrafficSecret(
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext.setConnection(new OutboundConnection());
+        tlsContext.setClientHandshakeTrafficSecret(
                 ArrayConverter.hexStringToByteArray(
                         "2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
-        context.getDigest()
+        tlsContext
+                .getDigest()
                 .setRawBytes(
                         ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"));
         preparator.prepare();

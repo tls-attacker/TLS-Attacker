@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -59,22 +59,22 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public UnknownHandshakeHandler getHandler(TlsContext tlsContext) {
-        return new UnknownHandshakeHandler(tlsContext);
+    public UnknownHandshakeHandler getHandler(Context context) {
+        return new UnknownHandshakeHandler(context.getTlsContext());
     }
 
     @Override
-    public UnknownHandshakeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownHandshakeParser(stream, tlsContext);
+    public UnknownHandshakeParser getParser(Context context, InputStream stream) {
+        return new UnknownHandshakeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public UnknownHandshakePreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownHandshakePreparator(tlsContext.getChooser(), this);
+    public UnknownHandshakePreparator getPreparator(Context context) {
+        return new UnknownHandshakePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UnknownHandshakeSerializer getSerializer(TlsContext tlsContext) {
+    public UnknownHandshakeSerializer getSerializer(Context context) {
         return new UnknownHandshakeSerializer(this);
     }
 

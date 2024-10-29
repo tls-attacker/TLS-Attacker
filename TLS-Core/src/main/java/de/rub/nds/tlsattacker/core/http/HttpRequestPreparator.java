@@ -29,7 +29,7 @@ public class HttpRequestPreparator extends HttpMessagePreparator<HttpRequestMess
         message.setRequestProtocol("HTTP/1.1");
         message.setRequestType("GET");
         for (HttpHeader header : message.getHeader()) {
-            header.getPreparator(httpContext).prepare();
+            header.getPreparator(httpContext.getContext()).prepare();
         }
     }
 }

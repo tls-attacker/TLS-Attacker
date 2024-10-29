@@ -20,13 +20,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -279,19 +279,18 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     @Override
     public abstract HandshakeMessageParser<? extends HandshakeMessage> getParser(
-            TlsContext tlsContext, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
     public abstract HandshakeMessagePreparator<? extends HandshakeMessage> getPreparator(
-            TlsContext tlsContext);
+            Context context);
 
     @Override
     public abstract HandshakeMessageSerializer<? extends HandshakeMessage> getSerializer(
-            TlsContext tlsContext);
+            Context context);
 
     @Override
-    public abstract HandshakeMessageHandler<? extends HandshakeMessage> getHandler(
-            TlsContext tlsContext);
+    public abstract HandshakeMessageHandler<? extends HandshakeMessage> getHandler(Context context);
 
     public ModifiableByteArray getMessageContent() {
         return messageContent;

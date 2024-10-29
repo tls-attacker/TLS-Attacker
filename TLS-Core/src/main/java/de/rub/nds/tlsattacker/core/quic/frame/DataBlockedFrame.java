@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.DataBlockedFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.DataBlockedFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.DataBlockedFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.DataBlockedFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -37,22 +37,22 @@ public class DataBlockedFrame extends QuicFrame {
     }
 
     @Override
-    public DataBlockedFrameHandler getHandler(QuicContext context) {
-        return new DataBlockedFrameHandler(context);
+    public DataBlockedFrameHandler getHandler(Context context) {
+        return new DataBlockedFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public DataBlockedFrameSerializer getSerializer(QuicContext context) {
+    public DataBlockedFrameSerializer getSerializer(Context context) {
         return new DataBlockedFrameSerializer(this);
     }
 
     @Override
-    public DataBlockedFramePreparator getPreparator(QuicContext context) {
+    public DataBlockedFramePreparator getPreparator(Context context) {
         return new DataBlockedFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public DataBlockedFrameParser getParser(QuicContext context, InputStream stream) {
+    public DataBlockedFrameParser getParser(Context context, InputStream stream) {
         return new DataBlockedFrameParser(stream);
     }
 

@@ -27,6 +27,6 @@ public class EncryptThenMacExtensionHandlerTest
     public void testadjustTLSExtensionContext() {
         EncryptThenMacExtensionMessage message = new EncryptThenMacExtensionMessage();
         handler.adjustContext(message);
-        assertTrue(context.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));
     }
 }
