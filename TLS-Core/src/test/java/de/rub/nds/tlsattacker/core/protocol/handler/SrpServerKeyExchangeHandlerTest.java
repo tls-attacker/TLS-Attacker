@@ -32,19 +32,19 @@ public class SrpServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setSalt(BigInteger.TEN.toByteArray());
         message.setPublicKey(new byte[] {0, 1, 2, 3});
-        context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
         message.prepareKeyExchangeComputations();
         message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
 
-        assertEquals(BigInteger.TEN, context.getSRPModulus());
-        assertEquals(BigInteger.ONE, context.getSRPGenerator());
-        assertArrayEquals(BigInteger.TEN.toByteArray(), context.getSRPServerSalt());
-        assertEquals(new BigInteger(new byte[] {0, 1, 2, 3}), context.getServerSRPPublicKey());
-        assertEquals(BigInteger.ZERO, context.getServerSRPPrivateKey());
+        assertEquals(BigInteger.TEN, tlsContext.getSRPModulus());
+        assertEquals(BigInteger.ONE, tlsContext.getSRPGenerator());
+        assertArrayEquals(BigInteger.TEN.toByteArray(), tlsContext.getSRPServerSalt());
+        assertEquals(new BigInteger(new byte[] {0, 1, 2, 3}), tlsContext.getServerSRPPublicKey());
+        assertEquals(BigInteger.ZERO, tlsContext.getServerSRPPrivateKey());
 
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
+        assertNull(tlsContext.getPreMasterSecret());
+        assertNull(tlsContext.getMasterSecret());
     }
 
     @Test
@@ -56,13 +56,13 @@ public class SrpServerKeyExchangeHandlerTest
         message.setPublicKey(new byte[] {0, 1, 2, 3});
         handler.adjustContext(message);
 
-        assertEquals(BigInteger.TEN, context.getSRPModulus());
-        assertEquals(BigInteger.ONE, context.getSRPGenerator());
-        assertArrayEquals(BigInteger.TEN.toByteArray(), context.getSRPServerSalt());
-        assertEquals(new BigInteger(new byte[] {0, 1, 2, 3}), context.getServerSRPPublicKey());
-        assertNull(context.getServerSRPPrivateKey());
+        assertEquals(BigInteger.TEN, tlsContext.getSRPModulus());
+        assertEquals(BigInteger.ONE, tlsContext.getSRPGenerator());
+        assertArrayEquals(BigInteger.TEN.toByteArray(), tlsContext.getSRPServerSalt());
+        assertEquals(new BigInteger(new byte[] {0, 1, 2, 3}), tlsContext.getServerSRPPublicKey());
+        assertNull(tlsContext.getServerSRPPrivateKey());
 
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
+        assertNull(tlsContext.getPreMasterSecret());
+        assertNull(tlsContext.getMasterSecret());
     }
 }

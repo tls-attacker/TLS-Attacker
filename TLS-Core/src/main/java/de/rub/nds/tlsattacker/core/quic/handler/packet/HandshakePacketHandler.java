@@ -30,7 +30,7 @@ public class HandshakePacketHandler extends LongHeaderPacketHandler<HandshakePac
         // update quic keys
         try {
             if (!quicContext.isHandshakeSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculateHandshakeSecrets(quicContext);
+                QuicPacketCryptoComputations.calculateHandshakeSecrets(quicContext.getContext());
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
             LOGGER.error("Could not calculate handshake secrets", e);

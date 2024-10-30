@@ -29,8 +29,8 @@ public class EncryptedExtensionsHandlerTest
                 EncryptedExtensionsMessage::new,
                 EncryptedExtensionsHandler::new,
                 new Context(new State(new Config()), new InboundConnection()).getTlsContext());
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        context.setConnection(new InboundConnection());
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setConnection(new InboundConnection());
     }
 
     /** Test of adjustContext method, of class EncryptedExtensionsHandler. */
@@ -40,7 +40,7 @@ public class EncryptedExtensionsHandlerTest
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
         handler.adjustContext(message);
 
-        assertTrue(context.getNegotiatedExtensionSet().isEmpty());
+        assertTrue(tlsContext.getNegotiatedExtensionSet().isEmpty());
     }
 
     /** Test of adjustContext method, of class EncryptedExtensionsHandler. */
@@ -53,6 +53,6 @@ public class EncryptedExtensionsHandlerTest
         message.addExtension(new ServerNameIndicationExtensionMessage());
         handler.adjustContext(message);
 
-        assertTrue(context.isExtensionNegotiated(ExtensionType.SERVER_NAME_INDICATION));
+        assertTrue(tlsContext.isExtensionNegotiated(ExtensionType.SERVER_NAME_INDICATION));
     }
 }

@@ -40,9 +40,11 @@ public class TokenBindingExtensionHandlerTest
         message.setTokenBindingKeyParameters(keyParameterByteArrayRepresentation);
         handler.adjustTLSExtensionContext(message);
 
-        assertEquals(tokenBindingVersion, context.getTokenBindingVersion());
+        assertEquals(tokenBindingVersion, tlsContext.getTokenBindingVersion());
         assertArrayEquals(
                 keyParameter,
-                context.getTokenBindingKeyParameters().toArray(new TokenBindingKeyParameters[0]));
+                tlsContext
+                        .getTokenBindingKeyParameters()
+                        .toArray(new TokenBindingKeyParameters[0]));
     }
 }

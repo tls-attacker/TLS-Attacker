@@ -42,6 +42,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,11 +60,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final Context context;
+    private final TlsContext tlsContext;
 
-    public MessageLayer(TlsContext context) {
+    public MessageLayer(Context context) {
         super(ImplementedLayers.MESSAGE);
         this.context = context;
+        this.tlsContext = context.getTlsContext();
     }
 
     /**
@@ -175,7 +178,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             // CCS is the only message for its content type, so we can/must always flush immediately
             return true;
         } else if (message.isHandshakeMessage()
-                && (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13)) {
+                && (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13)) {
             // TODO: add DTLS 1.3 above once implemented
             HandshakeMessage handshakeMessage = (HandshakeMessage) message;
             if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO) {
@@ -189,7 +192,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             } else if (handshakeMessage.getHandshakeMessageType()
                             == HandshakeMessageType.CLIENT_HELLO
                     && context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
-                    && context.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+                    && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
                 return true;
             }
         }
@@ -319,13 +322,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readCcsProtocolData(Integer epoch) {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        if (context.getSelectedProtocolVersion() != null
-                && context.getSelectedProtocolVersion().isDTLS()) {
-            if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
-                    && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
+        if (tlsContext.getSelectedProtocolVersion() != null
+                && tlsContext.getSelectedProtocolVersion().isDTLS()) {
+            if (tlsContext.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
+                    && tlsContext.getConfig().isIgnoreRetransmittedCcsInDtls()) {
                 message.setAdjustContext(false);
             } else {
-                context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
+                tlsContext.addDtlsReceivedChangeCipherSpecEpochs(epoch);
             }
         }
         readDataContainer(message, context);
@@ -350,7 +353,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             readBytesStream.write(new byte[] {type});
             handshakeMessage =
                     MessageFactory.generateHandshakeMessage(
-                            HandshakeMessageType.getMessageType(type), context);
+                            HandshakeMessageType.getMessageType(type), tlsContext);
             handshakeMessage.setType(type);
             byte[] lengthBytes =
                     handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);

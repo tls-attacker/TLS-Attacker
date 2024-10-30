@@ -77,10 +77,10 @@ public class CertificateVerifyPreparatorTest
      */
     @Test
     public void testPrepareSSL3RSA() throws NoSuchAlgorithmException {
-        context.setMasterSecret(new byte[] {});
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        assertEquals(0, context.getDigest().getRawBytes().length);
-        assertEquals(0, context.getMasterSecret().length);
+        tlsContext.setMasterSecret(new byte[] {});
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        assertEquals(0, tlsContext.getDigest().getRawBytes().length);
+        assertEquals(0, tlsContext.getMasterSecret().length);
         preparator.prepare();
 
         final MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");
@@ -107,7 +107,7 @@ public class CertificateVerifyPreparatorTest
         algoList.add(SignatureAndHashAlgorithm.RSA_MD5);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA1);
         algoList.add(SignatureAndHashAlgorithm.RSA_SHA1);
-        context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
+        tlsContext.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(
                 new byte[] {
@@ -131,7 +131,7 @@ public class CertificateVerifyPreparatorTest
         algoList.add(SignatureAndHashAlgorithm.RSA_MD5);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA1);
         algoList.add(SignatureAndHashAlgorithm.RSA_SHA1);
-        context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
+        tlsContext.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
 
         assertArrayEquals(new byte[] {2, 3}, message.getSignatureHashAlgorithm().getValue());

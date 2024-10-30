@@ -18,13 +18,47 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -328,23 +362,23 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ServerHelloHandler getHandler(TlsContext tlsContext) {
-        return new ServerHelloHandler(tlsContext);
+    public ServerHelloHandler getHandler(Context context) {
+        return new ServerHelloHandler(context.getTlsContext());
     }
 
     @Override
-    public ServerHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerHelloPreparator(tlsContext.getChooser(), this);
+    public ServerHelloPreparator getPreparator(Context context) {
+        return new ServerHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
+    public ServerHelloSerializer getSerializer(Context context) {
         return new ServerHelloSerializer(this);
     }
 
     @Override
-    public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext);
+    public ServerHelloParser getParser(Context context, InputStream stream) {
+        return new ServerHelloParser(stream, context.getTlsContext());
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {
