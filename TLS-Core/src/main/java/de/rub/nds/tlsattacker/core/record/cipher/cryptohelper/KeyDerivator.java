@@ -95,8 +95,8 @@ public class KeyDerivator {
     private static KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType)
             throws CryptoException {
         CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        byte[] clientSecret = new byte[0];
-        byte[] serverSecret = new byte[0];
+        byte[] clientSecret;
+        byte[] serverSecret;
         if (null == keySetType) {
             throw new CryptoException("Unknown KeySetType: null");
         } else {
