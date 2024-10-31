@@ -17,7 +17,7 @@ public enum SSL2MessageType {
     SSL_SERVER_HELLO(0x04),
     SSL_UNKNOWN(0x00);
 
-    private int type;
+    private final int type;
 
     SSL2MessageType(int type) {
         this.type = type;
@@ -25,10 +25,6 @@ public enum SSL2MessageType {
 
     public byte getType() {
         return (byte) this.type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public static SSL2MessageType getMessageType(byte value) {

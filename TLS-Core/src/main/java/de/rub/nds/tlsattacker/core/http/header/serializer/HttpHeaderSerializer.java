@@ -24,9 +24,9 @@ public class HttpHeaderSerializer extends Serializer<HttpHeader> {
     @Override
     protected byte[] serializeBytes() {
         appendBytes(header.getHeaderName().getValue().getBytes(StandardCharsets.ISO_8859_1));
-        appendBytes(": ".getBytes());
+        appendBytes(": ".getBytes(StandardCharsets.ISO_8859_1));
         appendBytes(header.getHeaderValue().getValue().getBytes(StandardCharsets.ISO_8859_1));
-        appendBytes("\r\n".getBytes());
+        appendBytes("\r\n".getBytes(StandardCharsets.ISO_8859_1));
         return getAlreadySerialized();
     }
 }

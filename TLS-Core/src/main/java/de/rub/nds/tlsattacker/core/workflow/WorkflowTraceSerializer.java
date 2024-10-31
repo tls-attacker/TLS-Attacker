@@ -148,7 +148,7 @@ public class WorkflowTraceSerializer {
 
             outputStream.write(
                     xmlOutputStream
-                            .toString()
+                            .toString(StandardCharsets.UTF_8)
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
