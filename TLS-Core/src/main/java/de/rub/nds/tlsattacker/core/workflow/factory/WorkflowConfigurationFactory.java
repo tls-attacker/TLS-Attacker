@@ -1087,15 +1087,12 @@ public class WorkflowConfigurationFactory {
 
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: "
-                                    + algorithm
-                                    + ", not creating ServerKeyExchange Message");
+                            "Unsupported key exchange algorithm: '{}', not creating ServerKeyExchange Message",
+                            algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ServerKeyExchange Message");
+                    "Unsupported key exchange algorithm: 'null', not creating ServerKeyExchange Message");
         }
 
         return null;
