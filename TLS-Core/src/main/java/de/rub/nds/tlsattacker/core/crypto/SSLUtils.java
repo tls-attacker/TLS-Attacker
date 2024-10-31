@@ -40,7 +40,7 @@ public class SSLUtils {
      * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC', as stated in
      * RFC-6101. See also {@link org.bouncycastle.crypto.tls.TlsUtils} Version 1.58
      */
-    public static final byte[][] SSL3_CONST = genSSL3Const();
+    private static final byte[][] SSL3_CONST = genSSL3Const();
 
     /**
      * This method is borrowed from package-protected method {@link
