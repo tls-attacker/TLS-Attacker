@@ -569,7 +569,7 @@ public enum CipherSuite {
                     return true;
                 }
         }
-        return null;
+        throw new UnsupportedOperationException("CipherType " + type + " is not supported");
     }
 
     public boolean isUsingMac() {
