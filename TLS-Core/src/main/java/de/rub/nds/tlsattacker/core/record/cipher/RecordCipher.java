@@ -269,10 +269,5 @@ public abstract class RecordCipher {
         public byte[] parseByteArrayField(int length) {
             return super.parseByteArrayField(length);
         }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
-        }
     }
 }
