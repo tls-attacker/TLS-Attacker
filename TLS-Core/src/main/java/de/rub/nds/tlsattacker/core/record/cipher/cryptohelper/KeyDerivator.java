@@ -256,7 +256,7 @@ public class KeyDerivator {
 
     private static void deriveSSL3ExportKeys(
             CipherSuite cipherSuite, KeySet keySet, byte[] clientRandom, byte[] serverRandom) {
-        int keySize = cipherSuite.getCipherAlgorithm().getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
         keySet.setClientWriteKey(
                 md5firstNBytes(keySize, keySet.getClientWriteKey(), clientRandom, serverRandom));
         keySet.setServerWriteKey(
