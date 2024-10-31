@@ -133,8 +133,6 @@ public abstract class WorkflowExecutor {
                 getAfterTransportInitCallback().apply(state);
             }
             LOGGER.debug("Finished initalization of TransportHandler");
-        } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values", ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
                     "Unable to initialize the transport handler", ex);
