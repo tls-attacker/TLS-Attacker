@@ -21,11 +21,15 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificateEntryPrep
 import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuilder;
 import de.rub.nds.x509attacker.x509.X509ChainCreationResult;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
+import de.rub.nds.x509attacker.x509.preparator.X509CertificatePreparator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -141,6 +145,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                             entryList.add(new CertificateEntry(certificate));
                         }
                         msg.setCertificateEntryList(entryList);
+                    } else {
+                        preparePredefinedCerts(entryList);
                     }
                     prepareFromEntryList(msg);
                 } else {
@@ -151,6 +157,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         entryList.add(entry);
                     }
                     msg.setCertificateEntryList(entryList);
+                    preparePredefinedCerts(entryList);
                     prepareFromEntryList(msg);
                 }
                 LOGGER.debug(
@@ -160,6 +167,32 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             default:
                 throw new UnsupportedOperationException("Unsupported CertificateType");
         }
+    }
+
+    private void preparePredefinedCerts(List<CertificateEntry> entryList) {
+        X509Context x509Context = new X509Context();
+        for (int i = chooser.getConfig().getCertificateChainConfig().size() - 1; i >= 0; i--) {
+            if (i >= entryList.size()) {
+                LOGGER.warn(
+                        "Not enough certificates provided for certificate chain config. Ignoring trailing config.");
+                continue;
+            }
+            X509CertificateConfig certConfig =
+                    chooser.getConfig().getCertificateChainConfig().get(i);
+            X509Certificate certificate = entryList.get(i).getX509certificate();
+            X509Chooser chooser = new X509Chooser(certConfig, x509Context);
+            X509CertificatePreparator preparator =
+                    new X509CertificatePreparator(chooser, certificate);
+            preparator.prepare();
+        }
+        int certsBeyondConfigs =
+                entryList.size() - chooser.getConfig().getCertificateChainConfig().size();
+        if (certsBeyondConfigs > 0) {
+            LOGGER.warn(
+                    "Found {} more certificates than provided certificate configs. Trailing certificates will remain unprepared.",
+                    certsBeyondConfigs);
+        }
+        chooser.getContext().getTlsContext().setTalkingX509Context(x509Context);
     }
 
     private void prepareFromEntryList(CertificateMessage msg) {
