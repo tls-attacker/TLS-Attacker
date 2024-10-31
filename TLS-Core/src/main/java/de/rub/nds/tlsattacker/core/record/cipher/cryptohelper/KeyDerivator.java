@@ -98,7 +98,7 @@ public class KeyDerivator {
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
         if (null == keySetType) {
-            throw new CryptoException("Unknown KeySetType:" + keySetType.name());
+            throw new CryptoException("Unknown KeySetType: null");
         } else {
             switch (keySetType) {
                 case HANDSHAKE_TRAFFIC_SECRETS:
