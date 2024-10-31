@@ -139,12 +139,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     private static int resolvePaddedMessageLength(final byte[] totalHeaderLength) {
         return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_TWO_BIT.getValue()) << 8
-                | totalHeaderLength[1];
+                | totalHeaderLength[1] & 0xff;
     }
 
     private static int resolveUnpaddedMessageLength(final byte[] totalHeaderLength) {
         return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_ONE_BIT.getValue()) << 8
-                | totalHeaderLength[1];
+                | totalHeaderLength[1] & 0xff;
     }
 
     @Override

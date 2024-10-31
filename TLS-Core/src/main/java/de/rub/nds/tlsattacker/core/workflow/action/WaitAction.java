@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
@@ -30,7 +29,6 @@ public class WaitAction extends TlsAction {
     private Long time = (long) -1;
 
     public WaitAction(long time) {
-        assertValidTime(time);
         this.time = time;
     }
 
@@ -43,7 +41,9 @@ public class WaitAction extends TlsAction {
         }
         LOGGER.info("Waiting {} ms...", time);
         try {
-            Thread.sleep(time);
+            if (time > 0) {
+                Thread.sleep(time);
+            }
             asPlanned = true;
         } catch (InterruptedException ex) {
             LOGGER.error(ex);
@@ -63,19 +63,12 @@ public class WaitAction extends TlsAction {
     }
 
     public void setTime(long time) {
-        assertValidTime(time);
         this.time = time;
     }
 
     @Override
     public boolean executedAsPlanned() {
         return isExecuted() && Objects.equals(asPlanned, Boolean.TRUE);
-    }
-
-    private void assertValidTime(long time) {
-        if (time < 0) {
-            throw new ConfigurationException("Cannot wait negative time");
-        }
     }
 
     @Override
