@@ -307,7 +307,7 @@ public class KeyDerivator {
         CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         int secretSetSize = (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
-        if (cipherSuite.isSteamCipherWithIV()) {
+        if (cipherSuite.isStreamCipherWithIV()) {
             secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
         }
         return secretSetSize;

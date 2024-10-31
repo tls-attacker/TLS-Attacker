@@ -48,8 +48,8 @@ public enum CipherAlgorithm {
     RABBIT_CBC(16, 8, 0, 8), // TODO Not sure this is correct
     SM4_GCM(16, null, 4, 8, 16, "SM4/GCM/NoPadding"),
     SM4_CCM(16, null, 4, 8, 16, "SM4/CCM/NoPadding"),
-    RC4_40(5, 5, 0, 0, 0, "RC4"), // TODO check
-    RC4_56(7, 7, 0, 0, 0, "RC4"), // TODO check
+    RC4_40(16, 5, 0, 0, 0, "RC4"),
+    RC4_56(16, 7, 0, 0, 0, "RC4"),
     RC2_56(16, 7, 8, 0, 8, "RC2/CBC/NoPadding"), // Uses RC2 but uses different kdf
     AES_128_CCM_8(16, null, 4, 8, 16, "AES/CCM/NoPadding"), // TODO check
     AES_256_CCM_8(32, null, 4, 8, 16, "AES/CCM/NoPadding"); // TODO check

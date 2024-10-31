@@ -46,7 +46,7 @@ public class KeyBlockParser extends Parser<KeySet> {
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
         if ((suite.getCipherType() == CipherType.BLOCK && !version.usesExplicitIv())
-                || suite.isSteamCipherWithIV()) {
+                || suite.isStreamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
         } else if (suite.getCipherType() == CipherType.AEAD) {
