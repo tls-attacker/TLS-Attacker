@@ -179,20 +179,39 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             }
             X509CertificateConfig certConfig =
                     chooser.getConfig().getCertificateChainConfig().get(i);
-            X509Certificate certificate = entryList.get(i).getX509certificate();
-            X509Chooser chooser = new X509Chooser(certConfig, x509Context);
-            X509CertificatePreparator preparator =
-                    new X509CertificatePreparator(chooser, certificate);
-            preparator.prepare();
+            prepareCert(entryList, x509Context, certConfig, i);
         }
         int certsBeyondConfigs =
                 entryList.size() - chooser.getConfig().getCertificateChainConfig().size();
         if (certsBeyondConfigs > 0) {
             LOGGER.warn(
-                    "Found {} more certificates than provided certificate configs. Trailing certificates will remain unprepared.",
+                    "Found {} more certificates than provided certificate configs. Using first config to prepare remaining entries.",
                     certsBeyondConfigs);
+            X509CertificateConfig certConfig =
+                    chooser.getConfig().getCertificateChainConfig().get(0);
+            for (int i =
+                            (entryList.size()
+                                            - chooser.getConfig()
+                                                    .getCertificateChainConfig()
+                                                    .size())
+                                    - 1;
+                    i >= 0;
+                    i--) {
+                prepareCert(entryList, x509Context, certConfig, i);
+            }
         }
         chooser.getContext().getTlsContext().setTalkingX509Context(x509Context);
+    }
+
+    private void prepareCert(
+            List<CertificateEntry> entryList,
+            X509Context x509Context,
+            X509CertificateConfig certConfig,
+            int i) {
+        X509Certificate certificate = entryList.get(i).getX509certificate();
+        X509Chooser chooser = new X509Chooser(certConfig, x509Context);
+        X509CertificatePreparator preparator = new X509CertificatePreparator(chooser, certificate);
+        preparator.prepare();
     }
 
     private void prepareFromEntryList(CertificateMessage msg) {
