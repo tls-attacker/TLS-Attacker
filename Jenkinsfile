@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JDK_TOOL_NAME = 'JDK 11'
-        MAVEN_TOOL_NAME = 'Maven 3.8.6'
+        MAVEN_TOOL_NAME = 'Maven 3.9.9'
     }
 
     options {
