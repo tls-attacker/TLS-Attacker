@@ -26,10 +26,10 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
         implements ProxyableTransportHandler {
 
     protected DatagramSocket controlSocket;
-    protected String proxyDataHostName = "127.0.0.1";
-    protected int proxyDataPort = 4444;
-    protected String proxyControlHostName = "127.0.0.1";
-    protected int proxyControlPort = 5555;
+    protected String proxyDataHostName;
+    protected int proxyDataPort;
+    protected String proxyControlHostName;
+    protected int proxyControlPort;
 
     public ProxyClientUdpTransportHandler(Connection connection) {
         super(connection);
