@@ -134,9 +134,9 @@ public class CertificateDelegate extends Delegate {
             }
         }
         List<String> missingParameters = new ArrayList<>();
-        for (String p : mandatoryParameters.keySet()) {
-            if (mandatoryParameters.get(p) == null) {
-                missingParameters.add(p);
+        for (Map.Entry<String, String> entry : mandatoryParameters.entrySet()) {
+            if (entry.getValue() == null) {
+                missingParameters.add(entry.getKey());
             }
         }
         if (missingParameters.size() == 3) {
