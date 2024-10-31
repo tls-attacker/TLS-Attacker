@@ -31,7 +31,7 @@ public abstract class RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final byte[] SEQUENCE_NUMBER_PLACEHOLDER =
+    private static final byte[] SEQUENCE_NUMBER_PLACEHOLDER =
             new byte[] {
                 (byte) 0xFF,
                 (byte) 0xFF,
