@@ -27,13 +27,13 @@ public class SSLUtils {
             new MessageFormat(
                     "{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
 
-    public static final byte[] MD5_PAD1 =
+    private static final byte[] MD5_PAD1 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
-    public static final byte[] MD5_PAD2 =
+    private static final byte[] MD5_PAD2 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
-    public static final byte[] SHA_PAD1 =
+    private static final byte[] SHA_PAD1 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
-    public static final byte[] SHA_PAD2 =
+    private static final byte[] SHA_PAD2 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
