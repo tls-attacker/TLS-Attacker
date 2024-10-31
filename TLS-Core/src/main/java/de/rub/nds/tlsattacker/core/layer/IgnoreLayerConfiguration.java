@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.LinkedList;
 import java.util.List;
 
-public class IgnoreLayerConfiguration<Container extends DataContainer<?>>
+public class IgnoreLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {
 
     public IgnoreLayerConfiguration(LayerType layerType) {

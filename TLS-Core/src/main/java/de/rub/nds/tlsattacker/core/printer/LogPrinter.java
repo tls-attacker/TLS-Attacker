@@ -47,10 +47,10 @@ public class LogPrinter {
         return stringBuilder.toString();
     }
 
-    public static String toHumanReadableContainerList(List<DataContainer<?>> containerList) {
+    public static String toHumanReadableContainerList(List<DataContainer> containerList) {
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (DataContainer<?> container : containerList) {
+        for (DataContainer container : containerList) {
             joiner.add(container.toCompactString());
         }
         sb.trimToSize();
@@ -58,12 +58,12 @@ public class LogPrinter {
     }
 
     public static String toHumanReadableMultiLineContainerListArray(
-            List<List<DataContainer<?>>> containerListList) {
+            List<List<DataContainer>> containerListList) {
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (List<DataContainer<?>> containerList : containerListList) {
+        for (List<DataContainer> containerList : containerListList) {
             if (containerList != null) {
-                for (DataContainer<?> container : containerList) {
+                for (DataContainer container : containerList) {
                     joiner.add(container.toCompactString());
                 }
             }

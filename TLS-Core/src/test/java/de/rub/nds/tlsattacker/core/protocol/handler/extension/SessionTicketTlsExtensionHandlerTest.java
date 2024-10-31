@@ -34,7 +34,7 @@ public class SessionTicketTlsExtensionHandlerTest
                     config.setDefaultRunningMode(RunningModeType.SERVER);
                     return new Context(new State(config), new InboundConnection()).getTlsContext();
                 });
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
     }
 
     /** Tests the adjustTLSExtensionContext of the SessionTicketTlsExtensionHandler class */
@@ -42,16 +42,18 @@ public class SessionTicketTlsExtensionHandlerTest
     @Override
     public void testadjustTLSExtensionContext() {
         NewSessionTicketMessage newSessionTicketMessage = new NewSessionTicketMessage();
-        newSessionTicketMessage.getPreparator(context).prepare();
+        newSessionTicketMessage.getPreparator(tlsContext.getContext()).prepare();
         SessionTicket ticket = newSessionTicketMessage.getTicket();
 
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
-        message.getPreparator(context).prepare();
+        message.getPreparator(tlsContext.getContext()).prepare();
         message.setSessionTicket(ticket);
-        message.setExtensionLength(message.getSerializer(context).serialize().length);
-        context.setClientSessionId(context.getConfig().getDefaultClientTicketResumptionSessionId());
+        message.setExtensionLength(
+                message.getSerializer(tlsContext.getContext()).serialize().length);
+        tlsContext.setClientSessionId(
+                tlsContext.getConfig().getDefaultClientTicketResumptionSessionId());
 
         handler.adjustTLSExtensionContext(message);
-        assertArrayEquals(context.getMasterSecret(), context.getChooser().getMasterSecret());
+        assertArrayEquals(tlsContext.getMasterSecret(), tlsContext.getChooser().getMasterSecret());
     }
 }

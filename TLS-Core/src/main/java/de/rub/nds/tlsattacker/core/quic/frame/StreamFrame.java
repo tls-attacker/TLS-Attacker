@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.StreamFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.StreamFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.StreamFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.StreamFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -61,22 +61,22 @@ public class StreamFrame extends QuicFrame {
     }
 
     @Override
-    public StreamFrameHandler getHandler(QuicContext context) {
-        return new StreamFrameHandler(context);
+    public StreamFrameHandler getHandler(Context context) {
+        return new StreamFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public StreamFrameSerializer getSerializer(QuicContext context) {
+    public StreamFrameSerializer getSerializer(Context context) {
         return new StreamFrameSerializer(this);
     }
 
     @Override
-    public StreamFramePreparator getPreparator(QuicContext context) {
+    public StreamFramePreparator getPreparator(Context context) {
         return new StreamFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public StreamFrameParser getParser(QuicContext context, InputStream stream) {
+    public StreamFrameParser getParser(Context context, InputStream stream) {
         return new StreamFrameParser(stream);
     }
 

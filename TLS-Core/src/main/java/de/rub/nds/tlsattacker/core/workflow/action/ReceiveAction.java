@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
@@ -17,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -282,25 +282,25 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     }
 
     @Override
-    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
-        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+    public List<List<DataContainer>> getExpectedDataContainerLists() {
+        List<List<DataContainer>> dataContainerLists = new LinkedList<>();
         if (expectedHttpMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedHttpMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedHttpMessages);
         }
         if (expectedMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedMessages);
         }
         if (expectedDtlsFragments != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedDtlsFragments);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedDtlsFragments);
         }
         if (expectedRecords != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedRecords);
         }
         if (expectedQuicFrames != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedQuicFrames);
         }
         if (expectedQuicPackets != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicPackets);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedQuicPackets);
         }
         return dataContainerLists;
     }
