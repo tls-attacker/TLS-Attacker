@@ -104,6 +104,9 @@ public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     * @deprecated Just use the constructor instead
+     */
     @Deprecated
     public static Config createConfig() {
         return new Config();
