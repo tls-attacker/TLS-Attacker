@@ -11,11 +11,9 @@ package de.rub.nds.tlsattacker.core.http.header;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
-public abstract class HttpHeader extends ModifiableVariableHolder
-        implements DataContainer<HttpContext> {
+public abstract class HttpHeader extends ModifiableVariableHolder implements DataContainer {
 
     protected ModifiableString headerName;
 

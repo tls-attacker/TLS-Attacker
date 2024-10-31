@@ -28,9 +28,7 @@ public class CertificateVerifyHandlerTest
     @Override
     public void testadjustContext() {
         CertificateVerifyMessage message = new CertificateVerifyMessage();
-        message.getPreparator(
-                        new Context(new State(new Config()), new OutboundConnection())
-                                .getTlsContext())
+        message.getPreparator(new Context(new State(new Config()), new OutboundConnection()))
                 .prepare();
         handler.adjustContext(message);
     }

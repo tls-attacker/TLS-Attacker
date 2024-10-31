@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
  */
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
-    private List<DataContainerFilter<?>> containerFilterList;
+    private List<DataContainerFilter> containerFilterList;
 
     private boolean allowTrailingContainers = false;
 
@@ -93,7 +93,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
         return !evaluateReceivedContainers(list, true);
     }
 
-    public void setContainerFilterList(DataContainerFilter<?>... containerFilters) {
+    public void setContainerFilterList(DataContainerFilter... containerFilters) {
         this.setContainerFilterList(Arrays.asList(containerFilters));
     }
 
@@ -116,11 +116,11 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
         this.allowTrailingContainers = allowTrailingContainers;
     }
 
-    public List<DataContainerFilter<?>> getContainerFilterList() {
+    public List<DataContainerFilter> getContainerFilterList() {
         return containerFilterList;
     }
 
-    public void setContainerFilterList(List<DataContainerFilter<?>> containerFilterList) {
+    public void setContainerFilterList(List<DataContainerFilter> containerFilterList) {
         this.containerFilterList = containerFilterList;
     }
 

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class AlpnEntryParser extends Parser<AlpnEntry> {
 
@@ -22,7 +23,10 @@ public class AlpnEntryParser extends Parser<AlpnEntry> {
     @Override
     public void parse(AlpnEntry entry) {
         entry.setAlpnEntryLength(parseIntField(ExtensionByteLength.ALPN_ENTRY_LENGTH));
-        entry.setAlpnEntry(new String(parseByteArrayField(entry.getAlpnEntryLength().getValue())));
+        entry.setAlpnEntry(
+                new String(
+                        parseByteArrayField(entry.getAlpnEntryLength().getValue()),
+                        StandardCharsets.ISO_8859_1));
         entry.setAlpnEntryConfig(entry.getAlpnEntry().getValue());
     }
 }
