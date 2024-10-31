@@ -55,7 +55,9 @@ public class RecordedWorkflowTest {
                 | NoSuchProviderException
                 | SignatureException
                 | CertificateException
-                | OperatorCreationException ex) {
+                | OperatorCreationException
+                | UnrecoverableKeyException
+                | KeyManagementException ex) {
             Logger.getLogger(RecordedWorkflowTest.class.getName())
                     .log(java.util.logging.Level.SEVERE, null, ex);
         }

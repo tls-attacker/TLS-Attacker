@@ -12,22 +12,13 @@ import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.IOException;
 import java.net.Socket;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,10 +28,7 @@ public class BasicTlsServer extends Thread {
 
     private String[] cipherSuites = null;
     private final int port;
-    private String protocol;
-    private String password;
-    private KeyStore keyStore;
-    private SSLContext sslContext;
+    private final SSLContext sslContext;
     private SSLServerSocket serverSocket;
     private boolean shutdown;
     boolean closed = true;
@@ -48,19 +36,16 @@ public class BasicTlsServer extends Thread {
     /** Very dirty but ok for testing purposes */
     private volatile boolean initialized;
 
-    public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port) {
-        this.keyStore = keyStore;
-        this.password = password;
-        this.protocol = protocol;
-        this.port = port;
-        initialized = false;
-    }
-
-    public void init()
-            throws NoSuchAlgorithmException,
+    public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port)
+            throws KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
                     UnrecoverableKeyException,
-                    KeyStoreException,
                     KeyManagementException {
+
+        this.port = port;
+
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
         keyManagerFactory.init(keyStore, password.toCharArray());
         KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
@@ -82,7 +67,6 @@ public class BasicTlsServer extends Thread {
                 LOGGER.debug(" {}", c);
             }
         }
-        initialized = true;
     }
 
     @Override
@@ -118,12 +102,6 @@ public class BasicTlsServer extends Thread {
     }
 
     private void preSetup() throws IOException {
-        try {
-
-            init();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
 
         serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(port);
