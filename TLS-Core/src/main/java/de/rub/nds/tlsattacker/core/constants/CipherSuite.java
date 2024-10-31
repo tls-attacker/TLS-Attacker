@@ -3259,10 +3259,7 @@ public enum CipherSuite {
     }
 
     public boolean isExportSymmetricCipher() {
-        return this.name().contains("DES40")
-                || this.name().contains("RC4_40")
-                || this.name().contains("RC2_CBC_40")
-                || this.name().contains("DES_CBC_40");
+        return getCipherAlgorithm().getExportFinalKeySize() != null;
     }
 
     /**
@@ -3331,7 +3328,7 @@ public enum CipherSuite {
         return (this.name().contains("_OCB"));
     }
 
-    public boolean isSteamCipherWithIV() {
+    public boolean isStreamCipherWithIV() {
         return this.name().contains("28147_CNT");
     }
 
