@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.packet.VersionNegotiationPacketH
 import de.rub.nds.tlsattacker.core.quic.parser.packet.VersionNegotiationPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.VersionNegotiationPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.VersionNegotiationPacketSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -41,23 +41,23 @@ public class VersionNegotiationPacket extends LongHeaderPacket {
     public void convertCompleteProtectedHeader() {}
 
     @Override
-    public VersionNegotiationPacketHandler getHandler(QuicContext context) {
-        return new VersionNegotiationPacketHandler(context);
+    public VersionNegotiationPacketHandler getHandler(Context context) {
+        return new VersionNegotiationPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public Serializer<VersionNegotiationPacket> getSerializer(QuicContext context) {
+    public Serializer<VersionNegotiationPacket> getSerializer(Context context) {
         return new VersionNegotiationPacketSerializer(this);
     }
 
     @Override
-    public Preparator<VersionNegotiationPacket> getPreparator(QuicContext context) {
+    public Preparator<VersionNegotiationPacket> getPreparator(Context context) {
         return new VersionNegotiationPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public VersionNegotiationPacketParser getParser(QuicContext context, InputStream stream) {
-        return new VersionNegotiationPacketParser(stream, context);
+    public VersionNegotiationPacketParser getParser(Context context, InputStream stream) {
+        return new VersionNegotiationPacketParser(stream, context.getQuicContext());
     }
 
     public ModifiableByteArray getSupportedVersions() {

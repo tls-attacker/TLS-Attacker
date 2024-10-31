@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -30,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,9 +37,9 @@ import org.apache.logging.log4j.Logger;
 public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private TlsContext context;
+    private Context context;
 
-    public SSL2Layer(TlsContext context) {
+    public SSL2Layer(Context context) {
         super(ImplementedLayers.SSL2);
         this.context = context;
     }
@@ -139,12 +139,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     private static int resolvePaddedMessageLength(final byte[] totalHeaderLength) {
         return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_TWO_BIT.getValue()) << 8
-                | totalHeaderLength[1];
+                | totalHeaderLength[1] & 0xff;
     }
 
     private static int resolveUnpaddedMessageLength(final byte[] totalHeaderLength) {
         return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_ONE_BIT.getValue()) << 8
-                | totalHeaderLength[1];
+                | totalHeaderLength[1] & 0xff;
     }
 
     @Override

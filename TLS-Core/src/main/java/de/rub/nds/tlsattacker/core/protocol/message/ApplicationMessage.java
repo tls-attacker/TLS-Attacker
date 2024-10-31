@@ -13,12 +13,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
@@ -90,22 +90,22 @@ public class ApplicationMessage extends ProtocolMessage {
     }
 
     @Override
-    public ApplicationMessageHandler getHandler(TlsContext tlsContext) {
-        return new ApplicationMessageHandler(tlsContext);
+    public ApplicationMessageHandler getHandler(Context context) {
+        return new ApplicationMessageHandler(context.getTlsContext());
     }
 
     @Override
-    public ApplicationMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+    public ApplicationMessageParser getParser(Context context, InputStream stream) {
         return new ApplicationMessageParser(stream);
     }
 
     @Override
-    public ApplicationMessagePreparator getPreparator(TlsContext tlsContext) {
+    public ApplicationMessagePreparator getPreparator(Context tlsContext) {
         return new ApplicationMessagePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ApplicationMessageSerializer getSerializer(TlsContext tlsContext) {
+    public ApplicationMessageSerializer getSerializer(Context context) {
         return new ApplicationMessageSerializer(this);
     }
 

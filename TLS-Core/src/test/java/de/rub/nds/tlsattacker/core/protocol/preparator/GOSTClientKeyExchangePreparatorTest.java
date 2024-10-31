@@ -46,14 +46,14 @@ public class GOSTClientKeyExchangePreparatorTest
     @Test
     @Disabled("Robert: Test is currently off because I broke the GOST code 19.6.2019")
     public void testPrepare() throws IOException {
-        context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
-        context.setClientRandom(
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+        tlsContext.setClientRandom(
                 ArrayConverter.hexStringToByteArray(
                         "52E78EFE6E681041EC766E3DE0B54F243AE4C48C5CE47EEE84FBDA38F5C50D64"));
-        context.setServerRandom(
+        tlsContext.setServerRandom(
                 ArrayConverter.hexStringToByteArray(
                         "52E78EFE1B11A86ACE9CF0CD6D9E814E5C025DF53361A984A711C9D5CE078CEE"));
-        context.setPreMasterSecret(
+        tlsContext.setPreMasterSecret(
                 ArrayConverter.hexStringToByteArray(
                         "26DBE1DAA8757A2FFD12E2BB1ABA62CCA69C37B180C12B7D8FEF63AC17723A25"));
 
@@ -63,13 +63,15 @@ public class GOSTClientKeyExchangePreparatorTest
         ByteArrayInputStream inputStream = new ByteArrayInputStream(serverCert);
         Certificate tlsCert = Certificate.parse(inputStream);
         org.bouncycastle.asn1.x509.Certificate cert = tlsCert.getCertificateAt(0);
-        context.getConfig().setDefaultSelectedGostCurve(GOSTCurve.Tc26_Gost_3410_12_256_paramSetA);
+        tlsContext
+                .getConfig()
+                .setDefaultSelectedGostCurve(GOSTCurve.Tc26_Gost_3410_12_256_paramSetA);
         BCECGOST3410_2012PublicKey publicKey =
                 (BCECGOST3410_2012PublicKey)
                         new JcaPEMKeyConverter().getPublicKey(cert.getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
-        context.setSelectedGostCurve(curve);
-        context.setClientEphemeralEcPublicKey(
+        tlsContext.setSelectedGostCurve(curve);
+        tlsContext.setClientEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
@@ -83,13 +85,13 @@ public class GOSTClientKeyExchangePreparatorTest
                         q.getRawYCoord().toBigInteger(),
                         (NamedEllipticCurveParameters) curve.getGroupParameters());
 
-        context.setServerEphemeralEcPublicKey(ecPoint);
+        tlsContext.setServerEphemeralEcPublicKey(ecPoint);
 
         BigInteger s =
                 new BigInteger(
                         "9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C",
                         16);
-        context.setClientEphemeralEcPrivateKey(s);
+        tlsContext.setClientEphemeralEcPrivateKey(s);
 
         createNewMessageAndPreparator(true);
         preparator.prepare();

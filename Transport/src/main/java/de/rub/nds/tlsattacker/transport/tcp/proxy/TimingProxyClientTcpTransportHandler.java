@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,7 +91,9 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
                 (int) connectionTimeout);
         cachedSocketState = null;
         /* tell the proxy where the real server is */
-        controlSocket.getOutputStream().write((hostname + "\n").getBytes());
+        controlSocket
+                .getOutputStream()
+                .write((hostname + "\n").getBytes(StandardCharsets.ISO_8859_1));
         controlSocket.getOutputStream().write((Integer.toString(dstPort) + "\n").getBytes());
         controlSocket.getOutputStream().flush();
         hostname = proxyDataHostName;

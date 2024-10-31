@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -40,22 +40,23 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public SessionTicketTLSExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SessionTicketTLSExtensionParser(stream, tlsContext.getConfig(), tlsContext);
+    public SessionTicketTLSExtensionParser getParser(Context context, InputStream stream) {
+        return new SessionTicketTLSExtensionParser(
+                stream, context.getConfig(), context.getTlsContext());
     }
 
     @Override
-    public SessionTicketTLSExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SessionTicketTLSExtensionPreparator(tlsContext.getChooser(), this);
+    public SessionTicketTLSExtensionPreparator getPreparator(Context context) {
+        return new SessionTicketTLSExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SessionTicketTLSExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SessionTicketTLSExtensionSerializer getSerializer(Context context) {
         return new SessionTicketTLSExtensionSerializer(this);
     }
 
     @Override
-    public SessionTicketTLSExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SessionTicketTLSExtensionHandler(tlsContext);
+    public SessionTicketTLSExtensionHandler getHandler(Context context) {
+        return new SessionTicketTLSExtensionHandler(context.getTlsContext());
     }
 }

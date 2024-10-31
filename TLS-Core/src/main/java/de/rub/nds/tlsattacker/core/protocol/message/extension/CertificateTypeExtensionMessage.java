@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateTypeExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -75,22 +75,22 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public CertificateTypeExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateTypeExtensionParser(stream, tlsContext);
+    public CertificateTypeExtensionParser getParser(Context context, InputStream stream) {
+        return new CertificateTypeExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
+    public CertificateTypeExtensionPreparator getPreparator(Context context) {
+        return new CertificateTypeExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateTypeExtensionSerializer getSerializer(Context context) {
         return new CertificateTypeExtensionSerializer(this);
     }
 
     @Override
-    public CertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
-        return new CertificateTypeExtensionHandler(tlsContext);
+    public CertificateTypeExtensionHandler getHandler(Context context) {
+        return new CertificateTypeExtensionHandler(context.getTlsContext());
     }
 }

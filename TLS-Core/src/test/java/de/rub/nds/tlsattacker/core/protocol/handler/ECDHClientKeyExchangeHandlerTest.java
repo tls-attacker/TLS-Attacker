@@ -34,34 +34,34 @@ public class ECDHClientKeyExchangeHandlerTest
     @Test
     @Override
     public void testadjustContext() {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
-        context.setClientRandom(new byte[] {});
-        context.setServerRandom(new byte[] {});
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
+        tlsContext.setClientRandom(new byte[] {});
+        tlsContext.setServerRandom(new byte[] {});
         // set server ECDH-parameters
-        context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
-        context.setSelectedGroup(NamedGroup.SECP192R1);
-        context.setServerEphemeralEcPublicKey(
+        tlsContext.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
+        tlsContext.setSelectedGroup(NamedGroup.SECP192R1);
+        tlsContext.setServerEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "1336698681267683560144780033483217462176613397209956026562"),
                         new BigInteger(
                                 "4390496211885670837594012513791855863576256216444143941964"),
                         (NamedEllipticCurveParameters) NamedGroup.SECP192R1.getGroupParameters()));
-        context.getConfig().setDefaultClientEphemeralEcPrivateKey(new BigInteger("3"));
-        context.getConfig().setDefaultServerEphemeralEcPrivateKey(new BigInteger("3"));
+        tlsContext.getConfig().setDefaultClientEphemeralEcPrivateKey(new BigInteger("3"));
+        tlsContext.getConfig().setDefaultServerEphemeralEcPrivateKey(new BigInteger("3"));
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
         ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> prep =
-                new ECDHClientKeyExchangePreparator<>(context.getChooser(), message);
+                new ECDHClientKeyExchangePreparator<>(tlsContext.getChooser(), message);
         prep.prepare();
         handler.adjustContext(message);
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
                         "273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9"),
-                context.getPreMasterSecret());
+                tlsContext.getPreMasterSecret());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
                         "5686D5F789AEDC43162480112E94C7C60F1292B1C5D688AE58F237BD054594775B94AC5F0B18A01B808ADBBE78BCC8C7"),
-                context.getMasterSecret());
+                tlsContext.getMasterSecret());
     }
 }

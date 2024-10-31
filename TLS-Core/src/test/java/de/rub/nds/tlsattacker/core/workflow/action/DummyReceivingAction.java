@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tcp.TcpStreamContainer;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -130,13 +130,13 @@ public class DummyReceivingAction extends MessageAction
     }
 
     @Override
-    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
-        List<List<DataContainer<?>>> lists = new LinkedList<>();
+    public List<List<DataContainer>> getExpectedDataContainerLists() {
+        List<List<DataContainer>> lists = new LinkedList<>();
         if (expectedMessages != null) {
-            lists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+            lists.add((List<DataContainer>) (List<?>) expectedMessages);
         }
         if (expectedRecords != null) {
-            lists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
+            lists.add((List<DataContainer>) (List<?>) expectedRecords);
         }
         return lists;
     }

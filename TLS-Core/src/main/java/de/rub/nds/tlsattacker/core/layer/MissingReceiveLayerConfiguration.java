@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @param <Container>
  */
-public class MissingReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class MissingReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     public MissingReceiveLayerConfiguration(LayerType layerType) {
