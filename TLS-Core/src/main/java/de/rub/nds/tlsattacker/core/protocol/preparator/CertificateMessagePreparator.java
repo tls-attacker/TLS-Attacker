@@ -157,7 +157,6 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         entryList.add(entry);
                     }
                     msg.setCertificateEntryList(entryList);
-                    preparePredefinedCerts(entryList);
                     prepareFromEntryList(msg);
                 }
                 LOGGER.debug(
