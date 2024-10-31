@@ -25,18 +25,26 @@ import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.consta
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.PREFERRED_ADDRESS;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.RETRY_SOURCE_CONNECTION_ID;
 
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 /** POJO variant of QuicTransportParameters */
-public class QuicTransportParameters {
+public class QuicTransportParameters implements Serializable {
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] originalDestinationConnectionId;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] initialSourceConnectionId;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] retrySourceConnectionId;
 
     private Long maxIdleTimeout;
