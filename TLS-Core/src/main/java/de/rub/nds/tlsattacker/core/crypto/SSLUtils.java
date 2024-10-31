@@ -166,8 +166,7 @@ public class SSLUtils {
     public static byte[] getSenderConstant(ConnectionEndType connectionEndType) {
         if (null == connectionEndType) {
             throw new IllegalArgumentException(
-                    "The ConnectionEnd should be either of Type Client or Server but it is "
-                            + connectionEndType);
+                    "The ConnectionEnd should be either of Type Client or Server but it is null");
         } else {
             switch (connectionEndType) {
                 case SERVER:
