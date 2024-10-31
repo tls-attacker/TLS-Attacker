@@ -117,6 +117,9 @@ public class ActionHelperUtil {
         // reset configurations to only assign a configuration to the upper most layer
         // Layer above configured layers will be set to ignore, layers below which are
         // not configured will be set to "does not matter"
+
+        List<LayerConfiguration<?>> unsortedLayerConfigurationsMutable =
+                new LinkedList<>(unsortedLayerConfigurations);
         boolean alreadyConfiguredLayer = false;
         for (LayerType layerType : layerStack.getLayersInStack()) {
             ImplementedLayers layer;
@@ -132,7 +135,7 @@ public class ActionHelperUtil {
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
 
             layerConfiguration =
-                    unsortedLayerConfigurations.stream()
+                    unsortedLayerConfigurationsMutable.stream()
                             .filter(Objects::nonNull)
                             .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
                             .findFirst();
@@ -140,7 +143,7 @@ public class ActionHelperUtil {
             if (layerConfiguration.isPresent()) {
                 alreadyConfiguredLayer = true;
                 sortedLayerConfigurations.add(layerConfiguration.get());
-                unsortedLayerConfigurations.remove(layerConfiguration.get());
+                unsortedLayerConfigurationsMutable.remove(layerConfiguration.get());
             } else {
                 if (alreadyConfiguredLayer) {
                     if (sending) {
