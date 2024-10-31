@@ -20,4 +20,6 @@ public class QuicRetryConstants {
             ArrayConverter.hexStringToByteArray("461599d35d632bf2239825bb");
     public static final byte[] QUIC2_RETRY_INTEGRITY_TAG_IV =
             ArrayConverter.hexStringToByteArray("d86969bc2d7c6d9990efb04a");
+
+    private QuicRetryConstants() {}
 }
