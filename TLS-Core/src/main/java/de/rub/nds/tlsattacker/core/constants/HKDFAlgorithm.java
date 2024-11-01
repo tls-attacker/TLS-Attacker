@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.MacAlgorithm;
+
 public enum HKDFAlgorithm {
     TLS_HKDF_SHA256(MacAlgorithm.HMAC_SHA256),
     TLS_HKDF_SHA384(MacAlgorithm.HMAC_SHA384),

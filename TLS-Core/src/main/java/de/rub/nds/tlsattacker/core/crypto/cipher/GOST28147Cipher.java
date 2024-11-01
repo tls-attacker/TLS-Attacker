@@ -59,7 +59,7 @@ public class GOST28147Cipher extends BaseCipher {
         (byte) 0x2B
     };
 
-    private static final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT;
+    private static final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT_IMIT;
 
     public static byte[] getC() {
         return Arrays.copyOf(C, C.length);

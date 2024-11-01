@@ -6,15 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.udp;
+package de.rub.nds.tlsattacker.core.tcp;
 
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class UdpDataPacketPreparator extends Preparator<UdpDataPacket> {
+public class TcpStreamContainerPreparator extends Preparator<TcpStreamContainer> {
 
-    public UdpDataPacketPreparator(Chooser chooser, UdpDataPacket udpDataPacket) {
-        super(chooser, udpDataPacket);
+    public TcpStreamContainerPreparator(Chooser chooser, TcpStreamContainer dataStreamContainer) {
+        super(chooser, dataStreamContainer);
     }
 
     @Override

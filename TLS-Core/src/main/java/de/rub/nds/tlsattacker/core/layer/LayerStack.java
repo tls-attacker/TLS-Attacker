@@ -130,7 +130,7 @@ public class LayerStack {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
+                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry. Expected "
                             + getLayerList().size()
                             + " but found "
                             + layerConfigurationList.size());
@@ -212,7 +212,16 @@ public class LayerStack {
                 return layer;
             }
         }
-        throw new RuntimeException("No configured layer found. All layers are ignored.");
+        StringBuilder debugInformation = new StringBuilder();
+        for (ProtocolLayer layer : getLayerList()) {
+            debugInformation.append(layer.getLayerType());
+            debugInformation.append(" ");
+            debugInformation.append(layer.getLayerConfiguration());
+            debugInformation.append("\n");
+        }
+        throw new RuntimeException(
+                "No configured layer found. All layers are ignored. "
+                        + debugInformation.toString());
     }
 
     /**

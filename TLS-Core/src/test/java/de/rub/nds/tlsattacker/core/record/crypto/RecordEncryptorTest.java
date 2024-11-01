@@ -189,7 +189,7 @@ public class RecordEncryptorTest {
     public void testEncryptTLS10GOST() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setSelectedCipherSuite(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
-
+        // This cipher is only defined for TLS 1.2
         context.setMasterSecret(
                 ArrayConverter.hexStringToByteArray(
                         "0DA8674196F2496C4EE1E4779DE04990BE3CE4655252F1961E707B61178436131369D11E7DA84C05374535B95550DD0F"));

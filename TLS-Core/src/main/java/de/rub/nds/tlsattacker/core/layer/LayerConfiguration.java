@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * Contains a list of {@link DataContainer} with additional information about how to send and
@@ -66,4 +67,6 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
     }
 
     public abstract String toCompactString();
+
+    public abstract boolean shouldBeLogged(Level level);
 }

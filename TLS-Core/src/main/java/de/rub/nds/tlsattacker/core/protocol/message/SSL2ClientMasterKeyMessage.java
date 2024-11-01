@@ -16,9 +16,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
+import de.rub.nds.tlsattacker.core.protocol.parser.SSL2MessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -70,7 +70,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2Message {
     }
 
     @Override
-    public ProtocolMessageParser<SSL2ClientMasterKeyMessage> getParser(
+    public SSL2MessageParser<SSL2ClientMasterKeyMessage> getParser(
             Context context, InputStream stream) {
         // We currently don't receive ClientMasterKey messages, only send them.
         throw new UnsupportedOperationException("Not implemented");

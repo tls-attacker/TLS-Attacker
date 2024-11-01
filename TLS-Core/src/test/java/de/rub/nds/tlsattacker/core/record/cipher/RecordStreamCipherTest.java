@@ -75,7 +75,7 @@ public class RecordStreamCipherTest {
                     && !suite.name().contains("WITH_NULL_NULL")
                     && !suite.name().contains("CHACHA20_POLY1305")
                     && !suite.name().contains("RABBIT")
-                    && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
+                    && suite.getCipherType() == CipherType.STREAM
                     && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);

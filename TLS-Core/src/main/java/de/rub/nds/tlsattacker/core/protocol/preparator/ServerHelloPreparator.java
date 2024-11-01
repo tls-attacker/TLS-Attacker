@@ -74,12 +74,12 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         CipherSuite selectedCipherSuite =
                 CipherSuite.getCipherSuite(msg.getSelectedCipherSuite().getValue());
         if (selectedCipherSuite != null
-                && AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite) != null
-                && !AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite).isEC()) {
+                && selectedCipherSuite.getKeyExchangeAlgorithm() != null
+                && selectedCipherSuite.getKeyExchangeAlgorithm().isEC()) {
             forbiddenExtensionTypes.add(ExtensionType.EC_POINT_FORMATS);
         }
 
-        if (selectedCipherSuite != null && selectedCipherSuite.isTLS13()) {
+        if (selectedCipherSuite != null && selectedCipherSuite.isTls13()) {
             forbiddenExtensionTypes.addAll(ExtensionType.getNonTls13Extensions());
         } else {
             forbiddenExtensionTypes.addAll(ExtensionType.getTls13OnlyExtensions());

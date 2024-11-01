@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -22,6 +23,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -35,13 +37,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** todo print configured records */
 @XmlRootElement(name = "Send")
 public class SendAction extends CommonSendAction implements StaticSendingAction {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> configuredMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SSL2Message> configuredSSL2Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragments;
@@ -109,6 +118,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(ProtocolMessage... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public SendAction(SSL2Message... messages) {
+        this.configuredSSL2Messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     public SendAction(String connectionAlias) {
@@ -186,20 +199,28 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         this.configuredQuicPackets = configuredQuicPackets;
     }
 
+    public List<SSL2Message> getConfiguredSSL2Messages() {
+        return configuredSSL2Messages;
+    }
+
+    public void setConfiguredSSL2Messages(List<SSL2Message> configuredSSL2Messages) {
+        this.configuredSSL2Messages = configuredSSL2Messages;
+    }
+
     @Override
     public String toString() {
         return "SendAction: "
                 + (isExecuted() ? "\n" : "(not executed)\n")
                 + "\tMessages: "
                 + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        getConfiguredDataContainerLists());
+                        getConfiguredDataContainerLists(), LOGGER.getLevel());
     }
 
     @Override
     public String toCompactString() {
         return super.toCompactString()
                 + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        getConfiguredDataContainerLists());
+                        getConfiguredDataContainerLists(), LOGGER.getLevel());
     }
 
     @Override
@@ -211,6 +232,13 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
+
+        if (configuredSSL2Messages != null) {
+            for (SSL2Message message : configuredSSL2Messages) {
+                holders.addAll(message.getAllModifiableVariableHolders());
+            }
+        }
+
         if (configuredRecords != null) {
             for (Record record : configuredRecords) {
                 holders.addAll(record.getAllModifiableVariableHolders());
@@ -277,6 +305,11 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));
         }
+        if (getConfiguredSSL2Messages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredSSL2Messages()));
+        }
         if (getConfiguredDtlsHandshakeMessageFragments() != null) {
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
@@ -323,6 +356,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (configuredQuicPackets != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) configuredQuicPackets);
+        }
+        if (configuredSSL2Messages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredSSL2Messages);
         }
         return dataContainerLists;
     }

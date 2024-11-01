@@ -53,9 +53,9 @@ public class ActionHelperUtil {
             boolean sending,
             Set<ActionOption> actionOptions,
             List<LayerConfiguration<?>> unsortedLayerConfigurations) {
-        unsortedLayerConfigurations =
+        List<LayerConfiguration<?>> sortedLayerConfigurations =
                 sortLayerConfigurations(layerStack, sending, unsortedLayerConfigurations);
-        return applyAllMessageFilters(unsortedLayerConfigurations, actionOptions);
+        return applyAllMessageFilters(sortedLayerConfigurations, actionOptions);
     }
 
     public static List<LayerConfiguration<?>> applyAllMessageFilters(
@@ -129,7 +129,7 @@ public class ActionHelperUtil {
                 LOGGER.warn(
                         "Cannot assign layer "
                                 + layerType.getName()
-                                + "to current LayerStack. LayerType not implemented for TLSAction.");
+                                + "to current LayerStack. LayerType not implemented for TlsAction.");
                 continue;
             }
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
