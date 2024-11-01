@@ -4,9 +4,9 @@ name: TLS-Attacker
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [11] 
+        java: [11]
       fail-fast: false
       max-parallel: 4
     name: Test TLS-Attacker on JDK ${{ matrix.java }}, ${{ matrix.os }}
@@ -34,6 +34,6 @@ jobs:
 
       - name: Test
         run: mvn clean test
-      
+
       - name: package
-        run: mvn clean package     
+        run: mvn clean package
