@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.GreaseExtension
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,15 +47,18 @@ public class GreaseExtensionMessage extends ExtensionMessage {
         this.type = type;
     }
 
+    /**
+     * Constructor that creates a grease message with a specified payload length
+     *
+     * @param type
+     * @param length
+     */
     public GreaseExtensionMessage(ExtensionType type, int length) {
         super(type);
         if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
-
-        Random random = new Random(0);
         byte[] b = new byte[length];
-        random.nextBytes(b);
         this.data = b;
         this.type = type;
     }

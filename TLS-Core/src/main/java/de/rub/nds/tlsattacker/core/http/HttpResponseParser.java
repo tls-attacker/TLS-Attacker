@@ -169,6 +169,6 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         }
 
         message.setResponseContent(httpMessageBuilder.toString());
-        LOGGER.debug(() -> new String(getAlreadyParsed()));
+        LOGGER.debug(() -> new String(getAlreadyParsed(), StandardCharsets.UTF_8));
     }
 }

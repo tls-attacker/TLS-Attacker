@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.nio.charset.StandardCharsets;
 
 /**
  * It establishes a control channel and data channel to the defined UDP proxy. The control channel
@@ -57,9 +58,9 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
 
         socket = new DatagramSocket();
         socket.setSoTimeout((int) timeout);
-
         /* tell the proxy where the real server is */
-        byte[] message = (hostname + ":" + Integer.toString(port)).getBytes();
+        byte[] message =
+                (hostname + ":" + Integer.toString(port)).getBytes(StandardCharsets.ISO_8859_1);
         DatagramPacket packet = new DatagramPacket(message, message.length);
         controlSocket.send(packet);
     }

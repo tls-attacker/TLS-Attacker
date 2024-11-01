@@ -398,7 +398,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-        int keyLen = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keyLen = cipherSuite.getCipherAlgorithm().getKeySize();
         try {
             key =
                     HKDFunction.expandLabel(

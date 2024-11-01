@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 public class IgnoreLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {
@@ -33,5 +34,10 @@ public class IgnoreLayerConfiguration<Container extends DataContainer>
     @Override
     public boolean failedEarly(List<Container> list) {
         return false;
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return level.isMoreSpecificThan(Level.INFO); // DEBUG, TRACE etc should log it.
     }
 }

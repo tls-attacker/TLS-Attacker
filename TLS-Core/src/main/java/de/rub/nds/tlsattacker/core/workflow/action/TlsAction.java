@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic building block for
@@ -34,8 +32,6 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TlsAction implements Serializable, Aliasable {
-
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     private static final boolean EXECUTED_DEFAULT = false;
 

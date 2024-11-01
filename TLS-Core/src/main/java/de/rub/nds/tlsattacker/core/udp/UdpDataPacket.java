@@ -6,7 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.udp;
+package de.rub.nds.tlsattacker.core.udp;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -15,6 +15,14 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class UdpDataPacket implements DataContainer {
+
+    private String sourceIp;
+
+    private String destinationIp;
+
+    private Integer sourcePort;
+
+    private Integer destinationPort;
 
     private transient byte[] configData;
 
@@ -66,8 +74,54 @@ public class UdpDataPacket implements DataContainer {
         this.configData = configData;
     }
 
+    public String getSourceIp() {
+        return sourceIp;
+    }
+
+    public void setSourceIp(String sourceIp) {
+        this.sourceIp = sourceIp;
+    }
+
+    public String getDestinationIp() {
+        return destinationIp;
+    }
+
+    public void setDestinationIp(String destinationIp) {
+        this.destinationIp = destinationIp;
+    }
+
+    public Integer getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(Integer sourcePort) {
+        this.sourcePort = sourcePort;
+    }
+
+    public Integer getDestinationPort() {
+        return destinationPort;
+    }
+
+    public void setDestinationPort(Integer destinationPort) {
+        this.destinationPort = destinationPort;
+    }
+
     @Override
     public String toString() {
-        return "UDP{" + data.getValue().length + " Bytes}";
+        if (sourceIp == null
+                || sourcePort == null
+                || destinationIp == null
+                || destinationPort == null) {
+            return "UdpDataPacket";
+        }
+        return "UdpDataPacket [src: "
+                + sourceIp
+                + ":"
+                + sourcePort
+                + ", dst:"
+                + destinationIp
+                + ":"
+                + destinationPort
+                + "]";
     }
 }

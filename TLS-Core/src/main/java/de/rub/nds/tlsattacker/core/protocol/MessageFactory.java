@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -77,7 +76,11 @@ public class MessageFactory {
 
     private static ServerKeyExchangeMessage getServerKeyExchangeMessage(TlsContext tlsContext) {
         CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        KeyExchangeAlgorithm algorithm = cs.getKeyExchangeAlgorithm();
+        if (algorithm == null) {
+            throw new UnsupportedOperationException(
+                    "CipherSuite '" + cs + "'does not have a KeyExchangeAlgorithm");
+        }
         switch (algorithm) {
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
@@ -114,7 +117,11 @@ public class MessageFactory {
 
     private static ClientKeyExchangeMessage getClientKeyExchangeMessage(TlsContext tlsContext) {
         CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        KeyExchangeAlgorithm algorithm = cs.getKeyExchangeAlgorithm();
+        if (algorithm == null) {
+            throw new UnsupportedOperationException(
+                    "CipherSuite '" + cs + "'does not have a KeyExchangeAlgorithm");
+        }
         switch (algorithm) {
             case RSA:
                 return new RSAClientKeyExchangeMessage();
@@ -133,7 +140,7 @@ public class MessageFactory {
                 return new PskDhClientKeyExchangeMessage();
             case ECDHE_PSK:
                 return new PskEcDhClientKeyExchangeMessage();
-            case PSK_RSA:
+            case RSA_PSK:
                 return new PskRsaClientKeyExchangeMessage();
             case PSK:
                 return new PskClientKeyExchangeMessage();

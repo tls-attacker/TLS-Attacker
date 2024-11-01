@@ -27,7 +27,12 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ActivateEncryptionAction;
+        return o instanceof ActivateEncryptionAction && super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return 13 + super.hashCode();
     }
 
     protected abstract void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher);

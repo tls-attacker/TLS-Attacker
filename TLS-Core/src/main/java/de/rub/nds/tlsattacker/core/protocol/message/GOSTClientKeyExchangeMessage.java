@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
@@ -91,7 +90,7 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public GOSTClientKeyExchangePreparator getPreparator(Context context) {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        KeyExchangeAlgorithm exchangeAlg = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite);
+        KeyExchangeAlgorithm exchangeAlg = cipherSuite.getKeyExchangeAlgorithm();
         if (exchangeAlg == KeyExchangeAlgorithm.VKO_GOST12) {
             return new GOST12ClientKeyExchangePreparator(context.getChooser(), this);
         } else {
