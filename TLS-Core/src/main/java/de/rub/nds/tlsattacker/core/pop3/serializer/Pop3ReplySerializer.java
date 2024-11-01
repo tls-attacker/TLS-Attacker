@@ -1,0 +1,33 @@
+package de.rub.nds.tlsattacker.core.pop3.serializer;
+
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
+
+public class Pop3ReplySerializer<ReplyT extends Pop3Reply> extends Pop3MessageSerializer<ReplyT> {
+
+    private final Pop3Reply reply;
+
+
+    public Pop3ReplySerializer(ReplyT reply, Pop3Context context) {
+        super(reply, context);
+        this.reply = reply;
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        String CRLF = "\r\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.reply.getStatusIndicator());
+        sb.append(this.reply.getHumanReadableMessage().get(0));
+        for (int i = 1; i < this.reply.getHumanReadableMessage().size(); i++) {
+            sb.append(this.reply.getHumanReadableMessage().get(i));
+            sb.append(CRLF);
+        }
+        sb.append(".");
+        sb.append(CRLF);
+
+        byte[] output = sb.toString().getBytes();
+        appendBytes(output);
+        return getAlreadySerialized();
+    }
+}
