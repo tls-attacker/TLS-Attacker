@@ -1,29 +1,29 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
-import de.rub.nds.tlsattacker.core.pop3.handler.Pop3MessageHandler;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3ReplyHandler;
-import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3ReplyPreparator;
-import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3ReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class modelling replies to Pop3 Commands.
- * two possible status indicators: +OK or -ERR together with a human-readable message.
- * C: QUIT
- * S: +OK POP3 server signing off
+ * Class modelling replies to Pop3 Commands. two possible status indicators: +OK or -ERR together
+ * with a human-readable message. C: QUIT S: +OK POP3 server signing off
  */
-
 @XmlRootElement
 public class Pop3Reply extends Pop3Message {
 
@@ -31,13 +31,14 @@ public class Pop3Reply extends Pop3Message {
 
     protected List<String> humanReadableMessage = new ArrayList<>();
 
-    public Pop3Reply() {this.humanReadableMessage = new ArrayList<>();}
+    public Pop3Reply() {
+        this.humanReadableMessage = new ArrayList<>();
+    }
 
     public Pop3Reply(String statusIndicator) {
         super();
         this.statusIndicator = statusIndicator;
     }
-
 
     public void setStatusIndicator(String statusIndicator) {
         this.statusIndicator = statusIndicator;
