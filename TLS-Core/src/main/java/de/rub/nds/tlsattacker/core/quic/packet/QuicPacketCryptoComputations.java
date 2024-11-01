@@ -365,8 +365,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         quicContext.setZeroRTTCipherSuite(context.getTlsContext().getEarlyDataCipherSuite());
         quicContext.setZeroRTTAeadCipher(
                 Cipher.getInstance(
-                        AlgorithmResolver.getCipher(
-                                        context.getTlsContext().getEarlyDataCipherSuite())
+                        context.getTlsContext()
+                                .getEarlyDataCipherSuite()
+                                .getCipherAlgorithm()
                                 .getJavaName()));
 
         int keyLength = 16;

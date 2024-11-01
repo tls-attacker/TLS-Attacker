@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
@@ -54,13 +57,18 @@ public class SSL2LayerTest extends AbstractLayerTest {
                     .getLayerStack()
                     .getLayer(SSL2Layer.class)
                     .setLayerConfiguration(layerConfiguration);
+            tlsContext
+                    .getLayerStack()
+                    .getLayer(TcpLayer.class)
+                    .setLayerConfiguration(
+                            new MissingSendLayerConfiguration<>(ImplementedLayers.TCP));
+
             tlsContext.getLayerStack().getLayer(SSL2Layer.class).sendConfiguration();
             tlsContext.getLayerStack().getLayer(TcpLayer.class).sendConfiguration();
-            System.out.println(
-                    "SendByte: "
-                            + ArrayConverter.bytesToHexString(
-                                    transportHandler.getSentBytes(), false, false));
-            Assert.assertEquals(
+            LOGGER.debug(
+                    "SendByte: {}",
+                    ArrayConverter.bytesToHexString(transportHandler.getSentBytes(), false, false));
+            assertEquals(
                     tlsContext
                             .getLayerStack()
                             .getLayer(SSL2Layer.class)

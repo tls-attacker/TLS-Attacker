@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;

@@ -27,7 +27,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 public class WorkflowTraceResultUtil {
@@ -63,6 +62,16 @@ public class WorkflowTraceResultUtil {
         }
     }
 
+    public static SSL2Message getFirstReceivedMessage(WorkflowTrace trace, SSL2MessageType type) {
+        List<SSL2Message> messageList = getAllReceivedSSL2Messages(trace);
+        messageList = filterMessageList(messageList, type);
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return messageList.get(0);
+        }
+    }
+
     public static HandshakeMessage getFirstReceivedMessage(
             WorkflowTrace trace, HandshakeMessageType type) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
@@ -72,21 +81,6 @@ public class WorkflowTraceResultUtil {
             return null;
         } else {
             return handshakeMessageList.get(0);
-        }
-    }
-
-    public static SSL2Message getFirstReceivedMessage(WorkflowTrace trace, SSL2MessageType type) {
-        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
-        List<SSL2Message> ssl2MessageList =
-                messageList.stream()
-                        .filter(SSL2Message.class::isInstance)
-                        .map(protocolMessage -> (SSL2Message) protocolMessage)
-                        .collect(Collectors.toList());
-        ssl2MessageList = filterMessageList(ssl2MessageList, type);
-        if (ssl2MessageList.isEmpty()) {
-            return null;
-        } else {
-            return ssl2MessageList.get(0);
         }
     }
 
@@ -413,6 +407,16 @@ public class WorkflowTraceResultUtil {
         for (ReceivingAction action : trace.getReceivingActions()) {
             if (action.getReceivedMessages() != null) {
                 receivedMessage.addAll(action.getReceivedMessages());
+            }
+        }
+        return receivedMessage;
+    }
+
+    public static List<SSL2Message> getAllReceivedSSL2Messages(WorkflowTrace trace) {
+        List<SSL2Message> receivedMessage = new LinkedList<>();
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            if (action.getReceivedSSL2Messages() != null) {
+                receivedMessage.addAll(action.getReceivedSSL2Messages());
             }
         }
         return receivedMessage;

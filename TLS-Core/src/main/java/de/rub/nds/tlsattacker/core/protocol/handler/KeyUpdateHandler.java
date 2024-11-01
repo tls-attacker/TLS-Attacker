@@ -147,10 +147,10 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getClientApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
                 } else {
 
@@ -168,10 +168,10 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getServerApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
                 }
 
@@ -198,10 +198,10 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getServerApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
 
                 } else {
@@ -220,10 +220,10 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getClientApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
                                             .getKeySize()));
                 }
 

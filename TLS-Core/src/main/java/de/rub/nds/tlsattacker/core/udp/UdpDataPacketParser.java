@@ -6,19 +6,19 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tcp;
+package de.rub.nds.tlsattacker.core.udp;
 
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import java.io.InputStream;
 
-public class TcpStreamContainerParser extends Parser<TcpStreamContainer> {
+public class UdpDataPacketParser extends Parser<UdpDataPacket> {
 
-    public TcpStreamContainerParser(InputStream stream) {
+    public UdpDataPacketParser(InputStream stream) {
         super(stream);
     }
 
     @Override
-    public void parse(TcpStreamContainer container) {
+    public void parse(UdpDataPacket container) {
         container.setData(parseTillEnd());
     }
 }

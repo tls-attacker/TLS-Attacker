@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -465,11 +464,11 @@ public class WorkflowConfigurationFactory {
                 factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         MessageAction action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createSSL2Action(
                         config, connection, ConnectionEndType.CLIENT, new SSL2ClientHelloMessage());
         trace.addTlsAction(action);
         action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createSSL2Action(
                         config, connection, ConnectionEndType.SERVER, new SSL2ServerHelloMessage());
         trace.addTlsAction(action);
         return trace;
@@ -1030,7 +1029,7 @@ public class WorkflowConfigurationFactory {
                     return new PskDhClientKeyExchangeMessage();
                 case ECDHE_PSK:
                     return new PskEcDhClientKeyExchangeMessage();
-                case PSK_RSA:
+                case RSA_PSK:
                     return new PskRsaClientKeyExchangeMessage();
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
@@ -1105,7 +1104,7 @@ public class WorkflowConfigurationFactory {
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message =
-                createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+                createClientKeyExchangeMessage(cs.getKeyExchangeAlgorithm());
         if (message != null) {
             messages.add(message);
         }
@@ -1114,7 +1113,7 @@ public class WorkflowConfigurationFactory {
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ServerKeyExchangeMessage message =
-                createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+                createServerKeyExchangeMessage(cs.getKeyExchangeAlgorithm());
         if (message != null) {
             messages.add(message);
         }

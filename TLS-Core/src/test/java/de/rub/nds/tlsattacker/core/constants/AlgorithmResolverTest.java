@@ -8,8 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -280,7 +284,7 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_MD5,
                         KeyExchangeAlgorithm.RSA_EXPORT),
                 Arguments.of(
-                        CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA, KeyExchangeAlgorithm.PSK_RSA),
+                        CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA, KeyExchangeAlgorithm.RSA_PSK),
                 Arguments.of(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256, KeyExchangeAlgorithm.RSA),
                 Arguments.of(
                         CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA,
@@ -337,7 +341,7 @@ public class AlgorithmResolverTest {
                 Arguments.of(CipherSuite.TLS_NULL_WITH_NULL_NULL, CipherAlgorithm.NULL),
                 Arguments.of(CipherSuite.TLS_RSA_WITH_IDEA_CBC_SHA, CipherAlgorithm.IDEA_128),
                 Arguments.of(
-                        CipherSuite.TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5, CipherAlgorithm.RC2_128),
+                        CipherSuite.TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5, CipherAlgorithm.RC2_40),
                 Arguments.of(CipherSuite.TLS_RSA_WITH_RC4_128_SHA, CipherAlgorithm.RC4_128),
                 Arguments.of(
                         CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, CipherAlgorithm.DES_EDE_CBC),
@@ -381,7 +385,7 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384, CipherAlgorithm.ARIA_256_GCM),
                 Arguments.of(
                         CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT,
-                        CipherAlgorithm.GOST_28147_CNT),
+                        CipherAlgorithm.GOST_28147_CNT_IMIT),
                 Arguments.of(
                         CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                         CipherAlgorithm.CHACHA20_POLY1305),
@@ -415,9 +419,7 @@ public class AlgorithmResolverTest {
             value = CipherSuite.class,
             names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"})
     public void testUnresolvableCipherUnknown(CipherSuite providedCipherSuite) {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> AlgorithmResolver.getCipher(providedCipherSuite));
+        assertNull(AlgorithmResolver.getCipher(providedCipherSuite));
     }
 
     @ParameterizedTest
@@ -469,39 +471,12 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256, CipherType.AEAD));
     }
 
-    /** Test of getCipherType method, of class AlgorithmResolver. */
-    @ParameterizedTest
-    @MethodSource("provideGetCipherTypeTestVectors")
-    public void testGetCipherType(CipherSuite providedCipherSuite, CipherType expectedCipherType) {
-        assertSame(expectedCipherType, AlgorithmResolver.getCipherType(providedCipherSuite));
-    }
-
     @ParameterizedTest
     @EnumSource(
             value = CipherSuite.class,
             names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"})
     public void testUnresolvableCipherType(CipherSuite providedCipherSuite) {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> AlgorithmResolver.getCipher(providedCipherSuite));
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = CipherSuite.class,
-            // These values are known to throw an UnsupportedOperationException and are therefore
-            // excluded
-            names = {
-                "TLS_FALLBACK_SCSV",
-                "TLS_EMPTY_RENEGOTIATION_INFO_SCSV",
-                "TLS_RSA_WITH_RABBIT_CBC_SHA",
-                "GREASE_[0-9]*"
-            },
-            mode = EnumSource.Mode.MATCH_NONE)
-    public void testGetCipherTypeDoesNotThrow(CipherSuite providedCipherSuite) {
-        // Checks that we can retrieve the cipher type of the provided cipher suite without
-        // exceptions
-        assertDoesNotThrow(() -> AlgorithmResolver.getCipherType(providedCipherSuite));
+        assertNull(AlgorithmResolver.getCipher(providedCipherSuite));
     }
 
     /**
@@ -542,11 +517,9 @@ public class AlgorithmResolverTest {
             value = CipherSuite.class,
             names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"})
     public void testUnresolvableMac(CipherSuite providedCipherSuite) {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        AlgorithmResolver.getMacAlgorithm(
-                                ProtocolVersion.TLS12, providedCipherSuite));
+        assertSame(
+                MacAlgorithm.NONE,
+                AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, providedCipherSuite));
     }
 
     @ParameterizedTest

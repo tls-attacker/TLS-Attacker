@@ -58,7 +58,6 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
 
         socket = new DatagramSocket();
         socket.setSoTimeout((int) timeout);
-
         /* tell the proxy where the real server is */
         byte[] message =
                 (hostname + ":" + Integer.toString(port)).getBytes(StandardCharsets.ISO_8859_1);

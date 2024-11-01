@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
 public class SSL2ClientHelloParserTest
-        extends AbstractProtocolMessageParserTest<SSL2ClientHelloMessage, SSL2ClientHelloParser> {
+        extends AbstractSSL2MessageParserTest<SSL2ClientHelloMessage, SSL2ClientHelloParser> {
 
     public SSL2ClientHelloParserTest() {
         super(

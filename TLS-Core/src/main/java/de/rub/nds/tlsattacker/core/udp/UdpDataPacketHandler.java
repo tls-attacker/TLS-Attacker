@@ -6,12 +6,12 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tcp;
+package de.rub.nds.tlsattacker.core.udp;
 
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
-public class TcpStreamContainerHandler extends Handler<TcpStreamContainer> {
+public class UdpDataPacketHandler extends Handler<UdpDataPacket> {
 
     @Override
-    public void adjustContext(TcpStreamContainer container) {}
+    public void adjustContext(UdpDataPacket container) {}
 }

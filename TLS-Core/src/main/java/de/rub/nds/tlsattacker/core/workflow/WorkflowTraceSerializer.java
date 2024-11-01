@@ -78,9 +78,9 @@ public class WorkflowTraceSerializer {
             classes.addAll(getSerializableSubTypes(reflections, PublicKeyContent.class));
             classes.addAll(getSerializableSubTypes(reflections, SignatureComputations.class));
 
-            LOGGER.debug("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
+            LOGGER.trace("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
             for (Class<?> tempClass : classes) {
-                LOGGER.debug(tempClass.getName());
+                LOGGER.trace(tempClass.getName());
             }
             context = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
         }

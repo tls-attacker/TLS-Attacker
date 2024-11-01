@@ -63,7 +63,7 @@ public class RecordBlockCipherTest {
         context.setServerRandom(new byte[] {0});
         context.setMasterSecret(new byte[] {0});
         for (CipherSuite suite : CipherSuite.getImplemented()) {
-            if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
+            if (!suite.isSCSV() && suite.getCipherType() == CipherType.BLOCK) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);

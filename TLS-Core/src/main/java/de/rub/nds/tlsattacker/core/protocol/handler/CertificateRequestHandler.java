@@ -120,7 +120,11 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             copied[1] = bytesToConvert[i + 1];
             SignatureAndHashAlgorithm algo =
                     SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(copied);
-            list.add(algo);
+            if (algo != null) {
+                list.add(algo);
+            } else {
+                LOGGER.warn("Cannot convert: {} to a SignatureAndHashAlgorithm", copied);
+            }
         }
         return list;
     }

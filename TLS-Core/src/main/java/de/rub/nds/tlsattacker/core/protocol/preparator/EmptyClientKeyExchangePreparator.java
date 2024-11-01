@@ -13,7 +13,6 @@ import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
@@ -95,10 +94,12 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                             .getLeaf()
                             .getCertificateKeyType();
             KeyExchangeAlgorithm keyExchangeAlgorithm =
-                    AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
-            if (keyExchangeAlgorithm.isKeyExchangeDh() || keyExchangeAlgorithm.isKeyExchangeDhe()) {
+                    chooser.getSelectedCipherSuite().getKeyExchangeAlgorithm();
+            if (keyExchangeAlgorithm != null
+                    && (keyExchangeAlgorithm.isKeyExchangeDh()
+                            || keyExchangeAlgorithm.isKeyExchangeDhe())) {
                 computeDhKeyExchangePms();
-            } else if (keyExchangeAlgorithm.isEC()) {
+            } else if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.isEC()) {
                 computeEcKeyExchangePms();
             } else {
                 LOGGER.warn(

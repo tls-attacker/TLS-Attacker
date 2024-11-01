@@ -9,7 +9,15 @@
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
@@ -122,7 +130,7 @@ public class KeyDerivator {
             }
         }
         LOGGER.debug("ActiveKeySetType is {}", keySetType);
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         keySet.setClientWriteKey(
@@ -211,7 +219,7 @@ public class KeyDerivator {
 
         byte[] clientAndServerRandom = ArrayConverter.concatenate(clientRandom, serverRandom);
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-        int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
 
         keySet.setClientWriteKey(
                 PseudoRandomFunction.compute(
@@ -228,7 +236,7 @@ public class KeyDerivator {
                         clientAndServerRandom,
                         keySize));
 
-        int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
+        int blockSize = cipherSuite.getCipherAlgorithm().getBlocksize();
         byte[] emptySecret = {};
         byte[] ivBlock =
                 PseudoRandomFunction.compute(
@@ -248,20 +256,20 @@ public class KeyDerivator {
 
     private static void deriveSSL3ExportKeys(
             CipherSuite cipherSuite, KeySet keySet, byte[] clientRandom, byte[] serverRandom) {
-        int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
         keySet.setClientWriteKey(
                 md5firstNBytes(keySize, keySet.getClientWriteKey(), clientRandom, serverRandom));
         keySet.setServerWriteKey(
                 md5firstNBytes(keySize, keySet.getServerWriteKey(), serverRandom, clientRandom));
 
-        int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
+        int blockSize = cipherSuite.getCipherAlgorithm().getBlocksize();
         keySet.setClientWriteIv(md5firstNBytes(blockSize, clientRandom, serverRandom));
         keySet.setServerWriteIv(md5firstNBytes(blockSize, serverRandom, clientRandom));
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
             throws CryptoException {
-        switch (AlgorithmResolver.getCipherType(cipherSuite)) {
+        switch (cipherSuite.getCipherType()) {
             case AEAD:
                 return getAeadSecretSetSize(protocolVersion, cipherSuite);
             case BLOCK:
@@ -275,7 +283,7 @@ public class KeyDerivator {
 
     private static int getBlockSecretSetSize(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         int keySize = cipherAlg.getKeySize();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         int secretSetSize = (2 * keySize) + (2 * macAlg.getKeySize());
@@ -287,7 +295,7 @@ public class KeyDerivator {
 
     private static int getAeadSecretSetSize(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         int keySize = cipherAlg.getKeySize();
         int saltSize = AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
         int secretSetSize = 2 * keySize + 2 * saltSize;
@@ -296,10 +304,10 @@ public class KeyDerivator {
 
     private static int getStreamSecretSetSize(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         int secretSetSize = (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
-        if (cipherSuite.isSteamCipherWithIV()) {
+        if (cipherSuite.isStreamCipherWithIV()) {
             secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
         }
         return secretSetSize;

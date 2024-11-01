@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import org.apache.logging.log4j.LogManager;
@@ -88,79 +90,9 @@ public class AlgorithmResolver {
         return result;
     }
 
+    @Deprecated // Use cipherSuite.getKeyExchangeAlgorithm instead
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-        if (cipherSuite.isTLS13()
-                || cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            return null;
-        }
-        String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.contains("TLS_RSA_WITH")) {
-            return KeyExchangeAlgorithm.RSA;
-        } else if (cipher.contains("TLS_RSA_EXPORT")) {
-            return KeyExchangeAlgorithm.RSA_EXPORT;
-        } else if (cipher.contains("TLS_RSA_PSK_")) {
-            return KeyExchangeAlgorithm.PSK_RSA;
-        } else if (cipher.startsWith("TLS_DH_DSS_")) {
-            return KeyExchangeAlgorithm.DH_DSS;
-        } else if (cipher.startsWith("TLS_DH_RSA_")) {
-            return KeyExchangeAlgorithm.DH_RSA;
-        } else if (cipher.startsWith("TLS_DHE_DSS_")) {
-            return KeyExchangeAlgorithm.DHE_DSS;
-        } else if (cipher.contains("TLS_DHE_RSA_")) {
-            return KeyExchangeAlgorithm.DHE_RSA;
-        } else if (cipher.contains("TLS_DHE_PSK") || cipher.contains("TLS_PSK_DHE")) {
-            return KeyExchangeAlgorithm.DHE_PSK;
-        } else if (cipher.startsWith("TLS_DH_ANON_")) {
-            return KeyExchangeAlgorithm.DH_ANON;
-        } else if (cipher.contains("TLS_ECDHE_RSA")) {
-            return KeyExchangeAlgorithm.ECDHE_RSA;
-        } else if (cipher.contains("TLS_ECDHE_ECDSA")) {
-            return KeyExchangeAlgorithm.ECDHE_ECDSA;
-        } else if (cipher.contains("TLS_ECDH_ANON")) {
-            return KeyExchangeAlgorithm.ECDH_ANON;
-        } else if (cipher.contains("TLS_ECDH_ECDSA")) {
-            return KeyExchangeAlgorithm.ECDH_ECDSA;
-        } else if (cipher.contains("TLS_ECDH_RSA")) {
-            return KeyExchangeAlgorithm.ECDH_RSA;
-        } else if (cipher.contains("TLS_ECDHE_PSK")) {
-            return KeyExchangeAlgorithm.ECDHE_PSK;
-        } else if (cipher.startsWith("TLS_NULL_")) {
-            return KeyExchangeAlgorithm.NULL;
-        } else if (cipher.startsWith("TLS_KRB5_")) {
-            return KeyExchangeAlgorithm.KRB5;
-        } else if (cipher.contains("TLS_PSK_")) {
-            return KeyExchangeAlgorithm.PSK;
-        } else if (cipher.startsWith("TLS_SRP_SHA_RSA")) {
-            return KeyExchangeAlgorithm.SRP_SHA_RSA;
-        } else if (cipher.startsWith("TLS_SRP_SHA_DSS")) {
-            return KeyExchangeAlgorithm.SRP_SHA_DSS;
-        } else if (cipher.startsWith("TLS_SRP_SHA")) {
-            return KeyExchangeAlgorithm.SRP_SHA;
-        } else if (cipher.startsWith("TLS_GOSTR341001_")) {
-            return KeyExchangeAlgorithm.VKO_GOST01;
-        } else if (cipher.startsWith("TLS_GOSTR341112_")) {
-            return KeyExchangeAlgorithm.VKO_GOST12;
-        } else if (cipher.startsWith("TLS_CECPQ1_")) {
-            return KeyExchangeAlgorithm.CECPQ1_ECDSA;
-        } else if (cipher.contains("SSL_FORTEZZA_KEA")) {
-            return KeyExchangeAlgorithm.FORTEZZA_KEA;
-        } else if (cipher.contains("ECMQV_ECNRA")) {
-            return KeyExchangeAlgorithm.ECMQV_ECNRA;
-        } else if (cipher.contains("ECMQV_ECDSA")) {
-            return KeyExchangeAlgorithm.ECMQV_ECDSA;
-        } else if (cipher.contains("ECDH_ECNRA")) {
-            return KeyExchangeAlgorithm.ECDH_ECNRA;
-        } else if (cipher.contains("ECCPWD")) {
-            return KeyExchangeAlgorithm.ECCPWD;
-        } else if (cipher.contains("TLS_GOSTR341094")) {
-            return KeyExchangeAlgorithm.VKO_GOST01;
-        }
-        LOGGER.warn(
-                "The key exchange algorithm in "
-                        + cipherSuite.toString()
-                        + " is not supported yet or does not define a key exchange algorithm.");
-        return null;
+        return cipherSuite.getKeyExchangeAlgorithm();
     }
 
     /**
@@ -170,7 +102,7 @@ public class AlgorithmResolver {
      * @return
      */
     public static X509PublicKeyType[] getSuiteableLeafCertificateKeyType(CipherSuite suite) {
-        KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
+        KeyExchangeAlgorithm keyExchangeAlgorithm = suite.getKeyExchangeAlgorithm();
         if (keyExchangeAlgorithm == null) {
             return X509PublicKeyType.values();
         }
@@ -180,7 +112,7 @@ public class AlgorithmResolver {
             case RSA:
             case RSA_EXPORT:
             case SRP_SHA_RSA:
-            case PSK_RSA:
+            case RSA_PSK:
                 return new X509PublicKeyType[] {X509PublicKeyType.RSA};
             case DH_RSA:
             case DH_DSS:
@@ -222,193 +154,86 @@ public class AlgorithmResolver {
         }
     }
 
+    @Deprecated // Use ciphersuite.getCipherAlgorithm() instead
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.contains("NULL")) {
-            return CipherAlgorithm.NULL;
-        } else if (cipher.contains("IDEA")) {
-            return CipherAlgorithm.IDEA_128;
-        } else if (cipher.contains("RC2")) {
-            return CipherAlgorithm.RC2_128;
-        } else if (cipher.contains("RC4")) {
-            return CipherAlgorithm.RC4_128;
-        } else if (cipher.contains("DES_EDE_CBC")) {
-            return CipherAlgorithm.DES_EDE_CBC;
-        } else if (cipher.contains("AES_128_CBC")) {
-            return CipherAlgorithm.AES_128_CBC;
-        } else if (cipher.contains("AES_256_CBC")) {
-            return CipherAlgorithm.AES_256_CBC;
-        } else if (cipher.contains("AES_128_GCM")) {
-            return CipherAlgorithm.AES_128_GCM;
-        } else if (cipher.contains("AES_256_GCM")) {
-            return CipherAlgorithm.AES_256_GCM;
-        } else if (cipher.contains("AES_128_CCM")) {
-            return CipherAlgorithm.AES_128_CCM;
-        } else if (cipher.contains("AES_256_CCM")) {
-            return CipherAlgorithm.AES_256_CCM;
-        } else if (cipher.contains("CAMELLIA_128_CBC")) {
-            return CipherAlgorithm.CAMELLIA_128_CBC;
-        } else if (cipher.contains("CAMELLIA_256_CBC")) {
-            return CipherAlgorithm.CAMELLIA_256_CBC;
-        } else if (cipher.contains("CAMELLIA_128_GCM")) {
-            return CipherAlgorithm.CAMELLIA_128_GCM;
-        } else if (cipher.contains("CAMELLIA_256_GCM")) {
-            return CipherAlgorithm.CAMELLIA_256_GCM;
-        } else if (cipher.contains("SEED_CBC")) {
-            return CipherAlgorithm.SEED_CBC;
-        } else if (cipher.contains("DES40_CBC")) {
-            return CipherAlgorithm.DES40_CBC;
-        } else if (cipher.contains("DES_CBC")) {
-            return CipherAlgorithm.DES_CBC;
-        } else if (cipher.contains("WITH_FORTEZZA_CBC")) {
-            return CipherAlgorithm.FORTEZZA_CBC;
-        } else if (cipher.contains("ARIA_128_CBC")) {
-            return CipherAlgorithm.ARIA_128_CBC;
-        } else if (cipher.contains("ARIA_256_CBC")) {
-            return CipherAlgorithm.ARIA_256_CBC;
-        } else if (cipher.contains("ARIA_128_GCM")) {
-            return CipherAlgorithm.ARIA_128_GCM;
-        } else if (cipher.contains("ARIA_256_GCM")) {
-            return CipherAlgorithm.ARIA_256_GCM;
-        } else if (cipher.contains("28147_CNT")) {
-            return CipherAlgorithm.GOST_28147_CNT;
-        } else if (cipher.contains("SM4_GCM")) {
-            return CipherAlgorithm.SM4_GCM;
-        } else if (cipher.contains("SM4_CCM")) {
-            return CipherAlgorithm.SM4_CCM;
-        } else if (cipher.contains("CHACHA20_POLY1305")) {
-            if (cipher.contains("UNOFFICIAL")) {
-                return CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305;
-            } else {
-                return CipherAlgorithm.CHACHA20_POLY1305;
-            }
-        }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:"
-                            + cipherSuite.name()
-                            + " does not specify a CipherAlgorithm");
-        }
-
-        LOGGER.warn(
-                "The cipher algorithm in "
-                        + cipherSuite
-                        + " is not supported yet. Falling back to NULL.");
-        return CipherAlgorithm.NULL;
+        return cipherSuite.getCipherAlgorithm();
     }
 
     /**
      * @param cipherSuite The Cipher suite for which the BulkCipherAlgorithm should be returned
      * @return The BulkCipherAlgorithm of the Cipher
      */
+    @Deprecated // Use BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite); instead
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         return BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
     }
 
     /**
      * @param cipherSuite The Cipher suite for which the CipherType should be selected
-     * @return The CipherType of the Cipher suite
+     * @return The CipherType of the Cipher suite. Can be null if its not a real cipher suite
      */
+    @Deprecated // Use cipherSuite.getCipherType() instead
     public static CipherType getCipherType(CipherSuite cipherSuite) {
-        String cs = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isGCM()
-                || cipherSuite.isCCM()
-                || cipherSuite.isOCB()
-                || cipherSuite.usesStrictExplicitIv()) {
-            return CipherType.AEAD;
-        } else if (cs.contains("AES")
-                || cs.contains("DES")
-                || cs.contains("IDEA")
-                || cs.contains("WITH_FORTEZZA")
-                || cs.contains("CAMELLIA")
-                || cs.contains("WITH_SEED")
-                || cs.contains("WITH_ARIA")
-                || cs.contains("RC2")) {
-            return CipherType.BLOCK;
-        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("28147_CNT")) {
-            return CipherType.STREAM;
-        }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:" + cipherSuite.name() + " does not specify a CipherType");
-        }
-        throw new UnsupportedOperationException(
-                "Cipher suite " + cipherSuite + " is not supported yet.");
+        return cipherSuite.getCipherType();
     }
 
     public static MacAlgorithm getMacAlgorithm(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        MacAlgorithm result = null;
-        if (getCipherType(cipherSuite) == CipherType.AEAD) {
-            result = MacAlgorithm.AEAD;
+        if (cipherSuite.getCipherType() == CipherType.AEAD) {
+            return MacAlgorithm.NONE;
         } else {
-            String cipher = cipherSuite.toString();
-            if (cipher.contains("MD5")) {
-                if (protocolVersion.isSSL()) {
-                    result = MacAlgorithm.SSLMAC_MD5;
-                } else {
-                    result = MacAlgorithm.HMAC_MD5;
+            HashAlgorithm hashAlgorithm = cipherSuite.getHashAlgorithm();
+            if (cipherSuite.name().contains("IMIT")) {
+                return MacAlgorithm.IMIT_GOST28147;
+            }
+            if (hashAlgorithm == HashAlgorithm.MD5) {
+                if (protocolVersion == ProtocolVersion.SSL3
+                        || protocolVersion == ProtocolVersion.SSL2) {
+                    return MacAlgorithm.SSLMAC_MD5;
                 }
-            } else if (cipher.endsWith("SHA")) {
-                if (protocolVersion.isSSL()) {
-                    result = MacAlgorithm.SSLMAC_SHA1;
-                } else {
-                    result = MacAlgorithm.HMAC_SHA1;
+                return MacAlgorithm.HMAC_MD5;
+            } else if (hashAlgorithm == HashAlgorithm.SHA1) {
+                if (protocolVersion == ProtocolVersion.SSL3
+                        || protocolVersion == ProtocolVersion.SSL2) {
+                    return MacAlgorithm.SSLMAC_SHA1;
                 }
-            } else if (cipher.contains("SHA256")) {
-                result = MacAlgorithm.HMAC_SHA256;
-            } else if (cipher.contains("SHA384")) {
-                result = MacAlgorithm.HMAC_SHA384;
-            } else if (cipher.contains("SHA512")) {
-                result = MacAlgorithm.HMAC_SHA512;
-            } else if (cipher.contains("SM3")) {
-                result = MacAlgorithm.HMAC_SM3;
-            } else if (cipher.endsWith("NULL")) {
-                result = MacAlgorithm.NULL;
-            } else if (cipher.endsWith("IMIT")) {
-                result = MacAlgorithm.IMIT_GOST28147;
-            } else if (cipherSuite.usesGOSTR3411()) {
-                result = MacAlgorithm.HMAC_GOSTR3411;
-            } else if (cipherSuite.usesGOSTR34112012()) {
-                result = MacAlgorithm.HMAC_GOSTR3411_2012_256;
+                return MacAlgorithm.HMAC_SHA1;
+            } else if (hashAlgorithm == HashAlgorithm.SHA256) {
+                return MacAlgorithm.HMAC_SHA256;
+            } else if (hashAlgorithm == HashAlgorithm.SHA384) {
+                return MacAlgorithm.HMAC_SHA384;
+            } else if (hashAlgorithm == HashAlgorithm.SHA512) {
+                return MacAlgorithm.HMAC_SHA512;
+            } else if (hashAlgorithm == HashAlgorithm.SM3) {
+                return MacAlgorithm.HMAC_SM3;
+            } else if (hashAlgorithm == HashAlgorithm.GOST_R3411_94) {
+                return MacAlgorithm.HMAC_GOSTR3411;
+            } else if (hashAlgorithm == HashAlgorithm.GOST_R3411_12) {
+                return MacAlgorithm.HMAC_GOSTR3411_2012_256;
+            } else if (hashAlgorithm == HashAlgorithm.NONE) {
+                return MacAlgorithm.NONE;
             }
         }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:" + cipherSuite.name() + " does not specify a MAC-Algorithm");
+        if (!cipherSuite.isRealCipherSuite()) {
+            LOGGER.warn(
+                    "Trying to retrieve MAC algorithm of a non-real cipher suite: {}", cipherSuite);
         }
-        if (result != null) {
-            LOGGER.debug("Using the following Mac Algorithm: {}", result);
-            return result;
-        } else {
-            throw new UnsupportedOperationException(
-                    "The Mac algorithm for cipher " + cipherSuite + " is not supported yet");
-        }
+        return MacAlgorithm.NONE;
     }
 
     public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
-        HKDFAlgorithm result = null;
-        String cipher = cipherSuite.toString();
-        if (cipher.endsWith("SHA256")) {
-            result = HKDFAlgorithm.TLS_HKDF_SHA256;
-        } else if (cipher.endsWith("SHA384")) {
-            result = HKDFAlgorithm.TLS_HKDF_SHA384;
-        } else if (cipher.endsWith("SM3")) {
-            result = HKDFAlgorithm.TLS_HKDF_SM3;
-        }
-        if (result != null) {
-            LOGGER.debug("Using the following HKDF Algorithm: {}", result);
-            return result;
-        } else {
-            LOGGER.warn(
-                    "The HKDF algorithm for cipher suite "
-                            + cipherSuite
-                            + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+        HashAlgorithm hashAlgorithm = cipherSuite.getHashAlgorithm();
+        if (hashAlgorithm == HashAlgorithm.SHA256) {
             return HKDFAlgorithm.TLS_HKDF_SHA256;
+        } else if (hashAlgorithm == HashAlgorithm.SHA384) {
+            return HKDFAlgorithm.TLS_HKDF_SHA384;
+        } else if (hashAlgorithm == HashAlgorithm.SM3) {
+            return HKDFAlgorithm.TLS_HKDF_SM3;
         }
+        LOGGER.warn(
+                "The HKDF algorithm for cipher suite {} is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"",
+                cipherSuite);
+        return HKDFAlgorithm.TLS_HKDF_SHA256;
     }
 
     /**
@@ -431,7 +256,7 @@ public class AlgorithmResolver {
             case RSA:
             case RSA_EXPORT:
             case SRP_SHA_RSA:
-            case PSK_RSA:
+            case RSA_PSK:
                 return SignatureAlgorithm.RSA_PKCS1;
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
