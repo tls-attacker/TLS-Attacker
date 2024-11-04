@@ -188,7 +188,7 @@ public class CertificateDelegate extends Delegate {
             config.setEcPrivateKey(ecKey.getS());
             config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
         } else {
-            throw new UnsupportedOperationException("This private key is not supporter:" + key);
+            throw new UnsupportedOperationException("This private key is not supported:" + key);
         }
     }
 }
