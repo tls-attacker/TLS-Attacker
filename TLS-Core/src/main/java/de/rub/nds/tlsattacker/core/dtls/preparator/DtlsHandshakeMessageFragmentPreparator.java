@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class DtlsHandshakeMessageFragmentPreparator
         extends Preparator<DtlsHandshakeMessageFragment> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    @SuppressWarnings private static final Logger LOGGER = LogManager.getLogger();
 
     private DtlsHandshakeMessageFragment msg;
 

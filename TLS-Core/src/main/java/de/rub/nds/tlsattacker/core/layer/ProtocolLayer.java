@@ -56,7 +56,7 @@ public abstract class ProtocolLayer<
 
     private byte[] unreadBytes;
 
-    public ProtocolLayer(LayerType layerType) {
+    protected ProtocolLayer(LayerType layerType) {
         producedDataContainers = new LinkedList<>();
         this.layerType = layerType;
         this.unreadBytes = new byte[0];
@@ -93,7 +93,7 @@ public abstract class ProtocolLayer<
 
     public LayerProcessingResult<Container> getLayerResult() {
         boolean isExecutedAsPlanned = executedAsPlanned();
-        return new LayerProcessingResult<Container>(
+        return new LayerProcessingResult<>(
                 producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
     }
 
@@ -285,10 +285,7 @@ public abstract class ProtocolLayer<
                 preparator.afterPrepare();
             } catch (PreparationException ex) {
                 LOGGER.error(
-                        "Could not prepare message "
-                                + dataContainer.toString()
-                                + ". Therefore, we skip it: ",
-                        ex);
+                        "Could not prepare message {}. Therefore, we skip it.", dataContainer, ex);
                 return false;
             }
         }
