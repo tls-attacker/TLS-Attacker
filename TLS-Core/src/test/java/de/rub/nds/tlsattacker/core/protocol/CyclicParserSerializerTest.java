@@ -288,10 +288,8 @@ public class CyclicParserSerializerTest {
 
     private static Constructor getMessageConstructor(Class someClass) {
         for (Constructor c : someClass.getConstructors()) {
-            if (c.getParameterCount() == 1) {
-                if (c.getParameterTypes()[0].equals(Config.class)) {
-                    return c;
-                }
+            if (c.getParameterCount() == 1 && c.getParameterTypes()[0].equals(Config.class)) {
+                return c;
             }
         }
         LOGGER.warn("Could not find Constructor: {}", someClass.getSimpleName());
