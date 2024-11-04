@@ -76,7 +76,7 @@ public class ParallelExecutor {
                         size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
     }
 
-    private ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
+    protected ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
         this.executorService = executorService;
         this.reexecutions = reexecutions;
         this.size = size;
