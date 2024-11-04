@@ -3280,7 +3280,7 @@ public enum CipherSuite {
             case AEAD:
                 return protocolVersion == ProtocolVersion.TLS13;
         }
-        throw new UnsupportedOperationException("CipherType " + type + " is not supported");
+        throw new UnsupportedOperationException("CipherType " + cipherType + " is not supported");
     }
 
     public boolean isUsingMac() {
