@@ -104,6 +104,9 @@ public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     * @deprecated Just use the constructor instead
+     */
     @Deprecated
     public static Config createConfig() {
         return new Config();
@@ -1445,7 +1448,6 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
-        defaultQuicTransportParameters = new QuicTransportParameters();
         defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
     }
 

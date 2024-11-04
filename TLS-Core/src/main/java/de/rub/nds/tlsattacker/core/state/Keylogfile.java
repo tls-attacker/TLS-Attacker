@@ -48,7 +48,6 @@ public class Keylogfile {
             if (!this.writeKeylog) {
                 return;
             }
-
             try {
                 File f = new File(this.path);
                 assert f.getParentFile().exists() || f.getParentFile().mkdirs();
@@ -62,16 +61,6 @@ public class Keylogfile {
                                     + DatatypeConverter.printHexBinary(key)
                                     + "\n");
                 }
-
-                FileWriter fw = new FileWriter(this.path, StandardCharsets.ISO_8859_1, true);
-                fw.write(
-                        identifier
-                                + " "
-                                + DatatypeConverter.printHexBinary(tlsContext.getClientRandom())
-                                + " "
-                                + DatatypeConverter.printHexBinary(key)
-                                + "\n");
-                fw.close();
             } catch (Exception e) {
                 LOGGER.error(e);
             }

@@ -31,7 +31,7 @@ public abstract class RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final byte[] SEQUENCE_NUMBER_PLACEHOLDER =
+    private static final byte[] SEQUENCE_NUMBER_PLACEHOLDER =
             new byte[] {
                 (byte) 0xFF,
                 (byte) 0xFF,
@@ -268,11 +268,6 @@ public abstract class RecordCipher {
         @Override
         public byte[] parseByteArrayField(int length) {
             return super.parseByteArrayField(length);
-        }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
         }
     }
 }

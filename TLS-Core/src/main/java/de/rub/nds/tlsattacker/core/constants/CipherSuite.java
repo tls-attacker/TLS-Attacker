@@ -3278,13 +3278,9 @@ public enum CipherSuite {
             case BLOCK:
                 return true;
             case AEAD:
-                if (protocolVersion != ProtocolVersion.TLS13) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return protocolVersion == ProtocolVersion.TLS13;
         }
-        return null;
+        throw new UnsupportedOperationException("CipherType " + cipherType + " is not supported");
     }
 
     public boolean isUsingMac() {

@@ -105,7 +105,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public String toShortString() {
-        if (assumedType != null
+        if (assumedType == null
                 || assumedType.getValue() == HandshakeMessageType.UNKNOWN.getValue()) {
             return "HS(?)";
         } else {

@@ -108,7 +108,7 @@ public class ServerHelloMessage extends HelloMessage {
             };
 
     public static byte[] getHelloRetryRequestRandom() {
-        return HELLO_RETRY_REQUEST_RANDOM;
+        return Arrays.copyOf(HELLO_RETRY_REQUEST_RANDOM, HELLO_RETRY_REQUEST_RANDOM.length);
     }
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -287,7 +287,7 @@ public class ServerHelloMessage extends HelloMessage {
         if (this.getRandom() != null && this.getRandom().getValue() != null) {
             return Arrays.equals(this.getRandom().getValue(), HELLO_RETRY_REQUEST_RANDOM);
         } else {
-            return null;
+            return false;
         }
     }
 

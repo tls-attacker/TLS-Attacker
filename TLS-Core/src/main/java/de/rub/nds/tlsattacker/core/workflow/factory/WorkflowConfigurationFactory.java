@@ -1042,13 +1042,12 @@ public class WorkflowConfigurationFactory {
                     return new PWDClientKeyExchangeMessage();
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                            "Unsupported key exchange algorithm: '{}', not creating ClientKeyExchange Message",
                             algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
-                    algorithm);
+                    "Unsupported key exchange algorithm: 'null', not creating ClientKeyExchange Message");
         }
         return null;
     }
@@ -1087,15 +1086,12 @@ public class WorkflowConfigurationFactory {
 
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: "
-                                    + algorithm
-                                    + ", not creating ServerKeyExchange Message");
+                            "Unsupported key exchange algorithm: '{}', not creating ServerKeyExchange Message",
+                            algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ServerKeyExchange Message");
+                    "Unsupported key exchange algorithm: 'null', not creating ServerKeyExchange Message");
         }
 
         return null;

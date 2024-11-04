@@ -94,7 +94,9 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         controlSocket
                 .getOutputStream()
                 .write((hostname + "\n").getBytes(StandardCharsets.ISO_8859_1));
-        controlSocket.getOutputStream().write((Integer.toString(dstPort) + "\n").getBytes());
+        controlSocket
+                .getOutputStream()
+                .write((Integer.toString(dstPort) + "\n").getBytes(StandardCharsets.ISO_8859_1));
         controlSocket.getOutputStream().flush();
         hostname = proxyDataHostName;
         dstPort = proxyDataPort;
@@ -127,7 +129,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
 
     @Override
     public void setMeasuringActive(boolean measuringActive) {
-        if (measuringActive == false) {
+        if (!measuringActive) {
             LOGGER.warn("Ignoring deactivation of measuring for proxy-based transport handler.");
         }
     }

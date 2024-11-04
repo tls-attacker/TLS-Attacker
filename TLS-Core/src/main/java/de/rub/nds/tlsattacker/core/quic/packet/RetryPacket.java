@@ -100,8 +100,8 @@ public class RetryPacket extends LongHeaderPacket {
             SecretKey secretKey =
                     new SecretKeySpec(
                             context.getQuicVersion() == QuicVersion.VERSION_1
-                                    ? QuicRetryConstants.QUIC1_RETRY_INTEGRITY_TAG_KEY
-                                    : QuicRetryConstants.QUIC2_RETRY_INTEGRITY_TAG_KEY,
+                                    ? QuicRetryConstants.getQuic1RetryIntegrityTagKey()
+                                    : QuicRetryConstants.getQuic2RetryIntegrityTagKey(),
                             "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             // IV is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
@@ -109,8 +109,8 @@ public class RetryPacket extends LongHeaderPacket {
                     new GCMParameterSpec(
                             128,
                             context.getQuicVersion() == QuicVersion.VERSION_1
-                                    ? QuicRetryConstants.QUIC1_RETRY_INTEGRITY_TAG_IV
-                                    : QuicRetryConstants.QUIC2_RETRY_INTEGRITY_TAG_IV);
+                                    ? QuicRetryConstants.getQuic1RetryIntegrityTagIv()
+                                    : QuicRetryConstants.getQuic2RetryIntegrityTagIv());
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
             cipher.updateAAD(pseudoPacket);
             computedTag = cipher.doFinal();

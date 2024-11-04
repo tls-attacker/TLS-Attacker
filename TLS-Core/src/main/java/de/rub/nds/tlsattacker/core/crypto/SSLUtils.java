@@ -27,20 +27,20 @@ public class SSLUtils {
             new MessageFormat(
                     "{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
 
-    public static final byte[] MD5_PAD1 =
+    private static final byte[] MD5_PAD1 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
-    public static final byte[] MD5_PAD2 =
+    private static final byte[] MD5_PAD2 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
-    public static final byte[] SHA_PAD1 =
+    private static final byte[] SHA_PAD1 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
-    public static final byte[] SHA_PAD2 =
+    private static final byte[] SHA_PAD2 =
             ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
      * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC', as stated in
      * RFC-6101. See also {@link org.bouncycastle.crypto.tls.TlsUtils} Version 1.58
      */
-    public static final byte[][] SSL3_CONST = genSSL3Const();
+    private static final byte[][] SSL3_CONST = genSSL3Const();
 
     /**
      * This method is borrowed from package-protected method {@link
@@ -166,8 +166,7 @@ public class SSLUtils {
     public static byte[] getSenderConstant(ConnectionEndType connectionEndType) {
         if (null == connectionEndType) {
             throw new IllegalArgumentException(
-                    "The ConnectionEnd should be either of Type Client or Server but it is "
-                            + connectionEndType);
+                    "The ConnectionEnd should be either of Type Client or Server but it is null");
         } else {
             switch (connectionEndType) {
                 case SERVER:
