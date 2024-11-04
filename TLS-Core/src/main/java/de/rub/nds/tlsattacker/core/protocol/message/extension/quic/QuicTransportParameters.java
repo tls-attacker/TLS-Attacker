@@ -29,14 +29,13 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 /** POJO variant of QuicTransportParameters */
-public class QuicTransportParameters implements Serializable {
+public class QuicTransportParameters {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] originalDestinationConnectionId;
