@@ -11,12 +11,12 @@ package de.rub.nds.tlsattacker.core.ice.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.PriorityAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class PriorityAttributeParser extends StunAttributeParser<PriorityAttribute> {
 
-    public PriorityAttributeParser(IceContext context, InputStream stream) {
+    public PriorityAttributeParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

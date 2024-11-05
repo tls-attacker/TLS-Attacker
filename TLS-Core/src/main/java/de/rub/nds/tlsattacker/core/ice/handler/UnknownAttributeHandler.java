@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.UnknownAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class UnknownAttributeHandler extends StunAttributeHandler<UnknownAttribute> {
 
-    public UnknownAttributeHandler(IceContext context) {
+    public UnknownAttributeHandler(Context context) {
         super(context);
     }
 

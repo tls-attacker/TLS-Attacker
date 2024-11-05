@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.IceControllingAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class IceControllingParser extends StunAttributeParser<IceControllingAttribute> {
 
-    public IceControllingParser(IceContext context, InputStream stream) {
+    public IceControllingParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

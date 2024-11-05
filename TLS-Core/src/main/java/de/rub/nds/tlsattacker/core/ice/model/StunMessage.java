@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.StunMessageHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.StunMessageParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.StunMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.StunMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -152,22 +152,22 @@ public class StunMessage extends IceMessage {
     }
 
     @Override
-    public StunMessageParser getParser(IceContext context, InputStream stream) {
+    public StunMessageParser getParser(Context context, InputStream stream) {
         return new StunMessageParser(context, stream);
     }
 
     @Override
-    public StunMessagePreparator getPreparator(IceContext context) {
+    public StunMessagePreparator getPreparator(Context context) {
         return new StunMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public StunMessageSerializer getSerializer(IceContext context) {
+    public StunMessageSerializer getSerializer(Context context) {
         return new StunMessageSerializer(context, this);
     }
 
     @Override
-    public StunMessageHandler getHandler(IceContext context) {
+    public StunMessageHandler getHandler(Context context) {
         return new StunMessageHandler(context);
     }
 

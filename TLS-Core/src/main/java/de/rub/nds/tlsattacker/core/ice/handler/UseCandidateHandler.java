@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.UseCandidateAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class UseCandidateHandler extends StunAttributeHandler<UseCandidateAttribute> {
 
-    public UseCandidateHandler(IceContext context) {
+    public UseCandidateHandler(Context context) {
         super(context);
     }
 

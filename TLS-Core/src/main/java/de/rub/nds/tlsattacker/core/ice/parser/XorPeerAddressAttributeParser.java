@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class XorPeerAddressAttributeParser extends StunAttributeParser<XorPeerAddressAttribute> {
 
-    public XorPeerAddressAttributeParser(IceContext context, InputStream stream) {
+    public XorPeerAddressAttributeParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

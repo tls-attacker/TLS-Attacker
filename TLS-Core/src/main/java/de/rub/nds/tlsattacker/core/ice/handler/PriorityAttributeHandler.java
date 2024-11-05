@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.PriorityAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class PriorityAttributeHandler extends StunAttributeHandler<PriorityAttribute> {
 
-    public PriorityAttributeHandler(IceContext context) {
+    public PriorityAttributeHandler(Context context) {
         super(context);
     }
 
     @Override
     public void adjustContext(PriorityAttribute container) {
-        context.setStunPriority(container.getPriority().getValue());
+        context.getIceContext().setStunPriority(container.getPriority().getValue());
     }
 }

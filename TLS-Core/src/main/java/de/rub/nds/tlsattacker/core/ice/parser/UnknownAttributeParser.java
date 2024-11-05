@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.ice.model.UnknownAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class UnknownAttributeParser extends StunAttributeParser<UnknownAttribute> {
 
-    public UnknownAttributeParser(IceContext context, InputStream stream) {
+    public UnknownAttributeParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

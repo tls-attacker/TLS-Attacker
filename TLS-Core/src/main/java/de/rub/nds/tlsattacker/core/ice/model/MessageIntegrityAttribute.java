@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.MessageIntegrityHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.MessageIntegrityParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.MessageIntegrityPreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.MessageIntegritySerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class MessageIntegrityAttribute extends StunAttribute {
@@ -40,22 +40,22 @@ public class MessageIntegrityAttribute extends StunAttribute {
     }
 
     @Override
-    public MessageIntegrityHandler getHandler(IceContext context) {
+    public MessageIntegrityHandler getHandler(Context context) {
         return new MessageIntegrityHandler(context);
     }
 
     @Override
-    public MessageIntegrityParser getParser(IceContext context, InputStream stream) {
+    public MessageIntegrityParser getParser(Context context, InputStream stream) {
         return new MessageIntegrityParser(context, stream);
     }
 
     @Override
-    public MessageIntegrityPreparator getPreparator(IceContext context) {
+    public MessageIntegrityPreparator getPreparator(Context context) {
         return new MessageIntegrityPreparator(context.getChooser(), this);
     }
 
     @Override
-    public MessageIntegritySerializer getSerializer(IceContext context) {
+    public MessageIntegritySerializer getSerializer(Context context) {
         return new MessageIntegritySerializer(this);
     }
 }

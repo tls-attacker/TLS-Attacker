@@ -9,18 +9,18 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.XorMappedAddressAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class XorMappedAddressAttributeHandler
         extends StunAttributeHandler<XorMappedAddressAttribute> {
 
-    public XorMappedAddressAttributeHandler(IceContext context) {
+    public XorMappedAddressAttributeHandler(Context context) {
         super(context);
     }
 
     @Override
     public void adjustContext(XorMappedAddressAttribute container) {
-        context.setAddress(container.getIpAddress().getValue());
-        context.setPort(container.getPort().getValue());
+        context.getIceContext().setAddress(container.getIpAddress().getValue());
+        context.getIceContext().setPort(container.getPort().getValue());
     }
 }

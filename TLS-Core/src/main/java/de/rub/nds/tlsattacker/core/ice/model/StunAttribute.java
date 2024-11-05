@@ -17,12 +17,11 @@ import de.rub.nds.tlsattacker.core.ice.handler.StunAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.StunAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.StunAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.StunAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
-public abstract class StunAttribute extends ModifiableVariableHolder
-        implements DataContainer<IceContext> {
+public abstract class StunAttribute extends ModifiableVariableHolder implements DataContainer {
 
     private final StunAttributeType type;
 
@@ -96,19 +95,17 @@ public abstract class StunAttribute extends ModifiableVariableHolder
     }
 
     @Override
-    public abstract StunAttributeHandler<? extends StunAttribute> getHandler(IceContext context);
+    public abstract StunAttributeHandler<? extends StunAttribute> getHandler(Context context);
 
     @Override
     public abstract StunAttributeParser<? extends StunAttribute> getParser(
-            IceContext context, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
-    public abstract StunAttributePreparator<? extends StunAttribute> getPreparator(
-            IceContext context);
+    public abstract StunAttributePreparator<? extends StunAttribute> getPreparator(Context context);
 
     @Override
-    public abstract StunAttributeSerializer<? extends StunAttribute> getSerializer(
-            IceContext context);
+    public abstract StunAttributeSerializer<? extends StunAttribute> getSerializer(Context context);
 
     @Override
     public String toShortString() {

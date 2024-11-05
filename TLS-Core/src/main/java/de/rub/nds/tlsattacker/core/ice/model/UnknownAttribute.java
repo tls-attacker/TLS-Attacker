@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.UnknownAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.UnknownAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.UnknownAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.UnknownAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class UnknownAttribute extends StunAttribute {
@@ -46,22 +46,22 @@ public class UnknownAttribute extends StunAttribute {
     }
 
     @Override
-    public UnknownAttributeHandler getHandler(IceContext context) {
+    public UnknownAttributeHandler getHandler(Context context) {
         return new UnknownAttributeHandler(context);
     }
 
     @Override
-    public UnknownAttributeParser getParser(IceContext context, InputStream stream) {
+    public UnknownAttributeParser getParser(Context context, InputStream stream) {
         return new UnknownAttributeParser(context, stream);
     }
 
     @Override
-    public UnknownAttributePreparator getPreparator(IceContext context) {
+    public UnknownAttributePreparator getPreparator(Context context) {
         return new UnknownAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UnknownAttributeSerializer getSerializer(IceContext context) {
+    public UnknownAttributeSerializer getSerializer(Context context) {
         return new UnknownAttributeSerializer(this);
     }
 }

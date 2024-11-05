@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.ChannelDataMessageHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.ChannelDataMessageParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.ChannelDataMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class ChannelDataMessage extends IceMessage {
@@ -94,22 +94,22 @@ public class ChannelDataMessage extends IceMessage {
     }
 
     @Override
-    public ChannelDataMessageParser getParser(IceContext context, InputStream stream) {
+    public ChannelDataMessageParser getParser(Context context, InputStream stream) {
         return new ChannelDataMessageParser(stream);
     }
 
     @Override
-    public ChannelDataMessagePreparator getPreparator(IceContext context) {
+    public ChannelDataMessagePreparator getPreparator(Context context) {
         return new ChannelDataMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public ChannelDataMessageSerializer getSerializer(IceContext context) {
+    public ChannelDataMessageSerializer getSerializer(Context context) {
         return new ChannelDataMessageSerializer(this);
     }
 
     @Override
-    public ChannelDataMessageHandler getHandler(IceContext context) {
+    public ChannelDataMessageHandler getHandler(Context context) {
         return new ChannelDataMessageHandler();
     }
 

@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.ice.model.SoftwareAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class SoftwareAttributeParser extends StunAttributeParser<SoftwareAttribute> {
 
-    public SoftwareAttributeParser(IceContext context, InputStream stream) {
+    public SoftwareAttributeParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

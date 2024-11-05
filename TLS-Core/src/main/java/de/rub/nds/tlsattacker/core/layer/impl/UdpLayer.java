@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import static de.rub.nds.tlsattacker.core.layer.ProtocolLayer.LOGGER;
+
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;

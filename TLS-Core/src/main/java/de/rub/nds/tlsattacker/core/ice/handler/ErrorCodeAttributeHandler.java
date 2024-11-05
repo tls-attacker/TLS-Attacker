@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.ErrorCodeAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class ErrorCodeAttributeHandler extends StunAttributeHandler<ErrorCodeAttribute> {
 
-    public ErrorCodeAttributeHandler(IceContext context) {
+    public ErrorCodeAttributeHandler(Context context) {
         super(context);
     }
 
     @Override
     public void adjustContext(ErrorCodeAttribute container) {
-        context.setStunErrorCode(container.getNumber().getValue());
+        context.getIceContext().setStunErrorCode(container.getNumber().getValue());
     }
 }

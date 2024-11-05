@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.PriorityAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.PriorityAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.PriorityAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.PriorityAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class PriorityAttribute extends StunAttribute {
@@ -40,22 +40,22 @@ public class PriorityAttribute extends StunAttribute {
     }
 
     @Override
-    public PriorityAttributeHandler getHandler(IceContext context) {
+    public PriorityAttributeHandler getHandler(Context context) {
         return new PriorityAttributeHandler(context);
     }
 
     @Override
-    public PriorityAttributeParser getParser(IceContext context, InputStream stream) {
+    public PriorityAttributeParser getParser(Context context, InputStream stream) {
         return new PriorityAttributeParser(context, stream);
     }
 
     @Override
-    public PriorityAttributePreparator getPreparator(IceContext context) {
+    public PriorityAttributePreparator getPreparator(Context context) {
         return new PriorityAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PriorityAttributeSerializer getSerializer(IceContext context) {
+    public PriorityAttributeSerializer getSerializer(Context context) {
         return new PriorityAttributeSerializer(this);
     }
 }

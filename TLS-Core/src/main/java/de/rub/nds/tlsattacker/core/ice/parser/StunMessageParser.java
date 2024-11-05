@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.ice.factory.AttributeFactory;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -28,9 +29,9 @@ public class StunMessageParser extends IceMessageParser<StunMessage> {
 
     private IceContext context;
 
-    public StunMessageParser(IceContext context, InputStream stream) {
+    public StunMessageParser(Context context, InputStream stream) {
         super(stream);
-        this.context = context;
+        this.context = context.getIceContext();
     }
 
     @Override

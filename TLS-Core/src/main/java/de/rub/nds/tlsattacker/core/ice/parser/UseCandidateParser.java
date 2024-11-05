@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.ice.model.UseCandidateAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class UseCandidateParser extends StunAttributeParser<UseCandidateAttribute> {
 
-    public UseCandidateParser(IceContext context, InputStream stream) {
+    public UseCandidateParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

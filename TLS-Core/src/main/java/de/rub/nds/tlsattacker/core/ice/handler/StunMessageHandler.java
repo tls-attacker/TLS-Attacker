@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,8 +20,8 @@ public class StunMessageHandler extends IceMessageHandler<StunMessage> {
     /** context */
     protected final IceContext iceContext;
 
-    public StunMessageHandler(IceContext iceContext) {
-        this.iceContext = iceContext;
+    public StunMessageHandler(Context context) {
+        this.iceContext = context.getIceContext();
     }
 
     @Override

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.UseCandidateHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.UseCandidateParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.UseCandidatePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.UseCandidateSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class UseCandidateAttribute extends StunAttribute {
@@ -23,22 +23,22 @@ public class UseCandidateAttribute extends StunAttribute {
     }
 
     @Override
-    public UseCandidateHandler getHandler(IceContext context) {
+    public UseCandidateHandler getHandler(Context context) {
         return new UseCandidateHandler(context);
     }
 
     @Override
-    public UseCandidateParser getParser(IceContext context, InputStream stream) {
+    public UseCandidateParser getParser(Context context, InputStream stream) {
         return new UseCandidateParser(context, stream);
     }
 
     @Override
-    public UseCandidatePreparator getPreparator(IceContext context) {
+    public UseCandidatePreparator getPreparator(Context context) {
         return new UseCandidatePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UseCandidateSerializer getSerializer(IceContext context) {
+    public UseCandidateSerializer getSerializer(Context context) {
         return new UseCandidateSerializer(this);
     }
 }

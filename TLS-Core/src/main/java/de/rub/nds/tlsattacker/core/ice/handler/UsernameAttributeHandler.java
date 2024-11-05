@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.UsernameAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class UsernameAttributeHandler extends StunAttributeHandler<UsernameAttribute> {
 
-    public UsernameAttributeHandler(IceContext context) {
+    public UsernameAttributeHandler(Context context) {
         super(context);
     }
 
     @Override
     public void adjustContext(UsernameAttribute container) {
-        context.setStunUsername(container.getUsername().getValue());
+        context.getIceContext().setStunUsername(container.getUsername().getValue());
     }
 }

@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.FingerprintAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.FingerprintAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.FingerprintAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.FingerprintAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class FingerprintAttribute extends StunAttribute {
@@ -40,22 +40,22 @@ public class FingerprintAttribute extends StunAttribute {
     }
 
     @Override
-    public FingerprintAttributeHandler getHandler(IceContext context) {
+    public FingerprintAttributeHandler getHandler(Context context) {
         return new FingerprintAttributeHandler(context);
     }
 
     @Override
-    public FingerprintAttributeParser getParser(IceContext context, InputStream stream) {
+    public FingerprintAttributeParser getParser(Context context, InputStream stream) {
         return new FingerprintAttributeParser(context, stream);
     }
 
     @Override
-    public FingerprintAttributePreparator getPreparator(IceContext context) {
+    public FingerprintAttributePreparator getPreparator(Context context) {
         return new FingerprintAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public FingerprintAttributeSerializer getSerializer(IceContext context) {
+    public FingerprintAttributeSerializer getSerializer(Context context) {
         return new FingerprintAttributeSerializer(this);
     }
 }

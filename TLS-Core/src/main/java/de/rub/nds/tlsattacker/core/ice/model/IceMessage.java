@@ -15,10 +15,10 @@ import de.rub.nds.tlsattacker.core.ice.parser.IceMessageParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.IceMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.IceMessageSerializer;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
-public abstract class IceMessage extends Message<IceContext> {
+public abstract class IceMessage extends Message {
 
     private ModifiableByteArray completeMessageBytes;
 
@@ -37,15 +37,15 @@ public abstract class IceMessage extends Message<IceContext> {
     }
 
     @Override
-    public abstract IceMessageHandler<? extends IceMessage> getHandler(IceContext context);
+    public abstract IceMessageHandler<? extends IceMessage> getHandler(Context context);
 
     @Override
     public abstract IceMessageParser<? extends IceMessage> getParser(
-            IceContext context, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
-    public abstract IceMessagePreparator<? extends IceMessage> getPreparator(IceContext context);
+    public abstract IceMessagePreparator<? extends IceMessage> getPreparator(Context context);
 
     @Override
-    public abstract IceMessageSerializer<? extends IceMessage> getSerializer(IceContext context);
+    public abstract IceMessageSerializer<? extends IceMessage> getSerializer(Context context);
 }

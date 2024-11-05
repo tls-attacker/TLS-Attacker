@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class FingerprintAttributeParser extends StunAttributeParser<FingerprintAttribute> {
 
-    public FingerprintAttributeParser(IceContext context, InputStream stream) {
+    public FingerprintAttributeParser(Context context, InputStream stream) {
         super(context, stream);
     }
 

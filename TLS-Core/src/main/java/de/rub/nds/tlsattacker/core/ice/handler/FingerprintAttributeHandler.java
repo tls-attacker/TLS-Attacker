@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class FingerprintAttributeHandler extends StunAttributeHandler<FingerprintAttribute> {
 
-    public FingerprintAttributeHandler(IceContext context) {
+    public FingerprintAttributeHandler(Context context) {
         super(context);
     }
 
