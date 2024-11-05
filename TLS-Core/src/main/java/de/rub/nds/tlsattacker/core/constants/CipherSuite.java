@@ -3231,7 +3231,9 @@ public enum CipherSuite {
      * @return True if the cipher suite is Ephemeral
      */
     public boolean isEphemeral() {
-        return keyExchangeAlgorithm.isKeyExchangeEphemeral() || this.isPWD() || this.isTls13();
+        return this.isTls13()
+                || (keyExchangeAlgorithm != null
+                        && (keyExchangeAlgorithm.isKeyExchangeEphemeral() || this.isPWD()));
     }
 
     public boolean isPskOrDhPsk() {
