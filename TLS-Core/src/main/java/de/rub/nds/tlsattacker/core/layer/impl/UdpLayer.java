@@ -20,8 +20,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream

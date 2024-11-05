@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.quic.parser.packet;
 
-import java.io.InputStream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class VersionNegotiationPacketParser
         extends LongHeaderPacketParser<VersionNegotiationPacket> {
