@@ -1042,13 +1042,12 @@ public class WorkflowConfigurationFactory {
                     return new PWDClientKeyExchangeMessage();
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                            "Unsupported key exchange algorithm: '{}', not creating ClientKeyExchange Message",
                             algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
-                    algorithm);
+                    "Unsupported key exchange algorithm: 'null', not creating ClientKeyExchange Message");
         }
         return null;
     }
@@ -1087,15 +1086,12 @@ public class WorkflowConfigurationFactory {
 
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: "
-                                    + algorithm
-                                    + ", not creating ServerKeyExchange Message");
+                            "Unsupported key exchange algorithm: '{}', not creating ServerKeyExchange Message",
+                            algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ServerKeyExchange Message");
+                    "Unsupported key exchange algorithm: 'null', not creating ServerKeyExchange Message");
         }
 
         return null;
@@ -1309,7 +1305,7 @@ public class WorkflowConfigurationFactory {
     }
 
     public WorkflowTrace createQuicVersionNegotiationWorkflow(AliasedConnection connection) {
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config,
@@ -1326,12 +1322,12 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createQuicConnectionMigrationWorkflow(
             AliasedConnection connection, boolean switchToIPv6) {
-        WorkflowTrace trace = createHandshakeWorkflow();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
         trace.addTlsAction(new ResetConnectionAction(false, switchToIPv6));
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(
                         config, connection, ConnectionEndType.CLIENT, new PingFrame()));
-        TlsAction pathChallengeAction = new QuicPathChallengeAction(connection.getAlias());
+        TlsAction pathChallengeAction = new QuicPathChallengeAction(connection.getAlias(), false);
         trace.addTlsAction(pathChallengeAction);
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(

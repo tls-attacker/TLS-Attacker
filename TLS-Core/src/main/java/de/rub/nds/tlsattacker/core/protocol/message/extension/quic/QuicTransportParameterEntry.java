@@ -85,7 +85,7 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
             case ORIGINAL_DESTINATION_CONNECTION_ID:
             case INITIAL_SOURCE_CONNECTION_ID:
             case RETRY_SOURCE_CONNECTION_ID:
-                return ArrayConverter.bytesToHexString(this.entryValue);
+                return ArrayConverter.bytesToHexString(this.entryValue, false);
             case MAX_IDLE_TIMEOUT:
             case MAX_UDP_PAYLOAD_SIZE:
             case INITIAL_MAX_DATA:
@@ -107,7 +107,7 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
                                 this.entryValue.getValue()))
                         .toString();
             default:
-                return ArrayConverter.bytesToHexString(this.entryValue);
+                return ArrayConverter.bytesToHexString(this.entryValue, false);
         }
     }
 

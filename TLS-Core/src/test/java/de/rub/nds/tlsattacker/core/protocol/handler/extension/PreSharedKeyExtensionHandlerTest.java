@@ -48,7 +48,7 @@ public class PreSharedKeyExtensionHandlerTest
         List<PskSet> pskSetList = new ArrayList<>();
         pskSetList.add(pskSet1);
         pskSetList.add(pskSet2);
-        context.setPskSets(pskSetList);
+        tlsContext.setPskSets(pskSetList);
     }
 
     @Test
@@ -59,8 +59,8 @@ public class PreSharedKeyExtensionHandlerTest
         msg.setSelectedIdentity(selectedIdentity);
         handler.adjustContext(msg);
 
-        assertArrayEquals(pskSet2.getPreSharedKey(), context.getPsk());
-        assertEquals(selectedIdentity, context.getSelectedIdentityIndex());
+        assertArrayEquals(pskSet2.getPreSharedKey(), tlsContext.getPsk());
+        assertEquals(selectedIdentity, tlsContext.getSelectedIdentityIndex());
     }
 
     @Test
@@ -68,15 +68,15 @@ public class PreSharedKeyExtensionHandlerTest
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
         handler.adjustContext(msg);
 
-        assertArrayEquals(pskSet1.getPreSharedKeyIdentity(), context.getEarlyDataPSKIdentity());
+        assertArrayEquals(pskSet1.getPreSharedKeyIdentity(), tlsContext.getEarlyDataPSKIdentity());
         assertArrayEquals(
                 pskSet1.getCipherSuite().getByteValue(),
-                context.getEarlyDataCipherSuite().getByteValue());
+                tlsContext.getEarlyDataCipherSuite().getByteValue());
     }
 
     @Test
     public void testadjustContextServerEndType() {
-        context.getContext().setConnection(new InboundConnection());
+        tlsContext.setConnection(new InboundConnection());
         PreSharedKeyExtensionMessage msg = new PreSharedKeyExtensionMessage();
 
         PSKIdentity id1 = new PSKIdentity();
@@ -91,10 +91,10 @@ public class PreSharedKeyExtensionHandlerTest
 
         handler.adjustContext(msg);
 
-        assertArrayEquals(pskSet2.getPreSharedKey(), context.getPsk());
+        assertArrayEquals(pskSet2.getPreSharedKey(), tlsContext.getPsk());
         assertArrayEquals(
                 pskSet2.getCipherSuite().getByteValue(),
-                context.getEarlyDataCipherSuite().getByteValue());
-        assertEquals(1, context.getSelectedIdentityIndex());
+                tlsContext.getEarlyDataCipherSuite().getByteValue());
+        assertEquals(1, tlsContext.getSelectedIdentityIndex());
     }
 }

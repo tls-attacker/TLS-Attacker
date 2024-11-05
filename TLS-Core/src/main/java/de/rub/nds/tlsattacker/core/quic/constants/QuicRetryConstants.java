@@ -9,15 +9,34 @@
 package de.rub.nds.tlsattacker.core.quic.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.util.Arrays;
 
 public class QuicRetryConstants {
 
-    public static final byte[] QUIC1_RETRY_INTEGRITY_TAG_KEY =
+    private static final byte[] QUIC1_RETRY_INTEGRITY_TAG_KEY =
             ArrayConverter.hexStringToByteArray("be0c690b9f66575a1d766b54e368c84e");
-    public static final byte[] QUIC2_RETRY_INTEGRITY_TAG_KEY =
+    private static final byte[] QUIC2_RETRY_INTEGRITY_TAG_KEY =
             ArrayConverter.hexStringToByteArray("8fb4b01b56ac48e260fbcbcead7ccc92");
-    public static final byte[] QUIC1_RETRY_INTEGRITY_TAG_IV =
+    private static final byte[] QUIC1_RETRY_INTEGRITY_TAG_IV =
             ArrayConverter.hexStringToByteArray("461599d35d632bf2239825bb");
-    public static final byte[] QUIC2_RETRY_INTEGRITY_TAG_IV =
+    private static final byte[] QUIC2_RETRY_INTEGRITY_TAG_IV =
             ArrayConverter.hexStringToByteArray("d86969bc2d7c6d9990efb04a");
+
+    public static byte[] getQuic1RetryIntegrityTagKey() {
+        return Arrays.copyOf(QUIC1_RETRY_INTEGRITY_TAG_KEY, QUIC1_RETRY_INTEGRITY_TAG_KEY.length);
+    }
+
+    public static byte[] getQuic2RetryIntegrityTagKey() {
+        return Arrays.copyOf(QUIC2_RETRY_INTEGRITY_TAG_KEY, QUIC2_RETRY_INTEGRITY_TAG_KEY.length);
+    }
+
+    public static byte[] getQuic1RetryIntegrityTagIv() {
+        return Arrays.copyOf(QUIC1_RETRY_INTEGRITY_TAG_IV, QUIC1_RETRY_INTEGRITY_TAG_IV.length);
+    }
+
+    public static byte[] getQuic2RetryIntegrityTagIv() {
+        return Arrays.copyOf(QUIC2_RETRY_INTEGRITY_TAG_IV, QUIC2_RETRY_INTEGRITY_TAG_IV.length);
+    }
+
+    private QuicRetryConstants() {}
 }

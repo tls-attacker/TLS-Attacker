@@ -218,7 +218,7 @@ public class AlgorithmResolver {
             LOGGER.warn(
                     "Trying to retrieve MAC algorithm of a non-real cipher suite: {}", cipherSuite);
         }
-        return null;
+        return MacAlgorithm.NONE;
     }
 
     public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
@@ -231,9 +231,8 @@ public class AlgorithmResolver {
             return HKDFAlgorithm.TLS_HKDF_SM3;
         }
         LOGGER.warn(
-                "The HKDF algorithm for cipher suite "
-                        + cipherSuite
-                        + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+                "The HKDF algorithm for cipher suite {} is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"",
+                cipherSuite);
         return HKDFAlgorithm.TLS_HKDF_SHA256;
     }
 

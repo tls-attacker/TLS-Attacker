@@ -122,7 +122,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         for (CertificateEntry pair : certificateMessage.getCertificateEntryList()) {
             if (pair.getExtensionList() != null) {
                 for (ExtensionMessage extensionMessage : pair.getExtensionList()) {
-                    ExtensionHandler handler = extensionMessage.getHandler(tlsContext);
+                    ExtensionHandler handler = extensionMessage.getHandler(tlsContext.getContext());
                     handler.adjustContext(extensionMessage);
                 }
             }

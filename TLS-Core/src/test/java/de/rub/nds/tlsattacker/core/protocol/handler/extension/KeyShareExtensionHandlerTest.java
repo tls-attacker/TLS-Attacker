@@ -38,9 +38,9 @@ public class KeyShareExtensionHandlerTest
     @Test
     @Override
     public void testadjustTLSExtensionContext() {
-        context.setConnection(new OutboundConnection());
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+        tlsContext.setConnection(new OutboundConnection());
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
         List<KeyShareEntry> pairList = new LinkedList<>();
         KeyShareEntry pair =
@@ -56,8 +56,8 @@ public class KeyShareExtensionHandlerTest
         pairList.add(pair);
         msg.setKeyShareList(pairList);
         handler.adjustContext(msg);
-        assertNotNull(context.getServerKeyShareStoreEntry());
-        KeyShareStoreEntry entry = context.getServerKeyShareStoreEntry();
+        assertNotNull(tlsContext.getServerKeyShareStoreEntry());
+        KeyShareStoreEntry entry = tlsContext.getServerKeyShareStoreEntry();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
                         "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),

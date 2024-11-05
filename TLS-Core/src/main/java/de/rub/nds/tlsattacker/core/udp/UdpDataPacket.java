@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.udp;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
-public class UdpDataPacket implements DataContainer<LayerContext> {
+public class UdpDataPacket implements DataContainer {
 
     private String sourceIp;
 
@@ -47,22 +47,22 @@ public class UdpDataPacket implements DataContainer<LayerContext> {
     }
 
     @Override
-    public UdpDataPacketParser getParser(LayerContext context, InputStream stream) {
+    public UdpDataPacketParser getParser(Context context, InputStream stream) {
         return new UdpDataPacketParser(stream);
     }
 
     @Override
-    public UdpDataPacketPreparator getPreparator(LayerContext context) {
+    public UdpDataPacketPreparator getPreparator(Context context) {
         return new UdpDataPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public UdpDataPacketSerializer getSerializer(LayerContext context) {
+    public UdpDataPacketSerializer getSerializer(Context context) {
         return new UdpDataPacketSerializer(this);
     }
 
     @Override
-    public UdpDataPacketHandler getHandler(LayerContext context) {
+    public UdpDataPacketHandler getHandler(Context context) {
         return new UdpDataPacketHandler();
     }
 

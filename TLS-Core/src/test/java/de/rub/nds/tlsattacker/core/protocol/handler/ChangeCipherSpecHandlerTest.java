@@ -26,8 +26,8 @@ public class ChangeCipherSpecHandlerTest
     @Override
     public void testadjustContext() {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        context.setSelectedCipherSuite(CipherSuite.getImplemented().get(0));
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setSelectedCipherSuite(CipherSuite.getImplemented().get(0));
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(message);
         // TODO check that change did actually work
     }

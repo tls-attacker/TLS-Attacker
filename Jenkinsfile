@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         JDK_TOOL_NAME = 'JDK 11'
-        MAVEN_TOOL_NAME = 'Maven 3.8.6'
+        MAVEN_TOOL_NAME = 'Maven 3.9.9'
     }
 
     options {
@@ -111,7 +111,10 @@ pipeline {
                     junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
                 }
                 success {
-                    publishCoverage adapters: [jacoco(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')]
+                    discoverReferenceBuild()
+                    recordCoverage(tools: [[ parser: 'JACOCO' ]],
+                            id: 'jacoco', name: 'JaCoCo Coverage',
+                            sourceCodeRetention: 'LAST_BUILD')
                 }
             }
         }

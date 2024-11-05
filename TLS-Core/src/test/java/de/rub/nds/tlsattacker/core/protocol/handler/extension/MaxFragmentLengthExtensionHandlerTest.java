@@ -22,7 +22,7 @@ public class MaxFragmentLengthExtensionHandlerTest
 
     public MaxFragmentLengthExtensionHandlerTest() {
         super(MaxFragmentLengthExtensionMessage::new, MaxFragmentLengthExtensionHandler::new);
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 
     /** Test of adjustContext method, of class MaxFragmentLengthExtensionHandler. */
@@ -32,7 +32,7 @@ public class MaxFragmentLengthExtensionHandlerTest
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] {1});
         handler.adjustTLSExtensionContext(msg);
-        assertSame(context.getMaxFragmentLength(), MaxFragmentLength.TWO_9);
+        assertSame(tlsContext.getMaxFragmentLength(), MaxFragmentLength.TWO_9);
     }
 
     @Test
@@ -40,6 +40,6 @@ public class MaxFragmentLengthExtensionHandlerTest
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
         msg.setMaxFragmentLength(new byte[] {77});
         handler.adjustContext(msg);
-        assertNull(context.getMaxFragmentLength());
+        assertNull(tlsContext.getMaxFragmentLength());
     }
 }

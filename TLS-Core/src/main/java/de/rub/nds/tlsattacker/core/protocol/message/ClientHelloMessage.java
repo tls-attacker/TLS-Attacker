@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -34,23 +34,22 @@ public class ClientHelloMessage extends CoreClientHelloMessage {
     }
 
     @Override
-    public ClientHelloHandler getHandler(TlsContext tlsContext) {
-        return new ClientHelloHandler(tlsContext);
+    public ClientHelloHandler getHandler(Context context) {
+        return new ClientHelloHandler(context.getTlsContext());
     }
 
     @Override
-    public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientHelloParser(stream, tlsContext);
+    public ClientHelloParser getParser(Context context, InputStream stream) {
+        return new ClientHelloParser(stream, context.getTlsContext());
     }
 
     @Override
-    public ClientHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientHelloPreparator(tlsContext.getChooser(), this);
+    public ClientHelloPreparator getPreparator(Context context) {
+        return new ClientHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ClientHelloSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ClientHelloSerializer getSerializer(Context context) {
+        return new ClientHelloSerializer(this, context.getChooser().getSelectedProtocolVersion());
     }
 }

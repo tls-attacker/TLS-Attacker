@@ -1,0 +1,9 @@
+<FindBugsFilter>
+  <!-- Exclude specific bug patterns -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+</FindBugsFilter>

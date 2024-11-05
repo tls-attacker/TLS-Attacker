@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -146,27 +146,27 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
-        return new DHEServerKeyExchangeHandler<>(tlsContext);
+            Context context) {
+        return new DHEServerKeyExchangeHandler<>(context.getTlsContext());
     }
 
     @Override
     public DHEServerKeyExchangeParser<? extends DHEServerKeyExchangeMessage> getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser<>(stream, tlsContext);
+            Context context, InputStream stream) {
+        return new DHEServerKeyExchangeParser<>(stream, context.getTlsContext());
     }
 
     @Override
     public DHEServerKeyExchangePreparator<? extends DHEServerKeyExchangeMessage> getPreparator(
-            TlsContext tlsContext) {
-        return new DHEServerKeyExchangePreparator<>(tlsContext.getChooser(), this);
+            Context context) {
+        return new DHEServerKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
     public DHEServerKeyExchangeSerializer<? extends DHEServerKeyExchangeMessage> getSerializer(
-            TlsContext tlsContext) {
+            Context context) {
         return new DHEServerKeyExchangeSerializer<>(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

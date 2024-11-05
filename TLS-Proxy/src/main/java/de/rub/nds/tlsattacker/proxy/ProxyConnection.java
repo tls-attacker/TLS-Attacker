@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.proxy;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.socket.TlsAttackerSslSocket;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
@@ -30,17 +27,10 @@ public class ProxyConnection implements Runnable {
     private final Config config;
     private final ProxyConfig proxyConfig;
 
-    public ProxyConnection(ProxyConfig proxyConfig, Socket socket) throws IOException {
+    public ProxyConnection(ProxyConfig proxyConfig, Config config, Socket socket) {
         this.incomingSocket = socket;
         this.proxyConfig = proxyConfig;
-        if (proxyConfig.getDefaultConfig() != null) {
-            try (FileInputStream fis = new FileInputStream(proxyConfig.getDefaultConfig())) {
-                config = ConfigIO.read(fis);
-            }
-        } else {
-            config = new Config();
-        }
-        LOGGER.info("Accepted a connection!");
+        this.config = config;
     }
 
     public ProxyConfig getProxyConfig() {
@@ -60,7 +50,7 @@ public class ProxyConnection implements Runnable {
                         }
                         int length = inputStream.read();
                         for (int i = 0; i < length; i++) {
-                            System.out.println("Reading authentication method");
+                            LOGGER.debug("Reading authentication method");
                             inputStream.read();
                         }
                         incomingSocket.getOutputStream().write(new byte[] {0x05, 0x00});

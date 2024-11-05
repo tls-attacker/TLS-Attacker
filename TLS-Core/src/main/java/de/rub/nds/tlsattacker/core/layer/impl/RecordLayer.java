@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,7 +53,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final Context context;
+    private final TlsContext tlsContext;
 
     private final Decryptor decryptor;
     private final Encryptor encryptor;
@@ -63,13 +65,14 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
-    public RecordLayer(TlsContext context) {
+    public RecordLayer(Context context) {
         super(ImplementedLayers.RECORD);
         this.context = context;
-        encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(context), context);
-        decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(context), context);
-        compressor = new RecordCompressor(context);
-        decompressor = new RecordDecompressor(context);
+        this.tlsContext = context.getTlsContext();
+        encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
+        decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
+        compressor = new RecordCompressor(tlsContext);
+        decompressor = new RecordDecompressor(tlsContext);
     }
 
     /**
@@ -100,7 +103,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     record.setCleanProtocolMessageBytes(new byte[0]);
                 }
                 RecordPreparator preparator =
-                        record.getRecordPreparator(context, encryptor, compressor, contentType);
+                        record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
                 preparator.prepare();
                 preparator.afterPrepare();
                 RecordSerializer serializer = record.getRecordSerializer();
@@ -150,11 +153,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 new CleanRecordByteSeperator(
                         maxDataSize,
                         new ByteArrayInputStream(data),
-                        context.getConfig().isCreateRecordsDynamically());
+                        context.getConfig().isCreateRecordsDynamically(),
+                        true);
         List<Record> records = new LinkedList<>();
 
         List<Record> givenRecords = getUnprocessedConfiguredContainers();
 
+        boolean mustStillCoverEmptyMessageFromUpperLayer = data.length == 0;
         // if we are given records we should assign messages to them
         if (getLayerConfiguration().getContainerList() != null && givenRecords.size() > 0) {
             if (context.getConfig().getPreserveMessageRecordRelation()) {
@@ -164,7 +169,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } else {
                 // assign as many records as we need for the message
                 int dataToBeSent = data.length;
-                while (givenRecords.size() > 0 && dataToBeSent > 0) {
+                while (givenRecords.size() > 0
+                        && (dataToBeSent > 0 || mustStillCoverEmptyMessageFromUpperLayer)) {
                     Record nextRecord = givenRecords.remove(0);
                     records.add(nextRecord);
                     int recordData =
@@ -195,7 +201,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 record.setEpoch(writeEpoch);
             }
             RecordPreparator preparator =
-                    record.getRecordPreparator(context, encryptor, compressor, contentType);
+                    record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
             preparator.prepare();
             preparator.afterPrepare();
             try {
@@ -222,7 +228,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
-                new RecordParser(dataStream, getDecryptorCipher().getState().getVersion(), context);
+                new RecordParser(
+                        dataStream, getDecryptorCipher().getState().getVersion(), tlsContext);
         boolean receivedHintRecord = false;
         try {
             while (!receivedHintRecord) {
@@ -231,7 +238,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 // TODO it would be good to have a record handler here
                 ProtocolVersion protocolVersion =
                         ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
-                context.setLastRecordVersion(protocolVersion);
+                tlsContext.setLastRecordVersion(protocolVersion);
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
                 addProducedContainer(record);
@@ -332,7 +339,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         for (Record record : records) {
             RecordPreparator preparator =
                     record.getRecordPreparator(
-                            this.context,
+                            tlsContext,
                             getEncryptor(),
                             getCompressor(),
                             record.getContentMessageType());

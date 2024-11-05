@@ -74,7 +74,7 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
         try {
             QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
         } catch (CryptoException | NoSuchAlgorithmException e) {
-            LOGGER.error("Could not initial secrets: {}", e);
+            LOGGER.error("Could not initial secrets", e);
         }
     }
 }

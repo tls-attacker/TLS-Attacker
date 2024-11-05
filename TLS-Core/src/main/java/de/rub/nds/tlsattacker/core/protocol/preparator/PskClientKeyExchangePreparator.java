@@ -43,21 +43,18 @@ public class PskClientKeyExchangePreparator
     }
 
     public byte[] generatePremasterSecret() {
+        byte[] psk = chooser.getConfig().getDefaultPSKKey();
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(
-                    ArrayConverter.intToBytes(
-                            chooser.getConfig().getDefaultPSKKey().length,
-                            HandshakeByteLength.PSK_LENGTH));
+                    ArrayConverter.intToBytes(psk.length, HandshakeByteLength.PSK_LENGTH));
+            if (psk.length > 0) {
+                outputStream.write(
+                        ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, psk.length));
+            }
             outputStream.write(
-                    ArrayConverter.intToBytes(
-                            HandshakeByteLength.PSK_ZERO,
-                            chooser.getConfig().getDefaultPSKKey().length));
-            outputStream.write(
-                    ArrayConverter.intToBytes(
-                            chooser.getConfig().getDefaultPSKKey().length,
-                            HandshakeByteLength.PSK_LENGTH));
-            outputStream.write(chooser.getConfig().getDefaultPSKKey());
+                    ArrayConverter.intToBytes(psk.length, HandshakeByteLength.PSK_LENGTH));
+            outputStream.write(psk);
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
             LOGGER.debug(ex);

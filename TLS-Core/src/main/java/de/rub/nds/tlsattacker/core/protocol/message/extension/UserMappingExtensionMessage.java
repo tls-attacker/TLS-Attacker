@@ -12,11 +12,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -43,22 +43,22 @@ public class UserMappingExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public UserMappingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UserMappingExtensionParser(stream, tlsContext);
+    public UserMappingExtensionParser getParser(Context context, InputStream stream) {
+        return new UserMappingExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public UserMappingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new UserMappingExtensionPreparator(tlsContext.getChooser(), this);
+    public UserMappingExtensionPreparator getPreparator(Context context) {
+        return new UserMappingExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public UserMappingExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public UserMappingExtensionSerializer getSerializer(Context context) {
         return new UserMappingExtensionSerializer(this);
     }
 
     @Override
-    public UserMappingExtensionHandler getHandler(TlsContext tlsContext) {
-        return new UserMappingExtensionHandler(tlsContext);
+    public UserMappingExtensionHandler getHandler(Context context) {
+        return new UserMappingExtensionHandler(context.getTlsContext());
     }
 }

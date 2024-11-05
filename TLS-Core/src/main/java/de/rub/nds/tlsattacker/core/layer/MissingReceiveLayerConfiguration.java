@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Level;
  *
  * @param <Container>
  */
-public class MissingReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class MissingReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     public MissingReceiveLayerConfiguration(LayerType layerType) {

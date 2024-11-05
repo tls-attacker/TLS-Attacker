@@ -12,6 +12,7 @@ import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
@@ -53,15 +54,19 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         prepareSessionIDLength();
     }
 
-    // for DTLS, the random value of a second ClientHello message should be
-    // the same as that of the first (at least in case the first prompted
-    // HelloVerifyResponse from server)
     protected void prepareRandom() {
-        if (isDTLS() && hasClientRandom()) {
+        if (mustRetainPreviousClientRandom()) {
             msg.setRandom(chooser.getClientRandom());
         } else {
             super.prepareRandom();
         }
+    }
+
+    // for DTLS, the random value of a second ClientHello message should be
+    // the same as that of the first (at least in case the first prompted
+    // HelloVerifyResponse from server). The same applies for HelloRetryRequest flows in TLS 1.3
+    private boolean mustRetainPreviousClientRandom() {
+        return (isDTLS() || isHelloRetryRequestFlow()) && hasClientRandom();
     }
 
     private void prepareSessionID() {
@@ -87,6 +92,24 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private boolean isDTLS() {
         return chooser.getSelectedProtocolVersion().isDTLS();
+    }
+
+    /**
+     * Determines if we are in a HelloRetryRequest flow. Since other information from the context
+     * may be retained from a previous handshake, we check the start of the digest for the 'message
+     * hash' handshake message type which is unique to HRR flows and won't be retained after a
+     * connection reset.
+     *
+     * @return true if the digest indicates that we are in a HelloRetryRequest TLS 1.3 flow
+     */
+    private boolean isHelloRetryRequestFlow() {
+        if (chooser.getContext().getTlsContext().getSelectedProtocolVersion()
+                == ProtocolVersion.TLS13) {
+            return chooser.getContext().getTlsContext().getDigest().getRawBytes().length > 0
+                    && chooser.getContext().getTlsContext().getDigest().getRawBytes()[0]
+                            == HandshakeMessageType.MESSAGE_HASH.getValue();
+        }
+        return false;
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {

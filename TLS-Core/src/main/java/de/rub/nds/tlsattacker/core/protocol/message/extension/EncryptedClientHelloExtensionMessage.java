@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedClientHelloExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ech.HpkeCipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedClientHelloExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedClientHelloExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedClientHelloExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -54,25 +54,23 @@ public class EncryptedClientHelloExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public EncryptedClientHelloExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new EncryptedClientHelloExtensionParser(stream, tlsContext);
+    public EncryptedClientHelloExtensionParser getParser(Context context, InputStream stream) {
+        return new EncryptedClientHelloExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EncryptedClientHelloExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedClientHelloExtensionPreparator(tlsContext.getChooser(), this);
+    public EncryptedClientHelloExtensionPreparator getPreparator(Context context) {
+        return new EncryptedClientHelloExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EncryptedClientHelloExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public EncryptedClientHelloExtensionSerializer getSerializer(Context context) {
         return new EncryptedClientHelloExtensionSerializer(this);
     }
 
     @Override
-    public ExtensionHandler<EncryptedClientHelloExtensionMessage> getHandler(
-            TlsContext tlsContext) {
-        return new EncryptedClientHelloExtensionHandler(tlsContext);
+    public ExtensionHandler<EncryptedClientHelloExtensionMessage> getHandler(Context context) {
+        return new EncryptedClientHelloExtensionHandler(context.getTlsContext());
     }
 
     public EchClientHelloType getEchClientHelloType() {

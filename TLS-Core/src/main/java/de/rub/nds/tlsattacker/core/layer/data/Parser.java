@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,8 +78,6 @@ public abstract class Parser<T> {
             } else {
                 outputStream.write(data);
             }
-        } catch (SocketTimeoutException E) {
-            throw new TimeoutException("Received a timeout while reading", E);
         } catch (IOException E) {
             throw new ParserException("Could not parse byteArrayField of length=" + length, E);
         }
@@ -131,13 +129,19 @@ public abstract class Parser<T> {
         return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
     }
 
+    /**
+     * Parses as US_ASCII
+     *
+     * @param endSequence
+     * @return
+     */
     protected String parseStringTill(byte endSequence) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
         while (true) {
             byte b = parseByteField(1);
-            stream.write(b);
+            tempStream.write(b);
             if (b == endSequence) {
-                return stream.toString();
+                return tempStream.toString(StandardCharsets.US_ASCII);
             }
         }
     }

@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
@@ -44,7 +44,7 @@ public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectio
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         context.getRecordLayer().updateEncryptionCipher(recordCipher);
         context.getRecordLayer().updateDecryptionCipher(recordCipher);

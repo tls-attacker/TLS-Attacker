@@ -50,14 +50,14 @@ public class RecordedWorkflowTest {
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 4555);
         } catch (IOException
                 | InvalidKeyException
-                | KeyManagementException
                 | KeyStoreException
                 | NoSuchAlgorithmException
                 | NoSuchProviderException
                 | SignatureException
-                | UnrecoverableKeyException
                 | CertificateException
-                | OperatorCreationException ex) {
+                | OperatorCreationException
+                | UnrecoverableKeyException
+                | KeyManagementException ex) {
             Logger.getLogger(RecordedWorkflowTest.class.getName())
                     .log(java.util.logging.Level.SEVERE, null, ex);
         }

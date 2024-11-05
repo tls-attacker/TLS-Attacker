@@ -116,7 +116,11 @@ public abstract class AbstractHandshakeIT {
     private void prepareContainer() throws DockerException, InterruptedException {
         Image image =
                 DockerTlsManagerFactory.getMatchingImage(
-                        localImages, implementation, version, dockerConnectionRole);
+                        localImages,
+                        implementation,
+                        version,
+                        DockerBuilder.NO_ADDITIONAL_BUILDFLAGS,
+                        dockerConnectionRole);
         getDockerInstance(image);
     }
 

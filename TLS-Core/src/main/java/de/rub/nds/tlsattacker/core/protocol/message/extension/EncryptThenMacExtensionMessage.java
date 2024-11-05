@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -26,22 +26,22 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public EncryptThenMacExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptThenMacExtensionParser(stream, tlsContext);
+    public EncryptThenMacExtensionParser getParser(Context context, InputStream stream) {
+        return new EncryptThenMacExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EncryptThenMacExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptThenMacExtensionPreparator(tlsContext.getChooser(), this);
+    public EncryptThenMacExtensionPreparator getPreparator(Context context) {
+        return new EncryptThenMacExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EncryptThenMacExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public EncryptThenMacExtensionSerializer getSerializer(Context context) {
         return new EncryptThenMacExtensionSerializer(this);
     }
 
     @Override
-    public EncryptThenMacExtensionHandler getHandler(TlsContext tlsContext) {
-        return new EncryptThenMacExtensionHandler(tlsContext);
+    public EncryptThenMacExtensionHandler getHandler(Context context) {
+        return new EncryptThenMacExtensionHandler(context.getTlsContext());
     }
 }

@@ -40,6 +40,6 @@ public class CertificateStatusRequestV2ExtensionHandlerTest
         handler.adjustContext(msg);
 
         CertificateStatusRequestV2ExtensionParserTest.assertRequestItemV2List(
-                itemList, context.getStatusRequestV2RequestList());
+                itemList, tlsContext.getStatusRequestV2RequestList());
     }
 }

@@ -37,14 +37,14 @@ public class DHEServerKeyExchangeHandlerTest
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
         message.prepareKeyExchangeComputations();
         message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
-        assertEquals(BigInteger.TEN, context.getServerEphemeralDhModulus());
-        assertEquals(BigInteger.ONE, context.getServerEphemeralDhGenerator());
+        assertEquals(BigInteger.TEN, tlsContext.getServerEphemeralDhModulus());
+        assertEquals(BigInteger.ONE, tlsContext.getServerEphemeralDhGenerator());
         assertArrayEquals(
-                new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
+                new byte[] {1, 2, 3}, tlsContext.getServerEphemeralDhPublicKey().toByteArray());
     }
 
     @Test
@@ -54,10 +54,10 @@ public class DHEServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         handler.adjustContext(message);
-        assertEquals(BigInteger.TEN, context.getServerEphemeralDhModulus());
-        assertEquals(BigInteger.ONE, context.getServerEphemeralDhGenerator());
+        assertEquals(BigInteger.TEN, tlsContext.getServerEphemeralDhModulus());
+        assertEquals(BigInteger.ONE, tlsContext.getServerEphemeralDhGenerator());
         assertArrayEquals(
-                new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
+                new byte[] {1, 2, 3}, tlsContext.getServerEphemeralDhPublicKey().toByteArray());
     }
 
     @ParameterizedTest
@@ -69,10 +69,10 @@ public class DHEServerKeyExchangeHandlerTest
         message.setGenerator(group.getGenerator().toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         handler.adjustContext(message);
-        assertEquals(group.getGenerator(), context.getServerEphemeralDhGenerator());
-        assertEquals(group.getModulus(), context.getServerEphemeralDhModulus());
+        assertEquals(group.getGenerator(), tlsContext.getServerEphemeralDhGenerator());
+        assertEquals(group.getModulus(), tlsContext.getServerEphemeralDhModulus());
         assertArrayEquals(
-                new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
-        assertEquals(context.getSelectedGroup(), providedNamedGroup);
+                new byte[] {1, 2, 3}, tlsContext.getServerEphemeralDhPublicKey().toByteArray());
+        assertEquals(tlsContext.getSelectedGroup(), providedNamedGroup);
     }
 }

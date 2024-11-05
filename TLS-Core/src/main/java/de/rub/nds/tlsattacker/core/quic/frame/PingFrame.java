@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.quic.parser.frame.PingFrameParser;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.QuicFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.PingFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.PingFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -31,22 +31,22 @@ public class PingFrame extends QuicFrame {
     }
 
     @Override
-    public QuicFrameHandler<PingFrame> getHandler(QuicContext context) {
-        return new PingFrameHandler(context);
+    public QuicFrameHandler<PingFrame> getHandler(Context context) {
+        return new PingFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public PingFrameSerializer getSerializer(QuicContext context) {
+    public PingFrameSerializer getSerializer(Context context) {
         return new PingFrameSerializer(this);
     }
 
     @Override
-    public PingFramePreparator getPreparator(QuicContext context) {
+    public PingFramePreparator getPreparator(Context context) {
         return new PingFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public QuicFrameParser<PingFrame> getParser(QuicContext context, InputStream stream) {
+    public QuicFrameParser<PingFrame> getParser(Context context, InputStream stream) {
         return new PingFrameParser(stream);
     }
 }

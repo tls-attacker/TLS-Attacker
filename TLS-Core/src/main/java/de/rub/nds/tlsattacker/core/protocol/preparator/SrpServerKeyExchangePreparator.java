@@ -14,6 +14,7 @@ import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -61,7 +62,8 @@ public class SrpServerKeyExchangePreparator
         prepareSaltLength(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
+        selectedSignatureHashAlgo =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, false);
         prepareSignatureAndHashAlgorithm(msg);
         prepareClientServerRandom(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());

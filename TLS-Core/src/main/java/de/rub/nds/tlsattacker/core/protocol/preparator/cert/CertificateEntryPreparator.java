@@ -67,7 +67,7 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (entry.getExtensionList() != null) {
             for (ExtensionMessage extensionMessage : entry.getExtensionList()) {
-                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
+                extensionMessage.getPreparator(chooser.getContext()).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {

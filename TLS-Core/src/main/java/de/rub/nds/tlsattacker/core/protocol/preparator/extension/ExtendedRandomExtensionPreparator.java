@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,7 +70,7 @@ public class ExtendedRandomExtensionPreparator
 
     private byte[] prepareExtendedRandom(int length) {
         byte[] randomBytes = new byte[length];
-        new Random().nextBytes(randomBytes);
+        RandomHelper.getBadSecureRandom().nextBytes(randomBytes);
         return randomBytes;
     }
 }

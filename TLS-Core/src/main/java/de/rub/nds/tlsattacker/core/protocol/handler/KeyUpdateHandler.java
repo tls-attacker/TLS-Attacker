@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
@@ -97,7 +97,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
         try {
             LOGGER.debug("Generating new KeySet");
             KeySet keySet =
-                    KeySetGenerator.generateKeySet(
+                    KeyDerivator.generateKeySet(
                             tlsContext,
                             tlsContext.getChooser().getSelectedProtocolVersion(),
                             keySetType);

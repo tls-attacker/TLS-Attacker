@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2MessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -45,22 +45,22 @@ public class SSL2ServerVerifyMessage extends SSL2Message {
     }
 
     @Override
-    public SSL2ServerVerifyHandler getHandler(TlsContext tlsContext) {
-        return new SSL2ServerVerifyHandler(tlsContext);
+    public SSL2ServerVerifyHandler getHandler(Context context) {
+        return new SSL2ServerVerifyHandler(context.getTlsContext());
     }
 
     @Override
-    public SSL2ServerVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ServerVerifyParser(stream, tlsContext);
+    public SSL2ServerVerifyParser getParser(Context context, InputStream stream) {
+        return new SSL2ServerVerifyParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SSL2ServerVerifyPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ServerVerifyPreparator(tlsContext.getChooser(), this);
+    public SSL2ServerVerifyPreparator getPreparator(Context context) {
+        return new SSL2ServerVerifyPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SSL2MessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
+    public SSL2MessageSerializer<SSL2ServerVerifyMessage> getSerializer(Context context) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }

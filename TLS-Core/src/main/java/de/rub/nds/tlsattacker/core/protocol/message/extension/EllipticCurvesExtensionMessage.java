@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -64,22 +64,22 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public EllipticCurvesExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EllipticCurvesExtensionParser(stream, tlsContext);
+    public EllipticCurvesExtensionParser getParser(Context context, InputStream stream) {
+        return new EllipticCurvesExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EllipticCurvesExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EllipticCurvesExtensionPreparator(tlsContext.getChooser(), this);
+    public EllipticCurvesExtensionPreparator getPreparator(Context context) {
+        return new EllipticCurvesExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EllipticCurvesExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public EllipticCurvesExtensionSerializer getSerializer(Context context) {
         return new EllipticCurvesExtensionSerializer(this);
     }
 
     @Override
-    public EllipticCurvesExtensionHandler getHandler(TlsContext tlsContext) {
-        return new EllipticCurvesExtensionHandler(tlsContext);
+    public EllipticCurvesExtensionHandler getHandler(Context context) {
+        return new EllipticCurvesExtensionHandler(context.getTlsContext());
     }
 }

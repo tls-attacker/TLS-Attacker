@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 abstract class AbstractProtocolMessagePreparatorTest<
         MT extends ProtocolMessage, PT extends ProtocolMessagePreparator<MT>> {
 
-    protected TlsContext context;
+    protected TlsContext tlsContext;
 
     private final Supplier<MT> messageConstructor;
     private final Function<Config, MT> messageConstructorWithConfig;
@@ -39,7 +39,7 @@ abstract class AbstractProtocolMessagePreparatorTest<
             Supplier<MT> messageConstructor,
             Function<Config, MT> messageConstructorWithConfig,
             BiFunction<Chooser, MT, PT> preparatorConstructor) {
-        this.context =
+        this.tlsContext =
                 new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = messageConstructorWithConfig;
@@ -49,7 +49,7 @@ abstract class AbstractProtocolMessagePreparatorTest<
 
     AbstractProtocolMessagePreparatorTest(
             Supplier<MT> messageConstructor, BiFunction<Chooser, MT, PT> preparatorConstructor) {
-        this.context =
+        this.tlsContext =
                 new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = null;
@@ -75,10 +75,10 @@ abstract class AbstractProtocolMessagePreparatorTest<
 
     protected void createNewMessageAndPreparator(boolean includeConfigInMessageConstructor) {
         if (includeConfigInMessageConstructor) {
-            message = messageConstructorWithConfig.apply(context.getConfig());
+            message = messageConstructorWithConfig.apply(tlsContext.getConfig());
         } else {
             message = messageConstructor.get();
         }
-        preparator = preparatorConstructor.apply(context.getChooser(), message);
+        preparator = preparatorConstructor.apply(tlsContext.getChooser(), message);
     }
 }

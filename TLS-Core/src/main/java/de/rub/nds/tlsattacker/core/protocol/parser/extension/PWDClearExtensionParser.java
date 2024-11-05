@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +37,7 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
      */
     private void parseUsernameLength(PWDClearExtensionMessage msg) {
         msg.setUsernameLength(parseIntField(ExtensionByteLength.PWD_NAME));
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 
     /**
@@ -45,7 +46,10 @@ public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMe
      * @param msg Message to write in
      */
     private void parseUsername(PWDClearExtensionMessage msg) {
-        msg.setUsername(new String(parseByteArrayField(msg.getUsernameLength().getValue())));
-        LOGGER.debug("Username: " + msg.getUsername().getValue());
+        msg.setUsername(
+                new String(
+                        parseByteArrayField(msg.getUsernameLength().getValue()),
+                        StandardCharsets.ISO_8859_1));
+        LOGGER.debug("Username: {}", msg.getUsername().getValue());
     }
 }

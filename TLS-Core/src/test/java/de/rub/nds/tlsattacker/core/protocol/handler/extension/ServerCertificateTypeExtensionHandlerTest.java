@@ -36,6 +36,6 @@ public class ServerCertificateTypeExtensionHandlerTest
         ServerCertificateTypeExtensionMessage msg = new ServerCertificateTypeExtensionMessage();
         msg.setCertificateTypes(CertificateType.toByteArray(certList));
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(certList, context.getServerCertificateTypeDesiredTypes());
+        assertEquals(certList, tlsContext.getServerCertificateTypeDesiredTypes());
     }
 }

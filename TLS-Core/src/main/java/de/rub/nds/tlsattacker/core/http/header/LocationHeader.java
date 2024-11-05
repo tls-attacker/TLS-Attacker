@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.http.header;
 
 import de.rub.nds.tlsattacker.core.http.header.preparator.LocationHeaderPreparator;
 import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class LocationHeader extends HttpHeader {
@@ -20,22 +20,22 @@ public class LocationHeader extends HttpHeader {
     public LocationHeader() {}
 
     @Override
-    public LocationHeaderPreparator getPreparator(HttpContext httpContext) {
-        return new LocationHeaderPreparator(httpContext, this);
+    public LocationHeaderPreparator getPreparator(Context context) {
+        return new LocationHeaderPreparator(context.getHttpContext(), this);
     }
 
     @Override
-    public Parser<LocationHeader> getParser(HttpContext context, InputStream stream) {
+    public Parser<LocationHeader> getParser(Context context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public HttpHeaderSerializer getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(Context context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<LocationHeader> getHandler(HttpContext context) {
+    public Handler<LocationHeader> getHandler(Context context) {
         return null;
     }
 }

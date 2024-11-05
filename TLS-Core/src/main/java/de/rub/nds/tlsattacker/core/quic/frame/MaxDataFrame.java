@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.MaxDataFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.MaxDataFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.MaxDataFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.MaxDataFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -37,22 +37,22 @@ public class MaxDataFrame extends QuicFrame {
     }
 
     @Override
-    public MaxDataFrameHandler getHandler(QuicContext context) {
-        return new MaxDataFrameHandler(context);
+    public MaxDataFrameHandler getHandler(Context context) {
+        return new MaxDataFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public MaxDataFrameSerializer getSerializer(QuicContext context) {
+    public MaxDataFrameSerializer getSerializer(Context context) {
         return new MaxDataFrameSerializer(this);
     }
 
     @Override
-    public MaxDataFramePreparator getPreparator(QuicContext context) {
+    public MaxDataFramePreparator getPreparator(Context context) {
         return new MaxDataFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public MaxDataFrameParser getParser(QuicContext context, InputStream stream) {
+    public MaxDataFrameParser getParser(Context context, InputStream stream) {
         return new MaxDataFrameParser(stream);
     }
 

@@ -16,8 +16,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
+import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
+import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -27,12 +30,8 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RetransmissionStruct;
-import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class DtlsFragmentLayer
 
     private static Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final Context context;
 
     private FragmentManager fragmentManager;
 
@@ -57,7 +56,9 @@ public class DtlsFragmentLayer
 
     private int retransmissionCounter = 0;
 
-    public DtlsFragmentLayer(TlsContext context) {
+    private int retransmissionCounter = 0;
+
+    public DtlsFragmentLayer(Context context) {
         super(ImplementedLayers.DTLS_FRAGMENT);
         this.context = context;
         this.fragmentManager = new FragmentManager(context.getConfig());
@@ -123,7 +124,7 @@ public class DtlsFragmentLayer
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null
                     || getUnprocessedConfiguredContainers().isEmpty()) {
-                fragments = getEnoughFragments(context, data.length);
+                fragments = getEnoughFragments(context.getTlsContext(), data.length);
             } else {
                 // use the provided fragments
                 int dataToBeSent = data.length;
@@ -135,7 +136,7 @@ public class DtlsFragmentLayer
                     dataToBeSent -= nextFragment.getMaxFragmentLengthConfig();
                 }
                 if (dataToBeSent > 0 && context.getConfig().isCreateFragmentsDynamically()) {
-                    fragments.addAll(getEnoughFragments(context, dataToBeSent));
+                    fragments.addAll(getEnoughFragments(context.getTlsContext(), dataToBeSent));
                 }
             }
             fragments =
@@ -225,13 +226,13 @@ public class DtlsFragmentLayer
                         addProducedContainer(uninterpretedMessageFragment);
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(
-                                        uninterpretedMessageFragment.getProtocolMessageType(),
+                                        ProtocolMessageType.HANDSHAKE,
                                         uninterpretedMessageFragment
                                                 .getMessageSequence()
                                                 .getValue());
                         byte type = uninterpretedMessageFragment.getType().getValue();
                         byte[] content =
-                                uninterpretedMessageFragment.getMessageContent().getValue();
+                                uninterpretedMessageFragment.getFragmentContent().getValue();
                         byte[] message =
                                 ArrayConverter.concatenate(
                                         new byte[] {type},
@@ -374,7 +375,7 @@ public class DtlsFragmentLayer
      * @return DtlsHandshakeMessageFragment The fragment containing the message
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(
-            TlsContext context, HandshakeMessage message, boolean goingToBeSent) {
+            Context context, HandshakeMessage message, boolean goingToBeSent) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setHandshakeMessageTypeConfig(message.getHandshakeMessageType());
         byte[] messageContent = message.getSerializer(context).serializeHandshakeMessageContent();

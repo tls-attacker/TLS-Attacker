@@ -42,8 +42,7 @@ public class ParserStressIT extends GenericParserSerializerTest {
                 ProtocolMessage randomMessage = getRandomMessage(r);
                 ProtocolMessageParser parser =
                         randomMessage.getParser(
-                                new Context(new State(new Config()), new InboundConnection())
-                                        .getTlsContext(),
+                                new Context(new State(new Config()), new InboundConnection()),
                                 new ByteArrayInputStream(bytesToParse));
                 parser.parse(randomMessage);
             } catch (EndOfStreamException | ParserException ignored) {

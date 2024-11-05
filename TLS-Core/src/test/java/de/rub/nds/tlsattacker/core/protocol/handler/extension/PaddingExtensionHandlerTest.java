@@ -30,6 +30,6 @@ public class PaddingExtensionHandlerTest
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
         msg.setPaddingBytes(extensionPayload);
         handler.adjustContext(msg);
-        assertArrayEquals(context.getPaddingExtensionBytes(), extensionPayload);
+        assertArrayEquals(tlsContext.getPaddingExtensionBytes(), extensionPayload);
     }
 }

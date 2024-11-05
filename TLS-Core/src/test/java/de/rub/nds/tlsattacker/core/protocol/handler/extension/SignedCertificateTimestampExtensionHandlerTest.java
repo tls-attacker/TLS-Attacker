@@ -56,7 +56,7 @@ public class SignedCertificateTimestampExtensionHandlerTest
         messageOne.setExtensionLength(lengthFirstPackage);
 
         handler.adjustContext(messageOne);
-        assertArrayEquals(firstTimestamp, context.getSignedCertificateTimestamp());
+        assertArrayEquals(firstTimestamp, tlsContext.getSignedCertificateTimestamp());
 
         SignedCertificateTimestampExtensionMessage messageTwo =
                 new SignedCertificateTimestampExtensionMessage();
@@ -64,6 +64,6 @@ public class SignedCertificateTimestampExtensionHandlerTest
         messageTwo.setExtensionLength(lengthSecondPackage);
         handler.adjustContext(messageTwo);
 
-        assertArrayEquals(secondTimestamp, context.getSignedCertificateTimestamp());
+        assertArrayEquals(secondTimestamp, tlsContext.getSignedCertificateTimestamp());
     }
 }

@@ -11,11 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EarlyDataExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EarlyDataExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EarlyDataExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -64,22 +64,22 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public EarlyDataExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EarlyDataExtensionParser(stream, tlsContext);
+    public EarlyDataExtensionParser getParser(Context context, InputStream stream) {
+        return new EarlyDataExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EarlyDataExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new EarlyDataExtensionPreparator(tlsContext.getChooser(), this);
+    public EarlyDataExtensionPreparator getPreparator(Context context) {
+        return new EarlyDataExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EarlyDataExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public EarlyDataExtensionSerializer getSerializer(Context context) {
         return new EarlyDataExtensionSerializer(this);
     }
 
     @Override
-    public EarlyDataExtensionHandler getHandler(TlsContext tlsContext) {
-        return new EarlyDataExtensionHandler(tlsContext);
+    public EarlyDataExtensionHandler getHandler(Context context) {
+        return new EarlyDataExtensionHandler(context.getTlsContext());
     }
 }

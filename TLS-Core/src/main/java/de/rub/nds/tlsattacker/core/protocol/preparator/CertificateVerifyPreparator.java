@@ -10,16 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.x509attacker.constants.X509PublicKeyType;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +39,9 @@ public class CertificateVerifyPreparator
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateVerifyMessage");
-        algorithm = chooseSignatureAndHashAlgorithm();
+        algorithm =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(
+                        chooser, chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS13);
         signature = new byte[0];
         try {
             signature = createSignature();

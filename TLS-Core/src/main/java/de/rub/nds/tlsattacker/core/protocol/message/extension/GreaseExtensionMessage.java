@@ -12,14 +12,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.GreaseExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.GreaseExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,15 +47,18 @@ public class GreaseExtensionMessage extends ExtensionMessage {
         this.type = type;
     }
 
+    /**
+     * Constructor that creates a grease message with a specified payload length
+     *
+     * @param type
+     * @param length
+     */
     public GreaseExtensionMessage(ExtensionType type, int length) {
         super(type);
         if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
-
-        Random random = new Random(0);
         byte[] b = new byte[length];
-        random.nextBytes(b);
         this.data = b;
         this.type = type;
     }
@@ -99,22 +101,22 @@ public class GreaseExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public GreaseExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new GreaseExtensionParser(stream, tlsContext);
+    public GreaseExtensionParser getParser(Context context, InputStream stream) {
+        return new GreaseExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public GreaseExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new GreaseExtensionPreparator(tlsContext.getChooser(), this);
+    public GreaseExtensionPreparator getPreparator(Context context) {
+        return new GreaseExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public GreaseExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public GreaseExtensionSerializer getSerializer(Context context) {
         return new GreaseExtensionSerializer(this);
     }
 
     @Override
-    public GreaseExtensionHandler getHandler(TlsContext tlsContext) {
-        return new GreaseExtensionHandler(tlsContext);
+    public GreaseExtensionHandler getHandler(Context context) {
+        return new GreaseExtensionHandler(context.getTlsContext());
     }
 }

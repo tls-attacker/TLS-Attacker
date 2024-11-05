@@ -51,15 +51,15 @@ public class NewSessionTicketPreparatorTest
     @Test
     @Override
     public void testPrepare() throws CryptoException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
-        context.setSelectedCompressionMethod(CompressionMethod.NULL);
-        context.setMasterSecret(
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
+        tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
+        tlsContext.setMasterSecret(
                 ArrayConverter.hexStringToByteArray(
                         "53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b")); // SessionTicketMS+SessionTicketMS+SessionTicketMS+
-        context.setClientAuthentication(false);
+        tlsContext.setClientAuthentication(false);
         TimeHelper.setProvider(new FixedTimeProvider(152113433000l)); // 0x09111119
-        context.getConfig().setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
+        tlsContext.getConfig().setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
 
         RandomHelper.setRandom(new BadFixedRandom((byte) 0x55));
         preparator.prepare();
@@ -77,7 +77,7 @@ public class NewSessionTicketPreparatorTest
                 StaticTicketCrypto.decrypt(
                         CipherAlgorithm.AES_128_CBC,
                         message.getTicket().getEncryptedState().getValue(),
-                        context.getChooser().getConfig().getSessionTicketEncryptionKey(),
+                        tlsContext.getChooser().getConfig().getSessionTicketEncryptionKey(),
                         message.getTicket().getIV().getValue());
         assertArrayEquals(
                 decrypted,
@@ -119,6 +119,6 @@ public class NewSessionTicketPreparatorTest
                         MacAlgorithm.HMAC_SHA256,
                         message.getTicket().getMAC().getValue(),
                         macinput,
-                        context.getChooser().getConfig().getSessionTicketKeyHMAC()));
+                        tlsContext.getChooser().getConfig().getSessionTicketKeyHMAC()));
     }
 }

@@ -31,7 +31,7 @@ public class FileHelper {
         assert folder.delete();
     }
 
-    public static String getResourceAsString(Class currentClass, String resourceFilePath) {
+    public static String getResourceAsString(Class<?> currentClass, String resourceFilePath) {
         if (!resourceFilePath.startsWith("/")) {
             resourceFilePath = "/" + resourceFilePath;
         }

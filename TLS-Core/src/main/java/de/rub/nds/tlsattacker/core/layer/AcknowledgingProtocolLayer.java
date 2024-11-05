@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 
 public abstract class AcknowledgingProtocolLayer<
-                Hint extends LayerProcessingHint, Container extends DataContainer<?>>
+                Hint extends LayerProcessingHint, Container extends DataContainer>
         extends ProtocolLayer<Hint, Container> {
 
     public AcknowledgingProtocolLayer(LayerType layerType) {

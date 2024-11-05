@@ -25,7 +25,7 @@ public class ApplicationMessagePreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        context.getConfig().setDefaultApplicationMessageData("1234");
+        tlsContext.getConfig().setDefaultApplicationMessageData("1234");
         preparator.prepare();
         assertArrayEquals(message.getData().getValue(), "1234".getBytes());
     }

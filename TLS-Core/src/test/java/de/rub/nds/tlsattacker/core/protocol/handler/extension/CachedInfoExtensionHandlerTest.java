@@ -37,12 +37,12 @@ public class CachedInfoExtensionHandlerTest
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
         CachedInfoExtensionPreparator preparator =
-                new CachedInfoExtensionPreparator(context.getChooser(), msg);
+                new CachedInfoExtensionPreparator(tlsContext.getChooser(), msg);
         preparator.prepare();
 
         handler.adjustContext(msg);
 
-        assertCachedObjectList(cachedObjects, context.getCachedInfoExtensionObjects());
+        assertCachedObjectList(cachedObjects, tlsContext.getCachedInfoExtensionObjects());
     }
 
     public void assertCachedObjectList(List<CachedObject> expected, List<CachedObject> actual) {

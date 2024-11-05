@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -32,23 +32,22 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtendedMasterSecretExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new ExtendedMasterSecretExtensionParser(stream, tlsContext);
+    public ExtendedMasterSecretExtensionParser getParser(Context context, InputStream stream) {
+        return new ExtendedMasterSecretExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public ExtendedMasterSecretExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedMasterSecretExtensionPreparator(tlsContext.getChooser(), this);
+    public ExtendedMasterSecretExtensionPreparator getPreparator(Context context) {
+        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ExtendedMasterSecretExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ExtendedMasterSecretExtensionSerializer getSerializer(Context context) {
         return new ExtendedMasterSecretExtensionSerializer(this);
     }
 
     @Override
-    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ExtendedMasterSecretExtensionHandler(tlsContext);
+    public ExtendedMasterSecretExtensionHandler getHandler(Context context) {
+        return new ExtendedMasterSecretExtensionHandler(context.getTlsContext());
     }
 }

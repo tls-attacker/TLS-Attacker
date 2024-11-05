@@ -23,7 +23,7 @@ public class RenegotiationInfoExtensionHandlerTest
 
     public RenegotiationInfoExtensionHandlerTest() {
         super(RenegotiationInfoExtensionMessage::new, RenegotiationInfoExtensionHandler::new);
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 
     @Test
@@ -33,6 +33,6 @@ public class RenegotiationInfoExtensionHandlerTest
         message.setRenegotiationInfo(EXTENSION_INFO);
         message.setExtensionLength(EXTENSION_LENGTH);
         handler.adjustTLSExtensionContext(message);
-        assertArrayEquals(EXTENSION_INFO, context.getRenegotiationInfo());
+        assertArrayEquals(EXTENSION_INFO, tlsContext.getRenegotiationInfo());
     }
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FakeTcpTransportHandler extends TcpTransportHandler {
+public class FakeTcpTransportHandler extends TcpTransportHandler implements FakeTransportHandler {
 
     /** Data that will be returned on a fetchData() call */
     private ByteArrayOutputStream outputStream;
@@ -109,5 +109,10 @@ public class FakeTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void setSrcPort(int port) {
         // Nothing to do
+    }
+
+    @Override
+    public void resetOutputStream() {
+        outputStream = new ByteArrayOutputStream();
     }
 }

@@ -24,7 +24,9 @@ public class ConnectionCloseFrameParser extends QuicFrameParser<ConnectionCloseF
     @Override
     public void parse(ConnectionCloseFrame frame) {
         parseErrorCode(frame);
-        parseFrameType(frame);
+        if (frame.getFrameType().getValue() == 0x1c) {
+            parseFrameType(frame);
+        }
         parseReasonPhraseLength(frame);
         parseReasonPhrase(frame);
     }

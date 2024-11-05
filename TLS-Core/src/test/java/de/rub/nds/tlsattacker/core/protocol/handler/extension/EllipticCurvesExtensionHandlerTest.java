@@ -29,9 +29,9 @@ public class EllipticCurvesExtensionHandlerTest
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedGroups(new byte[] {0, 1, 0, 2});
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(2, context.getClientNamedGroupsList().size());
-        assertSame(NamedGroup.SECT163K1, context.getClientNamedGroupsList().get(0));
-        assertSame(NamedGroup.SECT163R1, context.getClientNamedGroupsList().get(1));
+        assertEquals(2, tlsContext.getClientNamedGroupsList().size());
+        assertSame(NamedGroup.SECT163K1, tlsContext.getClientNamedGroupsList().get(0));
+        assertSame(NamedGroup.SECT163R1, tlsContext.getClientNamedGroupsList().get(1));
     }
 
     @Test
@@ -39,6 +39,6 @@ public class EllipticCurvesExtensionHandlerTest
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedGroups(new byte[] {(byte) 0xFF, (byte) 0xEE});
         handler.adjustContext(msg);
-        assertTrue(context.getClientNamedGroupsList().isEmpty());
+        assertTrue(tlsContext.getClientNamedGroupsList().isEmpty());
     }
 }

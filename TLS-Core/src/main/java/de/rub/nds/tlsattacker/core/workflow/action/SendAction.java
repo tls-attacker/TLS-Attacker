@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
@@ -21,7 +22,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
@@ -336,29 +336,29 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
     }
 
     @Override
-    public List<List<DataContainer<?>>> getConfiguredDataContainerLists() {
-        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+    public List<List<DataContainer>> getConfiguredDataContainerLists() {
+        List<List<DataContainer>> dataContainerLists = new LinkedList<>();
         if (configuredHttpMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredHttpMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredHttpMessages);
         }
         if (configuredMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredMessages);
         }
         if (configuredDtlsHandshakeMessageFragments != null) {
             dataContainerLists.add(
-                    (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragments);
+                    (List<DataContainer>) (List<?>) configuredDtlsHandshakeMessageFragments);
         }
         if (configuredRecords != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredRecords);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredRecords);
         }
         if (configuredQuicFrames != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicFrames);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredQuicFrames);
         }
         if (configuredQuicPackets != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicPackets);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredQuicPackets);
         }
         if (configuredSSL2Messages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredSSL2Messages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredSSL2Messages);
         }
         return dataContainerLists;
     }

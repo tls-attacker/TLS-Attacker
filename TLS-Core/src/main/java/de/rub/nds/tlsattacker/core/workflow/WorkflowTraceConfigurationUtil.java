@@ -342,10 +342,10 @@ public class WorkflowTraceConfigurationUtil {
     public static List<ProtocolMessage> getAllStaticConfiguredSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage> sendMessages = new LinkedList<>();
         for (StaticSendingAction action : trace.getStaticConfiguredSendingActions()) {
-            List<List<DataContainer<?>>> configuredDataContainerLists =
+            List<List<DataContainer>> configuredDataContainerLists =
                     action.getConfiguredDataContainerLists();
-            for (List<DataContainer<?>> dataContainerList : configuredDataContainerLists) {
-                for (DataContainer<?> dataContainer : dataContainerList) {
+            for (List<DataContainer> dataContainerList : configuredDataContainerLists) {
+                for (DataContainer dataContainer : dataContainerList) {
                     if (dataContainer instanceof ProtocolMessage) {
                         sendMessages.add((ProtocolMessage) dataContainer);
                     }
@@ -358,10 +358,10 @@ public class WorkflowTraceConfigurationUtil {
     public static List<ProtocolMessage> getAllStaticConfiguredReceiveMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receiveMessages = new LinkedList<>();
         for (StaticReceivingAction action : trace.getStaticConfiguredReceivingActions()) {
-            List<List<DataContainer<?>>> configuredDataContainerLists =
+            List<List<DataContainer>> configuredDataContainerLists =
                     action.getExpectedDataContainerLists();
-            for (List<DataContainer<?>> dataContainerList : configuredDataContainerLists) {
-                for (DataContainer<?> dataContainer : dataContainerList) {
+            for (List<DataContainer> dataContainerList : configuredDataContainerLists) {
+                for (DataContainer dataContainer : dataContainerList) {
                     if (dataContainer instanceof ProtocolMessage) {
                         receiveMessages.add((ProtocolMessage) dataContainer);
                     }

@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -201,23 +201,23 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public PreSharedKeyExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, tlsContext);
+    public PreSharedKeyExtensionParser getParser(Context context, InputStream stream) {
+        return new PreSharedKeyExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PreSharedKeyExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this);
+    public PreSharedKeyExtensionPreparator getPreparator(Context context) {
+        return new PreSharedKeyExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public PreSharedKeyExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PreSharedKeyExtensionSerializer getSerializer(Context context) {
         return new PreSharedKeyExtensionSerializer(
-                this, tlsContext.getChooser().getConnectionEndType());
+                this, context.getChooser().getConnectionEndType());
     }
 
     @Override
-    public PreSharedKeyExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionHandler(tlsContext);
+    public PreSharedKeyExtensionHandler getHandler(Context context) {
+        return new PreSharedKeyExtensionHandler(context.getTlsContext());
     }
 }

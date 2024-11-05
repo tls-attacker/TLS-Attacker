@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAlgorithmsCertExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAlgorithmsCertExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAlgorithmsCertExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAlgorithmsCertExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -68,23 +68,22 @@ public class SignatureAlgorithmsCertExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public SignatureAlgorithmsCertExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SignatureAlgorithmsCertExtensionHandler(tlsContext);
+    public SignatureAlgorithmsCertExtensionHandler getHandler(Context context) {
+        return new SignatureAlgorithmsCertExtensionHandler(context.getTlsContext());
     }
 
     @Override
-    public SignatureAlgorithmsCertExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SignatureAlgorithmsCertExtensionSerializer getSerializer(Context context) {
         return new SignatureAlgorithmsCertExtensionSerializer(this);
     }
 
     @Override
-    public SignatureAlgorithmsCertExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignatureAlgorithmsCertExtensionPreparator(tlsContext.getChooser(), this);
+    public SignatureAlgorithmsCertExtensionPreparator getPreparator(Context context) {
+        return new SignatureAlgorithmsCertExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SignatureAlgorithmsCertExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new SignatureAlgorithmsCertExtensionParser(stream, tlsContext);
+    public SignatureAlgorithmsCertExtensionParser getParser(Context context, InputStream stream) {
+        return new SignatureAlgorithmsCertExtensionParser(stream, context.getTlsContext());
     }
 }

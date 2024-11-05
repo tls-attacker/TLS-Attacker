@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-import java.io.IOException;
 import java.net.Socket;
 import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.LogManager;
@@ -88,13 +87,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         serverCon.setIp(socket.getInetAddress().getHostAddress());
         serverCon.setPort(socket.getPort());
         ServerTcpTransportHandler th;
-        try {
-            th = new ServerTcpTransportHandler(serverCon, socket);
-        } catch (IOException ex) {
-            LOGGER.error("Could not prepare TransportHandler for {}: {}", socket, ex);
-            LOGGER.error("Aborting workflow trace execution on {}", socket);
-            return;
-        }
+        th = new ServerTcpTransportHandler(serverCon, socket);
         serverCtx.getTcpContext().setTransportHandler(th);
     }
 }

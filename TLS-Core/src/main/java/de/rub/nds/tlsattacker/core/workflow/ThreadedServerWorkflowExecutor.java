@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -46,27 +45,6 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         super(WorkflowExecutorType.THREADED_SERVER, state);
 
         bindPort = config.getDefaultServerConnection().getPort();
-        String hostname = config.getDefaultServerConnection().getHostname();
-        if (hostname != null) {
-            InetAddress tempBindAddr;
-            try {
-                tempBindAddr = InetAddress.getByName(hostname);
-            } catch (UnknownHostException e) {
-                LOGGER.warn(
-                        "Failed to resolve bind address {} - Falling back to loopback: {}",
-                        hostname,
-                        e);
-                // we could also fallback to null, which would be any address
-                // but I think in the case of an error we might just want to
-                // either exit or fallback to a rather closed
-                // option, like loopback
-                tempBindAddr = InetAddress.getLoopbackAddress();
-            }
-            // Java did not allow me to set the bindAddr field in the
-            // *single line* try block and the catch block at the same
-            // time, because it might already be set...
-            // So now we have a temporary variable as a workaround
-        }
         this.pool = pool;
         addHook();
     }
@@ -206,9 +184,7 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-                    ;
-                }
+                pool.awaitTermination(60, TimeUnit.SECONDS);
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted

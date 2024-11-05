@@ -6,16 +6,19 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.protocol.handler;
+package de.rub.nds.tlsattacker.core.dtls.handler;
 
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
-public class DtlsHandshakeMessageFragmentHandler
-        extends HandshakeMessageHandler<DtlsHandshakeMessageFragment> {
+public class DtlsHandshakeMessageFragmentHandler extends Handler<DtlsHandshakeMessageFragment> {
+
+    private TlsContext context;
 
     public DtlsHandshakeMessageFragmentHandler(TlsContext tlsContext) {
-        super(tlsContext);
+        super();
+        this.context = tlsContext;
     }
 
     @Override

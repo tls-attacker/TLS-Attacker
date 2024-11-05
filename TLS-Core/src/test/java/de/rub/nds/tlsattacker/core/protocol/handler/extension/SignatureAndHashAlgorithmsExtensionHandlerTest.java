@@ -39,15 +39,20 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest
                         SignatureAndHashAlgorithm.DSA_SHA1.getByteValue(),
                         SignatureAndHashAlgorithm.RSA_SHA512.getByteValue());
         msg.setSignatureAndHashAlgorithms(algoBytes);
-        context.setServerSupportedSignatureAndHashAlgorithms(SignatureAndHashAlgorithm.RSA_SHA512);
+        tlsContext.setServerSupportedSignatureAndHashAlgorithms(
+                SignatureAndHashAlgorithm.RSA_SHA512);
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(2, context.getClientSupportedSignatureAndHashAlgorithms().size());
+        assertEquals(2, tlsContext.getClientSupportedSignatureAndHashAlgorithms().size());
         assertSame(
                 HashAlgorithm.SHA1,
-                context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm());
+                tlsContext
+                        .getClientSupportedSignatureAndHashAlgorithms()
+                        .get(0)
+                        .getHashAlgorithm());
         assertSame(
                 SignatureAlgorithm.DSA,
-                context.getClientSupportedSignatureAndHashAlgorithms()
+                tlsContext
+                        .getClientSupportedSignatureAndHashAlgorithms()
                         .get(0)
                         .getSignatureAlgorithm());
     }

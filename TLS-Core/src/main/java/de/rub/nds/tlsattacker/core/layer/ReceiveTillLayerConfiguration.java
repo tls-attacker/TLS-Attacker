@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     private boolean processTrailingContainers = true;
 
     private int maxNumberOfQuicPacketsToReceive;
 
+    @SafeVarargs
     public ReceiveTillLayerConfiguration(LayerType layerType, Container... expectedContainers) {
         super(layerType, Arrays.asList(expectedContainers));
     }
@@ -30,6 +31,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         super(layerType, expectedContainers);
     }
 
+    @SafeVarargs
     public ReceiveTillLayerConfiguration(
             LayerType layerType,
             boolean processTrailingContainers,
@@ -45,6 +47,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         this.processTrailingContainers = processTrailingContainers;
     }
 
+    @SafeVarargs
     public ReceiveTillLayerConfiguration(
             LayerType layerType,
             boolean processTrailingContainers,

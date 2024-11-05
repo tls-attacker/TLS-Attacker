@@ -8,38 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
-import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import junit.framework.TestCase;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 
-public class SSL2LayerTest extends TestCase {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private Config config;
-
-    private TlsContext tlsContext;
-
-    private FakeTcpTransportHandler transportHandler;
+public class SSL2LayerTest extends AbstractLayerTest {
 
     private byte[] clientHello =
             ArrayConverter.hexStringToByteArray(
@@ -50,14 +35,9 @@ public class SSL2LayerTest extends TestCase {
 
     private ArrayList<byte[]> messageByteList = new ArrayList<>();
 
-    public void setUp() throws IOException {
-        config = new Config();
+    public void setUpLayerSpecific() {
         config.setDefaultLayerConfiguration(StackConfiguration.SSL2);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
-        tlsContext = new Context(new State(config), new OutboundConnection()).getTlsContext();
-        transportHandler = new FakeTcpTransportHandler(null);
-        tlsContext.setTransportHandler(transportHandler);
-        ProviderUtil.addBouncyCastleProvider();
         messageByteList.add(clientHello);
         messageByteList.add(serverHello);
     }
@@ -94,10 +74,9 @@ public class SSL2LayerTest extends TestCase {
                             .getLayer(SSL2Layer.class)
                             .getLayerResult()
                             .getUsedContainers()
-                            .get(i)
-                            .getClass(),
-                    ssl2HandshakeMessages.get(i).getClass());
-            assertEquals(
+                            .get(i),
+                    ssl2HandshakeMessages.get(i));
+            Assert.assertEquals(
                     Arrays.toString(transportHandler.getSentBytes()),
                     Arrays.toString(messageByteList.get(i)));
         }
@@ -109,7 +88,7 @@ public class SSL2LayerTest extends TestCase {
         for (int i = 0; i < 2; i++) {
             transportHandler.setFetchableByte(messageByteList.get(i));
             tlsContext.getLayerStack().getLayer(SSL2Layer.class).receiveData();
-            assertEquals(
+            Assert.assertEquals(
                     tlsContext
                             .getLayerStack()
                             .getLayer(SSL2Layer.class)

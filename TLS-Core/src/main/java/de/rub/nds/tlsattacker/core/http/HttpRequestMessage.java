@@ -12,8 +12,16 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
+import de.rub.nds.tlsattacker.core.http.header.CookieHeader;
+import de.rub.nds.tlsattacker.core.http.header.DateHeader;
+import de.rub.nds.tlsattacker.core.http.header.ExpiresHeader;
+import de.rub.nds.tlsattacker.core.http.header.GenericHttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.HostHeader;
+import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.LocationHeader;
+import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -129,22 +137,22 @@ public class HttpRequestMessage extends HttpMessage {
     }
 
     @Override
-    public HttpRequestHandler getHandler(HttpContext context) {
-        return new HttpRequestHandler(context);
+    public HttpRequestHandler getHandler(Context context) {
+        return new HttpRequestHandler(context.getHttpContext());
     }
 
     @Override
-    public HttpRequestParser getParser(HttpContext context, InputStream stream) {
+    public HttpRequestParser getParser(Context context, InputStream stream) {
         return new HttpRequestParser(stream);
     }
 
     @Override
-    public HttpRequestPreparator getPreparator(HttpContext context) {
-        return new HttpRequestPreparator(context, this);
+    public HttpRequestPreparator getPreparator(Context context) {
+        return new HttpRequestPreparator(context.getHttpContext(), this);
     }
 
     @Override
-    public HttpRequestSerializer getSerializer(HttpContext context) {
+    public HttpRequestSerializer getSerializer(Context context) {
         return new HttpRequestSerializer(this);
     }
 }

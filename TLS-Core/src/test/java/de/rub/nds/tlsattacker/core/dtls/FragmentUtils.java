@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.dtls;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.bouncycastle.util.Arrays;
 
 public class FragmentUtils {
@@ -24,7 +23,7 @@ public class FragmentUtils {
         fragment.setFragmentOffset(fragmentOffset);
         fragment.setFragmentLength(fragmentLength);
         fragment.setMessageSequence(messageSeq);
-        fragment.setMessageContent(content);
+        fragment.setFragmentContent(content);
         fragment.setLength(DEFAULT_MESSAGE_LENGTH);
         fragment.setType(HandshakeMessageType.UNKNOWN.getValue());
         fragment.setEpoch(epoch);
@@ -52,6 +51,6 @@ public class FragmentUtils {
         assertNotNull(fragment);
         assertEquals(expectedOffset, fragment.getFragmentOffset().getValue().intValue());
         assertEquals(expectedLength, fragment.getFragmentLength().getValue().intValue());
-        assertArrayEquals(expectedContent, fragment.getMessageContent().getValue());
+        assertArrayEquals(expectedContent, fragment.getFragmentContent().getValue());
     }
 }

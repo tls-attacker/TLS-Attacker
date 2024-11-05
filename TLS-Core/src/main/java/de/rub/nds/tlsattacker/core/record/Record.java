@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -38,7 +39,7 @@ import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+public class Record extends ModifiableVariableHolder implements DataContainer {
 
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
@@ -410,22 +411,23 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     // TODO Fix this mess for records
     @Override
-    public RecordParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RecordParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    public RecordParser getParser(Context context, InputStream stream) {
+        return new RecordParser(
+                stream, context.getTlsContext().getLastRecordVersion(), context.getTlsContext());
     }
 
     @Override
-    public RecordPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordPreparator(tlsContext, this, null, contentMessageType, null);
+    public RecordPreparator getPreparator(Context context) {
+        return new RecordPreparator(context.getTlsContext(), this, null, contentMessageType, null);
     }
 
     @Override
-    public RecordSerializer getSerializer(TlsContext context) {
+    public RecordSerializer getSerializer(Context context) {
         return new RecordSerializer(this);
     }
 
     @Override
-    public Handler<Record> getHandler(TlsContext tlsContext) {
+    public Handler<Record> getHandler(Context context) {
         return null; // TODO
     }
 }

@@ -59,4 +59,15 @@ public class HpkeCipherSuite implements Serializable {
         return this.hpkeKeyDerivationFunction == otherCipherSuite.hpkeKeyDerivationFunction
                 && this.hpkeAeadFunction == otherCipherSuite.hpkeAeadFunction;
     }
+
+    public int hashCode() {
+        int hash = 7;
+        hash =
+                31 * hash
+                        + (hpkeKeyDerivationFunction == null
+                                ? 0
+                                : hpkeKeyDerivationFunction.hashCode());
+        hash = 31 * hash + (hpkeAeadFunction == null ? 0 : hpkeAeadFunction.hashCode());
+        return hash;
+    }
 }

@@ -66,4 +66,12 @@ public class KeyShareStoreEntry implements Serializable {
         }
         return Arrays.equals(this.publicKey, other.publicKey);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (this.group != null ? this.group.hashCode() : 0);
+        hash = 97 * hash + Arrays.hashCode(this.publicKey);
+        return hash;
+    }
 }

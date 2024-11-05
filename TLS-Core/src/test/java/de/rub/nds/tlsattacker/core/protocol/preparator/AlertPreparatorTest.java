@@ -36,8 +36,8 @@ public class AlertPreparatorTest
 
     @Test
     public void testPrepareFromDefaultConfig() {
-        context.getConfig().setDefaultAlertDescription(AlertDescription.BAD_CERTIFICATE);
-        context.getConfig().setDefaultAlertLevel(AlertLevel.FATAL);
+        tlsContext.getConfig().setDefaultAlertDescription(AlertDescription.BAD_CERTIFICATE);
+        tlsContext.getConfig().setDefaultAlertLevel(AlertLevel.FATAL);
         preparator.prepare();
         assertEquals(
                 AlertDescription.BAD_CERTIFICATE.getValue(),
