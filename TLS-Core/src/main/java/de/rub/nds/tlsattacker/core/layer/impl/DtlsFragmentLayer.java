@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.protocol.exception.TimeoutException;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -31,6 +32,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RetransmissionStruct;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -53,8 +55,6 @@ public class DtlsFragmentLayer
 
     private int readHandshakeMessageSequence = 0;
     private int writeHandshakeMessageSequence = 0;
-
-    private int retransmissionCounter = 0;
 
     private int retransmissionCounter = 0;
 
@@ -85,8 +85,9 @@ public class DtlsFragmentLayer
                 byte[] serializedMessage = serializer.serialize();
                 fragment.setCompleteResultingMessage(serializedMessage);
                 RecordLayerHint recordLayerHint =
-                        new RecordLayerHint(fragment.getProtocolMessageType());
-                context.getRetransmissionCache()
+                        new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
+                context.getTlsContext()
+                        .getRetransmissionCache()
                         .add(new RetransmissionStruct(recordLayerHint, serializedMessage));
                 getLowerLayer().sendData(recordLayerHint, serializedMessage);
                 addProducedContainer(fragment);
@@ -162,20 +163,24 @@ public class DtlsFragmentLayer
                 }
                 addProducedContainer(fragment);
                 if (context.getConfig().isIndividualTransportPacketsForFragments()) {
-                    context.getRetransmissionCache()
+                    context.getTlsContext()
+                            .getRetransmissionCache()
                             .add(new RetransmissionStruct(hint, stream.toByteArray()));
                     getLowerLayer().sendData(hint, stream.toByteArray());
                     stream = new ByteArrayOutputStream();
                 }
             }
             if (!context.getConfig().isIndividualTransportPacketsForFragments()) {
-                context.getRetransmissionCache()
+                context.getTlsContext()
+                        .getRetransmissionCache()
                         .add(new RetransmissionStruct(hint, stream.toByteArray()));
                 getLowerLayer().sendData(hint, stream.toByteArray());
             }
             return new LayerProcessingResult<>(fragments, getLayerType(), true);
         } else {
-            context.getRetransmissionCache().add(new RetransmissionStruct(hint, data));
+            context.getTlsContext()
+                    .getRetransmissionCache()
+                    .add(new RetransmissionStruct(hint, data));
             getLowerLayer().sendData(hint, data);
             return new LayerProcessingResult<>(new LinkedList<>(), getLayerType(), true);
         }
@@ -286,7 +291,8 @@ public class DtlsFragmentLayer
 
     private void doRetransmissions() {
         LOGGER.debug("Starting retransmissions");
-        for (RetransmissionStruct retransmissionStruct : context.getRetransmissionCache()) {
+        for (RetransmissionStruct retransmissionStruct :
+                context.getTlsContext().getRetransmissionCache()) {
             try {
                 LOGGER.debug(
                         "Retransmitting message: {} , {}",

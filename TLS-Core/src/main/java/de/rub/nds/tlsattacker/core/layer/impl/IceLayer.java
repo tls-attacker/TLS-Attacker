@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -70,12 +71,12 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
                 LOGGER.warn(
                         "Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
-            if (context.getIceConnectionEndType() == null) {
+            if (context.getIceContext().getIceConnectionEndType() == null) {
                 LOGGER.warn("Connection end type is not set. Assuming client.");
-                context.setIceConnectionEndType(ConnectionEndType.CLIENT);
+                context.getIceContext().setIceConnectionEndType(ConnectionEndType.CLIENT);
             }
 
-            if (context.getTurnDataChannel() != null) {
+            if (context.getIceContext().getTurnDataChannel() != null) {
                 sendAsChannelData(additionalData);
             } else {
                 sendAsTurnOverStun(additionalData);
@@ -99,7 +100,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private void sendAsTurnOverStun(byte[] additionalData) throws IOException {
         StunMessage message;
-        if (context.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (context.getIceContext().getIceConnectionEndType() == ConnectionEndType.CLIENT) {
             LOGGER.trace("Sending data as a STUN/TURN client");
             message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
             message.getAttributeList().add(new XorPeerAddressAttribute());

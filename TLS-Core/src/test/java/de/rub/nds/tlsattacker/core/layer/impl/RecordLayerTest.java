@@ -32,7 +32,7 @@ public class RecordLayerTest extends AbstractLayerTest {
         state = new State(config);
         tlsContext = state.getTlsContext();
         transportHandler = new FakeTcpTransportHandler(null);
-        tlsContext.setTransportHandler(transportHandler);
+        state.getContext().setTransportHandler(transportHandler);
     }
 
     @Test

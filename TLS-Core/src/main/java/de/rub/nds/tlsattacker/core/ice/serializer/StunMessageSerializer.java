@@ -31,7 +31,7 @@ public class StunMessageSerializer extends IceMessageSerializer<StunMessage> {
         appendInt(message.getMessageLength().getValue(), IceByteLengths.STUN_MESSAGE_LENGTH);
         appendBytes(message.getTransactionId().getValue());
         for (StunAttribute attribute : message.getAttributeList()) {
-            appendBytes(attribute.getSerializer(iceContext).serialize());
+            appendBytes(attribute.getSerializer(iceContext.getContext()).serialize());
         }
         return getAlreadySerialized();
     }

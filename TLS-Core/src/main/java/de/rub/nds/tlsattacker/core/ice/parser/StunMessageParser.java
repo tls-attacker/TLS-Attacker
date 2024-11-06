@@ -27,11 +27,11 @@ public class StunMessageParser extends IceMessageParser<StunMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private IceContext context;
+    private IceContext iceContext;
 
     public StunMessageParser(Context context, InputStream stream) {
         super(stream);
-        this.context = context.getIceContext();
+        this.iceContext = context.getIceContext();
     }
 
     @Override
@@ -79,7 +79,8 @@ public class StunMessageParser extends IceMessageParser<StunMessage> {
                                     % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
             attribute.setPadding(padding);
             StunAttributeParser attributeParser =
-                    attribute.getParser(context, new ByteArrayInputStream(attributeBody));
+                    attribute.getParser(
+                            iceContext.getContext(), new ByteArrayInputStream(attributeBody));
             attributeParser.parse(attribute);
             stunMessage.getAttributeList().add(attribute);
         }

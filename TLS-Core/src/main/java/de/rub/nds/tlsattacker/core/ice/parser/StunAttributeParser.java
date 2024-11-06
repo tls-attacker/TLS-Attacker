@@ -18,7 +18,7 @@ import java.io.InputStream;
 public abstract class StunAttributeParser<AttributeT extends StunAttribute>
         extends Parser<AttributeT> {
 
-    protected IceContext context;
+    protected IceContext iceContext;
 
     /**
      * An Input stream that contains the body (without padding) of the StunAttribute
@@ -28,6 +28,6 @@ public abstract class StunAttributeParser<AttributeT extends StunAttribute>
      */
     public StunAttributeParser(Context context, InputStream stream) {
         super(stream);
-        this.context = context;
+        this.iceContext = context.getIceContext();
     }
 }
