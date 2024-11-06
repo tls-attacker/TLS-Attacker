@@ -16,8 +16,11 @@ import java.io.InputStream;
 
 /**
  * This class represents an SMTP VRFY command, which is used to verify whether a user exists: <br>
- * C: VRFY jane <br>
+ *
+ * <pre>
+ * C: VRFY jane
  * S: 250 Jane Doe &lt;jane.doe@upb.de&gt;
+ * </pre>
  */
 @XmlRootElement
 public class SmtpVRFYCommand extends SmtpCommand {

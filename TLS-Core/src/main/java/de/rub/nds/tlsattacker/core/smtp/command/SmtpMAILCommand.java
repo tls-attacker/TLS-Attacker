@@ -22,8 +22,11 @@ import java.util.List;
  * This class represents an SMTP MAIL command, which is used to initiate a mail transaction. The
  * argument clause contains a reverse-path and may contain optional parameter. The reverse path
  * represents the senders mailbox. Example: <br>
- * C: MAIL FROM: &lt;seal@upb.de&gt; <br>
+ *
+ * <pre>
+ * C: MAIL FROM: &lt;seal@upb.de&gt;
  * S: 250 2.1.0 Ok
+ * </pre>
  */
 @XmlRootElement
 public class SmtpMAILCommand extends SmtpCommand {

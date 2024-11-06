@@ -12,8 +12,11 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Implements the NOOP command, which does nothing. Example: <br>
- * C: NOOP <br>
+ *
+ * <pre>
+ * C: NOOP
  * S: 250 2.0.0 Ok
+ * </pre>
  */
 @XmlRootElement
 public class SmtpNOOPCommand extends SmtpCommand {

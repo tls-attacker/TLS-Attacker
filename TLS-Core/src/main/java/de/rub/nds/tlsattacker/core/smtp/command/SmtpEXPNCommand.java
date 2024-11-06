@@ -15,10 +15,14 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * Represents the EXPN command in SMTP, which queries a mailing list for the members. <br>
- * C: EXPN staff@upb.de <br>
- * S: 250-Jane Doe &lt;jane.doe@upb.de&gt; <br>
- * S: 250-John Smith &lt;john.smith@upb.de&gt; <brS: 250-Bob Lee &lt;bob.lee@upb.de&gt;
+ * Represents the EXPN command in SMTP, which queries a mailing list for the members.
+ *
+ * <pre>
+ * C: EXPN staff@upb.de
+ * S: 250-Jane Doe &lt;jane.doe@upb.de&gt;
+ * S: 250-John Smith &lt;john.smith@upb.de&gt;
+ * S: 250-Bob Lee &lt;bob.lee@upb.de&gt;
+ * </pre>
  */
 @XmlRootElement
 public class SmtpEXPNCommand extends SmtpCommand {

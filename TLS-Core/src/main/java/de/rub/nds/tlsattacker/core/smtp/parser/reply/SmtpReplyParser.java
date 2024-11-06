@@ -22,9 +22,9 @@ import org.apache.logging.log4j.Logger;
  * and the human readable message. If more complex parsing is needed, the parseMessage method can be
  * overridden. Assumption: - The format for multiline replies requires that every line, except the
  * last, begin with the reply code, followed immediately by a hyphen, "-" (also known as minus),
- * followed by text. The last line will begin with the reply code, followed immediately by <SP>,
- * optionally some text, and <CRLF>. - In a multiline reply, the reply code on each of the lines
- * MUST be the same.
+ * followed by text. The last line will begin with the reply code, followed immediately by
+ * &lt;SP&gt;, optionally some text, and &lt;CRLF&gt;. - In a multiline reply, the reply code on
+ * each of the lines MUST be the same.
  *
  * @param <ReplyT>
  */

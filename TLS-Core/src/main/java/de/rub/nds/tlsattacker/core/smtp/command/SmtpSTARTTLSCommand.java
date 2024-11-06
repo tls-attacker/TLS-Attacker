@@ -14,9 +14,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 /**
  * This implements the STARTTLS command, which is used to start a TLS session. It does not execute
  * the actual handshake, but communicates to the server that a TLS handshake is coming. Works hand
- * in hand with {@link de.rub.nds.tlsattacker.core.workflow.action.STARTTLSAction}. Example: <br>
- * C: STARTTLS <br>
+ * in hand with {@link de.rub.nds.tlsattacker.core.workflow.action.STARTTLSAction}. Example:
+ *
+ * <pre>
+ * C: STARTTLS
  * S: 220 2.0.0 Ready to start TLS
+ * </pre>
  *
  * @see de.rub.nds.tlsattacker.core.workflow.action.STARTTLSAction
  */
