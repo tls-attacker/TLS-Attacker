@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.pop3.command.DELECommand;
+import de.rub.nds.tlsattacker.core.pop3.command.MessageNumber;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import java.io.InputStream;

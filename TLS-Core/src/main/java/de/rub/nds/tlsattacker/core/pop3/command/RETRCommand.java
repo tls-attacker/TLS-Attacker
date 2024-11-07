@@ -1,9 +1,6 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
-import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
-import de.rub.nds.tlsattacker.core.pop3.parser.command.MessageNumber;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 
 import java.io.InputStream;

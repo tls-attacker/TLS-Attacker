@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.pop3.parser.command;
+package de.rub.nds.tlsattacker.core.pop3.command;
 
 public interface MessageNumber {
     public void setMessageNumber(int messageNumber);
