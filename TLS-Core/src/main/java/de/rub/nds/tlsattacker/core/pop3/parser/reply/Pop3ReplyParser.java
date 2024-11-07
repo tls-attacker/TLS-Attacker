@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,8 +77,9 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
     }
 
     /**
-     * Checks if a reply is a MultiLine Reply. Should probably be
-     * replaced by another method on the future, but works for now.
+     * Checks if a reply is a MultiLine Reply. Should probably be replaced by another method on the
+     * future, but works for now.
+     *
      * @param inputStream the input stream to read the lines from
      * @return a boolean
      * @throws IOException if end of stream is reached
