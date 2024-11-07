@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.pop3.command.DELECommand;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import java.io.InputStream;
@@ -52,5 +54,20 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
      * @param command pop3Command to parse arguments for
      * @param arguments arguments string containing everything after first space
      */
-    public void parseArguments(CommandT command, String arguments) {}
+    public void parseArguments(CommandT command, String arguments) {
+        String[] args = arguments.split(" ");
+        String keyword = args[0];
+
+        if (!command.getCommandName().equals(keyword))
+            throw new ParserException("Unexpected keyword. Expected: '" + command.getCommandName() + "'. Got: '" + keyword + "'.");
+
+        if (!(command instanceof MessageNumber) || args.length < 2) return;
+
+        String messageNumber = args[1];
+        try {
+            ((MessageNumber) command).setMessageNumber(Integer.parseInt(messageNumber));
+        } catch (NumberFormatException ex) {
+            throw new ParserException("Expected numeric message number but got: " + messageNumber);
+        }
+    }
 }
