@@ -48,12 +48,16 @@ public class Pop3Reply extends Pop3Message {
         return statusIndicator;
     }
 
-    public List<String> getHumanReadableMessage() {
-        return humanReadableMessage;
+    public void setHumanReadableMessage(String message) {
+        this.humanReadableMessage = new ArrayList<>(List.of(message));
     }
 
-    public void setHumanReadableMessage(List<String> humanReadableMessage) {
+    public void setHumanReadableMessages(List<String> humanReadableMessage) {
         this.humanReadableMessage = humanReadableMessage;
+    }
+
+    public String getHumanReadableMessage() {
+        return this.humanReadableMessage.get(0);
     }
 
     @Override
@@ -79,5 +83,25 @@ public class Pop3Reply extends Pop3Message {
     @Override
     public Pop3ReplySerializer<? extends Pop3Reply> getSerializer(Pop3Context context) {
         return new Pop3ReplySerializer<>(this, context);
+    }
+
+
+    public String serialize() {
+        char SP = ' ';
+        String CRLF = "\r\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.statusIndicator != null ? this.statusIndicator : "");
+        sb.append(SP);
+        sb.append(this.humanReadableMessage.get(0));
+        for (int i = 1; i < this.humanReadableMessage.size(); i++) {
+            sb.append(this.humanReadableMessage.get(i));
+            sb.append(CRLF);
+        }
+        //End Multiline reply
+        if (this.humanReadableMessage.size() > 1) {
+            sb.append(".");
+            sb.append(CRLF);
+        }
+        return sb.toString();
     }
 }

@@ -34,6 +34,6 @@ public class Pop3GenericReplyParser<ReplyT extends Pop3Reply> extends Pop3ReplyP
             message.add(lines.get(i));
         }
 
-        reply.setHumanReadableMessage(message);
+        reply.setHumanReadableMessages(message);
     }
 }

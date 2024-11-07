@@ -22,18 +22,9 @@ public class Pop3ReplySerializer<ReplyT extends Pop3Reply> extends Pop3MessageSe
 
     @Override
     protected byte[] serializeBytes() {
-        String CRLF = "\r\n";
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.reply.getStatusIndicator());
-        sb.append(this.reply.getHumanReadableMessage().get(0));
-        for (int i = 1; i < this.reply.getHumanReadableMessage().size(); i++) {
-            sb.append(this.reply.getHumanReadableMessage().get(i));
-            sb.append(CRLF);
-        }
-        sb.append(".");
-        sb.append(CRLF);
 
-        byte[] output = sb.toString().getBytes();
+
+        byte[] output = this.reply.serialize().getBytes();
         appendBytes(output);
         return getAlreadySerialized();
     }
