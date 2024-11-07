@@ -8,12 +8,18 @@ import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import java.io.InputStream;
 
 public class QUITCommand extends Pop3Command {
+    private static final String commandName = "QUIT";
     public QUITCommand() {
-        super("QUIT", null);
+        super(commandName, null);
     }
 
     @Override
     public Pop3CommandParser<QUITCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public String getCommandName() {
+        return commandName;
     }
 }

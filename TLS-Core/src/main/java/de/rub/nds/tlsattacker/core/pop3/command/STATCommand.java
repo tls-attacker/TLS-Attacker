@@ -19,12 +19,18 @@ import java.io.InputStream;
  */
 
 public class STATCommand extends Pop3Command {
+    private static final String commandName = "STAT";
     public STATCommand() {
-        super("STAT", null);
+        super(commandName, null);
     }
 
     @Override
     public Pop3CommandParser<STATCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public String getCommandName() {
+        return commandName;
     }
 }

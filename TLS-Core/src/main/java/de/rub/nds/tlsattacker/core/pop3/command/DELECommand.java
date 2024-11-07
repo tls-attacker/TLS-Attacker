@@ -17,7 +17,7 @@ public class DELECommand extends Pop3Command implements MessageNumber {
     }
 
     public DELECommand(int messageNumber) {
-        super("DELE", String.valueOf(messageNumber));
+        super(commandName, String.valueOf(messageNumber));
         this.messageNumber = messageNumber;
     }
 
