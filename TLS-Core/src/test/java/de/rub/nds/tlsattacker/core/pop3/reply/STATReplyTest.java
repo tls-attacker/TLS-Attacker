@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,10 +16,9 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.STATReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
 
 class STATReplyTest {
 
@@ -36,7 +43,8 @@ class STATReplyTest {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3STATReply stat = new Pop3STATReply();
         STATReplyParser parser =
-                stat.getParser(context,
+                stat.getParser(
+                        context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(stat);
 
@@ -52,12 +60,11 @@ class STATReplyTest {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
         STATReplyParser parser =
-                stat.getParser(context,
-                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                stat.getParser(
+                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> parser.parse(stat));
         assertEquals(stat.getStatusIndicator(), "-ERR");
         assertEquals(stat.getHumanReadableMessage(), "no Info");
-
     }
 }

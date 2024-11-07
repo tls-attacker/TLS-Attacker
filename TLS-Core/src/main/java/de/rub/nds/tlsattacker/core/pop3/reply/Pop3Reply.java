@@ -85,7 +85,6 @@ public class Pop3Reply extends Pop3Message {
         return new Pop3ReplySerializer<>(this, context);
     }
 
-
     public String serialize() {
         char SP = ' ';
         String CRLF = "\r\n";
@@ -97,7 +96,7 @@ public class Pop3Reply extends Pop3Message {
             sb.append(this.humanReadableMessage.get(i));
             sb.append(CRLF);
         }
-        //End Multiline reply
+        // End Multiline reply
         if (this.humanReadableMessage.size() > 1) {
             sb.append(".");
             sb.append(CRLF);

@@ -23,7 +23,6 @@ public class Pop3ReplySerializer<ReplyT extends Pop3Reply> extends Pop3MessageSe
     @Override
     protected byte[] serializeBytes() {
 
-
         byte[] output = this.reply.serialize().getBytes();
         appendBytes(output);
         return getAlreadySerialized();

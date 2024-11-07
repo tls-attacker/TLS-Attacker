@@ -59,7 +59,12 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
         String keyword = args[0];
 
         if (!command.getCommandName().equals(keyword))
-            throw new ParserException("Unexpected keyword. Expected: '" + command.getCommandName() + "'. Got: '" + keyword + "'.");
+            throw new ParserException(
+                    "Unexpected keyword. Expected: '"
+                            + command.getCommandName()
+                            + "'. Got: '"
+                            + keyword
+                            + "'.");
 
         if (!(command instanceof MessageNumber) || args.length < 2) return;
 
