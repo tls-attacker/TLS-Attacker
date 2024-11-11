@@ -121,10 +121,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                                     AlgorithmResolver.getSuiteableLeafCertificateKeyType(
                                             chooser.getSelectedCipherSuite());
                             if (certificateKeyTypes != null) {
-                                chooser.getConfig()
-                                        .getCertificateChainConfig()
-                                        .get(0)
-                                        .setPublicKeyType(certificateKeyTypes[0]);
+                                autoSelectCertificateKeyType(certificateKeyTypes);
                             } else {
                                 LOGGER.warn(
                                         "Could not adjust public key in certificate to fit cipher suite");
@@ -165,6 +162,33 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
             default:
                 throw new UnsupportedOperationException("Unsupported CertificateType");
+        }
+    }
+
+    private void autoSelectCertificateKeyType(X509PublicKeyType[] certificateKeyTypes) {
+        if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
+            chooser.getConfig()
+                    .getCertificateChainConfig()
+                    .get(0)
+                    .setPublicKeyType(certificateKeyTypes[0]);
+        } else {
+            for (X509PublicKeyType certKeyType : certificateKeyTypes) {
+                if (chooser.getConfig()
+                        .getDefaultSelectedSignatureAndHashAlgorithm()
+                        .suitableForSignatureKeyType(certKeyType)) {
+                    chooser.getConfig()
+                            .getCertificateChainConfig()
+                            .get(0)
+                            .setPublicKeyType(certKeyType);
+                    return;
+                }
+            }
+            LOGGER.warn(
+                    "Could not find certificate public key type matching both cipher suite and default SignatureAndHashAlgorithm. Using first key type.");
+            chooser.getConfig()
+                    .getCertificateChainConfig()
+                    .get(0)
+                    .setPublicKeyType(certificateKeyTypes[0]);
         }
     }
 
