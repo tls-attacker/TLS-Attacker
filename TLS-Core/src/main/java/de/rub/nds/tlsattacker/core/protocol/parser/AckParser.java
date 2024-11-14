@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.AckByteLength;
-import de.rub.nds.tlsattacker.core.constants.RecordNumberByteLength;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
@@ -40,9 +40,8 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
                 i < ackMessage.getRecordNumberLength().getValue();
                 i += AckByteLength.RECORD_NUMBER) {
             RecordNumber recordNumber = new RecordNumber();
-            recordNumber.setEpoch(parseBigIntField(RecordNumberByteLength.EPOCH));
-            recordNumber.setSequenceNumber(
-                    parseBigIntField(RecordNumberByteLength.SEQUENCE_NUMBER));
+            recordNumber.setEpoch(parseBigIntField(RecordByteLength.DTLS_1_3_EPOCH_NUMBER));
+            recordNumber.setSequenceNumber(parseBigIntField(RecordByteLength.SEQUENCE_NUMBER));
             ackMessage.getRecordNumbers().add(recordNumber);
             LOGGER.debug(
                     " - Epoch "

@@ -20,6 +20,8 @@ public class RecordByteLength {
 
     public static final int SEQUENCE_NUMBER = 8;
 
+    public static final int DTLS_1_3_EPOCH_NUMBER = 8;
+
     /** epoch for DTLS */
     public static final int DTLS_EPOCH = 2;
 

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.AckByteLength;
-import de.rub.nds.tlsattacker.core.constants.RecordNumberByteLength;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
@@ -40,10 +40,10 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
     private void writeRecordNumbers() {
         LOGGER.debug("RecordNumbers: ");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
-            appendBigInteger(recordNumber.getEpoch().getValue(), RecordNumberByteLength.EPOCH);
             appendBigInteger(
-                    recordNumber.getSequenceNumber().getValue(),
-                    RecordNumberByteLength.SEQUENCE_NUMBER);
+                    recordNumber.getEpoch().getValue(), RecordByteLength.DTLS_1_3_EPOCH_NUMBER);
+            appendBigInteger(
+                    recordNumber.getSequenceNumber().getValue(), RecordByteLength.SEQUENCE_NUMBER);
             LOGGER.debug(
                     " - Epoch "
                             + recordNumber.getEpoch().getValue()
