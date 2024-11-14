@@ -349,7 +349,7 @@ public class RecordAEADCipher extends RecordCipher {
             sequenceNumber = new byte[] {0, sequenceNumber[0]};
         }
         int length =
-                tlsContext.getConfig().getDtls13HeaderSeqNumSizeLong()
+                tlsContext.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()
                         ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
                         : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
         byte[] encryptedSequenceNumber = new byte[length];

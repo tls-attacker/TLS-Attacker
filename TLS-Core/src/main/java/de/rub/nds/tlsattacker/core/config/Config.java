@@ -1244,7 +1244,7 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
-    private Boolean dtls13HeaderSeqNumSizeLong = true;
+    private Boolean useDtls13HeaderSeqNumSizeLongEncoding = true;
 
     private Boolean retransmitAcknowledgedRecordsInDtls13 = false;
 
@@ -4031,12 +4031,13 @@ public class Config implements Serializable {
         this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
     }
 
-    public Boolean getDtls13HeaderSeqNumSizeLong() {
-        return dtls13HeaderSeqNumSizeLong;
+    public Boolean getUseDtls13HeaderSeqNumSizeLongEncoding() {
+        return useDtls13HeaderSeqNumSizeLongEncoding;
     }
 
-    public void setDtls13HeaderSeqNumSizeLong(Boolean dtls13HeaderSeqNumSizeLong) {
-        this.dtls13HeaderSeqNumSizeLong = dtls13HeaderSeqNumSizeLong;
+    public void setUseDtls13HeaderSeqNumSizeLongEncoding(
+            Boolean useDtls13HeaderSeqNumSizeLongEncoding) {
+        this.useDtls13HeaderSeqNumSizeLongEncoding = useDtls13HeaderSeqNumSizeLongEncoding;
     }
 
     public Boolean getRetransmitAcknowledgedRecordsInDtls13() {

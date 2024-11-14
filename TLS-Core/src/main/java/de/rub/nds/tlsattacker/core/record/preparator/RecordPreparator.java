@@ -136,7 +136,7 @@ public class RecordPreparator extends Preparator<Record> {
                 && record.getConnectionId().getValue().length > 0) {
             header ^= 0x10;
         }
-        if (context.getConfig().getDtls13HeaderSeqNumSizeLong()) {
+        if (context.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()) {
             header ^= 0x08;
         }
         byte lowerEpoch = (byte) (record.getEpoch().getValue() % 4);
