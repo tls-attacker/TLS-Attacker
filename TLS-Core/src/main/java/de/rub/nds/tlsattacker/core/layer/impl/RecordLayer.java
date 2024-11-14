@@ -314,7 +314,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         if (encryptionCipher == null) {
-            LOGGER.debug("Skipping write epoch ({})", readEpoch);
+            LOGGER.debug("Skipping write epoch ({})", writeEpoch);
         } else {
             LOGGER.debug(
                     "Activating new EncryptionCipher ({})",
