@@ -38,7 +38,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         }
 
         ProtocolVersion version = tlsContext.getChooser().getSelectedProtocolVersion();
-        if (version.isDTLS() && !version.is13()) {
+        if (version == ProtocolVersion.DTLS10 || version == ProtocolVersion.DTLS12) {
             DtlsHandshakeMessageFragment fragment =
                     tlsContext
                             .getDtlsFragmentLayer()
