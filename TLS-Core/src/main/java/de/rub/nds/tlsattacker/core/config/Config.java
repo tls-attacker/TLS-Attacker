@@ -1235,7 +1235,7 @@ public class Config implements Serializable {
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
-    private Boolean skipMessageSequenceNumber = false;
+    private Boolean canSkipMessageSequenceNumber = false;
 
     private Boolean acceptContentRewritingDtlsFragments = true;
 
@@ -1542,11 +1542,11 @@ public class Config implements Serializable {
     }
 
     public Boolean isCanSkipMessageSequenceNumber() {
-        return skipMessageSequenceNumber;
+        return canSkipMessageSequenceNumber;
     }
 
-    public void setCanSkipMessageSequenceNumber(Boolean skipMessageSequenceNumber) {
-        this.skipMessageSequenceNumber = skipMessageSequenceNumber;
+    public void setCanSkipMessageSequenceNumber(Boolean canSkipMessageSequenceNumber) {
+        this.canSkipMessageSequenceNumber = canSkipMessageSequenceNumber;
     }
 
     public Boolean isAcceptContentRewritingDtlsFragments() {
