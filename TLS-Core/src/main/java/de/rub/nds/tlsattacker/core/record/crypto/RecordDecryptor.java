@@ -46,9 +46,8 @@ public class RecordDecryptor extends Decryptor {
                 recordCipher = getRecordCipherForEpochBits(record.getEpoch().getValue(), record);
                 if (recordCipher == null) {
                     LOGGER.warn(
-                            "Got no RecordCipher for epoch bits: "
-                                    + record.getEpoch().getValue()
-                                    + ". Using most recent cipher instead.");
+                            "Got no RecordCipher for epoch bits: {}. Using most recent cipher instead.",
+                            record.getEpoch().getValue());
                     recordCipher = getRecordMostRecentCipher();
                 }
             } else {
@@ -60,7 +59,7 @@ public class RecordDecryptor extends Decryptor {
                 try {
                     recordCipher.decryptDtls13SequenceNumber(record);
                 } catch (CryptoException ex) {
-                    LOGGER.error("Could not decryot DTLS 1.3 Record Sequence Number: " + ex);
+                    LOGGER.error("Could not decryot DTLS 1.3 Record Sequence Number: {}", ex);
                 }
             }
         } else {
