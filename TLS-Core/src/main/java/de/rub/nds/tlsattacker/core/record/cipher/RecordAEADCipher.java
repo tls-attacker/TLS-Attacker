@@ -358,7 +358,7 @@ public class RecordAEADCipher extends RecordCipher {
         }
         record.setEncryptedSequenceNumber(encryptedSequenceNumber);
         LOGGER.debug(
-                "Encrypted Sequence Number: " + record.getEncryptedSequenceNumber().getValue());
+                "Encrypted Sequence Number: {}", record.getEncryptedSequenceNumber().getValue());
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
