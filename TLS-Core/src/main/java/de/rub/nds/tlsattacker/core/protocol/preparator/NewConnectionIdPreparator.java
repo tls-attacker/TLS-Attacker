@@ -32,7 +32,7 @@ public class NewConnectionIdPreparator extends HandshakeMessagePreparator<NewCon
     }
 
     private void prepareUsage() {
-        message.setUsage(chooser.getConfig().getDefaultUsageofSentConnectionIds());
+        message.setUsage(chooser.getConfig().getDefaultUsageOfSentConnectionIds());
         LOGGER.debug("Usage: " + message.getUsage());
     }
 
