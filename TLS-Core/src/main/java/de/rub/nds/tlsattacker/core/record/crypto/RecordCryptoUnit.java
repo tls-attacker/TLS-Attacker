@@ -40,7 +40,7 @@ public abstract class RecordCryptoUnit {
                 return recordCipherList.get(i);
             }
         }
-        LOGGER.warn("Got no RecordCipher for epoch bits: " + epochBits);
+        LOGGER.warn("Got no RecordCipher for epoch bits: {}", epochBits);
         return null;
     }
 
