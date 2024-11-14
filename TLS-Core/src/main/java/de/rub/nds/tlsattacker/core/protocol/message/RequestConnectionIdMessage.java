@@ -12,11 +12,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.RequestConnectionIdHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.RequestConnectionIdParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RequestConnectionIdPreperator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RequestConnectionIdSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -46,23 +46,23 @@ public class RequestConnectionIdMessage extends HandshakeMessage {
     }
 
     @Override
-    public RequestConnectionIdParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RequestConnectionIdParser(stream, tlsContext);
+    public RequestConnectionIdParser getParser(Context context, InputStream stream) {
+        return new RequestConnectionIdParser(stream, context.getTlsContext());
     }
 
     @Override
-    public RequestConnectionIdPreperator getPreparator(TlsContext tlsContext) {
-        return new RequestConnectionIdPreperator(tlsContext.getChooser(), this);
+    public RequestConnectionIdPreperator getPreparator(Context context) {
+        return new RequestConnectionIdPreperator(context.getChooser(), this);
     }
 
     @Override
-    public RequestConnectionIdSerializer getSerializer(TlsContext tlsContext) {
+    public RequestConnectionIdSerializer getSerializer(Context context) {
         return new RequestConnectionIdSerializer(this);
     }
 
     @Override
-    public RequestConnectionIdHandler getHandler(TlsContext tlsContext) {
-        return new RequestConnectionIdHandler(tlsContext);
+    public RequestConnectionIdHandler getHandler(Context context) {
+        return new RequestConnectionIdHandler(context.getTlsContext());
     }
 
     @Override

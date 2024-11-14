@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +19,8 @@ public class AckHandler extends ProtocolMessageHandler<AckMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AckHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public AckHandler(Context context) {
+        super(context.getTlsContext());
     }
 
     @Override

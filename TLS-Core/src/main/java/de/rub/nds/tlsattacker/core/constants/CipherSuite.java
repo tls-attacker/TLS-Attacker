@@ -3366,7 +3366,7 @@ public enum CipherSuite {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
 
-        if (this.isTLS13()) {
+        if (this.isTls13()) {
             return version == ProtocolVersion.TLS13;
         }
 

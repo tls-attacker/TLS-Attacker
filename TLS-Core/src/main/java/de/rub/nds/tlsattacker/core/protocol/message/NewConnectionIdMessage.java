@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewConnectionIdHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewConnectionIdParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewConnectionIdPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewConnectionIdSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -42,23 +42,23 @@ public class NewConnectionIdMessage extends HandshakeMessage {
     }
 
     @Override
-    public NewConnectionIdParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new NewConnectionIdParser(stream, tlsContext);
+    public NewConnectionIdParser getParser(Context context, InputStream stream) {
+        return new NewConnectionIdParser(stream, context.getTlsContext());
     }
 
     @Override
-    public NewConnectionIdPreparator getPreparator(TlsContext tlsContext) {
-        return new NewConnectionIdPreparator(tlsContext.getChooser(), this);
+    public NewConnectionIdPreparator getPreparator(Context context) {
+        return new NewConnectionIdPreparator(context.getChooser(), this);
     }
 
     @Override
-    public NewConnectionIdSerializer getSerializer(TlsContext tlsContext) {
+    public NewConnectionIdSerializer getSerializer(Context context) {
         return new NewConnectionIdSerializer(this);
     }
 
     @Override
-    public NewConnectionIdHandler getHandler(TlsContext tlsContext) {
-        return new NewConnectionIdHandler(tlsContext);
+    public NewConnectionIdHandler getHandler(Context context) {
+        return new NewConnectionIdHandler(context.getTlsContext());
     }
 
     public ConnectionIdUsage getUsage() {

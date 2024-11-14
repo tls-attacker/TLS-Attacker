@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.AckHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.parser.AckParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AckPreperator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AckSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -82,22 +82,22 @@ public class AckMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<AckMessage> getHandler(TlsContext tlsContext) {
-        return new AckHandler(tlsContext);
+    public ProtocolMessageHandler<AckMessage> getHandler(Context context) {
+        return new AckHandler(context);
     }
 
     @Override
-    public ProtocolMessageSerializer<AckMessage> getSerializer(TlsContext tlsContext) {
+    public ProtocolMessageSerializer<AckMessage> getSerializer(Context context) {
         return new AckSerializer(this);
     }
 
     @Override
-    public ProtocolMessagePreparator<AckMessage> getPreparator(TlsContext tlsContext) {
-        return new AckPreperator(tlsContext.getChooser(), this, tlsContext);
+    public ProtocolMessagePreparator<AckMessage> getPreparator(Context context) {
+        return new AckPreperator(context.getChooser(), this, context.getTlsContext());
     }
 
     @Override
-    public ProtocolMessageParser<AckMessage> getParser(TlsContext tlsContext, InputStream stream) {
+    public ProtocolMessageParser<AckMessage> getParser(Context tlsContext, InputStream stream) {
         return new AckParser(stream);
     }
 
