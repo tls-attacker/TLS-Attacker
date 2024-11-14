@@ -43,16 +43,12 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
             recordNumber.setEpoch(parseBigIntField(RecordByteLength.DTLS_1_3_EPOCH_NUMBER));
             recordNumber.setSequenceNumber(parseBigIntField(RecordByteLength.SEQUENCE_NUMBER));
             ackMessage.getRecordNumbers().add(recordNumber);
-            LOGGER.debug(
-                    " - Epoch "
-                            + recordNumber.getEpoch().getValue()
-                            + " | SQN "
-                            + recordNumber.getSequenceNumber().getValue());
+            LOGGER.debug(" - {}", recordNumber);
         }
     }
 
     private void parseRecordNumbersLength(AckMessage ackMessage) {
         ackMessage.setRecordNumberLength(parseIntField(AckByteLength.RECORD_NUMBERS_LENGTH));
-        LOGGER.debug("RecordNumbersLength: " + ackMessage.getRecordNumberLength().getValue());
+        LOGGER.debug("RecordNumbersLength: {}", ackMessage.getRecordNumberLength().getValue());
     }
 }
