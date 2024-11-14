@@ -19,7 +19,6 @@ import java.security.*;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.lang3.NotImplementedException;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -195,7 +194,7 @@ public class HKDFunction {
         } else if (protocolVersion.isDTLS13()) {
             label = "dtls13" + labelIn;
         } else {
-            throw new NotImplementedException(
+            throw new UnsupportedOperationException(
                     "The given protocol version does not have a label for expansion implemented.");
         }
         int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
