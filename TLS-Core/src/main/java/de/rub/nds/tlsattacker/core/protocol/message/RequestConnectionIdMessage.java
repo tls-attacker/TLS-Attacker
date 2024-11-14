@@ -25,7 +25,7 @@ import java.util.Objects;
 public class RequestConnectionIdMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    ModifiableInteger numberOfConnectionIds;
+    private ModifiableInteger numberOfConnectionIds;
 
     public RequestConnectionIdMessage() {
         super(HandshakeMessageType.REQUEST_CONNECTION_ID);
