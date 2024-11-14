@@ -107,11 +107,7 @@ public class LayerStack {
 
         // Gather results
         List<LayerProcessingResult<?>> resultList = new LinkedList<>();
-        getLayerList()
-                .forEach(
-                        layer -> {
-                            resultList.add(layer.getLayerResult());
-                        });
+        getLayerList().forEach(layer -> resultList.add(layer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }
 
@@ -188,9 +184,8 @@ public class LayerStack {
                 } catch (UnsupportedOperationException e) {
                     // most layers dont know how to receive data themselves
                     LOGGER.debug(
-                            "Skipping layer "
-                                    + layer.getLayerType()
-                                    + ". Does not support direct data read.");
+                            "Skipping layer {}. Does not support direct data read.",
+                            layer.getLayerType());
                 }
             }
         }

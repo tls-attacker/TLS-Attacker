@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.dtls.parser;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -20,11 +19,8 @@ public class DtlsHandshakeMessageFragmentParser extends Parser<DtlsHandshakeMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private TlsContext context;
-
-    public DtlsHandshakeMessageFragmentParser(InputStream stream, TlsContext context) {
+    public DtlsHandshakeMessageFragmentParser(InputStream stream) {
         super(stream);
-        this.context = context;
     }
 
     @Override
@@ -39,26 +35,26 @@ public class DtlsHandshakeMessageFragmentParser extends Parser<DtlsHandshakeMess
 
     private void parseType(DtlsHandshakeMessageFragment msg) {
         msg.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
-        LOGGER.debug("Type:" + msg.getType().getValue());
+        LOGGER.debug("Type: {}", msg.getType().getValue());
     }
 
     private void parseLength(DtlsHandshakeMessageFragment msg) {
         msg.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
-        LOGGER.debug("Length:" + msg.getLength().getValue());
+        LOGGER.debug("Length: {}", msg.getLength().getValue());
     }
 
     private void parseFragmentOffset(DtlsHandshakeMessageFragment msg) {
         msg.setFragmentOffset(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_OFFSET));
-        LOGGER.debug("FragmentOffset:" + msg.getFragmentOffset().getValue());
+        LOGGER.debug("FragmentOffset: {}", msg.getFragmentOffset().getValue());
     }
 
     private void parseFragmentLength(DtlsHandshakeMessageFragment msg) {
         msg.setFragmentLength(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_LENGTH));
-        LOGGER.debug("FragmentLength:" + msg.getFragmentLength().getValue());
+        LOGGER.debug("FragmentLength: {}", msg.getFragmentLength().getValue());
     }
 
     private void parseMessageSequence(DtlsHandshakeMessageFragment msg) {
         msg.setMessageSequence(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
-        LOGGER.debug("MessageSequence:" + msg.getMessageSequence().getValue());
+        LOGGER.debug("MessageSequence: {}", msg.getMessageSequence().getValue());
     }
 }

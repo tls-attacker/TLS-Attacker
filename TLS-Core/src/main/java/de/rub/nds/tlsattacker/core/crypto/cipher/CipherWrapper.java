@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
@@ -24,7 +23,7 @@ public class CipherWrapper {
 
     public static EncryptionCipher getEncryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
@@ -49,7 +48,7 @@ public class CipherWrapper {
 
     public static DecryptionCipher getDecryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
