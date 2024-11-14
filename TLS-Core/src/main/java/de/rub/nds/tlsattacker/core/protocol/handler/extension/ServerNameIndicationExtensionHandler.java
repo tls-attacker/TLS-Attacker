@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,12 @@ public class ServerNameIndicationExtensionHandler
         for (ServerNamePair pair : message.getServerNameList()) {
             SniType type = SniType.getNameType(pair.getServerNameType().getValue());
             if (type != null) {
-                sniEntryList.add(new SNIEntry(new String(pair.getServerName().getValue()), type));
+                sniEntryList.add(
+                        new SNIEntry(
+                                new String(
+                                        pair.getServerName().getValue(),
+                                        StandardCharsets.ISO_8859_1),
+                                type));
             } else {
                 LOGGER.warn("Unknown SNI Type:" + pair.getServerNameType().getValue());
             }

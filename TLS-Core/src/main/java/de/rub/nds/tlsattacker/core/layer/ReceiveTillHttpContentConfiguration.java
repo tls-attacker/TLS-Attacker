@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * Successfully stops workflow execution upon receiving specific HTTP content. TODO: remove in favor
@@ -48,5 +49,10 @@ public class ReceiveTillHttpContentConfiguration
     @Override
     public boolean isProcessTrailingContainers() {
         return false;
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

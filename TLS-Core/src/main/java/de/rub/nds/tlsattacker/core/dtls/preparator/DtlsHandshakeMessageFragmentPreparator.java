@@ -6,17 +6,19 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.protocol.preparator;
+package de.rub.nds.tlsattacker.core.dtls.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DtlsHandshakeMessageFragmentPreparator
-        extends HandshakeMessagePreparator<DtlsHandshakeMessageFragment> {
+        extends Preparator<DtlsHandshakeMessageFragment> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     private DtlsHandshakeMessageFragment msg;
@@ -28,13 +30,13 @@ public class DtlsHandshakeMessageFragmentPreparator
     }
 
     @Override
-    protected void prepareHandshakeMessageContents() {
+    public void prepare() {
         prepareHandshakeType(msg);
-        msg.setMessageContent(msg.getFragmentContentConfig());
+        msg.setFragmentContent(msg.getFragmentContentConfig());
         msg.setLength(msg.getHandshakeMessageLengthConfig());
         msg.setMessageSequence(msg.getMessageSequenceConfig());
         msg.setFragmentOffset(msg.getOffsetConfig());
-        msg.setFragmentLength(msg.getMessageContent().getValue().length);
+        msg.setFragmentLength(msg.getFragmentContent().getValue().length);
     }
 
     private void prepareHandshakeType(DtlsHandshakeMessageFragment message) {
@@ -46,13 +48,5 @@ public class DtlsHandshakeMessageFragmentPreparator
             }
         }
         message.setType(handshakeType.getValue());
-    }
-
-    @Override
-    protected void prepareMessageLength(int length) {
-        LOGGER.debug(
-                "Setting length of DtlsHandshakeMessage fragment to: "
-                        + msg.getMessageContent().getValue().length);
-        this.msg.setLength(msg.getMessageContent().getValue().length);
     }
 }

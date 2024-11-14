@@ -9,12 +9,8 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
 import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with
@@ -26,11 +22,6 @@ public class LayerStackFactory {
     public static LayerStack createLayerStack(StackConfiguration type, Context context) {
 
         LayerStack layerStack;
-        TlsContext tlsContext = context.getTlsContext();
-        TcpContext tcpContext = context.getTcpContext();
-        HttpContext httpContext = context.getHttpContext();
-        QuicContext quicContext = context.getQuicContext();
-
         switch (type) {
             case OPEN_VPN:
             case STARTTLS:
@@ -38,39 +29,37 @@ public class LayerStackFactory {
             case DTLS:
                 return new LayerStack(
                         context,
-                        new MessageLayer(tlsContext),
-                        new DtlsFragmentLayer(tlsContext),
-                        new RecordLayer(tlsContext),
-                        new UdpLayer(tlsContext));
+                        new MessageLayer(context),
+                        new DtlsFragmentLayer(context),
+                        new RecordLayer(context),
+                        new UdpLayer(context));
             case QUIC:
                 return new LayerStack(
                         context,
-                        new MessageLayer(tlsContext),
-                        new QuicFrameLayer(quicContext),
-                        new QuicPacketLayer(quicContext),
-                        new UdpLayer(tlsContext));
+                        new MessageLayer(context),
+                        new QuicFrameLayer(context),
+                        new QuicPacketLayer(context),
+                        new UdpLayer(context));
             case TLS:
                 layerStack =
                         new LayerStack(
                                 context,
-                                new MessageLayer(tlsContext),
-                                new RecordLayer(tlsContext),
-                                new TcpLayer(tcpContext));
+                                new MessageLayer(context),
+                                new RecordLayer(context),
+                                new TcpLayer(context));
                 context.setLayerStack(layerStack);
                 return layerStack;
             case HTTPS:
                 layerStack =
                         new LayerStack(
                                 context,
-                                new HttpLayer(httpContext),
-                                new MessageLayer(tlsContext),
-                                new RecordLayer(tlsContext),
-                                new TcpLayer(tcpContext));
+                                new HttpLayer(context),
+                                new MessageLayer(context),
+                                new RecordLayer(context),
+                                new TcpLayer(context));
                 return layerStack;
             case SSL2:
-                layerStack =
-                        new LayerStack(
-                                context, new SSL2Layer(tlsContext), new TcpLayer(tcpContext));
+                layerStack = new LayerStack(context, new SSL2Layer(context), new TcpLayer(context));
                 return layerStack;
 
             default:

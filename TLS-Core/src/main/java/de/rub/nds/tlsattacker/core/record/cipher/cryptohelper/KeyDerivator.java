@@ -9,23 +9,78 @@
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeySetGenerator {
+public class KeyDerivator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int AEAD_IV_LENGTH = 12;
+
+    public static byte[] calculateMasterSecret(TlsContext tlsContext, byte[] clientServerRandom)
+            throws CryptoException {
+        Chooser chooser = tlsContext.getChooser();
+        if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
+            LOGGER.debug(
+                    "Calculate SSL MasterSecret with Client and Server Nonces, which are: {}",
+                    clientServerRandom); // message.getComputations().getClientServerRandom().getValue()
+            return SSLUtils.calculateMasterSecretSSL3(
+                    chooser.getPreMasterSecret(), clientServerRandom);
+        } else {
+            PRFAlgorithm prfAlgorithm =
+                    AlgorithmResolver.getPRFAlgorithm(
+                            chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+            if (chooser.isUseExtendedMasterSecret()) {
+                LOGGER.debug("Calculating ExtendedMasterSecret");
+                byte[] sessionHash =
+                        tlsContext
+                                .getDigest()
+                                .digest(
+                                        chooser.getSelectedProtocolVersion(),
+                                        chooser.getSelectedCipherSuite());
+                LOGGER.debug("Premastersecret: {}", chooser.getPreMasterSecret());
+
+                LOGGER.debug("SessionHash: {}", sessionHash);
+                byte[] extendedMasterSecret =
+                        PseudoRandomFunction.compute(
+                                prfAlgorithm,
+                                chooser.getPreMasterSecret(),
+                                PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL,
+                                sessionHash,
+                                HandshakeByteLength.MASTER_SECRET);
+                return extendedMasterSecret;
+            } else {
+                LOGGER.debug("Calculating MasterSecret");
+                byte[] masterSecret =
+                        PseudoRandomFunction.compute(
+                                prfAlgorithm,
+                                chooser.getPreMasterSecret(),
+                                PseudoRandomFunction.MASTER_SECRET_LABEL,
+                                clientServerRandom,
+                                HandshakeByteLength.MASTER_SECRET);
+                return masterSecret;
+            }
+        }
+    }
 
     public static KeySet generateKeySet(
             TlsContext tlsContext, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
@@ -48,10 +103,10 @@ public class KeySetGenerator {
     private static KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType)
             throws CryptoException {
         CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        byte[] clientSecret = new byte[0];
-        byte[] serverSecret = new byte[0];
+        byte[] clientSecret;
+        byte[] serverSecret;
         if (null == keySetType) {
-            throw new CryptoException("Unknown KeySetType:" + keySetType.name());
+            throw new CryptoException("Unknown KeySetType: null");
         } else {
             switch (keySetType) {
                 case HANDSHAKE_TRAFFIC_SECRETS:
@@ -75,7 +130,7 @@ public class KeySetGenerator {
             }
         }
         LOGGER.debug("ActiveKeySetType is {}", keySetType);
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         keySet.setClientWriteKey(
@@ -164,7 +219,7 @@ public class KeySetGenerator {
 
         byte[] clientAndServerRandom = ArrayConverter.concatenate(clientRandom, serverRandom);
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-        int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
 
         keySet.setClientWriteKey(
                 PseudoRandomFunction.compute(
@@ -181,7 +236,7 @@ public class KeySetGenerator {
                         clientAndServerRandom,
                         keySize));
 
-        int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
+        int blockSize = cipherSuite.getCipherAlgorithm().getBlocksize();
         byte[] emptySecret = {};
         byte[] ivBlock =
                 PseudoRandomFunction.compute(
@@ -201,20 +256,20 @@ public class KeySetGenerator {
 
     private static void deriveSSL3ExportKeys(
             CipherSuite cipherSuite, KeySet keySet, byte[] clientRandom, byte[] serverRandom) {
-        int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
         keySet.setClientWriteKey(
                 md5firstNBytes(keySize, keySet.getClientWriteKey(), clientRandom, serverRandom));
         keySet.setServerWriteKey(
                 md5firstNBytes(keySize, keySet.getServerWriteKey(), serverRandom, clientRandom));
 
-        int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
+        int blockSize = cipherSuite.getCipherAlgorithm().getBlocksize();
         keySet.setClientWriteIv(md5firstNBytes(blockSize, clientRandom, serverRandom));
         keySet.setServerWriteIv(md5firstNBytes(blockSize, serverRandom, clientRandom));
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
             throws CryptoException {
-        switch (AlgorithmResolver.getCipherType(cipherSuite)) {
+        switch (cipherSuite.getCipherType()) {
             case AEAD:
                 return getAeadSecretSetSize(protocolVersion, cipherSuite);
             case BLOCK:
@@ -228,7 +283,7 @@ public class KeySetGenerator {
 
     private static int getBlockSecretSetSize(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         int keySize = cipherAlg.getKeySize();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         int secretSetSize = (2 * keySize) + (2 * macAlg.getKeySize());
@@ -240,7 +295,7 @@ public class KeySetGenerator {
 
     private static int getAeadSecretSetSize(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         int keySize = cipherAlg.getKeySize();
         int saltSize = AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
         int secretSetSize = 2 * keySize + 2 * saltSize;
@@ -249,14 +304,14 @@ public class KeySetGenerator {
 
     private static int getStreamSecretSetSize(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         int secretSetSize = (2 * cipherAlg.getKeySize()) + (2 * macAlg.getKeySize());
-        if (cipherSuite.isSteamCipherWithIV()) {
+        if (cipherSuite.isStreamCipherWithIV()) {
             secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
         }
         return secretSetSize;
     }
 
-    private KeySetGenerator() {}
+    private KeyDerivator() {}
 }

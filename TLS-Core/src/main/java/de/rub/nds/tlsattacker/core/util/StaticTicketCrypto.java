@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -61,7 +61,7 @@ public class StaticTicketCrypto {
     public static byte[] encrypt(
             CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
             throws CryptoException {
-        byte[] result = new byte[0];
+        byte[] result;
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
@@ -87,7 +87,7 @@ public class StaticTicketCrypto {
     public static byte[] decrypt(
             CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv)
             throws CryptoException {
-        byte[] result = new byte[0];
+        byte[] result;
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
             BulkCipherAlgorithm bulkCipher =
@@ -115,7 +115,7 @@ public class StaticTicketCrypto {
 
     public static byte[] generateHMAC(MacAlgorithm macAlgorithm, byte[] plaintext, byte[] key)
             throws CryptoException {
-        byte[] result = new byte[0];
+        byte[] result;
         try {
             Mac mac = getInstance(macAlgorithm);
             if (mac == null) {

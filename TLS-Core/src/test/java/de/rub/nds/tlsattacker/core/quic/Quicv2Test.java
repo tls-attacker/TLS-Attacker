@@ -106,7 +106,7 @@ public class Quicv2Test {
         quicContext.setFirstDestinationConnectionId(new byte[8]);
         // We only calculate the initial secrets for this test because the other secrets require
         // more context and these should already be version-dependent
-        QuicPacketCryptoComputations.calculateZeroRTTSecrets(quicContext);
+        QuicPacketCryptoComputations.calculateZeroRTTSecrets(context);
         return quicContext;
     }
 }

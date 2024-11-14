@@ -37,9 +37,10 @@ public class DHClientKeyExchangePreparatorTest
 
     public DHClientKeyExchangePreparatorTest() {
         super(DHClientKeyExchangeMessage::new, DHClientKeyExchangePreparator::new);
-        context.getConfig().setDefaultServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
-        context.getConfig().setDefaultServerEphemeralDhModulus(new BigInteger(DH_M, 16));
-        context.getConfig()
+        tlsContext.getConfig().setDefaultServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
+        tlsContext.getConfig().setDefaultServerEphemeralDhModulus(new BigInteger(DH_M, 16));
+        tlsContext
+                .getConfig()
                 .setDefaultClientEphemeralDhPrivateKey(
                         new BigInteger("1234567891234567889123546712839632542648746452354265471"));
     }
@@ -49,14 +50,14 @@ public class DHClientKeyExchangePreparatorTest
     @Override
     public void testPrepare() {
         // prepare context
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
-        context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
+        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server DH-parameters
-        context.setServerEphemeralDhModulus(new BigInteger(DH_M, 16));
-        context.setServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
-        context.setServerEphemeralDhPublicKey(SERVER_PUBLIC_KEY);
+        tlsContext.setServerEphemeralDhModulus(new BigInteger(DH_M, 16));
+        tlsContext.setServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
+        tlsContext.setServerEphemeralDhPublicKey(SERVER_PUBLIC_KEY);
 
         preparator.prepareHandshakeMessageContents();
 
@@ -76,7 +77,7 @@ public class DHClientKeyExchangePreparatorTest
     @Test
     public void testPrepareAfterParse() {
         // This method should only be called when we received the message before
-        message.setPublicKey(context.getChooser().getClientEphemeralDhPublicKey().toByteArray());
+        message.setPublicKey(tlsContext.getChooser().getClientEphemeralDhPublicKey().toByteArray());
         preparator.prepareAfterParse();
     }
 

@@ -6,15 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tcp;
+package de.rub.nds.tlsattacker.core.tcp;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
-public class TcpStreamContainer implements DataContainer<LayerContext> {
+public class TcpStreamContainer implements DataContainer {
 
     private transient byte[] configData;
 
@@ -39,22 +39,22 @@ public class TcpStreamContainer implements DataContainer<LayerContext> {
     }
 
     @Override
-    public TcpStreamContainerParser getParser(LayerContext context, InputStream stream) {
+    public TcpStreamContainerParser getParser(Context context, InputStream stream) {
         return new TcpStreamContainerParser(stream);
     }
 
     @Override
-    public TcpStreamContainerPreparator getPreparator(LayerContext context) {
+    public TcpStreamContainerPreparator getPreparator(Context context) {
         return new TcpStreamContainerPreparator(context.getChooser(), this);
     }
 
     @Override
-    public TcpStreamContainerSerializer getSerializer(LayerContext context) {
+    public TcpStreamContainerSerializer getSerializer(Context context) {
         return new TcpStreamContainerSerializer(this);
     }
 
     @Override
-    public TcpStreamContainerHandler getHandler(LayerContext context) {
+    public TcpStreamContainerHandler getHandler(Context context) {
         return new TcpStreamContainerHandler();
     }
 

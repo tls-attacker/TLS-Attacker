@@ -32,9 +32,9 @@ public class SupportedVersionsExtensionHandlerTest
                 ArrayConverter.concatenate(
                         ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(2, context.getClientSupportedProtocolVersions().size());
+        assertEquals(2, tlsContext.getClientSupportedProtocolVersions().size());
         assertEquals(
-                context.getHighestClientProtocolVersion().getValue(),
+                tlsContext.getHighestClientProtocolVersion().getValue(),
                 ProtocolVersion.TLS13.getValue());
     }
 
@@ -43,9 +43,9 @@ public class SupportedVersionsExtensionHandlerTest
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(new byte[] {0, 1, 2, 3, 3, 3});
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(1, context.getClientSupportedProtocolVersions().size());
+        assertEquals(1, tlsContext.getClientSupportedProtocolVersions().size());
         assertEquals(
-                context.getHighestClientProtocolVersion().getValue(),
+                tlsContext.getHighestClientProtocolVersion().getValue(),
                 ProtocolVersion.TLS12.getValue());
     }
 }

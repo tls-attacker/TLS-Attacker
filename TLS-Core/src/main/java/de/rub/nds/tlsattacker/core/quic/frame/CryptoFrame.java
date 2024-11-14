@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.CryptoFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.CryptoFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.CryptoFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.CryptoFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -53,22 +53,22 @@ public class CryptoFrame extends QuicFrame {
     }
 
     @Override
-    public CryptoFrameHandler getHandler(QuicContext context) {
-        return new CryptoFrameHandler(context);
+    public CryptoFrameHandler getHandler(Context context) {
+        return new CryptoFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public CryptoFrameSerializer getSerializer(QuicContext context) {
+    public CryptoFrameSerializer getSerializer(Context context) {
         return new CryptoFrameSerializer(this);
     }
 
     @Override
-    public CryptoFramePreparator getPreparator(QuicContext context) {
+    public CryptoFramePreparator getPreparator(Context context) {
         return new CryptoFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public CryptoFrameParser getParser(QuicContext context, InputStream stream) {
+    public CryptoFrameParser getParser(Context context, InputStream stream) {
         return new CryptoFrameParser(stream);
     }
 

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
@@ -24,8 +23,8 @@ public class CipherWrapper {
 
     public static EncryptionCipher getEncryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
                     keySet.getWriteKey(connectionEndType),
@@ -38,7 +37,7 @@ public class CipherWrapper {
             return new JavaCipher(
                     cipherAlg,
                     keySet.getWriteKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
+                    cipherSuite.getCipherType() == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
@@ -49,8 +48,8 @@ public class CipherWrapper {
 
     public static DecryptionCipher getDecryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
                     keySet.getReadKey(connectionEndType),
@@ -63,7 +62,7 @@ public class CipherWrapper {
             return new JavaCipher(
                     cipherAlg,
                     keySet.getReadKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
+                    cipherSuite.getCipherType() == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {

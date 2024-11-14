@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.core.http.header;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.http.header.preparator.TokenBindingHeaderPreparator;
 import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessage;
 import java.io.InputStream;
 
@@ -34,22 +34,22 @@ public class TokenBindingHeader extends HttpHeader {
     }
 
     @Override
-    public TokenBindingHeaderPreparator getPreparator(HttpContext httpContext) {
-        return new TokenBindingHeaderPreparator(httpContext, this);
+    public TokenBindingHeaderPreparator getPreparator(Context context) {
+        return new TokenBindingHeaderPreparator(context.getHttpContext(), this);
     }
 
     @Override
-    public Parser<TokenBindingHeader> getParser(HttpContext context, InputStream stream) {
+    public Parser<TokenBindingHeader> getParser(Context context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public HttpHeaderSerializer getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(Context context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<TokenBindingHeader> getHandler(HttpContext context) {
+    public Handler<TokenBindingHeader> getHandler(Context context) {
         return null;
     }
 }

@@ -13,8 +13,9 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     private boolean processTrailingContainers = true;
@@ -113,5 +114,10 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

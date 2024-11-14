@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.quic.QuicTransportParametersExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -26,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.quic.QuicTransportParametersExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic.QuicTransportParametersExtensionsSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -102,28 +102,27 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler<QuicTransportParametersExtensionMessage> getHandler(
-            TlsContext context) {
-        return new QuicTransportParametersExtensionsHandler(context);
+    public ExtensionHandler<QuicTransportParametersExtensionMessage> getHandler(Context context) {
+        return new QuicTransportParametersExtensionsHandler(context.getTlsContext());
     }
 
     @Override
     public ExtensionSerializer<QuicTransportParametersExtensionMessage> getSerializer(
-            TlsContext context) {
+            Context context) {
         return new QuicTransportParametersExtensionsSerializer(this);
     }
 
     @Override
     public ExtensionPreparator<QuicTransportParametersExtensionMessage> getPreparator(
-            TlsContext context) {
+            Context context) {
         return new QuicTransportParametersExtensionsPreparator(
                 context.getChooser(), this, getSerializer(context));
     }
 
     @Override
     public ExtensionParser<QuicTransportParametersExtensionMessage> getParser(
-            TlsContext context, InputStream stream) {
-        return new QuicTransportParametersExtensionParser(stream, context);
+            Context context, InputStream stream) {
+        return new QuicTransportParametersExtensionParser(stream, context.getTlsContext());
     }
 
     @Override

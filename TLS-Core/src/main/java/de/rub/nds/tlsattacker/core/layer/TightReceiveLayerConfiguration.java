@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
 
 /**
  * Very similar to {@link SpecificReceiveLayerConfiguration} but does not continue receiving
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @param <Container>
  */
-public class TightReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class TightReceiveLayerConfiguration<Container extends DataContainer>
         extends SpecificReceiveLayerConfiguration<Container> {
 
     public TightReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
@@ -44,5 +45,10 @@ public class TightReceiveLayerConfiguration<Container extends DataContainer<?>>
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

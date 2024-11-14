@@ -34,19 +34,17 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         this.srcPort = port;
     }
 
-    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket)
-            throws IOException {
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) {
         super(timeout, ConnectionEndType.SERVER);
         this.srcPort = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
         socketManagement = SocketManagement.EXTERNAL_SERVER_SOCKET;
     }
 
-    public ServerTcpTransportHandler(Connection con, Socket socket) throws IOException {
+    public ServerTcpTransportHandler(Connection con, Socket socket) {
         super(con);
         this.srcPort = socket.getLocalPort();
         this.socket = socket;
-        socket.setSoTimeout((int) timeout);
         socketManagement = SocketManagement.EXTERNAL_SOCKET;
     }
 

@@ -6,33 +6,49 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.protocol.message;
+package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
-import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
+import de.rub.nds.tlsattacker.core.dtls.handler.DtlsHandshakeMessageFragmentHandler;
+import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
+import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
+import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
-public class DtlsHandshakeMessageFragment extends HandshakeMessage {
+public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
+        implements DataContainer {
 
     @ModifiableVariableProperty private ModifiableInteger fragmentOffset = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableByte type = null;
+
+    private ModifiableInteger length = null;
+
     private ModifiableInteger fragmentLength = null;
 
     private ModifiableInteger epoch = null;
 
+    private ModifiableInteger messageSequence = null;
+
+    private ModifiableByteArray fragmentContent = null;
+
+    private ModifiableByteArray completeResultingMessage = null;
+
+    private HandshakeMessageType handshakeMessageType = null;
     private byte[] fragmentContentConfig = new byte[0];
     private int messageSequenceConfig;
     private int offsetConfig;
@@ -40,21 +56,13 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     private HandshakeMessageType handshakeMessageTypeConfig;
     private int maxFragmentLengthConfig;
 
-    public DtlsHandshakeMessageFragment() {
-        super(HandshakeMessageType.UNKNOWN);
-        isIncludeInDigestDefault = false;
-        adjustContextDefault = false;
-    }
-
     public DtlsHandshakeMessageFragment(
             HandshakeMessageType handshakeMessageType,
             byte[] fragmentContentConfig,
             int messageSequenceConfig,
             int offsetConfig,
             int handshakeMessageLengthConfig) {
-        super(handshakeMessageType);
-        isIncludeInDigestDefault = false;
-        adjustContextDefault = false;
+        this.handshakeMessageType = handshakeMessageType;
         this.handshakeMessageTypeConfig = handshakeMessageType;
         this.fragmentContentConfig = fragmentContentConfig;
         this.messageSequenceConfig = messageSequenceConfig;
@@ -62,44 +70,106 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         this.handshakeMessageLengthConfig = handshakeMessageLengthConfig;
     }
 
+    public DtlsHandshakeMessageFragment() {
+        this.handshakeMessageType = HandshakeMessageType.UNKNOWN;
+    }
+
     public DtlsHandshakeMessageFragment(Config tlsConfig) {
-        super(HandshakeMessageType.UNKNOWN);
-        isIncludeInDigestDefault = false;
-        adjustContextDefault = false;
+        this.handshakeMessageType = HandshakeMessageType.UNKNOWN;
         this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
-    public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
-        super(HandshakeMessageType.UNKNOWN);
-        isIncludeInDigestDefault = false;
-        adjustContextDefault = false;
+    public DtlsHandshakeMessageFragment(int maxFragmentLengthConfig) {
+        this.handshakeMessageType = HandshakeMessageType.UNKNOWN;
         this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
 
     public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType) {
-        super(handshakeMessageType);
-        isIncludeInDigestDefault = false;
-        adjustContextDefault = false;
+        this.handshakeMessageType = handshakeMessageType;
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentHandler getHandler(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentHandler(tlsContext);
+    public DtlsHandshakeMessageFragmentHandler getHandler(Context context) {
+        return new DtlsHandshakeMessageFragmentHandler();
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, tlsContext);
+    public DtlsHandshakeMessageFragmentParser getParser(Context context, InputStream stream) {
+        return new DtlsHandshakeMessageFragmentParser(stream);
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentPreparator getPreparator(TlsContext tlsContext) {
-        return new DtlsHandshakeMessageFragmentPreparator(tlsContext.getChooser(), this);
+    public DtlsHandshakeMessageFragmentPreparator getPreparator(Context context) {
+        return new DtlsHandshakeMessageFragmentPreparator(context.getChooser(), this);
     }
 
     @Override
-    public DtlsHandshakeMessageFragmentSerializer getSerializer(TlsContext tlsContext) {
+    public DtlsHandshakeMessageFragmentSerializer getSerializer(Context context) {
         return new DtlsHandshakeMessageFragmentSerializer(this);
+    }
+
+    public ModifiableByteArray getCompleteResultingMessage() {
+        return completeResultingMessage;
+    }
+
+    public void setCompleteResultingMessage(ModifiableByteArray completeResultingMessage) {
+        this.completeResultingMessage = completeResultingMessage;
+    }
+
+    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
+        this.completeResultingMessage =
+                ModifiableVariableFactory.safelySetValue(
+                        this.completeResultingMessage, completeResultingMessage);
+    }
+
+    public ModifiableByte getType() {
+        return type;
+    }
+
+    public void setType(ModifiableByte type) {
+        this.type = type;
+    }
+
+    public void setType(byte type) {
+        this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
+    }
+
+    public ModifiableByteArray getFragmentContent() {
+        return fragmentContent;
+    }
+
+    public void setFragmentContent(ModifiableByteArray fragmentContent) {
+        this.fragmentContent = fragmentContent;
+    }
+
+    public void setFragmentContent(byte[] fragmentContent) {
+        this.fragmentContent =
+                ModifiableVariableFactory.safelySetValue(this.fragmentContent, fragmentContent);
+    }
+
+    public void setMessageSequence(int messageSequence) {
+        this.messageSequence =
+                ModifiableVariableFactory.safelySetValue(this.messageSequence, messageSequence);
+    }
+
+    public void setMessageSequence(ModifiableInteger messageSequence) {
+        this.messageSequence = messageSequence;
+    }
+
+    public ModifiableInteger getMessageSequence() {
+        return messageSequence;
+    }
+
+    public ModifiableInteger getLength() {
+        return length;
+    }
+
+    public void setLength(ModifiableInteger length) {
+        this.length = length;
+    }
+
+    public void setLength(int length) {
+        this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
     public HandshakeMessageType getHandshakeMessageTypeConfig() {
@@ -186,6 +256,14 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
     public void setEpoch(int epoch) {
         this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
+    }
+
+    public HandshakeMessageType getHandshakeMessageType() {
+        return handshakeMessageType;
+    }
+
+    public void setHandshakeMessageType(HandshakeMessageType handshakeMessageType) {
+        this.handshakeMessageType = handshakeMessageType;
     }
 
     @Override

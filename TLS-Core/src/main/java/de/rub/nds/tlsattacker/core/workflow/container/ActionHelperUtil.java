@@ -33,7 +33,7 @@ public class ActionHelperUtil {
 
     private ActionHelperUtil() {}
 
-    public static List<DataContainer<?>> getDataContainersForLayer(
+    public static List<DataContainer> getDataContainersForLayer(
             LayerType type, LayerStackProcessingResult processingResult) {
         if (processingResult == null) {
             return null;
@@ -41,7 +41,7 @@ public class ActionHelperUtil {
             for (LayerProcessingResult<?> result :
                     processingResult.getLayerProcessingResultList()) {
                 if (result.getLayerType() == type) {
-                    return (List<DataContainer<?>>) result.getUsedContainers();
+                    return (List<DataContainer>) result.getUsedContainers();
                 }
             }
             return new LinkedList<>();
@@ -53,9 +53,9 @@ public class ActionHelperUtil {
             boolean sending,
             Set<ActionOption> actionOptions,
             List<LayerConfiguration<?>> unsortedLayerConfigurations) {
-        unsortedLayerConfigurations =
+        List<LayerConfiguration<?>> sortedLayerConfigurations =
                 sortLayerConfigurations(layerStack, sending, unsortedLayerConfigurations);
-        return applyAllMessageFilters(unsortedLayerConfigurations, actionOptions);
+        return applyAllMessageFilters(sortedLayerConfigurations, actionOptions);
     }
 
     public static List<LayerConfiguration<?>> applyAllMessageFilters(
@@ -69,7 +69,7 @@ public class ActionHelperUtil {
 
     public static LayerConfiguration<?> applyMessageFilters(
             LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
-        List<DataContainerFilter<?>> containerFilters = new LinkedList<>();
+        List<DataContainerFilter> containerFilters = new LinkedList<>();
         if (actionOptions != null) {
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
                 containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
@@ -117,6 +117,9 @@ public class ActionHelperUtil {
         // reset configurations to only assign a configuration to the upper most layer
         // Layer above configured layers will be set to ignore, layers below which are
         // not configured will be set to "does not matter"
+
+        List<LayerConfiguration<?>> unsortedLayerConfigurationsMutable =
+                new LinkedList<>(unsortedLayerConfigurations);
         boolean alreadyConfiguredLayer = false;
         for (LayerType layerType : layerStack.getLayersInStack()) {
             ImplementedLayers layer;
@@ -126,13 +129,13 @@ public class ActionHelperUtil {
                 LOGGER.warn(
                         "Cannot assign layer "
                                 + layerType.getName()
-                                + "to current LayerStack. LayerType not implemented for TLSAction.");
+                                + "to current LayerStack. LayerType not implemented for TlsAction.");
                 continue;
             }
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
 
             layerConfiguration =
-                    unsortedLayerConfigurations.stream()
+                    unsortedLayerConfigurationsMutable.stream()
                             .filter(Objects::nonNull)
                             .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
                             .findFirst();
@@ -140,7 +143,7 @@ public class ActionHelperUtil {
             if (layerConfiguration.isPresent()) {
                 alreadyConfiguredLayer = true;
                 sortedLayerConfigurations.add(layerConfiguration.get());
-                unsortedLayerConfigurations.remove(layerConfiguration.get());
+                unsortedLayerConfigurationsMutable.remove(layerConfiguration.get());
             } else {
                 if (alreadyConfiguredLayer) {
                     if (sending) {

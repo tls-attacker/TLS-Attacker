@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,9 +26,9 @@ import java.io.IOException;
  */
 public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContainer> {
 
-    private final TcpContext context;
+    private final Context context;
 
-    public TcpLayer(TcpContext context) {
+    public TcpLayer(Context context) {
         super(ImplementedLayers.TCP);
         this.context = context;
     }

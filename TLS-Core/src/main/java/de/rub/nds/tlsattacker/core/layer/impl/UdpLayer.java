@@ -12,11 +12,11 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
-import de.rub.nds.udp.UdpDataPacket;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -26,9 +26,9 @@ import java.io.IOException;
  */
 public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
 
-    private final TlsContext context;
+    private final Context context;
 
-    public UdpLayer(TlsContext context) {
+    public UdpLayer(Context context) {
         super(ImplementedLayers.UDP);
         this.context = context;
     }

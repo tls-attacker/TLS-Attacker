@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -465,11 +464,11 @@ public class WorkflowConfigurationFactory {
                 factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         MessageAction action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createSSL2Action(
                         config, connection, ConnectionEndType.CLIENT, new SSL2ClientHelloMessage());
         trace.addTlsAction(action);
         action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createSSL2Action(
                         config, connection, ConnectionEndType.SERVER, new SSL2ServerHelloMessage());
         trace.addTlsAction(action);
         return trace;
@@ -1030,7 +1029,7 @@ public class WorkflowConfigurationFactory {
                     return new PskDhClientKeyExchangeMessage();
                 case ECDHE_PSK:
                     return new PskEcDhClientKeyExchangeMessage();
-                case PSK_RSA:
+                case RSA_PSK:
                     return new PskRsaClientKeyExchangeMessage();
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
@@ -1043,13 +1042,12 @@ public class WorkflowConfigurationFactory {
                     return new PWDClientKeyExchangeMessage();
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                            "Unsupported key exchange algorithm: '{}', not creating ClientKeyExchange Message",
                             algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
-                    algorithm);
+                    "Unsupported key exchange algorithm: 'null', not creating ClientKeyExchange Message");
         }
         return null;
     }
@@ -1088,15 +1086,12 @@ public class WorkflowConfigurationFactory {
 
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: "
-                                    + algorithm
-                                    + ", not creating ServerKeyExchange Message");
+                            "Unsupported key exchange algorithm: '{}', not creating ServerKeyExchange Message",
+                            algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ServerKeyExchange Message");
+                    "Unsupported key exchange algorithm: 'null', not creating ServerKeyExchange Message");
         }
 
         return null;
@@ -1105,7 +1100,7 @@ public class WorkflowConfigurationFactory {
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message =
-                createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+                createClientKeyExchangeMessage(cs.getKeyExchangeAlgorithm());
         if (message != null) {
             messages.add(message);
         }
@@ -1114,7 +1109,7 @@ public class WorkflowConfigurationFactory {
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ServerKeyExchangeMessage message =
-                createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+                createServerKeyExchangeMessage(cs.getKeyExchangeAlgorithm());
         if (message != null) {
             messages.add(message);
         }
@@ -1310,7 +1305,7 @@ public class WorkflowConfigurationFactory {
     }
 
     public WorkflowTrace createQuicVersionNegotiationWorkflow(AliasedConnection connection) {
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config,
@@ -1327,12 +1322,12 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createQuicConnectionMigrationWorkflow(
             AliasedConnection connection, boolean switchToIPv6) {
-        WorkflowTrace trace = createHandshakeWorkflow();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
         trace.addTlsAction(new ResetConnectionAction(false, switchToIPv6));
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(
                         config, connection, ConnectionEndType.CLIENT, new PingFrame()));
-        TlsAction pathChallengeAction = new QuicPathChallengeAction(connection.getAlias());
+        TlsAction pathChallengeAction = new QuicPathChallengeAction(connection.getAlias(), false);
         trace.addTlsAction(pathChallengeAction);
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(
