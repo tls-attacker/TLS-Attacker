@@ -330,8 +330,8 @@ public class RecordAEADCipher extends RecordCipher {
         for (int i = 0; i < sequenceNumber.length; i++) {
             sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
         }
-        record.setSequenceNumber(new BigInteger(sequenceNumber));
-        LOGGER.debug("Decrypted Sequence Number: " + record.getSequenceNumber().getValue());
+        record.setSequenceNumber(new BigInteger(1, sequenceNumber));
+        LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
     }
 
     @Override
