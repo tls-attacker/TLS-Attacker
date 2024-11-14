@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -28,15 +27,11 @@ public class ConnectionIdExtensionHandler extends ExtensionHandler<ConnectionIdE
                 == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.setReadConnectionId(message.getConnectionId().getValue());
             LOGGER.debug(
-                    "Set ReadConnectionId in Context to "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getConnectionId().getValue()));
+                    "Set ReadConnectionId in Context to {}", message.getConnectionId().getValue());
         } else {
             tlsContext.setWriteConnectionId(message.getConnectionId().getValue());
             LOGGER.debug(
-                    "Set WriteConnectionId in Context to "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getConnectionId().getValue()));
+                    "Set WriteConnectionId in Context to {}", message.getConnectionId().getValue());
         }
     }
 }
