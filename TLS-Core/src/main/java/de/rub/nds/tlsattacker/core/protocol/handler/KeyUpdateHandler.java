@@ -154,7 +154,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                             .getChooser()
                                             .getSelectedCipherSuite()
                                             .getCipherAlgorithm()
-                                            .getKeySize(), tlsContext.getChooser().getSelectedProtocolVersion()));
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
                 } else {
 
                     keySet.setServerWriteIv(
@@ -176,7 +177,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                             .getChooser()
                                             .getSelectedCipherSuite()
                                             .getCipherAlgorithm()
-                                            .getKeySize(), tlsContext.getChooser().getSelectedProtocolVersion() ));
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
                 }
 
                 RecordCipher recordCipherClient =
@@ -207,7 +209,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                             .getChooser()
                                             .getSelectedCipherSuite()
                                             .getCipherAlgorithm()
-                                            .getKeySize(), tlsContext.getChooser().getSelectedProtocolVersion()));
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
 
                 } else {
 
@@ -230,7 +233,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                             .getChooser()
                                             .getSelectedCipherSuite()
                                             .getCipherAlgorithm()
-                                            .getKeySize(), tlsContext.getChooser().getSelectedProtocolVersion()));
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
                 }
 
                 RecordCipher recordCipherClient =
