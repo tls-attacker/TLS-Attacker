@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandl
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingServerTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
-import de.rub.nds.tlsattacker.transport.udp.proxy.ProxyClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandler;
 
@@ -58,12 +57,8 @@ public class TransportHandlerFactory {
                     return new TimingServerUdpTransportHandler(con);
                 }
             case UDP_PROXY:
-                if (localConEndType == ConnectionEndType.CLIENT) {
-                    return new ProxyClientUdpTransportHandler(con);
-                } else {
-                    throw new UnsupportedOperationException(
-                            "UDP_PROXY for server sockets is currently not supported");
-                }
+                throw new UnsupportedOperationException(
+                        "UDP_PROXY for server sockets is currently not supported");
             case TCP_PROXY_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new TimingProxyClientTcpTransportHandler(con);

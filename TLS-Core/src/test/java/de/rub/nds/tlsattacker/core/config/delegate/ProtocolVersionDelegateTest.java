@@ -57,7 +57,7 @@ public class ProtocolVersionDelegateTest extends AbstractDelegateTest<ProtocolVe
     /** Test of applyDelegate method, of class ProtocolVersionDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
         config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.EAP_TLS);
         config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.EAP_TLS);
@@ -86,8 +86,8 @@ public class ProtocolVersionDelegateTest extends AbstractDelegateTest<ProtocolVe
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

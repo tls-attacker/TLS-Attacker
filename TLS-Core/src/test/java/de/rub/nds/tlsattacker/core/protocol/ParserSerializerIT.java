@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -33,7 +32,7 @@ import org.junit.jupiter.api.Test;
 public class ParserSerializerIT extends GenericParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final Config config = Config.createConfig();
+    private final Config config = new Config();
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -57,23 +56,26 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                 r.nextBytes(bytesToParse);
                 message = getRandomMessage(r);
                 Parser parser =
-                        message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));
+                        message.getParser(
+                                tlsContext.getContext(), new ByteArrayInputStream(bytesToParse));
                 parser.parse(message);
             } catch (ParserException | EndOfStreamException E) {
                 continue;
             }
 
-            if (message instanceof HandshakeMessage && !(message instanceof SSL2Message)) {
+            if (message instanceof HandshakeMessage) {
                 // TODO: review if this test can be applied to HandshakeMessage's
                 continue;
             }
-            message.getPreparator(tlsContext);
-            Serializer<? extends ProtocolMessage> serializer = message.getSerializer(tlsContext);
+            message.getPreparator(tlsContext.getContext());
+            Serializer<? extends ProtocolMessage> serializer =
+                    message.getSerializer(tlsContext.getContext());
             byte[] result = serializer.serialize();
             LOGGER.debug(message.toString());
             LOGGER.debug("Bytes to parse:\t{}", bytesToParse);
             LOGGER.debug("Result:\t{}", result);
-            Parser parser2 = message.getParser(tlsContext, new ByteArrayInputStream(result));
+            Parser parser2 =
+                    message.getParser(tlsContext.getContext(), new ByteArrayInputStream(result));
             ProtocolMessage serialized = message.getClass().getConstructor().newInstance();
             parser2.parse(serialized);
             LOGGER.debug(serialized.toString());

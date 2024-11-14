@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.packet.OneRTTPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.OneRTTPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.OneRTTPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.OneRTTPacketSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +60,6 @@ public class OneRTTPacket extends QuicPacket {
             completeUnprotectedHeader =
                     ModifiableVariableFactory.safelySetValue(
                             completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
-
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -69,32 +68,30 @@ public class OneRTTPacket extends QuicPacket {
     @Override
     public void convertCompleteProtectedHeader() {
         byte[] protectedHeaderBytes = protectedHeaderHelper.toByteArray();
-
         protectedHeaderBytes[0] = unprotectedFlags.getValue();
         offsetToPacketNumber = 1 + destinationConnectionId.getValue().length;
-
         this.completeUnprotectedHeader =
                 ModifiableVariableFactory.safelySetValue(
                         this.completeUnprotectedHeader, protectedHeaderBytes);
     }
 
     @Override
-    public OneRTTPacketHandler getHandler(QuicContext context) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public OneRTTPacketHandler getHandler(Context context) {
+        return new OneRTTPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public OneRTTPacketSerializer getSerializer(QuicContext context) {
+    public OneRTTPacketSerializer getSerializer(Context context) {
         return new OneRTTPacketSerializer(this);
     }
 
     @Override
-    public OneRTTPacketPreparator getPreparator(QuicContext context) {
+    public OneRTTPacketPreparator getPreparator(Context context) {
         return new OneRTTPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public OneRTTPacketParser getParser(QuicContext context, InputStream stream) {
-        return new OneRTTPacketParser(stream, context);
+    public OneRTTPacketParser getParser(Context context, InputStream stream) {
+        return new OneRTTPacketParser(stream, context.getQuicContext());
     }
 }

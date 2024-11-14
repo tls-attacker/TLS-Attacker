@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
 
 /**
  * Send configuration that sends a list of containers to the recipient.
@@ -25,6 +26,7 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public SpecificSendLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }
@@ -53,5 +55,10 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

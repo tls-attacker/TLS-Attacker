@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +27,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         this.tlsContext = tlsContext;
     }
 
-    public void updateDigest(MessageT message, boolean goingToBeSent) {
+    public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }
@@ -42,7 +42,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
             DtlsHandshakeMessageFragment fragment =
                     tlsContext
                             .getDtlsFragmentLayer()
-                            .wrapInSingleFragment(tlsContext, handshakeMessage, goingToBeSent);
+                            .wrapInSingleFragment(
+                                    tlsContext.getContext(), handshakeMessage, goingToBeSent);
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());

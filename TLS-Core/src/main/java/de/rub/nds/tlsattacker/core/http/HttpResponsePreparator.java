@@ -40,7 +40,7 @@ public class HttpResponsePreparator extends HttpMessagePreparator<HttpResponseMe
                                         .getBytes(StandardCharsets.ISO_8859_1)
                                         .length);
             }
-            header.getPreparator(httpContext).prepare();
+            header.getPreparator(httpContext.getContext()).prepare();
         }
     }
 }

@@ -39,6 +39,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
+        LOGGER.debug("Starting execution of WorkflowTrace");
         if (config.isWorkflowExecutorShouldOpen()) {
             try {
                 initAllLayer();
@@ -211,31 +212,34 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             if (action instanceof ReceivingAction) {
                 for (String alias : action.getAllAliases()) {
                     if (aliases.contains(alias)) {
-                        return i + 1;
+                        return i;
                     }
                 }
-                return i + 1;
+                return i;
             }
         }
         return 0; // We need to restart from the beginning
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
-        LOGGER.info("Executing retransmission of last sent flight");
-        List<Record> recordsToRetransmit =
-                config.getRetransmitAcknowledgedRecordsInDtls13()
-                        ? action.getSentRecords()
-                        : filterRecordsBasedOnAcks(action.getSentRecords());
-        state.getTlsContext()
-                .getRecordLayer()
-                .setLayerConfiguration(
-                        new SpecificSendLayerConfiguration(
-                                ImplementedLayers.RECORD, recordsToRetransmit));
-        try {
-            state.getTlsContext().getRecordLayer().sendConfiguration();
-        } catch (IOException ex) {
-            state.getTlsContext().setReceivedTransportHandlerException(true);
-            LOGGER.warn("Received IOException during retransmission", ex);
+        LOGGER.debug("Executing retransmission for {}", action.getClass().getSimpleName());
+        for (String alias : action.getAllSendingAliases()) {
+            LOGGER.debug("Retransmitting records for alias {}", alias);
+            List<Record> recordsToRetransmit =
+                    config.getRetransmitAcknowledgedRecordsInDtls13()
+                            ? action.getSentRecords()
+                            : filterRecordsBasedOnAcks(action.getSentRecords());
+            state.getTlsContext(alias)
+                    .getRecordLayer()
+                    .setLayerConfiguration(
+                            new SpecificSendLayerConfiguration(
+                                    ImplementedLayers.RECORD, recordsToRetransmit));
+            try {
+                state.getTlsContext(alias).getRecordLayer().sendConfiguration();
+            } catch (IOException ex) {
+                state.getTlsContext(alias).setReceivedTransportHandlerException(true);
+                LOGGER.warn("Received IOException during retransmission", ex);
+            }
         }
     }
 

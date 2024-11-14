@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -20,8 +24,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -47,20 +51,21 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                     adjustApplicationTrafficSecrets();
                     setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
-                    if (!tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-                        setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-                    }
                     if (tlsContext.getConfig().getDefaultLayerConfiguration()
                             == StackConfiguration.QUIC) {
                         try {
                             QuicPacketCryptoComputations.calculateApplicationSecrets(
-                                    tlsContext.getContext().getQuicContext());
+                                    tlsContext.getContext());
                         } catch (NoSuchAlgorithmException
                                 | NoSuchPaddingException
                                 | CryptoException e) {
                             LOGGER.error("Could not initialize application secrets: ", e);
                         }
                     }
+                    if (!tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+                        setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                    }
+                    // in case of EARLY_DATA we stick to the EARLY_TRAFFIC_SECRETS
                 } else {
                     acknowledgeFinished(message);
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
@@ -175,7 +180,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         try {
             LOGGER.debug("Generating new KeySet");
             KeySet keySet =
-                    KeySetGenerator.generateKeySet(
+                    KeyDerivator.generateKeySet(
                             tlsContext,
                             tlsContext.getChooser().getSelectedProtocolVersion(),
                             keySetType);
@@ -213,28 +218,21 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         LOGGER.debug("Setting cipher for client to use {}", keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
-            if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS
-                    && tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
-                    && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
-                tlsContext.getRecordLayer().updateDecryptionCipher(null);
+        if (tlsContext.getRecordLayer() != null) {
+
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, false));
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, true));
             }
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
-        } else {
-            // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
-            if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS
-                    && tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
-                    && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
-                tlsContext.getRecordLayer().updateEncryptionCipher(null);
-            }
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, true));
         }
     }
 }

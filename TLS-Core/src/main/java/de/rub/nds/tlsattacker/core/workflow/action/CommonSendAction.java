@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tcp.TcpStreamContainer;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
@@ -16,14 +16,15 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
+import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
-import de.rub.nds.udp.UdpDataPacket;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,8 +32,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class CommonSendAction extends MessageAction implements SendingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CommonSendAction() {
         super();
@@ -72,12 +77,12 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
             if (hasDefaultAlias()) {
                 LOGGER.info(
                         "Sending messages: {}",
-                        LogPrinter.toHumanReadableOneLine(layerConfigurations));
+                        LogPrinter.toHumanReadableOneLine(layerConfigurations, LOGGER.getLevel()));
             } else {
                 LOGGER.info(
                         "Sending messages ({}): {}",
                         connectionAlias,
-                        LogPrinter.toHumanReadableOneLine(layerConfigurations));
+                        LogPrinter.toHumanReadableOneLine(layerConfigurations, LOGGER.getLevel()));
             }
             try {
                 getSendResult(tlsContext.getLayerStack(), layerConfigurations);
@@ -86,7 +91,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
                 if (getActionOptions() == null
                         || !getActionOptions().contains(ActionOption.MAY_FAIL)) {
                     tlsContext.setReceivedTransportHandlerException(true);
-                    LOGGER.debug(e);
+                    LOGGER.debug("Encountered exception", e);
                 }
                 setExecuted(true);
             }
@@ -126,6 +131,18 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
                         ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
                 .stream()
                 .map(container -> (ProtocolMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final List<SSL2Message> getSentSSL2Messages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
     }
 

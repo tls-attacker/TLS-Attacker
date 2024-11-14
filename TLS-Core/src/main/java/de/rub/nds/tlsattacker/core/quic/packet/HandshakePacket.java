@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.packet.HandshakePacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.HandshakePacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.HandshakePacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.HandshakePacketSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,22 +45,22 @@ public class HandshakePacket extends LongHeaderPacket {
     }
 
     @Override
-    public HandshakePacketHandler getHandler(QuicContext context) {
-        return null;
+    public HandshakePacketHandler getHandler(Context context) {
+        return new HandshakePacketHandler(context.getQuicContext());
     }
 
     @Override
-    public HandshakePacketSerializer getSerializer(QuicContext context) {
+    public HandshakePacketSerializer getSerializer(Context context) {
         return new HandshakePacketSerializer(this);
     }
 
     @Override
-    public HandshakePacketPreparator getPreparator(QuicContext context) {
+    public HandshakePacketPreparator getPreparator(Context context) {
         return new HandshakePacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public HandshakePacketParser getParser(QuicContext context, InputStream stream) {
-        return new HandshakePacketParser(stream, context);
+    public HandshakePacketParser getParser(Context context, InputStream stream) {
+        return new HandshakePacketParser(stream, context.getQuicContext());
     }
 }

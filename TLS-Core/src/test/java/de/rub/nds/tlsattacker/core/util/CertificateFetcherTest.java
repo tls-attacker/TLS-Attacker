@@ -78,7 +78,7 @@ public class CertificateFetcherTest {
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
+        config = new Config();
         ClientDelegate clientDelegate = new ClientDelegate();
         clientDelegate.setHost("localhost:" + SERVER_PORT);
         clientDelegate.applyDelegate(config);

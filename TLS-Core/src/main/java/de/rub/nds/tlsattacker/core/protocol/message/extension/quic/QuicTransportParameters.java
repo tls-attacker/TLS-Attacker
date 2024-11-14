@@ -25,7 +25,7 @@ import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.consta
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.PREFERRED_ADDRESS;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.RETRY_SOURCE_CONNECTION_ID;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +36,9 @@ import java.util.Objects;
 public class QuicTransportParameters {
 
     private byte[] originalDestinationConnectionId;
+
     private byte[] initialSourceConnectionId;
+
     private byte[] retrySourceConnectionId;
 
     private Long maxIdleTimeout;

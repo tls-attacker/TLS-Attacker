@@ -43,7 +43,8 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
         try {
             initAllLayer();
         } catch (IOException ex) {
-            throw new WorkflowExecutionException(ex);
+            throw new WorkflowExecutionException(
+                    "Workflow not executed, could not initialize transport handler: ", ex);
         }
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
@@ -55,6 +56,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     && (tlsActions.get(i - 1) instanceof ReceivingAction)) {
                 retransmissionActionIndex = i;
             }
+
             if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.debug(
                         "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
@@ -97,6 +99,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
                 } else if (retransmissions == config.getMaxUDPRetransmissions()) {
+                    LOGGER.debug("Hit max retransmissions, stopping workflow");
                     break;
                 } else {
                     i = retransmissionActionIndex - 1;
@@ -105,13 +108,12 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        boolean executedAsPlanned = state.getWorkflowTrace().executedAsPlanned();
-
         if (config.isFinishWithCloseNotify()) {
             try {
-                sendConnectionCloseFrame(executedAsPlanned);
-            } catch (IOException e) {
-                LOGGER.error("Problem while sending ConnectionCloseFrame", e);
+                sendConnectionCloseFrame(
+                        state.getContext().getQuicContext().isApplicationSecretsInitialized());
+            } catch (IOException ex) {
+                LOGGER.warn("Error while sending ConnectionCloseFrame", ex);
             }
         }
 
@@ -121,22 +123,18 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             closeConnection();
         }
 
-        if (executedAsPlanned) {
-            LOGGER.info("Workflow executed as planned.");
-        } else {
-            LOGGER.info("Workflow was not executed as planned.");
-        }
-
         if (config.isResetWorkflowTracesBeforeSaving()) {
+            LOGGER.debug("Resetting WorkflowTrace");
             state.getWorkflowTrace().reset();
         }
 
         try {
             if (getAfterExecutionCallback() != null) {
+                LOGGER.debug("Executing AfterExecutionCallback");
                 getAfterExecutionCallback().apply(state);
             }
         } catch (Exception ex) {
-            LOGGER.debug("Error during AfterExecutionCallback", ex);
+            LOGGER.error("Error during AfterExecutionCallback", ex);
         }
     }
 
@@ -152,7 +150,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             sendAction.setConfiguredQuicPackets(List.of(new InitialPacket()));
         }
 
-        sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+        sendAction.addActionOption(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
 
@@ -172,6 +170,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             packetLayer.sendConfiguration();
         } catch (IOException ex) {
             state.getTlsContext().setReceivedTransportHandlerException(true);
+            LOGGER.warn("Received IOException during retransmission", ex);
         }
     }
 }

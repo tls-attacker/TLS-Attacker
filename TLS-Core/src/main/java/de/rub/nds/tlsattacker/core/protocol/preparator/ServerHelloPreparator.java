@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -75,12 +74,12 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         CipherSuite selectedCipherSuite =
                 CipherSuite.getCipherSuite(msg.getSelectedCipherSuite().getValue());
         if (selectedCipherSuite != null
-                && AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite) != null
-                && !AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite).isEC()) {
+                && selectedCipherSuite.getKeyExchangeAlgorithm() != null
+                && selectedCipherSuite.getKeyExchangeAlgorithm().isEC()) {
             forbiddenExtensionTypes.add(ExtensionType.EC_POINT_FORMATS);
         }
 
-        if (selectedCipherSuite != null && selectedCipherSuite.isTLS13()) {
+        if (selectedCipherSuite != null && selectedCipherSuite.isTls13()) {
             forbiddenExtensionTypes.addAll(ExtensionType.getNonTls13Extensions());
         } else {
             forbiddenExtensionTypes.addAll(ExtensionType.getTls13OnlyExtensions());
@@ -192,7 +191,6 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         // ECH mandates to replace the last 8 bytes of the client random with deterministic values
         // Section 7.2 esni_draft_14
 
-        TlsContext tlsContext = chooser.getContext().getTlsContext();
         ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
         byte[] clientRandom = innerClientHello.getRandom().getValue();
         byte[] serverRandom = chooser.getServerRandom();
@@ -202,7 +200,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         byte[] acceptConfirmation = new byte[] {0, 0, 0, 0, 0, 0, 0, 0};
 
         // serialize server hello and replace last 8 bytes of server random with null bytes
-        byte[] serverHello = msg.getSerializer(tlsContext).serializeHandshakeMessageContent();
+        byte[] serverHello =
+                msg.getSerializer(chooser.getContext()).serializeHandshakeMessageContent();
         byte[] type = new byte[] {HandshakeMessageType.SERVER_HELLO.getValue()};
         byte[] length = ArrayConverter.intToBytes(serverHello.length, 3);
         serverHello = ArrayConverter.concatenate(type, length, serverHello);

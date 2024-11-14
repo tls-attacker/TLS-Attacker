@@ -33,30 +33,31 @@ public class InitialPacketParser extends LongHeaderPacketParser<InitialPacket> {
         parseToken(packet);
         parsePacketLength(packet);
         parseProtectedPacketNumberAndPayload(packet);
-        context.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
     }
 
-    protected void parseTokenLength(InitialPacket message) {
+    protected void parseTokenLength(InitialPacket packet) {
         try {
             int before = getStream().available();
             int result = (int) parseVariableLengthInteger();
             int after = getStream().available();
-            message.setTokenLength(result);
-            message.setTokenLengthSize(before - after);
-            message.protectedHeaderHelper.write(quicBuffer.toByteArray());
+            packet.setTokenLength(result);
+            packet.setTokenLengthSize(before - after);
+            packet.protectedHeaderHelper.write(quicBuffer.toByteArray());
             quicBuffer.reset();
         } catch (IOException e) {
             LOGGER.error(e);
         }
+        LOGGER.debug("Token Length: {}", packet.getTokenLength().getValue());
     }
 
-    protected void parseToken(InitialPacket message) {
-        byte[] tokenBytes = parseByteArrayField(message.getTokenLength().getValue());
-        message.setToken(tokenBytes);
+    protected void parseToken(InitialPacket packet) {
+        byte[] tokenBytes = parseByteArrayField(packet.getTokenLength().getValue());
+        packet.setToken(tokenBytes);
         try {
-            message.protectedHeaderHelper.write(tokenBytes);
+            packet.protectedHeaderHelper.write(tokenBytes);
         } catch (IOException e) {
             LOGGER.error(e);
         }
+        LOGGER.debug("Token: {}", packet.getToken().getValue());
     }
 }

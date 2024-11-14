@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -76,22 +76,22 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public TokenBindingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TokenBindingExtensionParser(stream, tlsContext);
+    public TokenBindingExtensionParser getParser(Context context, InputStream stream) {
+        return new TokenBindingExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public TokenBindingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TokenBindingExtensionPreparator(tlsContext.getChooser(), this);
+    public TokenBindingExtensionPreparator getPreparator(Context context) {
+        return new TokenBindingExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public TokenBindingExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public TokenBindingExtensionSerializer getSerializer(Context context) {
         return new TokenBindingExtensionSerializer(this);
     }
 
     @Override
-    public TokenBindingExtensionHandler getHandler(TlsContext tlsContext) {
-        return new TokenBindingExtensionHandler(tlsContext);
+    public TokenBindingExtensionHandler getHandler(Context context) {
+        return new TokenBindingExtensionHandler(context.getTlsContext());
     }
 }

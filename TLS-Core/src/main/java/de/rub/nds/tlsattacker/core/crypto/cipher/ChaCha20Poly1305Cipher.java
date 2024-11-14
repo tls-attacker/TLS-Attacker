@@ -251,7 +251,7 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher implements Dtls1
 
         int partial = len % TAG_LENGTH;
         if (partial != 0) {
-            this.mac.update(this.ZEROES, 0, TAG_LENGTH - partial);
+            this.mac.update(ChaCha20Poly1305Cipher.ZEROES, 0, TAG_LENGTH - partial);
         }
     }
 

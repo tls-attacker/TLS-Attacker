@@ -9,7 +9,10 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.cipher.Dtls13MaskingCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -58,8 +61,7 @@ public class RecordAEADCipher extends RecordCipher {
             aeadExplicitLength = 0;
         } else {
             aeadExplicitLength =
-                    AlgorithmResolver.getCipher(getState().getCipherSuite())
-                            .getNonceBytesFromRecord();
+                    getState().getCipherSuite().getCipherAlgorithm().getNonceBytesFromRecord();
         }
     }
 
@@ -302,7 +304,8 @@ public class RecordAEADCipher extends RecordCipher {
                 record.setCleanProtocolMessageBytes(plainRecordBytes);
             }
         } catch (CryptoException e) {
-            LOGGER.warn("Tag invalid", e);
+            LOGGER.warn("Encountered a decryption failure");
+            LOGGER.trace(e);
             record.getComputations().setAuthenticationTagValid(false);
             throw new CryptoException(e);
         }

@@ -335,7 +335,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
                 for (KeyShareEntry entry :
                         ((KeyShareExtensionMessage) parsedExtension).getKeyShareList()) {
                     NamedGroup group = NamedGroup.getNamedGroup(entry.getGroup().getValue());
-                    if (group.isCurve()) {
+                    if (group.isEcGroup()) {
                         if (group == NamedGroup.ECDH_X25519) {
                             // TODO this has to be properly added...
                             storeEntryList.add(config.getDefaultClientKeyStoreEntries().get(0));

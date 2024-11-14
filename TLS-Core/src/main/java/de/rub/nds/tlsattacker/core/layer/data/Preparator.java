@@ -19,7 +19,7 @@ public abstract class Preparator<T> {
     protected final Chooser chooser;
     private final T object;
 
-    public Preparator(Chooser chooser, T object) {
+    protected Preparator(Chooser chooser, T object) {
         this.chooser = chooser;
         this.object = object;
         if (object == null) {

@@ -12,10 +12,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.http.header.preparator.ContentLengthHeaderPreparator;
 import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 
@@ -28,8 +27,8 @@ public class ContentLengthHeader extends HttpHeader {
     public ContentLengthHeader() {}
 
     @Override
-    public ContentLengthHeaderPreparator getPreparator(HttpContext httpContext) {
-        return new ContentLengthHeaderPreparator(httpContext, this);
+    public ContentLengthHeaderPreparator getPreparator(Context context) {
+        return new ContentLengthHeaderPreparator(context.getHttpContext(), this);
     }
 
     public ModifiableInteger getLength() {
@@ -53,17 +52,17 @@ public class ContentLengthHeader extends HttpHeader {
     }
 
     @Override
-    public Parser<?> getParser(HttpContext context, InputStream stream) {
+    public Parser<ContentLengthHeader> getParser(Context context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public Serializer<?> getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(Context context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<?> getHandler(HttpContext context) {
+    public Handler<ContentLengthHeader> getHandler(Context context) {
         return null;
     }
 }

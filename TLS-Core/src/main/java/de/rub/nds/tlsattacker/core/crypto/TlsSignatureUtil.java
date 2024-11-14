@@ -239,12 +239,12 @@ public class TlsSignatureUtil {
                         .getChooser()
                         .getSubjectRsaPrivateKey();
         byte[] salt = chooser.getConfig().getDefaultRsaSsaPssSalt();
-        if (salt.length > algorithm.getBitLength() * 8) {
+        if (salt.length > algorithm.getBitLength() / 8) {
             LOGGER.debug("Default PSS salt is too long, truncating");
-            salt = Arrays.copyOfRange(salt, 0, algorithm.getBitLength() * 8);
-        } else if (salt.length < algorithm.getBitLength() * 8) {
+            salt = Arrays.copyOfRange(salt, 0, algorithm.getBitLength() / 8);
+        } else if (salt.length < algorithm.getBitLength() / 8) {
             LOGGER.debug("Default PSS salt is too short, padding");
-            byte[] newSalt = new byte[algorithm.getBitLength() * 8];
+            byte[] newSalt = new byte[algorithm.getBitLength() / 8];
             System.arraycopy(salt, 0, newSalt, 0, salt.length);
             salt = newSalt;
         }
@@ -253,7 +253,6 @@ public class TlsSignatureUtil {
                 new RsaPrivateKey(privateKey, modulus),
                 toBeHasedAndSigned,
                 algorithm,
-                salt,
-                algorithm);
+                salt);
     }
 }

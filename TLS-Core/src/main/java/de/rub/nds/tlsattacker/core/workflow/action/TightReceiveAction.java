@@ -46,6 +46,8 @@ public class TightReceiveAction extends CommonReceiveAction {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
+                new TightReceiveLayerConfiguration(ImplementedLayers.SSL2, expectedMessages));
+        configurationList.add(
                 new TightReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);

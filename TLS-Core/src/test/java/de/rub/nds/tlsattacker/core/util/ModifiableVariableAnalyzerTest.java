@@ -24,7 +24,7 @@ public class ModifiableVariableAnalyzerTest {
     /** Test of getAllModifiableVariableFields method, of class ModifiableVariableAnalyzer. */
     @Test
     public void testGetAllModifiableVariableFields() {
-        ClientHelloMessage chm = new ClientHelloMessage(Config.createConfig());
+        ClientHelloMessage chm = new ClientHelloMessage(new Config());
         String[] fieldNames = {
             "compressionLength",
             "cipherSuiteLength",

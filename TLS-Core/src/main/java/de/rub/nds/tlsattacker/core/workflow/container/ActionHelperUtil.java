@@ -8,17 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.container;
 
-import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
-import de.rub.nds.tlsattacker.core.layer.IgnoreLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.MissingReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
@@ -40,7 +33,7 @@ public class ActionHelperUtil {
 
     private ActionHelperUtil() {}
 
-    public static List<DataContainer<?>> getDataContainersForLayer(
+    public static List<DataContainer> getDataContainersForLayer(
             LayerType type, LayerStackProcessingResult processingResult) {
         if (processingResult == null) {
             return null;
@@ -48,7 +41,7 @@ public class ActionHelperUtil {
             for (LayerProcessingResult<?> result :
                     processingResult.getLayerProcessingResultList()) {
                 if (result.getLayerType() == type) {
-                    return (List<DataContainer<?>>) result.getUsedContainers();
+                    return (List<DataContainer>) result.getUsedContainers();
                 }
             }
             return new LinkedList<>();
@@ -60,9 +53,9 @@ public class ActionHelperUtil {
             boolean sending,
             Set<ActionOption> actionOptions,
             List<LayerConfiguration<?>> unsortedLayerConfigurations) {
-        unsortedLayerConfigurations =
+        List<LayerConfiguration<?>> sortedLayerConfigurations =
                 sortLayerConfigurations(layerStack, sending, unsortedLayerConfigurations);
-        return applyAllMessageFilters(unsortedLayerConfigurations, actionOptions);
+        return applyAllMessageFilters(sortedLayerConfigurations, actionOptions);
     }
 
     public static List<LayerConfiguration<?>> applyAllMessageFilters(
@@ -98,6 +91,23 @@ public class ActionHelperUtil {
         return messageLayerConfiguration;
     }
 
+    public static List<LayerConfiguration<?>> createReceiveTillHttpContentConfiguration(
+            TlsContext tlsContext, String httpContent) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
+        LayerConfiguration httpConfiguration =
+                new ReceiveTillHttpContentConfiguration(null, httpContent);
+
+        SpecificReceiveLayerConfiguration messageConfiguration =
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
+
+        // allow for additional application data to arrive unhandled
+        messageConfiguration.setAllowTrailingContainers(true);
+
+        return ActionHelperUtil.sortLayerConfigurations(
+                layerStack, false, List.of(httpConfiguration, messageConfiguration));
+    }
+
     private static List<LayerConfiguration<?>> sortLayerConfigurations(
             LayerStack layerStack,
             boolean sending,
@@ -107,6 +117,9 @@ public class ActionHelperUtil {
         // reset configurations to only assign a configuration to the upper most layer
         // Layer above configured layers will be set to ignore, layers below which are
         // not configured will be set to "does not matter"
+
+        List<LayerConfiguration<?>> unsortedLayerConfigurationsMutable =
+                new LinkedList<>(unsortedLayerConfigurations);
         boolean alreadyConfiguredLayer = false;
         for (LayerType layerType : layerStack.getLayersInStack()) {
             ImplementedLayers layer;
@@ -116,13 +129,13 @@ public class ActionHelperUtil {
                 LOGGER.warn(
                         "Cannot assign layer "
                                 + layerType.getName()
-                                + "to current LayerStack. LayerType not implemented for TLSAction.");
+                                + "to current LayerStack. LayerType not implemented for TlsAction.");
                 continue;
             }
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
 
             layerConfiguration =
-                    unsortedLayerConfigurations.stream()
+                    unsortedLayerConfigurationsMutable.stream()
                             .filter(Objects::nonNull)
                             .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
                             .findFirst();
@@ -130,7 +143,7 @@ public class ActionHelperUtil {
             if (layerConfiguration.isPresent()) {
                 alreadyConfiguredLayer = true;
                 sortedLayerConfigurations.add(layerConfiguration.get());
-                unsortedLayerConfigurations.remove(layerConfiguration.get());
+                unsortedLayerConfigurationsMutable.remove(layerConfiguration.get());
             } else {
                 if (alreadyConfiguredLayer) {
                     if (sending) {

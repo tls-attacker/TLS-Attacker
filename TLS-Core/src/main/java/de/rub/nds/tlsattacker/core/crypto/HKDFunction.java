@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
 import javax.crypto.Mac;
@@ -197,13 +198,13 @@ public class HKDFunction {
             throw new NotImplementedException(
                     "The given protocol version does not have a label for expansion implemented.");
         }
-        int labelLength = label.getBytes().length;
+        int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
         int hashValueLength = hashValue.length;
         byte[] result =
                 ArrayConverter.concatenate(
                         ArrayConverter.intToBytes(outLen, 2),
                         ArrayConverter.intToBytes(labelLength, 1),
-                        label.getBytes(),
+                        label.getBytes(StandardCharsets.US_ASCII),
                         ArrayConverter.intToBytes(hashValueLength, 1),
                         hashValue);
         return result;

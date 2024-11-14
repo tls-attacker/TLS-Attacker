@@ -11,12 +11,11 @@ package de.rub.nds.tlsattacker.core.layer.data;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +44,7 @@ public abstract class Parser<T> {
      *
      * @param stream The Inputstream to read data drom
      */
-    public Parser(InputStream stream) {
+    protected Parser(InputStream stream) {
         this.stream = stream;
         outputStream = new ByteArrayOutputStream();
     }
@@ -78,8 +77,6 @@ public abstract class Parser<T> {
             } else {
                 outputStream.write(data);
             }
-        } catch (SocketTimeoutException E) {
-            throw new TimeoutException("Received a timeout while reading", E);
         } catch (IOException E) {
             throw new ParserException("Could not parse byteArrayField of length=" + length, E);
         }
@@ -131,13 +128,19 @@ public abstract class Parser<T> {
         return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
     }
 
+    /**
+     * Parses as US_ASCII
+     *
+     * @param endSequence
+     * @return
+     */
     protected String parseStringTill(byte endSequence) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
         while (true) {
             byte b = parseByteField(1);
-            stream.write(b);
+            tempStream.write(b);
             if (b == endSequence) {
-                return stream.toString();
+                return tempStream.toString(StandardCharsets.US_ASCII);
             }
         }
     }

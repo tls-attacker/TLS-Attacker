@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.PathResponseFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.PathResponseFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.PathResponseFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.PathResponseFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -26,27 +26,29 @@ public class PathResponseFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
+    public static final int PATH_CHALLENGE_LENGTH = 8;
+
     public PathResponseFrame() {
         super(QuicFrameType.PATH_RESPONSE_FRAME);
     }
 
     @Override
-    public PathResponseFrameHandler getHandler(QuicContext context) {
-        return new PathResponseFrameHandler(context);
+    public PathResponseFrameHandler getHandler(Context context) {
+        return new PathResponseFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public PathResponseFrameSerializer getSerializer(QuicContext context) {
+    public PathResponseFrameSerializer getSerializer(Context context) {
         return new PathResponseFrameSerializer(this);
     }
 
     @Override
-    public PathResponseFramePreparator getPreparator(QuicContext context) {
+    public PathResponseFramePreparator getPreparator(Context context) {
         return new PathResponseFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PathResponseFrameParser getParser(QuicContext context, InputStream stream) {
+    public PathResponseFrameParser getParser(Context context, InputStream stream) {
         return new PathResponseFrameParser(stream);
     }
 

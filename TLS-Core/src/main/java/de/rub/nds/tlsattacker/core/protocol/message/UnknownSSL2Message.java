@@ -9,19 +9,34 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownSSL2MessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownSSL2MessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownSSL2MessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownSSL2MessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "UnknownSSL2Message")
 public class UnknownSSL2Message extends SSL2Message {
 
+    private byte[] dataConfig;
+
     public UnknownSSL2Message() {
         super(SSL2MessageType.SSL_UNKNOWN);
+    }
+
+    public UnknownSSL2Message(byte[] config) {
+        super(SSL2MessageType.SSL_UNKNOWN);
+        this.dataConfig = config;
+    }
+
+    public byte[] getDataConfig() {
+        return dataConfig;
+    }
+
+    public void setDataConfig(byte[] config) {
+        this.dataConfig = config;
     }
 
     @Override
@@ -30,23 +45,23 @@ public class UnknownSSL2Message extends SSL2Message {
     }
 
     @Override
-    public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new UnknownMessageParser(stream);
+    public UnknownSSL2MessageParser getParser(Context context, InputStream stream) {
+        return new UnknownSSL2MessageParser(stream, context.getTlsContext());
     }
 
     @Override
-    public HandshakeMessagePreparator getPreparator(TlsContext tlsContext) {
-        throw new UnsupportedOperationException("No preparator available for Unknown SSL2 message");
+    public UnknownSSL2MessagePreparator getPreparator(Context context) {
+        return new UnknownSSL2MessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public HandshakeMessageSerializer getSerializer(TlsContext tlsContext) {
-        return null;
+    public UnknownSSL2MessageSerializer getSerializer(Context context) {
+        return new UnknownSSL2MessageSerializer(this);
     }
 
     @Override
-    public HandshakeMessageHandler getHandler(TlsContext tlsContext) {
-        return null;
+    public UnknownSSL2MessageHandler getHandler(Context context) {
+        return new UnknownSSL2MessageHandler(context.getTlsContext());
     }
 
     @Override

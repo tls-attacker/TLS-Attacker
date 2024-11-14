@@ -34,7 +34,7 @@ public class StateTest {
 
     @Test
     public void initWithoutWorkflowTraceFailsProperly() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setWorkflowTraceType(null);
 
         ConfigurationException exception =
@@ -45,7 +45,7 @@ public class StateTest {
     @Test
     public void initFromGoodConfig() {
         String expected = "testInitFromConfig";
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setWorkflowTraceType(WorkflowTraceType.SHORT_HELLO);
         config.setDefaultApplicationMessageData(expected);
         State state = new State(config);
@@ -59,7 +59,7 @@ public class StateTest {
     @Test
     public void initFromConfigAndWorkflowTrace() {
         String expected = "testInitFromConfig";
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultApplicationMessageData(expected);
         WorkflowTrace trace = new WorkflowTrace();
         State s = new State(config, trace);

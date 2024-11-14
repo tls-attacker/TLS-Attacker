@@ -274,7 +274,6 @@ public class ConfigTest {
                         "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
-        config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
                 ArrayConverter.hexStringToByteArray(
                         "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
@@ -335,7 +334,6 @@ public class ConfigTest {
                         "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
-        config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
                 ArrayConverter.hexStringToByteArray(
                         "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));

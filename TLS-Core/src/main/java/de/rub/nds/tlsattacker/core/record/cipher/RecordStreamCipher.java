@@ -100,7 +100,7 @@ public class RecordStreamCipher extends RecordCipher {
                 cleanBytes.length
                         + AlgorithmResolver.getMacAlgorithm(
                                         getState().getVersion(), getState().getCipherSuite())
-                                .getSize());
+                                .getMacLength());
 
         computations.setAuthenticatedMetaData(
                 collectAdditionalAuthenticatedData(record, getState().getVersion()));
