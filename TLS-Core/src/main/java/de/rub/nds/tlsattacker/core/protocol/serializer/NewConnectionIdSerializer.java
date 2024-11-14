@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;
@@ -37,7 +36,7 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
 
     private void serializeUsage(NewConnectionIdMessage msg) {
         appendByte(msg.getUsage().getValue());
-        LOGGER.debug("Usage: " + msg.getUsage().getValue());
+        LOGGER.debug("Usage: {}", msg.getUsage().getValue());
     }
 
     private void serializeConnectionIds(NewConnectionIdMessage msg) {
@@ -46,10 +45,7 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
             appendInt(
                     connectionId.getLength().getValue(), HandshakeByteLength.CONNECTION_ID_LENGTH);
             appendBytes(connectionId.getConnectionId().getValue());
-            LOGGER.debug(
-                    " - "
-                            + ArrayConverter.bytesToHexString(
-                                    connectionId.getConnectionId().getValue()));
+            LOGGER.debug(" - {}", connectionId.getConnectionId().getValue());
         }
     }
 
@@ -57,6 +53,6 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
         appendInt(
                 msg.getConnectionIdsLength().getValue(),
                 HandshakeByteLength.NEW_CONNECTION_ID_CIDS_LENGTH);
-        LOGGER.debug("ConnectionIdsLength: " + msg.getConnectionIdsLength());
+        LOGGER.debug("ConnectionIdsLength: {}", msg.getConnectionIdsLength());
     }
 }
