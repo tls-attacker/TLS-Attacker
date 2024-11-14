@@ -1235,6 +1235,7 @@ public class Config implements Serializable {
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
+    /** DTLS 1.3 */
     private Boolean canSkipMessageSequenceNumber = false;
 
     private Boolean acceptContentRewritingDtlsFragments = true;
