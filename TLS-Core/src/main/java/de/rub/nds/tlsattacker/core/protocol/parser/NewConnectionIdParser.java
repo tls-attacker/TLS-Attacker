@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -39,7 +38,7 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
         message.setUsage(
                 ConnectionIdUsage.getConnectionIdUsage(
                         parseByteField(HandshakeByteLength.NEW_CONNECTION_ID_USAGE_LENGTH)));
-        LOGGER.debug("Usage: " + message.getUsage());
+        LOGGER.debug("Usage: {}", message.getUsage());
     }
 
     private void parseConnectionIds(NewConnectionIdMessage message) {
@@ -51,13 +50,13 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
             cid.setConnectionId(parseByteArrayField(cid.getLength().getValue()));
             message.getConnectionIds().add(cid);
             i += cid.getLength().getValue();
-            LOGGER.debug(" - " + ArrayConverter.bytesToHexString(cid.getConnectionId().getValue()));
+            LOGGER.debug(" - {}", cid.getConnectionId().getValue());
         }
     }
 
     private void parseConnectionIdsLength(NewConnectionIdMessage message) {
         message.setConnectionIdsLength(
                 parseIntField(HandshakeByteLength.NEW_CONNECTION_ID_CIDS_LENGTH));
-        LOGGER.debug("ConnectionIdsLength: " + message.getConnectionIdsLength().getValue());
+        LOGGER.debug("ConnectionIdsLength: {}", message.getConnectionIdsLength().getValue());
     }
 }
