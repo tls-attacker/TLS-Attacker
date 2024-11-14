@@ -41,7 +41,7 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     private void prepareRecordNumbersLength() {
         message.setRecordNumberLength(
                 message.getRecordNumbers().size() * AckByteLength.RECORD_NUMBER);
-        LOGGER.debug("RecordNumbersLength: " + message.getRecordNumberLength().getValue());
+        LOGGER.debug("RecordNumbersLength: {}", message.getRecordNumberLength().getValue());
     }
 
     private void prepareRecordNumbers() {
@@ -54,11 +54,7 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
         }
         LOGGER.debug("RecordNumbers: ");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
-            LOGGER.debug(
-                    " - Epoch "
-                            + recordNumber.getEpoch().getValue()
-                            + " | SQN "
-                            + recordNumber.getSequenceNumber().getValue());
+            LOGGER.debug(" - {}", recordNumber);
         }
     }
 }

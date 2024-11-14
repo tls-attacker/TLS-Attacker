@@ -33,7 +33,7 @@ public class NewConnectionIdPreparator extends HandshakeMessagePreparator<NewCon
 
     private void prepareUsage() {
         message.setUsage(chooser.getConfig().getDefaultUsageOfSentConnectionIds());
-        LOGGER.debug("Usage: " + message.getUsage());
+        LOGGER.debug("Usage: {}", message.getUsage());
     }
 
     private void prepareConnectionIds() {
@@ -45,6 +45,6 @@ public class NewConnectionIdPreparator extends HandshakeMessagePreparator<NewCon
             length += cid.getLength().getValue() + HandshakeByteLength.CONNECTION_ID_LENGTH;
         }
         message.setConnectionIdsLength(length);
-        LOGGER.debug("Number of Connection IDs: " + chooser.getNumberOfRequestedConnectionIds());
+        LOGGER.debug("Number of Connection IDs: {}", chooser.getNumberOfRequestedConnectionIds());
     }
 }
