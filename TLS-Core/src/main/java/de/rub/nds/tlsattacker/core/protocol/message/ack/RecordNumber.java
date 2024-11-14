@@ -94,4 +94,9 @@ public class RecordNumber extends ModifiableVariableHolder {
         }
         return Objects.equals(this.sequenceNumber, other.sequenceNumber);
     }
+
+    @Override
+    public String toString() {
+        return "(e=" + epoch + ", sqn=" + sequenceNumber + ')';
+    }
 }
