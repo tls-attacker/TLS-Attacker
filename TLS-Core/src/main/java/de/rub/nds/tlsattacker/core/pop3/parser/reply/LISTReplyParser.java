@@ -1,0 +1,27 @@
+package de.rub.nds.tlsattacker.core.pop3.parser.reply;
+
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3LISTReply;
+
+import java.io.InputStream;
+import java.util.List;
+
+public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
+
+    public LISTReplyParser(InputStream stream) {super(stream);}
+
+    @Override
+    public void parse(Pop3LISTReply reply) {
+        List<String> lines = readWholeReply();
+        this.parseReplyIndicator(reply, lines.get(0));
+        for (int i = 1; i < lines.size(); i++) {
+            String[] parts = lines.get(i).split(" ");
+            if (parts.length == 2) {
+                reply.addMessageNumber(parts[0]);
+                reply.addMessageOctet(parts[1]);
+            }
+        }
+        if (reply.getStatusIndicator().equals("-ERR")) {
+            reply.setHumanReadableMessage(lines.get(0).substring(5));
+        }
+    }
+}
