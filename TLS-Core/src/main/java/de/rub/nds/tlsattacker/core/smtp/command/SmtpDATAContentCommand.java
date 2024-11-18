@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.smtp.parser.command.DATAContentParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.DATAContentCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class SmtpDATAContentCommand extends SmtpCommand {
 
     public SmtpDATAContentCommand(String... content) {
         super(null, null);
-        this.lines = List.of(content);
+        this.lines = new ArrayList<>(List.of(content));
     }
 
     public List<String> getLines() {
@@ -43,7 +44,7 @@ public class SmtpDATAContentCommand extends SmtpCommand {
     }
 
     public void setLines(List<String> lines) {
-        this.lines = lines;
+        this.lines = new ArrayList<>(lines);
     }
 
     @Override
