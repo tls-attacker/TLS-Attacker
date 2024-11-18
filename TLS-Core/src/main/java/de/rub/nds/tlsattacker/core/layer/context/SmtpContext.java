@@ -91,7 +91,7 @@ public class SmtpContext extends LayerContext {
     }
 
     public void setMailDataBuffer(List<String> mailDataBuffer) {
-        this.mailDataBuffer = mailDataBuffer;
+        this.mailDataBuffer = new ArrayList<>(mailDataBuffer);
     }
 
     public String getClientIdentity() {
