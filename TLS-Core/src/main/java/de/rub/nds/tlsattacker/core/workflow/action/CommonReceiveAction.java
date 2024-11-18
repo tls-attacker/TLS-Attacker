@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
@@ -130,6 +131,18 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
                         ImplementedLayers.HTTP, getLayerStackProcessingResult())
                 .stream()
                 .map(container -> (HttpMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SmtpMessage> getReceivedSmtpMessages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SMTP, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (SmtpMessage) container)
                 .collect(Collectors.toList());
     }
 
