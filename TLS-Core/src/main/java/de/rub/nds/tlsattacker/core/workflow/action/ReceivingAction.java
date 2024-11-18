@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-
 import java.util.List;
 import java.util.Set;
 

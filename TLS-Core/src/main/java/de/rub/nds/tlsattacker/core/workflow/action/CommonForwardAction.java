@@ -230,6 +230,7 @@ public abstract class CommonForwardAction extends TlsAction
                 .map(container -> (HttpMessage) container)
                 .collect(Collectors.toList());
     }
+
     @Override
     public List<SmtpMessage> getReceivedSmtpMessages() {
         if (layerStackReceiveResult == null) {
