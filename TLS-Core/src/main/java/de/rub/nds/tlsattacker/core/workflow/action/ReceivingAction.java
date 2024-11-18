@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
@@ -22,7 +20,7 @@ import java.util.Set;
 
 public interface ReceivingAction {
 
-    List<? extends Message<? extends LayerContext>> getALLReceivedMessages();
+    //    List<? extends Message<? extends LayerContext>> getALLReceivedMessages();
 
     List<ProtocolMessage> getReceivedMessages();
 

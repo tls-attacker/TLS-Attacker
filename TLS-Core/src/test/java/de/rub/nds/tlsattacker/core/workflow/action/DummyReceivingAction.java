@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
@@ -62,6 +63,11 @@ public class DummyReceivingAction extends MessageAction
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
         throw new UnsupportedOperationException("Unimplemented method 'getReceivedHttpMessages'");
+    }
+
+    @Override
+    public List<SmtpMessage> getReceivedSmtpMessages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedSmtpMessages'");
     }
 
     @Override
