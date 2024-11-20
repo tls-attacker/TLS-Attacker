@@ -137,8 +137,9 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 if (keyword.startsWith("X") || keyword.startsWith("x")) {
                     return new LocalSmtpServiceExtension(ehloKeyword, parameters);
                 } else {
-                    throw new ParserException(
-                            "Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
+                    return new UnknownEHLOExtension(ehloKeyword, parameters);
+//                    throw new ParserException(
+//                            "Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
                 }
         }
     }
