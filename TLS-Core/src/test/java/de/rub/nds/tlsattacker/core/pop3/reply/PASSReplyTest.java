@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -5,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.NOOPReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.PASSReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -42,5 +49,4 @@ class PASSReplyTest {
         assertEquals("+OK", pass.getStatusIndicator());
         assertEquals("you have 2 messages", pass.getHumanReadableMessage());
     }
-
 }
