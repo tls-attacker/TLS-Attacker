@@ -1,0 +1,47 @@
+package de.rub.nds.tlsattacker.core.pop3.reply;
+
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.USERReplyParser;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.io.InputStream;
+
+@XmlRootElement
+public class Pop3USERReply extends Pop3Reply {
+    private String user;
+
+    public Pop3USERReply() {
+        super();
+    }
+
+    @Override
+    public USERReplyParser getParser(Pop3Context context, InputStream stream) {
+        return new USERReplyParser(stream);
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    @Override
+    public String serialize() {
+        char SP = ' ';
+        String CRLF = "\r\n";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.statusIndicator);
+        sb.append(SP);
+        sb.append(this.user);
+        sb.append(SP);
+        sb.append(this.humanReadableMessage.get(0));
+        sb.append(CRLF);
+
+        return sb.toString();
+    }
+}
+
