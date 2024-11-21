@@ -44,44 +44,33 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
      */
     public void parse(CommandT pop3Command) {
         String line = parseSingleLine();
-        String[] lineContents = line.split(" ", 2);
+        String[] lineContents = line.split(" ");
+
         String keyword = lineContents[0];
-
-        if (!pop3Command.getCommandName().equals(keyword))
-            throw new ParserException("Unexpected keyword. Expected: '" + pop3Command.getCommandName() + "'. Got: '" + keyword + "'.");
-
         pop3Command.setKeyword(keyword);
 
-        if (lineContents.length > 2) {
-            LOGGER.warn("Expected only keyword and argument but got: " + line + ". Everything past '" + lineContents[1] + "' is ignored.");
-        }
+        if (lineContents.length == 1) return;
 
-        if (lineContents.length >= 2) {
-            pop3Command.setArguments(lineContents[1]);
-            tryParseMessageNumber(pop3Command, lineContents[1]);
+        String arguments = line.substring(keyword.length() + 1);
+        pop3Command.setArguments(arguments);
+        tryParseMessageNumber(pop3Command, lineContents[1]);
+
+        // TODO: check whether there are multi-argument commands
+        if (lineContents.length > 2) {
+            LOGGER.warn("Expected one argument but got: " + arguments + ". The first argument will be treated as message number.");
         }
     }
 
-    public void tryParseMessageNumber(CommandT command, String arguments) {
-        if (arguments.isEmpty()) return;
-
-        String[] args = arguments.split(" ");
-        String messageNumber = args[0];
-
-        // TODO: check whether there are multi-argument commands
-        if (args.length > 1) {
-            LOGGER.warn("Expected one argument but got " + args.length + ". Only the first argument will be processed.");
-        }
-
+    public void tryParseMessageNumber(CommandT command, String possibleMessageNumber) {
         if (!(command instanceof MessageNumber)) {
-            LOGGER.warn("Expected no arguments but got " + args.length + ". Arguments are ignored.");
+            LOGGER.warn("Expected no arguments but got at least: '" + possibleMessageNumber + "'. Arguments will be ignored.");
             return;
         }
 
         try {
-            ((MessageNumber) command).setMessageNumber(Integer.parseInt(messageNumber));
+            ((MessageNumber) command).setMessageNumber(Integer.parseInt(possibleMessageNumber));
         } catch (NumberFormatException ex) {
-            throw new ParserException("Expected numeric message number but got: " + messageNumber);
+            throw new ParserException("Expected numeric message number but got: " + possibleMessageNumber);
         }
     }
 }

@@ -10,7 +10,7 @@ import java.io.InputStream;
  */
 public class RETRCommand extends Pop3Command implements MessageNumber {
 
-    private int messageNumber;
+    private Integer messageNumber;
     private static final String commandName = "RETR";
 
     public RETRCommand() {
@@ -22,11 +22,11 @@ public class RETRCommand extends Pop3Command implements MessageNumber {
         this.messageNumber = messageNumber;
     }
 
-    public int getMessageNumber() {
+    public Integer getMessageNumber() {
         return messageNumber;
     }
 
-    public void setMessageNumber(int messageNumber) {
+    public void setMessageNumber(Integer messageNumber) {
         this.messageNumber = messageNumber;
     }
 

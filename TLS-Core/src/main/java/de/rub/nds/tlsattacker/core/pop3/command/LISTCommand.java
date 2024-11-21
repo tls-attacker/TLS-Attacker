@@ -11,7 +11,7 @@ import java.io.InputStream;
  */
 public class LISTCommand extends Pop3Command implements MessageNumber {
 
-    private int messageNumber; // optional, TODO: decide whether having this as a string is more convenient
+    private Integer messageNumber; // optional, TODO: decide whether having this as a string is more convenient
     private boolean hasMessageNumber = false;
     private static final String commandName = "LIST";
 
@@ -25,14 +25,17 @@ public class LISTCommand extends Pop3Command implements MessageNumber {
         this.hasMessageNumber = true;
     }
 
-    public void setMessageNumber(int messageNumber) {
+    public void setMessageNumber(Integer messageNumber) {
         this.messageNumber = messageNumber;
         this.hasMessageNumber = true;
     }
 
-    public int getMessageNumber() {
-        if (this.hasMessageNumber) return messageNumber;
-        else return -1; // TODO: decide how to handle getter when message number does not exist.
+    public Integer getMessageNumber() {
+        return this.messageNumber;
+    }
+
+    public boolean hasMessageNumber() {
+        return hasMessageNumber;
     }
 
     @Override
