@@ -12,6 +12,9 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.command.MessageNumber;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.InputStream;
 
 /**
@@ -21,6 +24,8 @@ import java.io.InputStream;
  * @param <CommandT> command to be parsed
  */
 public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3MessageParser<CommandT> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser
@@ -40,30 +45,39 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
     public void parse(CommandT pop3Command) {
         String line = parseSingleLine();
         String[] lineContents = line.split(" ", 2);
-        pop3Command.setKeyword(lineContents[0]);
-        if (lineContents.length == 2) {
-            pop3Command.setArguments(lineContents[1]);
+        String keyword = lineContents[0];
+
+        if (!pop3Command.getCommandName().equals(keyword))
+            throw new ParserException("Unexpected keyword. Expected: '" + pop3Command.getCommandName() + "'. Got: '" + keyword + "'.");
+
+        pop3Command.setKeyword(keyword);
+
+        if (lineContents.length > 2) {
+            LOGGER.warn("Expected only keyword and argument but got: " + line + ". Everything past '" + lineContents[1] + "' is ignored.");
         }
-        parseArguments(pop3Command, pop3Command.getArguments());
+
+        if (lineContents.length >= 2) {
+            pop3Command.setArguments(lineContents[1]);
+            tryParseMessageNumber(pop3Command, lineContents[1]);
+        }
     }
 
-    /**
-     * Parse arguments of Pop3Command. Subclass needs to implement this method. For invalid
-     * arguments a ParserException should be thrown
-     *
-     * @param command pop3Command to parse arguments for
-     * @param arguments arguments string containing everything after first space
-     */
-    public void parseArguments(CommandT command, String arguments) {
+    public void tryParseMessageNumber(CommandT command, String arguments) {
+        if (arguments.isEmpty()) return;
+
         String[] args = arguments.split(" ");
-        String keyword = args[0];
+        String messageNumber = args[0];
 
-        if (!command.getCommandName().equals(keyword))
-            throw new ParserException("Unexpected keyword. Expected: '" + command.getCommandName() + "'. Got: '" + keyword + "'.");
+        // TODO: check whether there are multi-argument commands
+        if (args.length > 1) {
+            LOGGER.warn("Expected one argument but got " + args.length + ". Only the first argument will be processed.");
+        }
 
-        if (!(command instanceof MessageNumber) || args.length < 2) return;
+        if (!(command instanceof MessageNumber)) {
+            LOGGER.warn("Expected no arguments but got " + args.length + ". Arguments are ignored.");
+            return;
+        }
 
-        String messageNumber = args[1];
         try {
             ((MessageNumber) command).setMessageNumber(Integer.parseInt(messageNumber));
         } catch (NumberFormatException ex) {
