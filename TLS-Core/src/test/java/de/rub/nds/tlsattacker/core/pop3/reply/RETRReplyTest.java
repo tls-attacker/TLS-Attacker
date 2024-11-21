@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -36,15 +35,17 @@ class RETRReplyTest {
         Serializer<?> serializer = ret.getSerializer(context);
         serializer.serialize();
 
-        assertEquals("+OK 113 octets\r\nHello Juan Fernandez I hope this email finds you well." +
-                "\r\nDid you hear about SEAL, a super cool project group of UPB.\r\n.\r\n",
+        assertEquals(
+                "+OK 113 octets\r\nHello Juan Fernandez I hope this email finds you well."
+                        + "\r\nDid you hear about SEAL, a super cool project group of UPB.\r\n.\r\n",
                 serializer.getOutputStream().toString());
     }
 
     @Test
     public void testParse() {
-        String message = "+OK 113 octets\r\n Hello Juan Fernandez I hope this email finds you well." +
-                "\r\n Did you hear about SEAL, a super cool project group of UPB.\r\n.\r\n";
+        String message =
+                "+OK 113 octets\r\n Hello Juan Fernandez I hope this email finds you well."
+                        + "\r\n Did you hear about SEAL, a super cool project group of UPB.\r\n.\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRReply ret = new Pop3RETRReply();
@@ -58,11 +59,9 @@ class RETRReplyTest {
         savedMessage.add("Hello Juan Fernandez I hope this email finds you well.");
         savedMessage.add("Did you hear about SEAL, a super cool project group of UPB.");
 
-
         assertEquals("+OK", ret.getStatusIndicator());
         assertEquals("113 octets", ret.getHumanReadableMessage());
         assertEquals(savedMessage, ret.getMessages());
-
     }
 
     @Test
@@ -79,5 +78,4 @@ class RETRReplyTest {
         assertEquals(ret.getStatusIndicator(), "-ERR");
         assertEquals(ret.getHumanReadableMessage(), "no Info");
     }
-
 }
