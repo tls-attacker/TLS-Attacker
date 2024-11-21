@@ -60,6 +60,8 @@ public class Pop3LISTReply extends Pop3Reply {
 
         StringBuilder sb = new StringBuilder();
         sb.append(this.statusIndicator);
+        sb.append(SP);
+        sb.append(this.humanReadableMessage);
         sb.append(CRLF);
         for (int i = 0; i < messageNumbers.size(); i++) {
             sb.append(messageNumbers.get(i));
