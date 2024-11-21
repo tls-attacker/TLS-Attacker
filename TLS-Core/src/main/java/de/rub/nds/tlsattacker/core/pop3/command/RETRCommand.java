@@ -1,13 +1,18 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-
 import java.io.InputStream;
 
-/**
- * The RETRCommand retrieves the message with the specified messageNumber.
- */
+/** The RETRCommand retrieves the message with the specified messageNumber. */
 public class RETRCommand extends Pop3Command implements MessageNumber {
 
     private Integer messageNumber;

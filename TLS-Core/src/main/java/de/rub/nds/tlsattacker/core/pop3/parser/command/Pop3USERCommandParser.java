@@ -1,12 +1,18 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.command.USERCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class Pop3USERCommandParser extends Pop3MessageParser<USERCommand> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -34,7 +40,12 @@ public class Pop3USERCommandParser extends Pop3MessageParser<USERCommand> {
         userCommand.setUsername(lineContents[1]);
 
         if (lineContents.length > 2) {
-            LOGGER.warn("Expected only keyword and username but got: " + arguments + ". '" + lineContents[1] + "' will be saved as username.");
+            LOGGER.warn(
+                    "Expected only keyword and username but got: "
+                            + arguments
+                            + ". '"
+                            + lineContents[1]
+                            + "' will be saved as username.");
         }
     }
 }

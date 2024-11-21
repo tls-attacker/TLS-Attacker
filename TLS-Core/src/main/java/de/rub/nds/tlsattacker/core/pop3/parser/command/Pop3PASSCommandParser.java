@@ -1,16 +1,23 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
 import de.rub.nds.tlsattacker.core.pop3.command.PASSCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-
 /**
- * The password provided in the PASS command may contain spaces, so everything past PASS is considered the password.
+ * The password provided in the PASS command may contain spaces, so everything past PASS is
+ * considered the password.
  */
-
 public class Pop3PASSCommandParser extends Pop3MessageParser<PASSCommand> {
     private static final Logger LOGGER = LogManager.getLogger();
 

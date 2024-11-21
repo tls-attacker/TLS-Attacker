@@ -12,10 +12,9 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.command.MessageNumber;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 /**
  * Parses Pop3Command from an InputStream. Simple parser to set command keyword and arguments.
@@ -57,20 +56,27 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
 
         // TODO: check whether there are multi-argument commands
         if (lineContents.length > 2) {
-            LOGGER.warn("Expected one argument but got: " + arguments + ". The first argument will be treated as message number.");
+            LOGGER.warn(
+                    "Expected one argument but got: "
+                            + arguments
+                            + ". The first argument will be treated as message number.");
         }
     }
 
     public void tryParseMessageNumber(CommandT command, String possibleMessageNumber) {
         if (!(command instanceof MessageNumber)) {
-            LOGGER.warn("Expected no arguments but got at least: '" + possibleMessageNumber + "'. Arguments will be ignored.");
+            LOGGER.warn(
+                    "Expected no arguments but got at least: '"
+                            + possibleMessageNumber
+                            + "'. Arguments will be ignored.");
             return;
         }
 
         try {
             ((MessageNumber) command).setMessageNumber(Integer.parseInt(possibleMessageNumber));
         } catch (NumberFormatException ex) {
-            throw new ParserException("Expected numeric message number but got: " + possibleMessageNumber);
+            throw new ParserException(
+                    "Expected numeric message number but got: " + possibleMessageNumber);
         }
     }
 }
