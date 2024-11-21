@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.LISTCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.NOOPCommandPreparator;
-
 import java.io.InputStream;
 
 public class NOOPCommand extends Pop3Command {

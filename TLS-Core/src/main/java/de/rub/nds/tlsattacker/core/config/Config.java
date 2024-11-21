@@ -1297,7 +1297,7 @@ public class Config implements Serializable {
 
     private String defaultSmtpForwardPath = "test@example.com";
 
-    //---------------------- POP3 start ----------------------//
+    // ---------------------- POP3 start ----------------------//
     private int defaultPop3MessageNumber = 1;
 
     public int getDefaultPop3MessageNumber() {
@@ -1327,7 +1327,7 @@ public class Config implements Serializable {
     public void setDefaultPop3Password(String password) {
         this.defaultPop3Password = password;
     }
-    //---------------------- POP3 end ----------------------//
+    // ---------------------- POP3 end ----------------------//
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
