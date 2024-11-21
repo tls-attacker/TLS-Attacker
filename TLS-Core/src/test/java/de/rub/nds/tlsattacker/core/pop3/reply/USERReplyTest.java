@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +33,9 @@ class USERReplyTest {
         Serializer<?> serializer = user.getSerializer(context);
         serializer.serialize();
 
-        assertEquals("+OK JuanFernandez is a real hoopy frood\r\n", serializer.getOutputStream().toString());
+        assertEquals(
+                "+OK JuanFernandez is a real hoopy frood\r\n",
+                serializer.getOutputStream().toString());
     }
 
     @Test
@@ -41,10 +51,9 @@ class USERReplyTest {
         parser.parse(user);
 
         assertEquals("+OK", user.getStatusIndicator());
-        assertEquals("JuanFernandez",user.getUser());
+        assertEquals("JuanFernandez", user.getUser());
         assertEquals("is a real hoopy frood", user.getHumanReadableMessage());
     }
-
 
     @Test
     public void parseERRReply() {
