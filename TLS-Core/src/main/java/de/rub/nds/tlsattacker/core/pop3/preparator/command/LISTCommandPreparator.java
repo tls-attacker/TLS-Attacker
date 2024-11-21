@@ -1,12 +1,13 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.pop3.command.DELECommand;
 import de.rub.nds.tlsattacker.core.pop3.command.LISTCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
 public class LISTCommandPreparator extends Pop3CommandPreparator<LISTCommand> {
-    public LISTCommandPreparator(SmtpContext context, LISTCommand listCommand) {
+    public LISTCommandPreparator(Pop3Context context, LISTCommand listCommand) {
         super(context.getChooser(), listCommand);
     }
 

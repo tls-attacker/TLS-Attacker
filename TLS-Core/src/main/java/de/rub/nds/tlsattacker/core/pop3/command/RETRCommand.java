@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.RETRCommandPreparator;
+
 import java.io.InputStream;
 
 /** The RETRCommand retrieves the message with the specified messageNumber. */
@@ -43,5 +47,10 @@ public class RETRCommand extends Pop3Command implements MessageNumber {
     @Override
     public Pop3CommandParser<RETRCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public RETRCommandPreparator getPreparator(Pop3Context context) {
+        return new RETRCommandPreparator(context, this);
     }
 }

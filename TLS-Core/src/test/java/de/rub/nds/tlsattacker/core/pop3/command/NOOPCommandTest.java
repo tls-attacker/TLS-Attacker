@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.DELECommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.NOOPCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -34,5 +37,18 @@ public class NOOPCommandTest {
         parser.parse(noopCommand);
 
         assertEquals(noopCommand.getCommandName(), "NOOP");
+    }
+
+    @Test
+    void testSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        NOOPCommand noopCommand = new NOOPCommand();
+        NOOPCommandPreparator preparator = noopCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = noopCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("NOOP\r\n", serializer.getOutputStream().toString());
     }
 }

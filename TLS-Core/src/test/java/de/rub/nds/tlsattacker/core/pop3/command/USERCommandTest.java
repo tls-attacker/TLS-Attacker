@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3USERCommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.PASSCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.USERCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -35,5 +38,31 @@ public class USERCommandTest {
 
         assertEquals(userCommand.getUsername(), "juan.fernandez");
         assertEquals(userCommand.getCommandName(), "USER");
+    }
+
+    @Test
+    void testSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        USERCommand userCommand = new USERCommand("juan.fernandez@upb.de");
+        USERCommandPreparator preparator = userCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = userCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("USER juan.fernandez@upb.de\r\n", serializer.getOutputStream().toString());
+    }
+
+    @Test
+    void testDefaultSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        USERCommand userCommand = new USERCommand();
+        USERCommandPreparator preparator = userCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = userCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("USER seal@upb.de\r\n", serializer.getOutputStream().toString());
     }
 }

@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator;
+
 import java.io.InputStream;
 
 public class RSETCommand extends Pop3Command {
@@ -22,6 +26,11 @@ public class RSETCommand extends Pop3Command {
     @Override
     public Pop3CommandParser<RSETCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public RSETCommandPreparator getPreparator(Pop3Context context) {
+        return new RSETCommandPreparator(context, this);
     }
 
     @Override

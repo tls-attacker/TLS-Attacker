@@ -11,7 +11,11 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 // TODO: decide whether to change naming convention, e.g. Pop3StatCommand is less readable imo
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
+
 import java.io.InputStream;
 
 /**
@@ -34,6 +38,11 @@ public class STATCommand extends Pop3Command {
     @Override
     public Pop3CommandParser<STATCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public STATCommandPreparator getPreparator(Pop3Context context) {
+        return new STATCommandPreparator(context, this);
     }
 
     @Override

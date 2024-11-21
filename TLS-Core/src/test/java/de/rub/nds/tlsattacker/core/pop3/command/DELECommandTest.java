@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.DELECommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
+import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -35,5 +38,31 @@ public class DELECommandTest {
 
         assertEquals(deleCommand.getMessageNumber(), 1);
         assertEquals(deleCommand.getCommandName(), "DELE");
+    }
+
+    @Test
+    void testSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        DELECommand deleCommand = new DELECommand(1);
+        DELECommandPreparator preparator = deleCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("DELE 1\r\n", serializer.getOutputStream().toString());
+    }
+
+    @Test
+    void testDefaultSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        DELECommand deleCommand = new DELECommand();
+        DELECommandPreparator preparator = deleCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("DELE 1\r\n", serializer.getOutputStream().toString());
     }
 }

@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.LISTCommandPreparator;
+
 import java.io.InputStream;
 
 /**
@@ -54,5 +58,10 @@ public class LISTCommand extends Pop3Command implements MessageNumber {
     @Override
     public Pop3CommandParser<LISTCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public LISTCommandPreparator getPreparator(Pop3Context context) {
+        return new LISTCommandPreparator(context, this);
     }
 }

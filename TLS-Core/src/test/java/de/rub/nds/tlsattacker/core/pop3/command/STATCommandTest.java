@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -34,5 +37,18 @@ public class STATCommandTest {
         parser.parse(statCommand);
 
         assertEquals(statCommand.getCommandName(), "STAT");
+    }
+
+    @Test
+    void testSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        STATCommand statCommand = new STATCommand();
+        STATCommandPreparator preparator = statCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("STAT\r\n", serializer.getOutputStream().toString());
     }
 }

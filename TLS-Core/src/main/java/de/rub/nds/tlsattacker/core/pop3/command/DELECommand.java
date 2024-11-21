@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.DELECommandPreparator;
+
 import java.io.InputStream;
 
 /** The DELECommand deletes a message with the specified messageNumber. */
@@ -37,6 +41,11 @@ public class DELECommand extends Pop3Command implements MessageNumber {
     @Override
     public Pop3CommandParser<DELECommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
+    }
+
+    @Override
+    public DELECommandPreparator getPreparator(Pop3Context context) {
+        return new DELECommandPreparator(context, this);
     }
 
     @Override
