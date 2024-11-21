@@ -90,8 +90,11 @@ public class Pop3Reply extends Pop3Message {
         String CRLF = "\r\n";
         StringBuilder sb = new StringBuilder();
         sb.append(this.statusIndicator != null ? this.statusIndicator : "");
-        sb.append(SP);
-        sb.append(this.humanReadableMessage.get(0));
+        if (!this.humanReadableMessage.isEmpty()) {
+            sb.append(SP);
+            sb.append(this.humanReadableMessage.get(0));
+        }
+        sb.append(CRLF);
         for (int i = 1; i < this.humanReadableMessage.size(); i++) {
             sb.append(this.humanReadableMessage.get(i));
             sb.append(CRLF);

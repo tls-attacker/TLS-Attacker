@@ -1,0 +1,46 @@
+package de.rub.nds.tlsattacker.core.pop3.reply;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.DELReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+class DELReplyTest {
+
+    @Test
+    public void serializeValidReply() {
+        Pop3DELReply del = new Pop3DELReply();
+        del.setStatusIndicator("+OK");
+        del.setHumanReadableMessage("message 1 deleted");
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        Serializer<?> serializer = del.getSerializer(context);
+        serializer.serialize();
+
+        assertEquals("+OK message 1 deleted\r\n", serializer.getOutputStream().toString());
+    }
+
+    @Test
+    public void testParse() {
+        String message = "-ERR message 2 already deleted\r\n";
+
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        Pop3DELReply del = new Pop3DELReply();
+        DELReplyParser parser =
+                del.getParser(
+                        context,
+                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))
+                );
+        parser.parse(del);
+
+        assertEquals("-ERR", del.getStatusIndicator());
+        assertEquals("message 2 already deleted", del.getHumanReadableMessage());
+    }
+}

@@ -67,4 +67,20 @@ class STATReplyTest {
         assertEquals(stat.getStatusIndicator(), "-ERR");
         assertEquals(stat.getHumanReadableMessage(), "no Info");
     }
+
+    @Test
+    public void parseOKReply() {
+        String reply = "+OK no Info\r\n";
+        Pop3STATReply stat = new Pop3STATReply();
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+
+        STATReplyParser parser =
+                stat.getParser(
+                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+
+        assertDoesNotThrow(() -> parser.parse(stat));
+        assertEquals(stat.getStatusIndicator(), "+OK");
+        assertEquals(stat.getHumanReadableMessage(), "no Info");
+
+    }
 }

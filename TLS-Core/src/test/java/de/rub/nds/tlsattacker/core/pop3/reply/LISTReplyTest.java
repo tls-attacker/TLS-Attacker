@@ -72,4 +72,19 @@ class LISTReplyTest {
         assertEquals(list.getStatusIndicator(), "-ERR");
         assertEquals(list.getHumanReadableMessage(), "no Info");
     }
+
+    @Test
+    public void parseOKReply() {
+        String reply = "+OK no Info\r\n";
+        Pop3LISTReply list = new Pop3LISTReply();
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+
+        LISTReplyParser parser =
+                list.getParser(
+                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+
+        assertDoesNotThrow(() -> parser.parse(list));
+        assertEquals(list.getStatusIndicator(), "+OK");
+        assertEquals(list.getHumanReadableMessage(), "no Info");
+    }
 }

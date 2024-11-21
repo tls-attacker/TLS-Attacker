@@ -32,6 +32,10 @@ public class STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
         }
         if (reply.getStatusIndicator().equals("-ERR")) {
             reply.setHumanReadableMessage(lines.get(0).substring(5));
+        } else if (reply.getStatusIndicator().equals("+OK")) {
+            reply.setHumanReadableMessage(lines.get(0).substring(4));
+        } else {
+            reply.setHumanReadableMessage(lines.get(0));
         }
     }
 }
