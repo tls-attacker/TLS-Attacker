@@ -29,7 +29,7 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
                 reply.addMessageOctet(parts[1]);
             }
         }
-        //ToDo revisit purpose of HumanReadableMessage
+        // ToDo revisit purpose of HumanReadableMessage
         if (reply.getStatusIndicator().equals("-ERR")) {
             reply.setHumanReadableMessage(lines.get(0).substring(5));
         } else if (reply.getStatusIndicator().equals("+OK")) {

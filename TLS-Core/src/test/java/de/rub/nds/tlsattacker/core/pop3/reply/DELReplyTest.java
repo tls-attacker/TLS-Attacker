@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,10 +16,9 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.DELReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
 
 class DELReplyTest {
 
@@ -36,8 +43,7 @@ class DELReplyTest {
         DELReplyParser parser =
                 del.getParser(
                         context,
-                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))
-                );
+                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(del);
 
         assertEquals("-ERR", del.getStatusIndicator());

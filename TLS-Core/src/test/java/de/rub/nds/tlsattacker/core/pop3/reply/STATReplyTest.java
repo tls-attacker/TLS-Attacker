@@ -81,6 +81,5 @@ class STATReplyTest {
         assertDoesNotThrow(() -> parser.parse(stat));
         assertEquals(stat.getStatusIndicator(), "+OK");
         assertEquals(stat.getHumanReadableMessage(), "no Info");
-
     }
 }
