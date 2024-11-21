@@ -31,7 +31,9 @@ class RSETReplyTest {
         Serializer<?> serializer = reset.getSerializer(context);
         serializer.serialize();
 
-        assertEquals("+OK maildrop has 2 messages (320 octets)\r\n", serializer.getOutputStream().toString());
+        assertEquals(
+                "+OK maildrop has 2 messages (320 octets)\r\n",
+                serializer.getOutputStream().toString());
     }
 
     @Test
@@ -63,4 +65,3 @@ class RSETReplyTest {
         assertEquals("not ok", reset.getHumanReadableMessage());
     }
 }
-
