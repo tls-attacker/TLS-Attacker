@@ -119,7 +119,8 @@ class EHLOReplyTest {
     }
 
     @Test
-    public void testParseMultiLineReplyWithUnknownKeyword() {
+    @Disabled("This is RFC 5321 behavior, which we abandoned")
+    public void testStandardConforminParseMultiLineReplyWithUnknownKeyword() {
         EHLOReplyParser parser =
                 new EHLOReplyParser(
                         new ByteArrayInputStream(
@@ -127,6 +128,21 @@ class EHLOReplyTest {
                                         .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         assertThrows(ParserException.class, () -> parser.parse(reply));
+    }
+    @Test
+    public void testParseMultiLineReplyWithUnknownKeyword() {
+        EHLOReplyParser parser =
+                new EHLOReplyParser(
+                        new ByteArrayInputStream(
+                                "250-seal.upb.de Hello user! itsa me\r\n250-STARTTLS\r\n250 UNKNOWNKEYWORD\r\n"
+                                        .getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOReply reply = new SmtpEHLOReply();
+        parser.parse(reply);
+        assertEquals("seal.upb.de", reply.getDomain());
+        assertEquals("Hello user! itsa me", reply.getGreeting());
+        assertEquals(2, reply.getExtensions().size());
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof STARTTLSExtension));
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof UnknownEHLOExtension));
     }
 
     @Test
