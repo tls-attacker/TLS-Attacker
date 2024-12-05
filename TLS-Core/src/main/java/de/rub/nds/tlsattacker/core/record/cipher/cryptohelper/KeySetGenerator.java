@@ -165,7 +165,7 @@ public class KeySetGenerator {
 
         byte[] clientAndServerRandom = ArrayConverter.concatenate(clientRandom, serverRandom);
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-        int keySize = cipherSuite.getCipherAlgorithm().getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportKeySize();
 
         keySet.setClientWriteKey(
                 PseudoRandomFunction.compute(
@@ -202,7 +202,7 @@ public class KeySetGenerator {
 
     private static void deriveSSL3ExportKeys(
             CipherSuite cipherSuite, KeySet keySet, byte[] clientRandom, byte[] serverRandom) {
-        int keySize = cipherSuite.getCipherAlgorithm().getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportKeySize();
         keySet.setClientWriteKey(
                 md5firstNBytes(keySize, keySet.getClientWriteKey(), clientRandom, serverRandom));
         keySet.setServerWriteKey(
