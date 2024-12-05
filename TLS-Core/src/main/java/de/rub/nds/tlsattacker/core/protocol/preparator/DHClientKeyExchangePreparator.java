@@ -25,7 +25,6 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     protected BigInteger clientPublicKey;
     protected byte[] premasterSecret;
     protected byte[] random;
-    protected byte[] masterSecret;
     protected final T msg;
 
     public DHClientKeyExchangePreparator(Chooser chooser, T msg) {
