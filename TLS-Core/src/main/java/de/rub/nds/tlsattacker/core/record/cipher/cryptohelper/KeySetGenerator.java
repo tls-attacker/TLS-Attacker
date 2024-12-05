@@ -244,8 +244,7 @@ public class KeySetGenerator {
         CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         int keySize = cipherAlg.getKeySize();
         int saltSize = AEAD_IV_LENGTH - cipherAlg.getNonceBytesFromRecord();
-        int secretSetSize = 2 * keySize + 2 * saltSize;
-        return secretSetSize;
+        return 2 * keySize + 2 * saltSize;
     }
 
     private static int getStreamSecretSetSize(
