@@ -11,54 +11,56 @@ package de.rub.nds.tlsattacker.core.constants;
 /** Symmetric cipher algorithm and its mapping to Java names */
 public enum CipherAlgorithm {
     NULL(0, 0, 0, 0),
-    RC2_40(5, 8, 0, 8, "RC2/CBC/NoPadding"), // TODO Not sure this is correct
-    RC2_128(16, 8, 0, 8, "RC2/CBC/NoPadding"),
-    RC4_128(16, 0, 0, 0, "RC4"),
-    DES_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"),
-    DES_EDE_CBC(24, 8, 0, 8, "DESede/CBC/NoPadding"),
-    AES_128_CBC(16, 16, 0, 16, "AES/CBC/NoPadding"),
-    AES_256_CBC(32, 16, 0, 16, "AES/CBC/NoPadding"),
-    AES_128_GCM(16, 4, 8, 16, "AES/GCM/NoPadding"),
-    AES_256_GCM(32, 4, 8, 16, "AES/GCM/NoPadding"),
-    CAMELLIA_128_CBC(16, 16, 0, 16, "Camellia/CBC/NoPadding"),
-    CAMELLIA_256_CBC(32, 16, 0, 16, "Camellia/CBC/NoPadding"),
-    CAMELLIA_128_GCM(16, 16, 8, 16, "Camellia/GCM/NoPadding"),
-    CAMELLIA_256_GCM(32, 16, 8, 16, "Camellia/GCM/NoPadding"),
-    IDEA_128(16, 8, 0, 8, "IDEA/CBC/NoPadding"),
-    SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"),
-    AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
-    AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
-    CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
-    UNOFFICIAL_CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305"),
-    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
-    ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"),
-    ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"),
-    ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding"),
-    ARIA_256_GCM(32, 16, 8, 16, "ARIA/GCM/NoPadding"),
-    GOST_28147_CNT_IMIT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
+    RC2_40(5, 8, 0, 8, "RC2/CBC/NoPadding", true), // TODO Not sure this is correct
+    RC2_128(16, 8, 0, 8, "RC2/CBC/NoPadding", false),
+    RC4_128(16, 0, 0, 0, "RC4", false),
+    DES_CBC(8, 8, 0, 8, "DES/CBC/NoPadding", false),
+    DES_EDE_CBC(24, 8, 0, 8, "DESede/CBC/NoPadding", false),
+    AES_128_CBC(16, 16, 0, 16, "AES/CBC/NoPadding", false),
+    AES_256_CBC(32, 16, 0, 16, "AES/CBC/NoPadding", false),
+    AES_128_GCM(16, 4, 8, 16, "AES/GCM/NoPadding", false),
+    AES_256_GCM(32, 4, 8, 16, "AES/GCM/NoPadding", false),
+    CAMELLIA_128_CBC(16, 16, 0, 16, "Camellia/CBC/NoPadding", false),
+    CAMELLIA_256_CBC(32, 16, 0, 16, "Camellia/CBC/NoPadding", false),
+    CAMELLIA_128_GCM(16, 16, 8, 16, "Camellia/GCM/NoPadding", false),
+    CAMELLIA_256_GCM(32, 16, 8, 16, "Camellia/GCM/NoPadding", false),
+    IDEA_128(16, 8, 0, 8, "IDEA/CBC/NoPadding", false),
+    SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding", false),
+    AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding", false),
+    AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding", false),
+    CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305", false),
+    UNOFFICIAL_CHACHA20_POLY1305(32, 12, 0, 0, "ChaCha20-Poly1305", false),
+    DES40_CBC(8, 8, 0, 8, "DES/CBC/NoPadding", true),
+    ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding", false),
+    ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding", false),
+    ARIA_128_GCM(16, 16, 8, 16, "ARIA/GCM/NoPadding", false),
+    ARIA_256_GCM(32, 16, 8, 16, "ARIA/GCM/NoPadding", false),
+    GOST_28147_CNT_IMIT(32, 8, 0, 8, "GOST28147/ECB/NoPadding", false),
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
-    AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
-    AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding"),
+    AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding", false),
+    AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding", false),
     RABBIT_CBC(16, 8, 0, 8), // TODO Not sure this is correct
-    SM4_GCM(16, 4, 8, 16, "SM4/GCM/NoPadding"),
-    SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding"),
-    RC4_40(5, 0, 0, 0, "RC4"), // TODO check
-    RC4_56(7, 0, 0, 0, "RC4"), // TODO check
-    RC2_56(7, 8, 0, 8, "RC2/CBC/NoPadding"), // TODO check
-    AES_128_CCM_8(16, 4, 8, 16, "AES/CCM/NoPadding"), // TODO check
-    AES_256_CCM_8(32, 4, 8, 16, "AES/CCM/NoPadding"); // TODO check
+    SM4_GCM(16, 4, 8, 16, "SM4/GCM/NoPadding", false),
+    SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding", false),
+    RC4_40(5, 0, 0, 0, "RC4", true), // TODO check
+    RC4_56(7, 0, 0, 0, "RC4", true), // TODO check
+    RC2_56(7, 8, 0, 8, "RC2/CBC/NoPadding", true), // TODO check
+    AES_128_CCM_8(16, 4, 8, 16, "AES/CCM/NoPadding", false), // TODO check
+    AES_256_CCM_8(32, 4, 8, 16, "AES/CCM/NoPadding", false); // TODO check
 
     CipherAlgorithm(
             int keySize,
             int nonceBytesFromHandshake,
             int nonceBytesFromRecord,
             int blocksize,
-            String javaName) {
+            String javaName,
+            boolean export) {
         this.keySize = keySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
         this.nonceBytesFromRecord = nonceBytesFromRecord;
         this.blocksize = blocksize;
+        this.export = export;
     }
 
     CipherAlgorithm(
@@ -68,6 +70,7 @@ public enum CipherAlgorithm {
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
         this.nonceBytesFromRecord = nonceBytesFromRecord;
         this.blocksize = blocksize;
+        this.export = false;
     }
 
     /** Key size for the underlying cipher */
@@ -87,6 +90,8 @@ public enum CipherAlgorithm {
     /** java name mapping */
     private final String javaName;
 
+    private final boolean export;
+
     public int getKeySize() {
         return keySize;
     }
@@ -105,5 +110,10 @@ public enum CipherAlgorithm {
 
     public int getBlocksize() {
         return blocksize;
+    }
+
+    public boolean isExport()
+    {
+        return export;
     }
 }

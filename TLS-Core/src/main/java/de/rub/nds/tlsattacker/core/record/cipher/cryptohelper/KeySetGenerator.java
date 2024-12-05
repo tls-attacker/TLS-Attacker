@@ -145,7 +145,7 @@ public class KeySetGenerator {
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
         KeySet keySet = new KeySet();
         parser.parse(keySet);
-        if (cipherSuite.isExportSymmetricCipher()) {
+        if (cipherSuite.getCipherAlgorithm().isExport()) {
             deriveExportKeys(keySet, tlsContext);
         }
         return keySet;

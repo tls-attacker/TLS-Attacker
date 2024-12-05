@@ -3260,13 +3260,6 @@ public enum CipherSuite {
         return grease;
     }
 
-    public boolean isExportSymmetricCipher() {
-        return this.name().contains("DES40")
-                || this.name().contains("RC4_40")
-                || this.name().contains("RC2_CBC_40")
-                || this.name().contains("DES_CBC_40");
-    }
-
     /**
      * Returns true in case the cipher suite is a CBC cipher suite.
      *
@@ -3391,7 +3384,7 @@ public enum CipherSuite {
         }
         if (this.name().contains("IDEA")
                 || this.name().contains("_DES")
-                || this.isExportSymmetricCipher()) {
+                || this.getCipherAlgorithm().isExport()) {
             return !((version == ProtocolVersion.TLS12) || (version == ProtocolVersion.DTLS12));
         }
 
@@ -3897,7 +3890,7 @@ public enum CipherSuite {
 
     // Note: We don't consider DES as weak for these purposes.
     public boolean isWeak() {
-        return this.isExport() || this.isExportSymmetricCipher() || this.isAnon() || this.isNull();
+        return this.isExport() || this.getCipherAlgorithm().isExport() || this.isAnon() || this.isNull();
     }
 
     public boolean requiresServerCertificateMessage() {
