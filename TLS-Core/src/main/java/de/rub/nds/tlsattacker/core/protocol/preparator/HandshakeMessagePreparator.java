@@ -73,7 +73,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         HandshakeMessageSerializer<?> serializer = message.getSerializer(chooser.getContext());
         byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
-        prepareMessageLength(content.length);
+        prepareMessageLength(message.getMessageContent().getValue().length);
         prepareMessageType(message.getHandshakeMessageType());
     }
 
