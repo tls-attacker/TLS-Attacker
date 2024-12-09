@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -218,5 +219,14 @@ public class ClientHelloPreparatorTest
         tlsContext.setClientRandom(firstRandom);
         preparator.prepare();
         assertArrayEquals(firstRandom, message.getRandom().getValue());
+    }
+
+    @Test
+    public void testPrepareWithModifiedContent() {
+        byte[] expectedContent = new byte[] {0x01, 0x02, 0x03};
+        message.setMessageContent(Modifiable.explicit(expectedContent));
+        preparator.prepare();
+        assertEquals(3, message.getLength().getValue());
+        assertArrayEquals(expectedContent, message.getMessageContent().getValue());
     }
 }
