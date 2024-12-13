@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 
@@ -24,6 +25,10 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
         SignatureAndHashAlgorithm signatureAndHashAlgorithm =
                 SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
                         signatureAndHashAlgorithmBytes);
-        tlsContext.setServerSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
+        } else {
+            tlsContext.setServerSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
+        }
     }
 }
