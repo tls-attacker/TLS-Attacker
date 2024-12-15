@@ -45,6 +45,10 @@ public class SmtpContext extends LayerContext {
     // get the type of the reply, because the reply type cannot be determined by the content alone.
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
+    // The server sends a greeting when the client connects. This is the first message the client
+    // has to process, so we need to keep track of it.
+    private boolean greetingReceived = false;
+
     public SmtpContext(Context context) {
         super(context);
     }
@@ -193,5 +197,13 @@ public class SmtpContext extends LayerContext {
 
     public void setRecipientBuffer(List<String> recipientBuffer) {
         this.recipientBuffer = recipientBuffer;
+    }
+
+    public boolean isGreetingReceived() {
+        return greetingReceived;
+    }
+
+    public void setGreetingReceived(boolean greetingReceived) {
+        this.greetingReceived = greetingReceived;
     }
 }

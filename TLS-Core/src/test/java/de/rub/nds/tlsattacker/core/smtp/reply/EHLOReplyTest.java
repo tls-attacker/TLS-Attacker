@@ -129,6 +129,7 @@ class EHLOReplyTest {
         SmtpEHLOReply reply = new SmtpEHLOReply();
         assertThrows(ParserException.class, () -> parser.parse(reply));
     }
+
     @Test
     public void testParseMultiLineReplyWithUnknownKeyword() {
         EHLOReplyParser parser =
