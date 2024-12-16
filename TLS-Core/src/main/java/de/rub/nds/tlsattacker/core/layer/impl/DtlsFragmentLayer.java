@@ -8,16 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.util.Arrays;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.PreparationException;
@@ -44,6 +34,14 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmissionStruct;
 import de.rub.nds.tlsattacker.core.state.Context;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.Arrays;
 
 /** The DtlsFragmentLayer handles DTLS fragmentation between the message and record layer. */
 public class DtlsFragmentLayer
@@ -87,8 +85,9 @@ public class DtlsFragmentLayer
                 byte[] serializedMessage = serializer.serialize();
                 fragment.setCompleteResultingMessage(serializedMessage);
                 RecordLayerHint recordLayerHint =
-                        new RecordLayerHint(fragment.getProtocolMessageType());
-                context.getTlsContext().getRetransmissionCache()
+                        new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
+                context.getTlsContext()
+                        .getRetransmissionCache()
                         .add(new RetransmissionStruct(recordLayerHint, serializedMessage));
                 getLowerLayer().sendData(recordLayerHint, serializedMessage);
                 addProducedContainer(fragment);
@@ -164,20 +163,24 @@ public class DtlsFragmentLayer
                 }
                 addProducedContainer(fragment);
                 if (context.getConfig().isIndividualTransportPacketsForFragments()) {
-                    context.getTlsContext().getRetransmissionCache()
+                    context.getTlsContext()
+                            .getRetransmissionCache()
                             .add(new RetransmissionStruct(hint, stream.toByteArray()));
                     getLowerLayer().sendData(hint, stream.toByteArray());
                     stream = new ByteArrayOutputStream();
                 }
             }
             if (!context.getConfig().isIndividualTransportPacketsForFragments()) {
-                context.getTlsContext().getRetransmissionCache()
+                context.getTlsContext()
+                        .getRetransmissionCache()
                         .add(new RetransmissionStruct(hint, stream.toByteArray()));
                 getLowerLayer().sendData(hint, stream.toByteArray());
             }
             return new LayerProcessingResult<>(fragments, getLayerType(), true);
         } else {
-            context.getTlsContext().getRetransmissionCache().add(new RetransmissionStruct(hint, data));
+            context.getTlsContext()
+                    .getRetransmissionCache()
+                    .add(new RetransmissionStruct(hint, data));
             getLowerLayer().sendData(hint, data);
             return new LayerProcessingResult<>(new LinkedList<>(), getLayerType(), true);
         }
@@ -288,7 +291,8 @@ public class DtlsFragmentLayer
 
     private void doRetransmissions() {
         LOGGER.debug("Starting retransmissions");
-        for (RetransmissionStruct retransmissionStruct : context.getTlsContext().getRetransmissionCache()) {
+        for (RetransmissionStruct retransmissionStruct :
+                context.getTlsContext().getRetransmissionCache()) {
             try {
                 LOGGER.debug(
                         "Retransmitting message: {} , {}",

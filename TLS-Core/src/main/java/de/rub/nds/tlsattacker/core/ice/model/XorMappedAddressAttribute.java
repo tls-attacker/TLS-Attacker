@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.XorMappedAddressAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.XorMappedAddressAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.XorMappedAddressAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.XorMappedAddressAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class XorMappedAddressAttribute extends StunAttribute {
@@ -119,22 +119,22 @@ public class XorMappedAddressAttribute extends StunAttribute {
     }
 
     @Override
-    public XorMappedAddressAttributeHandler getHandler(IceContext context) {
-        return new XorMappedAddressAttributeHandler(context);
+    public XorMappedAddressAttributeHandler getHandler(Context context) {
+        return new XorMappedAddressAttributeHandler(context.getIceContext());
     }
 
     @Override
-    public XorMappedAddressAttributeParser getParser(IceContext context, InputStream stream) {
-        return new XorMappedAddressAttributeParser(context, stream);
+    public XorMappedAddressAttributeParser getParser(Context context, InputStream stream) {
+        return new XorMappedAddressAttributeParser(context.getIceContext(), stream);
     }
 
     @Override
-    public XorMappedAddressAttributePreparator getPreparator(IceContext context) {
+    public XorMappedAddressAttributePreparator getPreparator(Context context) {
         return new XorMappedAddressAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public XorMappedAddressAttributeSerializer getSerializer(IceContext context) {
+    public XorMappedAddressAttributeSerializer getSerializer(Context context) {
         return new XorMappedAddressAttributeSerializer(this);
     }
 }

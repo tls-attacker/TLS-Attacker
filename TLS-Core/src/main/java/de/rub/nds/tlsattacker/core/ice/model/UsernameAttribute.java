@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.UsernameAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.UsernameAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.UsernameAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.UsernameAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class UsernameAttribute extends StunAttribute {
@@ -39,22 +39,22 @@ public class UsernameAttribute extends StunAttribute {
     }
 
     @Override
-    public UsernameAttributeHandler getHandler(IceContext context) {
-        return new UsernameAttributeHandler(context);
+    public UsernameAttributeHandler getHandler(Context context) {
+        return new UsernameAttributeHandler(context.getIceContext());
     }
 
     @Override
-    public UsernameAttributeParser getParser(IceContext context, InputStream stream) {
-        return new UsernameAttributeParser(context, stream);
+    public UsernameAttributeParser getParser(Context context, InputStream stream) {
+        return new UsernameAttributeParser(context.getIceContext(), stream);
     }
 
     @Override
-    public UsernameAttributePreparator getPreparator(IceContext context) {
+    public UsernameAttributePreparator getPreparator(Context context) {
         return new UsernameAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UsernameAttributeSerializer getSerializer(IceContext context) {
+    public UsernameAttributeSerializer getSerializer(Context context) {
         return new UsernameAttributeSerializer(this);
     }
 }

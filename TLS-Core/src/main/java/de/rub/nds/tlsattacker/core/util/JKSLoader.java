@@ -15,8 +15,8 @@ import java.security.KeyStoreException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateParsingException;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
+import org.bouncycastle.tls.TlsUtils;
 
 public class JKSLoader {
 
@@ -54,7 +54,7 @@ public class JKSLoader {
         }
     }
 
-    public static org.bouncycastle.crypto.tls.Certificate loadTLSCertificate(
+    public static org.bouncycastle.tls.Certificate loadTLSCertificate(
             KeyStore keyStore, String alias) {
         try {
             if (alias == null || keyStore == null) {
@@ -81,8 +81,7 @@ public class JKSLoader {
             org.bouncycastle.asn1.x509.Certificate[] certs =
                     new org.bouncycastle.asn1.x509.Certificate[1];
             certs[0] = cert;
-            org.bouncycastle.crypto.tls.Certificate tlsCerts =
-                    new org.bouncycastle.crypto.tls.Certificate(certs);
+            org.bouncycastle.tls.Certificate tlsCerts = new org.bouncycastle.tls.Certificate(certs);
             return tlsCerts;
         } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
             throw new ConfigurationException(

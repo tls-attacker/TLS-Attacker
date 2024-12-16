@@ -64,12 +64,10 @@ public class StunMessagePreparator extends IceMessagePreparator<StunMessage> {
                 byte[] fakeTranscript = computeTranscriptFingerprint(attributeStream.toByteArray());
                 chooser.getContext().getIceContext().setMessageTranscript(fakeTranscript);
             }
-            StunAttributePreparator<?> preparator =
-                    attribute.getPreparator(chooser.getContext().getIceContext());
+            StunAttributePreparator<?> preparator = attribute.getPreparator(chooser.getContext());
             preparator.prepare();
             try {
-                attributeStream.write(
-                        attribute.getSerializer(chooser.getContext().getIceContext()).serialize());
+                attributeStream.write(attribute.getSerializer(chooser.getContext()).serialize());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -80,7 +78,7 @@ public class StunMessagePreparator extends IceMessagePreparator<StunMessage> {
     @Override
     public void prepareAfterParse() {
         for (StunAttribute attribute : message.getAttributeList()) {
-            attribute.getPreparator(chooser.getContext().getIceContext()).prepareAfterParse();
+            attribute.getPreparator(chooser.getContext()).prepareAfterParse();
         }
     }
 

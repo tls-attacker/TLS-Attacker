@@ -220,8 +220,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         QuicContext quicContext = context.getQuicContext();
         quicContext.setAeadCipher(
                 Cipher.getInstance(
-                        context
-                                .getTlsContext()
+                        context.getTlsContext()
                                 .getSelectedCipherSuite()
                                 .getCipherAlgorithm()
                                 .getJavaName()));

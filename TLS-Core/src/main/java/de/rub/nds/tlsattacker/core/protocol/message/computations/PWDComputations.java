@@ -9,10 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
@@ -34,8 +36,6 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.tls.HashAlgorithm;
-import org.bouncycastle.crypto.tls.TlsUtils;
 
 public class PWDComputations extends KeyExchangeComputations {
 
@@ -66,7 +66,7 @@ public class PWDComputations extends KeyExchangeComputations {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
         if (salt == null) {
-            Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
+            Digest digest = HashCalculator.getDigest(HashAlgorithm.SHA256);
             base = new byte[digest.getDigestSize()];
             byte[] usernamePW =
                     (chooser.getClientPWDUsername() + chooser.getPWDPassword())

@@ -51,7 +51,7 @@ public class RecordLayerTest extends AbstractLayerTest {
         sendRecord.setConfiguredRecords(List.of(modifiedRecord));
         sendRecord.execute(state);
         byte[] completeSerializedExpected =
-                Arrays.concatenate(new byte[] {22, 3, 3, 0, 4}, specificSerializedBytes);
+                Arrays.concatenate(new byte[] {22, 3, 1, 0, 4}, specificSerializedBytes);
         Assertions.assertArrayEquals(completeSerializedExpected, transportHandler.getSentBytes());
     }
 }

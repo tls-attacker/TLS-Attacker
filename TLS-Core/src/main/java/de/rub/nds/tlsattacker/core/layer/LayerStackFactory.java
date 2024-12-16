@@ -64,11 +64,11 @@ public class LayerStackFactory {
             case DTLS_OVER_TURN:
                 return new LayerStack(
                         context,
-                        new MessageLayer(tlsContext),
-                        new DtlsFragmentLayer(tlsContext),
-                        new RecordLayer(tlsContext),
-                        new IceLayer(context.getIceContext()),
-                        new UdpLayer(tlsContext));
+                        new MessageLayer(context),
+                        new DtlsFragmentLayer(context),
+                        new RecordLayer(context),
+                        new IceLayer(context),
+                        new UdpLayer(context));
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

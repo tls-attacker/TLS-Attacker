@@ -81,7 +81,7 @@ public class SignatureAndHashAlgorithmSelector {
                 signHashAlgo = candidateList.get(0);
             }
         } else {
-            signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
+            signHashAlgo = chooser.getConfig().getDefaultServerSelectedSignatureAndHashAlgorithm();
             LOGGER.debug("Using pre-configured algorithm pair {}", signHashAlgo);
         }
         return signHashAlgo;
@@ -100,12 +100,13 @@ public class SignatureAndHashAlgorithmSelector {
             Chooser chooser,
             List<SignatureAndHashAlgorithm> ourSuitableSupported,
             X509PublicKeyType publicKeyType) {
-        if (chooser.getSelectedSigHashAlgorithm().suitableForSignatureKeyType(publicKeyType)) {
-            return chooser.getSelectedSigHashAlgorithm();
+        if (chooser.getServerSelectedSigHashAlgorithm()
+                .suitableForSignatureKeyType(publicKeyType)) {
+            return chooser.getServerSelectedSigHashAlgorithm();
         } else if (!ourSuitableSupported.isEmpty()) {
             return ourSuitableSupported.get(0);
         }
 
-        return chooser.getSelectedSigHashAlgorithm();
+        return chooser.getServerSelectedSigHashAlgorithm();
     }
 }

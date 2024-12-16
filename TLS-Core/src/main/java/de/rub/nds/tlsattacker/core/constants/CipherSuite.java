@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -3782,9 +3779,6 @@ public enum CipherSuite {
         return getAllCipherSuites().stream()
                 .filter(CipherSuite::isTls13)
                 .collect(Collectors.toList());
-        return getAllCipherSuites().stream()
-                .filter(CipherSuite::isTls13)
-                .collect(Collectors.toList());
     }
 
     public static List<CipherSuite> getImplementedTls13CipherSuites() {
@@ -3880,7 +3874,10 @@ public enum CipherSuite {
 
     // Note: We don't consider DES as weak for these purposes.
     public boolean isWeak() {
-        return this.isExport() || this.getCipherAlgorithm().isExport() || this.isAnon() || this.isNull();
+        return this.isExport()
+                || this.getCipherAlgorithm().isExport()
+                || this.isAnon()
+                || this.isNull();
     }
 
     public boolean requiresServerCertificateMessage() {

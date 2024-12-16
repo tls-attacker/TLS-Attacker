@@ -8,12 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -26,6 +20,10 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHas
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertificateVerifyPreparator
         extends HandshakeMessagePreparator<CertificateVerifyMessage> {

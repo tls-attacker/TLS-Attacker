@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.IceControlledHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.IceControlledParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.IceControlledPreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.IceControlledSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class IceControlledAttribute extends StunAttribute {
@@ -40,22 +40,22 @@ public class IceControlledAttribute extends StunAttribute {
     }
 
     @Override
-    public IceControlledHandler getHandler(IceContext context) {
-        return new IceControlledHandler(context);
+    public IceControlledHandler getHandler(Context context) {
+        return new IceControlledHandler(context.getIceContext());
     }
 
     @Override
-    public IceControlledParser getParser(IceContext context, InputStream stream) {
-        return new IceControlledParser(context, stream);
+    public IceControlledParser getParser(Context context, InputStream stream) {
+        return new IceControlledParser(context.getIceContext(), stream);
     }
 
     @Override
-    public IceControlledPreparator getPreparator(IceContext context) {
+    public IceControlledPreparator getPreparator(Context context) {
         return new IceControlledPreparator(context.getChooser(), this);
     }
 
     @Override
-    public IceControlledSerializer getSerializer(IceContext context) {
+    public IceControlledSerializer getSerializer(Context context) {
         return new IceControlledSerializer(this);
     }
 }

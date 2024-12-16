@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.SoftwareAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.SoftwareAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.SoftwareAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.SoftwareAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class SoftwareAttribute extends StunAttribute {
@@ -40,22 +40,22 @@ public class SoftwareAttribute extends StunAttribute {
     }
 
     @Override
-    public SoftwareAttributeHandler getHandler(IceContext context) {
-        return new SoftwareAttributeHandler(context);
+    public SoftwareAttributeHandler getHandler(Context context) {
+        return new SoftwareAttributeHandler(context.getIceContext());
     }
 
     @Override
-    public SoftwareAttributeParser getParser(IceContext context, InputStream stream) {
-        return new SoftwareAttributeParser(context, stream);
+    public SoftwareAttributeParser getParser(Context context, InputStream stream) {
+        return new SoftwareAttributeParser(context.getIceContext(), stream);
     }
 
     @Override
-    public SoftwareAttributePreparator getPreparator(IceContext context) {
+    public SoftwareAttributePreparator getPreparator(Context context) {
         return new SoftwareAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SoftwareAttributeSerializer getSerializer(IceContext context) {
+    public SoftwareAttributeSerializer getSerializer(Context context) {
         return new SoftwareAttributeSerializer(this);
     }
 }

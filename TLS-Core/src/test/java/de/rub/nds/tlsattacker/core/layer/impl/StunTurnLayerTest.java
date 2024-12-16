@@ -51,11 +51,7 @@ public class StunTurnLayerTest {
     public void setUp() throws IOException {
         State state = new State(new Config());
         context = state.getContext();
-        LayerStack stack =
-                new LayerStack(
-                        context,
-                        new IceLayer(context.getIceContext()),
-                        new UdpLayer(context.getTlsContext()));
+        LayerStack stack = new LayerStack(context, new IceLayer(context), new UdpLayer(context));
 
         context.setLayerStack(stack);
         context.setTransportHandler(

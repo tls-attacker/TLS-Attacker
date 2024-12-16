@@ -36,7 +36,7 @@ public class MessageLayerTest extends AbstractLayerTest {
             ProtocolMessage message = createProtocolMessage(type);
             SendAction sendEmptyMessage = new SendAction("client", message);
             sendEmptyMessage.execute(state);
-            byte[] recordHeaderOnly = new byte[] {type.getValue(), 3, 3, 0, 0};
+            byte[] recordHeaderOnly = new byte[] {type.getValue(), 3, 1, 0, 0};
             Assert.assertArrayEquals(recordHeaderOnly, transportHandler.getSentBytes());
             transportHandler.resetOutputStream();
         }

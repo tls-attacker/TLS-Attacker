@@ -39,7 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.crypto.interfaces.DHPrivateKey;
-import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
 

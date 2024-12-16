@@ -29,6 +29,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final Context context;
 
     public UdpLayer(Context context) {

@@ -1,10 +1,12 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.util;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
@@ -18,13 +20,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JaFingerprintCalculator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private JaFingerprintCalculator() {
-    }
+    private JaFingerprintCalculator() {}
 
     public static String getJa3sFingerprintString(ServerHelloMessage serverHelloMessage) {
         StringBuilder ja3StringBuilder = new StringBuilder();
@@ -37,11 +42,13 @@ public class JaFingerprintCalculator {
     }
 
     public static byte[] getJa3sFingerprintHash(ServerHelloMessage serverHelloMessage) {
-        return HashCalculator.compute(getJa3sFingerprintString(serverHelloMessage).getBytes(), HashAlgorithm.MD5);
+        return HashCalculator.compute(
+                getJa3sFingerprintString(serverHelloMessage).getBytes(), HashAlgorithm.MD5);
     }
 
     public static byte[] getJa3FingerprintHash(ClientHelloMessage clientHelloMessage) {
-        return HashCalculator.compute(getJa3FingerprintString(clientHelloMessage).getBytes(), HashAlgorithm.MD5);
+        return HashCalculator.compute(
+                getJa3FingerprintString(clientHelloMessage).getBytes(), HashAlgorithm.MD5);
     }
 
     public static String getJa3FingerprintString(ClientHelloMessage clientHelloMessage) {
@@ -54,14 +61,15 @@ public class JaFingerprintCalculator {
         return ja3StringBuilder.toString();
     }
 
-    private static void appendPointFormats(ClientHelloMessage clientHelloMessage, StringBuilder ja3StringBuilder) {
-        ECPointFormatExtensionMessage ecPointFormatExtensionMessage = (ECPointFormatExtensionMessage) clientHelloMessage
-                .getExtension(ECPointFormatExtensionMessage.class);
+    private static void appendPointFormats(
+            ClientHelloMessage clientHelloMessage, StringBuilder ja3StringBuilder) {
+        ECPointFormatExtensionMessage ecPointFormatExtensionMessage =
+                (ECPointFormatExtensionMessage)
+                        clientHelloMessage.getExtension(ECPointFormatExtensionMessage.class);
         if (ecPointFormatExtensionMessage != null) {
             byte[] formats = ecPointFormatExtensionMessage.getPointFormats().getValue();
             for (int i = 0; i < formats.length; i++) {
-                ja3StringBuilder.append(
-                        ArrayConverter.byteToUnsignedInt(formats[i]));
+                ja3StringBuilder.append(ArrayConverter.byteToUnsignedInt(formats[i]));
                 ja3StringBuilder.append("-");
             }
             if (ja3StringBuilder.length() > 0) {
@@ -70,13 +78,16 @@ public class JaFingerprintCalculator {
         }
     }
 
-    private static void appendEllipticCurves(ClientHelloMessage clientHelloMessage, StringBuilder ja3StringBuilder) {
-        EllipticCurvesExtensionMessage ellipticCurvesExtensionMessage = (EllipticCurvesExtensionMessage) clientHelloMessage
-                .getExtension(EllipticCurvesExtensionMessage.class);
+    private static void appendEllipticCurves(
+            ClientHelloMessage clientHelloMessage, StringBuilder ja3StringBuilder) {
+        EllipticCurvesExtensionMessage ellipticCurvesExtensionMessage =
+                (EllipticCurvesExtensionMessage)
+                        clientHelloMessage.getExtension(EllipticCurvesExtensionMessage.class);
         if (ellipticCurvesExtensionMessage != null) {
             boolean addedOne = false;
-            ByteArrayInputStream curveStream = new ByteArrayInputStream(
-                    ellipticCurvesExtensionMessage.getSupportedGroups().getValue());
+            ByteArrayInputStream curveStream =
+                    new ByteArrayInputStream(
+                            ellipticCurvesExtensionMessage.getSupportedGroups().getValue());
             while (curveStream.available() > 1) {
                 try {
                     byte[] curve = curveStream.readNBytes(HandshakeByteLength.NAMED_GROUP);
@@ -94,7 +105,8 @@ public class JaFingerprintCalculator {
                 }
             }
             if (curveStream.available() == 1) {
-                LOGGER.warn("EllipticCurve length is not a multiple of 2. Not considering supperflous bytes for JA3");
+                LOGGER.warn(
+                        "EllipticCurve length is not a multiple of 2. Not considering supperflous bytes for JA3");
             }
             if (ja3StringBuilder.length() > 0 && addedOne) {
                 ja3StringBuilder.deleteCharAt(ja3StringBuilder.length() - 1);
@@ -103,17 +115,21 @@ public class JaFingerprintCalculator {
         ja3StringBuilder.append(",");
     }
 
-    private static void appendExtensions(HelloMessage helloMessage, StringBuilder ja3StringBuilder) {
+    private static void appendExtensions(
+            HelloMessage helloMessage, StringBuilder ja3StringBuilder) {
         if (helloMessage.getExtensions() != null) {
             boolean addedOne = false;
             for (int i = 0; i < helloMessage.getExtensions().size(); i++) {
                 ExtensionMessage extensionMessage = helloMessage.getExtensions().get(i);
-                ExtensionType type = ExtensionType.getExtensionType(extensionMessage.getExtensionType().getValue());
+                ExtensionType type =
+                        ExtensionType.getExtensionType(
+                                extensionMessage.getExtensionType().getValue());
                 if (type != null && type.isGrease()) {
                     continue;
                 }
                 addedOne = true;
-                ja3StringBuilder.append(ArrayConverter.bytesToInt(extensionMessage.getExtensionType().getValue()));
+                ja3StringBuilder.append(
+                        ArrayConverter.bytesToInt(extensionMessage.getExtensionType().getValue()));
                 ja3StringBuilder.append("-");
             }
             if (ja3StringBuilder.length() > 0 && addedOne) {
@@ -123,14 +139,17 @@ public class JaFingerprintCalculator {
         ja3StringBuilder.append(",");
     }
 
-    private static void appendSelectedCipherSuite(ServerHelloMessage serverHelloMessage,
-            StringBuilder ja3toStringBuilder) {
-        ja3toStringBuilder.append(ArrayConverter.bytesToInt(serverHelloMessage.getSelectedCipherSuite().getValue()));
+    private static void appendSelectedCipherSuite(
+            ServerHelloMessage serverHelloMessage, StringBuilder ja3toStringBuilder) {
+        ja3toStringBuilder.append(
+                ArrayConverter.bytesToInt(serverHelloMessage.getSelectedCipherSuite().getValue()));
         ja3toStringBuilder.append(",");
     }
 
-    private static void appendCipherSuites(ClientHelloMessage clientHelloMessage, StringBuilder ja3toStringBuilder) {
-        ByteArrayInputStream cipherStream = new ByteArrayInputStream(clientHelloMessage.getCipherSuites().getValue());
+    private static void appendCipherSuites(
+            ClientHelloMessage clientHelloMessage, StringBuilder ja3toStringBuilder) {
+        ByteArrayInputStream cipherStream =
+                new ByteArrayInputStream(clientHelloMessage.getCipherSuites().getValue());
         boolean addedOne = false;
         while (cipherStream.available() > 1) {
             try {
@@ -146,15 +165,16 @@ public class JaFingerprintCalculator {
             ja3toStringBuilder.deleteCharAt(ja3toStringBuilder.length() - 1);
         }
         if (cipherStream.available() == 1) {
-            LOGGER.warn("CipherSuite length is not a multiple of 2. Not considering supperflous bytes for JA3");
+            LOGGER.warn(
+                    "CipherSuite length is not a multiple of 2. Not considering supperflous bytes for JA3");
         }
 
         ja3toStringBuilder.append(",");
     }
 
     private static void appendVersion(HelloMessage helloMessage, StringBuilder ja3toStringBuilder) {
-        ja3toStringBuilder.append(ArrayConverter.bytesToInt(helloMessage.getProtocolVersion().getValue()))
+        ja3toStringBuilder
+                .append(ArrayConverter.bytesToInt(helloMessage.getProtocolVersion().getValue()))
                 .append(",");
     }
-
 }

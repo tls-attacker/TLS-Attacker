@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.ErrorCodeAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.ErrorCodeAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.ErrorCodeAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.ErrorCodeAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class ErrorCodeAttribute extends StunAttribute {
@@ -136,22 +136,22 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     @Override
-    public ErrorCodeAttributeParser getParser(IceContext context, InputStream stream) {
-        return new ErrorCodeAttributeParser(context, stream);
+    public ErrorCodeAttributeParser getParser(Context context, InputStream stream) {
+        return new ErrorCodeAttributeParser(context.getIceContext(), stream);
     }
 
     @Override
-    public ErrorCodeAttributePreparator getPreparator(IceContext context) {
+    public ErrorCodeAttributePreparator getPreparator(Context context) {
         return new ErrorCodeAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public ErrorCodeAttributeSerializer getSerializer(IceContext context) {
+    public ErrorCodeAttributeSerializer getSerializer(Context context) {
         return new ErrorCodeAttributeSerializer(this);
     }
 
     @Override
-    public ErrorCodeAttributeHandler getHandler(IceContext context) {
-        return new ErrorCodeAttributeHandler(context);
+    public ErrorCodeAttributeHandler getHandler(Context context) {
+        return new ErrorCodeAttributeHandler(context.getIceContext());
     }
 }

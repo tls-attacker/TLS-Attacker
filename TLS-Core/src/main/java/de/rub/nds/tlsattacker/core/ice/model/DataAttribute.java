@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.ice.handler.DataAttributeHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.DataAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.DataAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.DataAttributeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 import org.bouncycastle.util.Arrays;
 
@@ -56,22 +56,22 @@ public class DataAttribute extends StunAttribute {
     }
 
     @Override
-    public DataAttributeHandler getHandler(IceContext context) {
-        return new DataAttributeHandler(context);
+    public DataAttributeHandler getHandler(Context context) {
+        return new DataAttributeHandler(context.getIceContext());
     }
 
     @Override
-    public DataAttributeParser getParser(IceContext context, InputStream stream) {
-        return new DataAttributeParser(context, stream);
+    public DataAttributeParser getParser(Context context, InputStream stream) {
+        return new DataAttributeParser(context.getIceContext(), stream);
     }
 
     @Override
-    public DataAttributePreparator getPreparator(IceContext context) {
+    public DataAttributePreparator getPreparator(Context context) {
         return new DataAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public DataAttributeSerializer getSerializer(IceContext context) {
+    public DataAttributeSerializer getSerializer(Context context) {
         return new DataAttributeSerializer(this);
     }
 

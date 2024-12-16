@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @param <T> The ServerKeyExchangeMessage that should be prepared

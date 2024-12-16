@@ -35,7 +35,7 @@ public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
         getObject()
                 .setBody(
                         getObject()
-                                .getSerializer(chooser.getContext().getIceContext())
+                                .getSerializer(chooser.getContext())
                                 .serializeAttributeContent());
         getObject().setAttributeLength(getObject().getBody().getValue().length);
         int paddingLength =

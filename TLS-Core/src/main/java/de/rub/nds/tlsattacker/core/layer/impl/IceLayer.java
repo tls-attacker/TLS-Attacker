@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,21 +42,22 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private IceContext context;
+    private IceContext iceContext;
 
-    public IceLayer(IceContext context) {
+    public IceLayer(Context context) {
         super(ImplementedLayers.ICE);
-        this.context = context;
+        this.iceContext = context.getIceContext();
     }
 
     @Override
     public LayerProcessingResult<IceMessage> sendConfiguration() throws IOException {
         if (getLayerConfiguration().getContainerList() != null) {
             for (IceMessage message : getLayerConfiguration().getContainerList()) {
-                prepareDataContainer(message, context);
-                IceMessageHandler handler = message.getHandler(context);
+                prepareDataContainer(message, iceContext.getContext());
+                IceMessageHandler handler = message.getHandler(iceContext.getContext());
                 handler.adjustContext(message);
-                message.setCompleteMessageBytes(message.getSerializer(context).serialize());
+                message.setCompleteMessageBytes(
+                        message.getSerializer(iceContext.getContext()).serialize());
                 getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
                 addProducedContainer(message);
             }
@@ -73,12 +75,12 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
                 LOGGER.warn(
                         "Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
-            if (context.getIceConnectionEndType() == null) {
+            if (iceContext.getIceConnectionEndType() == null) {
                 LOGGER.warn("Connection end type is not set. Assuming client.");
-                context.setIceConnectionEndType(ConnectionEndType.CLIENT);
+                iceContext.setIceConnectionEndType(ConnectionEndType.CLIENT);
             }
 
-            if (context.getTurnDataChannel() != null) {
+            if (iceContext.getTurnDataChannel() != null) {
                 sendAsChannelData(additionalData);
             } else {
                 sendAsTurnOverStun(additionalData);
@@ -93,16 +95,16 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     private void sendAsChannelData(byte[] additionalData) throws IOException {
         LOGGER.trace("Sending data as TURN channel data");
         ChannelDataMessage message = new ChannelDataMessage(additionalData);
-        prepareDataContainer(message, context);
-        message.getHandler(context).adjustContext(message);
-        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
+        prepareDataContainer(message, iceContext.getContext());
+        message.getHandler(iceContext.getContext()).adjustContext(message);
+        message.setCompleteMessageBytes(message.getSerializer(iceContext.getContext()).serialize());
         getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
         addProducedContainer(message);
     }
 
     private void sendAsTurnOverStun(byte[] additionalData) throws IOException {
         StunMessage message;
-        if (context.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (iceContext.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
             LOGGER.trace("Sending data as a STUN/TURN client");
             message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
             message.getAttributeList().add(new XorPeerAddressAttribute());
@@ -116,9 +118,9 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
             message.getAttributeList().add(new SoftwareAttribute());
             message.getAttributeList().add(new FingerprintAttribute());
         }
-        prepareDataContainer(message, context);
-        message.getHandler(context).adjustContext(message);
-        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
+        prepareDataContainer(message, iceContext.getContext());
+        message.getHandler(iceContext.getContext()).adjustContext(message);
+        message.setCompleteMessageBytes(message.getSerializer(iceContext.getContext()).serialize());
         getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
         addProducedContainer(message);
     }
@@ -149,12 +151,13 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
             throws IOException {
         byte[] channelNumber;
         byte[] lengthBytes;
-        if (context.getLayerStack().getLowestLayer() instanceof TcpLayer) {
+        if (iceContext.getLayerStack().getLowestLayer() instanceof TcpLayer) {
             // If we are using TCP, we do not need to read the channel number
             channelNumber = new byte[0];
             lengthBytes = firstTwobytes;
         } else {
-            // We are using UDP, so the first two bytes are the channel number followed by the
+            // We are using UDP, so the first two bytes are the channel number followed by
+            // the
             // length
             channelNumber = firstTwobytes;
             lengthBytes = dataStream.readChunk(IceByteLengths.TURN_CHANNEL_DATA_LENGTH);
@@ -163,18 +166,21 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         byte[] data = dataStream.readChunk(length);
         int paddingLength = 0;
         if (dataStream.available() > 0) {
-            paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT
-                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
-                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            paddingLength =
+                    (IceByteLengths.DATA_CHANNEL_ALIGNMENT
+                                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
+                            % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
             if (paddingLength < 0) {
                 paddingLength = 0;
             }
         }
         byte[] padding = dataStream.readChunk(paddingLength);
-        byte[] completeMessageBytes = ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
+        byte[] completeMessageBytes =
+                ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
         ChannelDataMessage message = new ChannelDataMessage(data);
         message.setCompleteMessageBytes(completeMessageBytes);
-        readDataContainer(message, context, new ByteArrayInputStream(completeMessageBytes));
+        readDataContainer(
+                message, iceContext.getContext(), new ByteArrayInputStream(completeMessageBytes));
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         }
@@ -193,7 +199,8 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
         stunMessage.setCompleteMessageBytes(fullMessage);
-        readDataContainer(stunMessage, context, new ByteArrayInputStream(fullMessage));
+        readDataContainer(
+                stunMessage, iceContext.getContext(), new ByteArrayInputStream(fullMessage));
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         }
