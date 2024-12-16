@@ -118,12 +118,12 @@ public class XorPeerAddressAttribute extends StunAttribute {
 
     @Override
     public XorPeerAddressAttributeHandler getHandler(Context context) {
-        return new XorPeerAddressAttributeHandler(context.getIceContext());
+        return new XorPeerAddressAttributeHandler(context);
     }
 
     @Override
     public XorPeerAddressAttributeParser getParser(Context context, InputStream stream) {
-        return new XorPeerAddressAttributeParser(context.getIceContext(), stream);
+        return new XorPeerAddressAttributeParser(context, stream);
     }
 
     @Override

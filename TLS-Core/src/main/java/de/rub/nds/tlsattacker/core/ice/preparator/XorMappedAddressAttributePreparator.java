@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class XorMappedAddressAttributePreparator
         extends StunAttributePreparator<XorMappedAddressAttribute> {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public XorMappedAddressAttributePreparator(
             Chooser chooser, XorMappedAddressAttribute attribute) {

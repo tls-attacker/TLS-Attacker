@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -200,7 +201,7 @@ public abstract class CommonForwardAction extends TlsAction
     @Override
     public List<ProtocolMessage> getReceivedMessages() {
         if (layerStackReceiveResult == null) {
-            return null;
+            return new LinkedList<>();
         }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.MESSAGE, layerStackReceiveResult)

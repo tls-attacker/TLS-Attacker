@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.IceControlledAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class IceControlledHandler extends StunAttributeHandler<IceControlledAttribute> {
 
-    public IceControlledHandler(IceContext context) {
+    public IceControlledHandler(Context context) {
         super(context);
     }
 
     @Override
     public void adjustContext(IceControlledAttribute container) {
-        context.setTieBreaker(container.getTieBreaker().getValue());
+        context.getIceContext().setTieBreaker(container.getTieBreaker().getValue());
     }
 }

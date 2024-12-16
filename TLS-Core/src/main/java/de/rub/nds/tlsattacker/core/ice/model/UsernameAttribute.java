@@ -40,12 +40,12 @@ public class UsernameAttribute extends StunAttribute {
 
     @Override
     public UsernameAttributeHandler getHandler(Context context) {
-        return new UsernameAttributeHandler(context.getIceContext());
+        return new UsernameAttributeHandler(context);
     }
 
     @Override
     public UsernameAttributeParser getParser(Context context, InputStream stream) {
-        return new UsernameAttributeParser(context.getIceContext(), stream);
+        return new UsernameAttributeParser(context, stream);
     }
 
     @Override

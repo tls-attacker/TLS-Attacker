@@ -137,7 +137,7 @@ public class ErrorCodeAttribute extends StunAttribute {
 
     @Override
     public ErrorCodeAttributeParser getParser(Context context, InputStream stream) {
-        return new ErrorCodeAttributeParser(context.getIceContext(), stream);
+        return new ErrorCodeAttributeParser(context, stream);
     }
 
     @Override
@@ -152,6 +152,6 @@ public class ErrorCodeAttribute extends StunAttribute {
 
     @Override
     public ErrorCodeAttributeHandler getHandler(Context context) {
-        return new ErrorCodeAttributeHandler(context.getIceContext());
+        return new ErrorCodeAttributeHandler(context);
     }
 }

@@ -24,12 +24,12 @@ public class UseCandidateAttribute extends StunAttribute {
 
     @Override
     public UseCandidateHandler getHandler(Context context) {
-        return new UseCandidateHandler(context.getIceContext());
+        return new UseCandidateHandler(context);
     }
 
     @Override
     public UseCandidateParser getParser(Context context, InputStream stream) {
-        return new UseCandidateParser(context.getIceContext(), stream);
+        return new UseCandidateParser(context, stream);
     }
 
     @Override

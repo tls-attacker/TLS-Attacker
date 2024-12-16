@@ -153,7 +153,7 @@ public class StunMessage extends IceMessage {
 
     @Override
     public StunMessageParser getParser(Context context, InputStream stream) {
-        return new StunMessageParser(context.getIceContext(), stream);
+        return new StunMessageParser(context, stream);
     }
 
     @Override
@@ -163,12 +163,12 @@ public class StunMessage extends IceMessage {
 
     @Override
     public StunMessageSerializer getSerializer(Context context) {
-        return new StunMessageSerializer(context.getIceContext(), this);
+        return new StunMessageSerializer(context, this);
     }
 
     @Override
     public StunMessageHandler getHandler(Context context) {
-        return new StunMessageHandler(context.getIceContext());
+        return new StunMessageHandler(context);
     }
 
     @Override

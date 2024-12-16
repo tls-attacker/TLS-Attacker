@@ -41,12 +41,12 @@ public class IceControllingAttribute extends StunAttribute {
 
     @Override
     public IceControllingHandler getHandler(Context context) {
-        return new IceControllingHandler(context.getIceContext());
+        return new IceControllingHandler(context);
     }
 
     @Override
     public IceControllingParser getParser(Context context, InputStream stream) {
-        return new IceControllingParser(context.getIceContext(), stream);
+        return new IceControllingParser(context, stream);
     }
 
     @Override

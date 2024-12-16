@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.ice.parser;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 /** A Parser class for the contents of the body of the respective attribute */
@@ -25,8 +26,8 @@ public abstract class StunAttributeParser<AttributeT extends StunAttribute>
      * @param iceContext
      * @param stream
      */
-    public StunAttributeParser(IceContext iceContext, InputStream stream) {
+    public StunAttributeParser(Context context, InputStream stream) {
         super(stream);
-        this.iceContext = iceContext;
+        this.iceContext = context.getIceContext();
     }
 }

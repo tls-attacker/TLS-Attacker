@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class StunMessageSerializer extends IceMessageSerializer<StunMessage> {
 
@@ -19,9 +20,9 @@ public class StunMessageSerializer extends IceMessageSerializer<StunMessage> {
 
     private IceContext iceContext;
 
-    public StunMessageSerializer(IceContext iceContext, StunMessage message) {
+    public StunMessageSerializer(Context context, StunMessage message) {
         this.message = message;
-        this.iceContext = iceContext;
+        this.iceContext = context.getIceContext();
     }
 
     @Override

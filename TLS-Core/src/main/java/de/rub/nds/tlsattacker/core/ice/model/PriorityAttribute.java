@@ -41,12 +41,12 @@ public class PriorityAttribute extends StunAttribute {
 
     @Override
     public PriorityAttributeHandler getHandler(Context context) {
-        return new PriorityAttributeHandler(context.getIceContext());
+        return new PriorityAttributeHandler(context);
     }
 
     @Override
     public PriorityAttributeParser getParser(Context context, InputStream stream) {
-        return new PriorityAttributeParser(context.getIceContext(), stream);
+        return new PriorityAttributeParser(context, stream);
     }
 
     @Override

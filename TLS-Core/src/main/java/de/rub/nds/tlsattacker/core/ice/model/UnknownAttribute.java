@@ -47,12 +47,12 @@ public class UnknownAttribute extends StunAttribute {
 
     @Override
     public UnknownAttributeHandler getHandler(Context context) {
-        return new UnknownAttributeHandler(context.getIceContext());
+        return new UnknownAttributeHandler(context);
     }
 
     @Override
     public UnknownAttributeParser getParser(Context context, InputStream stream) {
-        return new UnknownAttributeParser(context.getIceContext(), stream);
+        return new UnknownAttributeParser(context, stream);
     }
 
     @Override

@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -42,22 +41,22 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private IceContext iceContext;
+    private Context context;
 
     public IceLayer(Context context) {
         super(ImplementedLayers.ICE);
-        this.iceContext = context.getIceContext();
+        this.context = context;
     }
 
     @Override
     public LayerProcessingResult<IceMessage> sendConfiguration() throws IOException {
         if (getLayerConfiguration().getContainerList() != null) {
             for (IceMessage message : getLayerConfiguration().getContainerList()) {
-                prepareDataContainer(message, iceContext.getContext());
-                IceMessageHandler handler = message.getHandler(iceContext.getContext());
+                prepareDataContainer(message, context);
+                IceMessageHandler handler = message.getHandler(context);
                 handler.adjustContext(message);
                 message.setCompleteMessageBytes(
-                        message.getSerializer(iceContext.getContext()).serialize());
+                        message.getSerializer(context).serialize());
                 getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
                 addProducedContainer(message);
             }
@@ -75,12 +74,12 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
                 LOGGER.warn(
                         "Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
-            if (iceContext.getIceConnectionEndType() == null) {
+            if (context.getIceContext().getIceConnectionEndType() == null) {
                 LOGGER.warn("Connection end type is not set. Assuming client.");
-                iceContext.setIceConnectionEndType(ConnectionEndType.CLIENT);
+                context.getIceContext().setIceConnectionEndType(ConnectionEndType.CLIENT);
             }
 
-            if (iceContext.getTurnDataChannel() != null) {
+            if (context.getIceContext().getTurnDataChannel() != null) {
                 sendAsChannelData(additionalData);
             } else {
                 sendAsTurnOverStun(additionalData);
@@ -95,16 +94,16 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     private void sendAsChannelData(byte[] additionalData) throws IOException {
         LOGGER.trace("Sending data as TURN channel data");
         ChannelDataMessage message = new ChannelDataMessage(additionalData);
-        prepareDataContainer(message, iceContext.getContext());
-        message.getHandler(iceContext.getContext()).adjustContext(message);
-        message.setCompleteMessageBytes(message.getSerializer(iceContext.getContext()).serialize());
+        prepareDataContainer(message, context);
+        message.getHandler(context).adjustContext(message);
+        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
         getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
         addProducedContainer(message);
     }
 
     private void sendAsTurnOverStun(byte[] additionalData) throws IOException {
         StunMessage message;
-        if (iceContext.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (context.getIceContext().getIceConnectionEndType() == ConnectionEndType.CLIENT) {
             LOGGER.trace("Sending data as a STUN/TURN client");
             message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
             message.getAttributeList().add(new XorPeerAddressAttribute());

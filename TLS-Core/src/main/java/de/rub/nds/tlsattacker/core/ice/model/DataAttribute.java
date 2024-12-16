@@ -57,12 +57,12 @@ public class DataAttribute extends StunAttribute {
 
     @Override
     public DataAttributeHandler getHandler(Context context) {
-        return new DataAttributeHandler(context.getIceContext());
+        return new DataAttributeHandler(context);
     }
 
     @Override
     public DataAttributeParser getParser(Context context, InputStream stream) {
-        return new DataAttributeParser(context.getIceContext(), stream);
+        return new DataAttributeParser(context, stream);
     }
 
     @Override

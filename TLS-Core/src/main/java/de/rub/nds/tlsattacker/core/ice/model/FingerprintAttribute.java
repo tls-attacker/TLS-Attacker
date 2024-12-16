@@ -41,12 +41,12 @@ public class FingerprintAttribute extends StunAttribute {
 
     @Override
     public FingerprintAttributeHandler getHandler(Context context) {
-        return new FingerprintAttributeHandler(context.getIceContext());
+        return new FingerprintAttributeHandler(context);
     }
 
     @Override
     public FingerprintAttributeParser getParser(Context context, InputStream stream) {
-        return new FingerprintAttributeParser(context.getIceContext(), stream);
+        return new FingerprintAttributeParser(context, stream);
     }
 
     @Override

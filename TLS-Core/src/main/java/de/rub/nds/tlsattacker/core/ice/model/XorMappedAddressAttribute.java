@@ -120,12 +120,12 @@ public class XorMappedAddressAttribute extends StunAttribute {
 
     @Override
     public XorMappedAddressAttributeHandler getHandler(Context context) {
-        return new XorMappedAddressAttributeHandler(context.getIceContext());
+        return new XorMappedAddressAttributeHandler(context);
     }
 
     @Override
     public XorMappedAddressAttributeParser getParser(Context context, InputStream stream) {
-        return new XorMappedAddressAttributeParser(context.getIceContext(), stream);
+        return new XorMappedAddressAttributeParser(context, stream);
     }
 
     @Override

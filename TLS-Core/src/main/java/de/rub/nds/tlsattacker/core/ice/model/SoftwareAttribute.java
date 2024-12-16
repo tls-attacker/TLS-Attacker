@@ -41,12 +41,12 @@ public class SoftwareAttribute extends StunAttribute {
 
     @Override
     public SoftwareAttributeHandler getHandler(Context context) {
-        return new SoftwareAttributeHandler(context.getIceContext());
+        return new SoftwareAttributeHandler(context);
     }
 
     @Override
     public SoftwareAttributeParser getParser(Context context, InputStream stream) {
-        return new SoftwareAttributeParser(context.getIceContext(), stream);
+        return new SoftwareAttributeParser(context, stream);
     }
 
     @Override

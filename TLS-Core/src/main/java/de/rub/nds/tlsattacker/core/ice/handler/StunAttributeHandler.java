@@ -9,15 +9,15 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public abstract class StunAttributeHandler<AttributeT extends StunAttribute>
         extends Handler<AttributeT> {
 
-    protected final IceContext context;
+    protected final Context context;
 
-    public StunAttributeHandler(IceContext context) {
+    public StunAttributeHandler(Context context) {
         this.context = context;
     }
 }

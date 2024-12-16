@@ -41,12 +41,12 @@ public class MessageIntegrityAttribute extends StunAttribute {
 
     @Override
     public MessageIntegrityHandler getHandler(Context context) {
-        return new MessageIntegrityHandler(context.getIceContext());
+        return new MessageIntegrityHandler(context);
     }
 
     @Override
     public MessageIntegrityParser getParser(Context context, InputStream stream) {
-        return new MessageIntegrityParser(context.getIceContext(), stream);
+        return new MessageIntegrityParser(context, stream);
     }
 
     @Override

@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.SoftwareAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class SoftwareAttributeHandler extends StunAttributeHandler<SoftwareAttribute> {
 
-    public SoftwareAttributeHandler(IceContext context) {
+    public SoftwareAttributeHandler(Context context) {
         super(context);
     }
 
@@ -21,9 +21,9 @@ public class SoftwareAttributeHandler extends StunAttributeHandler<SoftwareAttri
     public void adjustContext(SoftwareAttribute container) {
         if (context.getChooser().getTalkingConnectionEnd()
                 == context.getChooser().getMyConnectionPeer()) {
-            context.setPeerSoftwareString(container.getSoftwareString().getValue());
+            context.getIceContext().setPeerSoftwareString(container.getSoftwareString().getValue());
         } else {
-            context.setOurSoftwareString(container.getSoftwareString().getValue());
+            context.getIceContext().setOurSoftwareString(container.getSoftwareString().getValue());
         }
     }
 }

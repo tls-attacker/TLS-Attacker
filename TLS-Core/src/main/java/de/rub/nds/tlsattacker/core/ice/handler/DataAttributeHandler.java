@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.ice.handler;
 
 import de.rub.nds.tlsattacker.core.ice.model.DataAttribute;
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 public class DataAttributeHandler extends StunAttributeHandler<DataAttribute> {
 
-    public DataAttributeHandler(IceContext context) {
+    public DataAttributeHandler(Context context) {
         super(context);
     }
 
