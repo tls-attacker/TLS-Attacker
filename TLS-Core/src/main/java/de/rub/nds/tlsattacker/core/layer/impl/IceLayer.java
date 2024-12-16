@@ -55,8 +55,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
                 prepareDataContainer(message, context);
                 IceMessageHandler handler = message.getHandler(context);
                 handler.adjustContext(message);
-                message.setCompleteMessageBytes(
-                        message.getSerializer(context).serialize());
+                message.setCompleteMessageBytes(message.getSerializer(context).serialize());
                 getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
                 addProducedContainer(message);
             }
@@ -117,9 +116,9 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
             message.getAttributeList().add(new SoftwareAttribute());
             message.getAttributeList().add(new FingerprintAttribute());
         }
-        prepareDataContainer(message, iceContext.getContext());
-        message.getHandler(iceContext.getContext()).adjustContext(message);
-        message.setCompleteMessageBytes(message.getSerializer(iceContext.getContext()).serialize());
+        prepareDataContainer(message, context);
+        message.getHandler(context).adjustContext(message);
+        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
         getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
         addProducedContainer(message);
     }
@@ -150,7 +149,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
             throws IOException {
         byte[] channelNumber;
         byte[] lengthBytes;
-        if (iceContext.getLayerStack().getLowestLayer() instanceof TcpLayer) {
+        if (context.getLayerStack().getLowestLayer() instanceof TcpLayer) {
             // If we are using TCP, we do not need to read the channel number
             channelNumber = new byte[0];
             lengthBytes = firstTwobytes;
@@ -178,8 +177,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
                 ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
         ChannelDataMessage message = new ChannelDataMessage(data);
         message.setCompleteMessageBytes(completeMessageBytes);
-        readDataContainer(
-                message, iceContext.getContext(), new ByteArrayInputStream(completeMessageBytes));
+        readDataContainer(message, context, new ByteArrayInputStream(completeMessageBytes));
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         }
@@ -198,8 +196,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
         stunMessage.setCompleteMessageBytes(fullMessage);
-        readDataContainer(
-                stunMessage, iceContext.getContext(), new ByteArrayInputStream(fullMessage));
+        readDataContainer(stunMessage, context, new ByteArrayInputStream(fullMessage));
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         }
