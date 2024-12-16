@@ -50,6 +50,7 @@ public enum CipherAlgorithm {
 
     CipherAlgorithm(
             int keySize,
+            Integer exportFinalKeySize,
             int nonceBytesFromHandshake,
             int nonceBytesFromRecord,
             int blocksize,
@@ -57,6 +58,7 @@ public enum CipherAlgorithm {
             boolean export,
             Integer exportKeySize) {
         this.keySize = keySize;
+        this.exportFinalKeySize = exportFinalKeySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
         this.nonceBytesFromRecord = nonceBytesFromRecord;
@@ -68,6 +70,7 @@ public enum CipherAlgorithm {
     CipherAlgorithm(
             int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize) {
         this.keySize = keySize;
+        this.exportFinalKeySize = null;
         this.javaName = null;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
         this.nonceBytesFromRecord = nonceBytesFromRecord;

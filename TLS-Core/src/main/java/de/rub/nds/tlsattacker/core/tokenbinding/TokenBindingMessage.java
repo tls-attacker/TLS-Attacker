@@ -18,8 +18,8 @@ import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class TokenBindingMessage extends ProtocolMessage {
@@ -257,22 +257,22 @@ public class TokenBindingMessage extends ProtocolMessage {
     }
 
     @Override
-    public TokenBindingMessageHandler getHandler(TlsContext tlsContext) {
-        return new TokenBindingMessageHandler(tlsContext);
+    public TokenBindingMessageHandler getHandler(Context context) {
+        return new TokenBindingMessageHandler(context.getTlsContext());
     }
 
     @Override
-    public TokenBindingMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+    public TokenBindingMessageParser getParser(Context context, InputStream stream) {
         return new TokenBindingMessageParser(stream);
     }
 
     @Override
-    public TokenBindingMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new TokenBindingMessagePreparator(tlsContext.getChooser(), this);
+    public TokenBindingMessagePreparator getPreparator(Context context) {
+        return new TokenBindingMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public TokenBindingMessageSerializer getSerializer(TlsContext tlsContext) {
+    public TokenBindingMessageSerializer getSerializer(Context context) {
         return new TokenBindingMessageSerializer(this);
     }
 

@@ -35,7 +35,7 @@ public class InitialPacketHandler extends LongHeaderPacketHandler<InitialPacket>
                 QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
             }
         } catch (NoSuchAlgorithmException | CryptoException e) {
-            LOGGER.error("Could not calculate initial secrets: {}", e);
+            LOGGER.error("Could not calculate initial secrets", e);
         }
     }
 }

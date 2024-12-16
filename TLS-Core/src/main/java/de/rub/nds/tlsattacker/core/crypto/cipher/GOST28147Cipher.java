@@ -16,6 +16,7 @@ import java.security.GeneralSecurityException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
+import org.bouncycastle.util.Arrays;
 
 /**
  * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing as defined in RFC
@@ -23,7 +24,7 @@ import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
  */
 public class GOST28147Cipher extends BaseCipher {
 
-    public static final byte[] C = {
+    private static final byte[] C = {
         (byte) 0x69,
         (byte) 0x00,
         (byte) 0x72,
@@ -58,7 +59,11 @@ public class GOST28147Cipher extends BaseCipher {
         (byte) 0x2B
     };
 
-    private final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT_IMIT;
+    private static final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT_IMIT;
+
+    public static byte[] getC() {
+        return Arrays.copyOf(C, C.length);
+    }
 
     private int keyCount;
 

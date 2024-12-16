@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.transform.Result;
@@ -44,8 +45,7 @@ public class ConfigSchemaGenerator {
         for (Map.Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
             String systemId = sor.getSystemIds().get(e.getKey());
             File f = new File(outputDirectory, systemId);
-            try (FileWriter w = new FileWriter(f)) {
-                System.out.printf("Writing %s to %s%n", e.getKey(), f.getAbsolutePath());
+            try (FileWriter w = new FileWriter(f, StandardCharsets.UTF_8)) {
                 w.write(e.getValue().toString().replaceAll("\r?\n", System.lineSeparator()));
             }
         }

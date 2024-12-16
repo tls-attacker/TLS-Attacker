@@ -15,11 +15,11 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -189,22 +189,22 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     @Override
-    public SSL2ClientHelloHandler getHandler(TlsContext tlsContext) {
-        return new SSL2ClientHelloHandler(tlsContext);
+    public SSL2ClientHelloHandler getHandler(Context context) {
+        return new SSL2ClientHelloHandler(context.getTlsContext());
     }
 
     @Override
-    public SSL2ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ClientHelloParser(stream, tlsContext);
+    public SSL2ClientHelloParser getParser(Context context, InputStream stream) {
+        return new SSL2ClientHelloParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SSL2ClientHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ClientHelloPreparator(tlsContext.getChooser(), this);
+    public SSL2ClientHelloPreparator getPreparator(Context context) {
+        return new SSL2ClientHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
+    public SSL2ClientHelloSerializer getSerializer(Context context) {
         return new SSL2ClientHelloSerializer(this);
     }
 

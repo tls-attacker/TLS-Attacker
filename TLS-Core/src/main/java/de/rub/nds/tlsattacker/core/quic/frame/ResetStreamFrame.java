@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.ResetStreamFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.ResetStreamFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.ResetStreamFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.ResetStreamFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -46,22 +46,22 @@ public class ResetStreamFrame extends QuicFrame {
     }
 
     @Override
-    public ResetStreamFrameHandler getHandler(QuicContext context) {
-        return new ResetStreamFrameHandler(context);
+    public ResetStreamFrameHandler getHandler(Context context) {
+        return new ResetStreamFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public ResetStreamFrameSerializer getSerializer(QuicContext context) {
+    public ResetStreamFrameSerializer getSerializer(Context context) {
         return new ResetStreamFrameSerializer(this);
     }
 
     @Override
-    public ResetStreamFramePreparator getPreparator(QuicContext context) {
+    public ResetStreamFramePreparator getPreparator(Context context) {
         return new ResetStreamFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public ResetStreamFrameParser getParser(QuicContext context, InputStream stream) {
+    public ResetStreamFrameParser getParser(Context context, InputStream stream) {
         return new ResetStreamFrameParser(stream);
     }
 

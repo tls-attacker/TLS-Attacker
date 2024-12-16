@@ -14,12 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -72,22 +72,22 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public TrustedCaIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new TrustedCaIndicationExtensionParser(stream, tlsContext);
+    public TrustedCaIndicationExtensionParser getParser(Context context, InputStream stream) {
+        return new TrustedCaIndicationExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public TrustedCaIndicationExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new TrustedCaIndicationExtensionPreparator(tlsContext.getChooser(), this);
+    public TrustedCaIndicationExtensionPreparator getPreparator(Context context) {
+        return new TrustedCaIndicationExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public TrustedCaIndicationExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public TrustedCaIndicationExtensionSerializer getSerializer(Context context) {
         return new TrustedCaIndicationExtensionSerializer(this);
     }
 
     @Override
-    public TrustedCaIndicationExtensionHandler getHandler(TlsContext tlsContext) {
-        return new TrustedCaIndicationExtensionHandler(tlsContext);
+    public TrustedCaIndicationExtensionHandler getHandler(Context context) {
+        return new TrustedCaIndicationExtensionHandler(context.getTlsContext());
     }
 }

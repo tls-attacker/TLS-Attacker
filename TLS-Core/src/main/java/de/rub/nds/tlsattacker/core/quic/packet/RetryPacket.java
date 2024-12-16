@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.packet.RetryPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.RetryPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.RetryPacketSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -56,6 +57,8 @@ public class RetryPacket extends LongHeaderPacket {
     public RetryPacket(byte flags) {
         super(QuicPacketType.RETRY_PACKET);
         this.setProtectedFlags(flags);
+        // We do not have any header protection in Retry packets
+        this.setUnprotectedFlags(flags);
         protectedHeaderHelper.write(flags);
     }
 
@@ -81,7 +84,7 @@ public class RetryPacket extends LongHeaderPacket {
                                         + retryToken.getValue().length)
                         .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
                         .put(context.getFirstDestinationConnectionId())
-                        .put((byte) (getUnprotectedFlags().getValue() & 0xf0))
+                        .put((byte) (getUnprotectedFlags().getValue()))
                         .put(context.getQuicVersion().getByteValue())
                         .put(getDestinationConnectionIdLength().getValue())
                         .put(getDestinationConnectionId().getValue())
@@ -97,8 +100,8 @@ public class RetryPacket extends LongHeaderPacket {
             SecretKey secretKey =
                     new SecretKeySpec(
                             context.getQuicVersion() == QuicVersion.VERSION_1
-                                    ? QuicRetryConstants.QUIC1_RETRY_INTEGRITY_TAG_KEY
-                                    : QuicRetryConstants.QUIC2_RETRY_INTEGRITY_TAG_KEY,
+                                    ? QuicRetryConstants.getQuic1RetryIntegrityTagKey()
+                                    : QuicRetryConstants.getQuic2RetryIntegrityTagKey(),
                             "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             // IV is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
@@ -106,8 +109,8 @@ public class RetryPacket extends LongHeaderPacket {
                     new GCMParameterSpec(
                             128,
                             context.getQuicVersion() == QuicVersion.VERSION_1
-                                    ? QuicRetryConstants.QUIC1_RETRY_INTEGRITY_TAG_IV
-                                    : QuicRetryConstants.QUIC2_RETRY_INTEGRITY_TAG_IV);
+                                    ? QuicRetryConstants.getQuic1RetryIntegrityTagIv()
+                                    : QuicRetryConstants.getQuic2RetryIntegrityTagIv());
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
             cipher.updateAAD(pseudoPacket);
             computedTag = cipher.doFinal();
@@ -135,23 +138,23 @@ public class RetryPacket extends LongHeaderPacket {
     }
 
     @Override
-    public RetryPacketHandler getHandler(QuicContext context) {
-        return new RetryPacketHandler(context);
+    public RetryPacketHandler getHandler(Context context) {
+        return new RetryPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public Serializer<RetryPacket> getSerializer(QuicContext context) {
+    public Serializer<RetryPacket> getSerializer(Context context) {
         return new RetryPacketSerializer(this);
     }
 
     @Override
-    public Preparator<RetryPacket> getPreparator(QuicContext context) {
+    public Preparator<RetryPacket> getPreparator(Context context) {
         return new RetryPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public RetryPacketParser getParser(QuicContext context, InputStream stream) {
-        return new RetryPacketParser(stream, context);
+    public RetryPacketParser getParser(Context context, InputStream stream) {
+        return new RetryPacketParser(stream, context.getQuicContext());
     }
 
     public ModifiableByteArray getRetryToken() {

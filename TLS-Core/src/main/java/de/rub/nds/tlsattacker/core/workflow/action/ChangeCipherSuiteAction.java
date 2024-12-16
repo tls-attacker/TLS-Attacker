@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.security.NoSuchAlgorithmException;
@@ -66,7 +66,7 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         tlsContext.setSelectedCipherSuite(newValue);
         KeySet keySet;
         try {
-            keySet = KeySetGenerator.generateKeySet(tlsContext);
+            keySet = KeyDerivator.generateKeySet(tlsContext);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }

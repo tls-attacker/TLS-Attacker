@@ -32,7 +32,7 @@ public class CertificateMessagePreparatorTest
 
     public CertificateMessagePreparatorTest() throws IOException {
         super(CertificateMessage::new, CertificateMessagePreparator::new);
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         certificateChain = new LinkedList<>();
         certificateChain.add(
                 new CertificateBytes(
@@ -44,7 +44,7 @@ public class CertificateMessagePreparatorTest
     @Test
     @Override
     public void testPrepare() throws IOException {
-        context.getConfig().setDefaultExplicitCertificateChain(certificateChain);
+        tlsContext.getConfig().setDefaultExplicitCertificateChain(certificateChain);
         preparator.prepare();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
@@ -62,7 +62,7 @@ public class CertificateMessagePreparatorTest
             names = {"SSL3", "TLS10", "TLS11", "TLS12"})
     public void testPrepareWithDifferentProtocolVersions(ProtocolVersion protocolVersion)
             throws IOException {
-        context.setSelectedProtocolVersion(protocolVersion);
+        tlsContext.setSelectedProtocolVersion(protocolVersion);
         testPrepare();
     }
 
@@ -71,7 +71,7 @@ public class CertificateMessagePreparatorTest
             value = ProtocolVersion.class,
             names = {"SSL3", "TLS10", "TLS11", "TLS12"})
     public void testPrepareNoContextWithDifferentProtocolVersions(ProtocolVersion protocolVersion) {
-        context.setSelectedProtocolVersion(protocolVersion);
+        tlsContext.setSelectedProtocolVersion(protocolVersion);
         testPrepareNoContext();
     }
 }

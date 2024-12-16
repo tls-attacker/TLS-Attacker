@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /** Implements a subset of the functionality specified in RFC 9180. Needed in ECH */
@@ -173,7 +174,7 @@ public class HpkeUtil {
                 labeledExtract(
                         HpkeLabel.EMPTY.getBytes(),
                         HpkeLabel.PSK_ID_HASH.getBytes(),
-                        pskId.getBytes(),
+                        pskId.getBytes(StandardCharsets.US_ASCII),
                         false);
         byte[] infoHash =
                 labeledExtract(
@@ -182,7 +183,11 @@ public class HpkeUtil {
                 ArrayConverter.concatenate(mode.getByteValue(), pskIdHash, infoHash);
 
         this.secret =
-                labeledExtract(sharedSecret, HpkeLabel.SECRET.getBytes(), psk.getBytes(), false);
+                labeledExtract(
+                        sharedSecret,
+                        HpkeLabel.SECRET.getBytes(),
+                        psk.getBytes(StandardCharsets.US_ASCII),
+                        false);
 
         this.key =
                 labeledExpand(
@@ -226,7 +231,7 @@ public class HpkeUtil {
                 labeledExtract(
                         HpkeLabel.EMPTY.getBytes(),
                         HpkeLabel.PSK_ID_HASH.getBytes(),
-                        pskId.getBytes(),
+                        pskId.getBytes(StandardCharsets.US_ASCII),
                         false);
         byte[] infoHash =
                 labeledExtract(
@@ -235,7 +240,11 @@ public class HpkeUtil {
                 ArrayConverter.concatenate(mode.getByteValue(), pskIdHash, infoHash);
 
         this.secret =
-                labeledExtract(sharedSecret, HpkeLabel.SECRET.getBytes(), psk.getBytes(), false);
+                labeledExtract(
+                        sharedSecret,
+                        HpkeLabel.SECRET.getBytes(),
+                        psk.getBytes(StandardCharsets.US_ASCII),
+                        false);
 
         this.key =
                 labeledExpand(

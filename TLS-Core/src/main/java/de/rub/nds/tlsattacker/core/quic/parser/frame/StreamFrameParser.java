@@ -27,6 +27,7 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
         parseStreamId(frame);
         QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
         if (frameType == QuicFrameType.STREAM_FRAME_OFF
+                || frameType == QuicFrameType.STREAM_FRAME_OFF_FIN
                 || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN
                 || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN_FIN) {
             parseOffset(frame);
@@ -35,7 +36,8 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
         }
         if (frameType == QuicFrameType.STREAM_FRAME_LEN
                 || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN
-                || frameType == QuicFrameType.STREAM_FRAME_LEN_FIN) {
+                || frameType == QuicFrameType.STREAM_FRAME_LEN_FIN
+                || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN_FIN) {
             parseLength(frame);
         }
         parseData(frame, frameType);

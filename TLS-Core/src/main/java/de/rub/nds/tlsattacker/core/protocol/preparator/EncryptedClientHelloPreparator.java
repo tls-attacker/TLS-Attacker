@@ -72,16 +72,14 @@ public class EncryptedClientHelloPreparator
     private void prepareClientHelloInner() {
         LOGGER.debug("Preparing ClientHelloInner");
         ClientHelloMessage clientHelloInner = new ClientHelloMessage(chooser.getConfig());
-        clientHelloInner.getPreparator(chooser.getContext().getTlsContext()).prepare();
+        clientHelloInner.getPreparator(chooser.getContext()).prepare();
 
         // already serialize and save message bytes before the encoding process
         byte[] clientHelloInnerBytes =
                 new ClientHelloSerializer(clientHelloInner, chooser.getSelectedProtocolVersion())
                         .serialize();
         clientHelloInner.setCompleteResultingMessage(clientHelloInnerBytes);
-        clientHelloInner
-                .getHandler(chooser.getContext().getTlsContext())
-                .adjustContext(clientHelloInner);
+        clientHelloInner.getHandler(chooser.getContext()).adjustContext(clientHelloInner);
 
         msg.setClientHelloInner(clientHelloInner);
     }
@@ -98,7 +96,7 @@ public class EncryptedClientHelloPreparator
 
         this.clientHelloInnerValue =
                 clientHelloInner
-                        .getSerializer(chooser.getContext().getTlsContext())
+                        .getSerializer(chooser.getContext())
                         .serializeHandshakeMessageContent();
 
         // - zero padding
@@ -248,9 +246,7 @@ public class EncryptedClientHelloPreparator
     }
 
     private void prepareEncryptClientHelloOuter() {
-        byte[] aad =
-                msg.getSerializer(chooser.getContext().getTlsContext())
-                        .serializeHandshakeMessageContent();
+        byte[] aad = msg.getSerializer(chooser.getContext()).serializeHandshakeMessageContent();
         LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =

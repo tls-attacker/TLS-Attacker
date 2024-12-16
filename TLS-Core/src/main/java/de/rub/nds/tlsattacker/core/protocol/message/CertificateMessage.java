@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -135,24 +135,24 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateMessageParser(stream, tlsContext);
+    public CertificateMessageParser getParser(Context context, InputStream stream) {
+        return new CertificateMessageParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CertificateMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateMessagePreparator(tlsContext.getChooser(), this);
+    public CertificateMessagePreparator getPreparator(Context context) {
+        return new CertificateMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateMessageSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateMessageSerializer getSerializer(Context context) {
         return new CertificateMessageSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public CertificateMessageHandler getHandler(TlsContext tlsContext) {
-        return new CertificateMessageHandler(tlsContext);
+    public CertificateMessageHandler getHandler(Context context) {
+        return new CertificateMessageHandler(context.getTlsContext());
     }
 
     public List<CertificateEntry> getCertificateEntryList() {

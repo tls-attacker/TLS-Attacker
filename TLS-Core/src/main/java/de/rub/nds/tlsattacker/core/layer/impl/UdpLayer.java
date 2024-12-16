@@ -12,9 +12,9 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
@@ -29,12 +29,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private final Context context;
 
-    // TODO This should be a regular context
-    private final TlsContext context;
-
-    public UdpLayer(TlsContext context) {
+    public UdpLayer(Context context) {
         super(ImplementedLayers.UDP);
         this.context = context;
     }

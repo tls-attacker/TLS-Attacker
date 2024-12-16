@@ -14,12 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedClientHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
@@ -50,24 +50,24 @@ public class EncryptedClientHelloMessage extends CoreClientHelloMessage {
     }
 
     @Override
-    public EncryptedClientHelloHandler getHandler(TlsContext context) {
-        return new EncryptedClientHelloHandler(context);
+    public EncryptedClientHelloHandler getHandler(Context context) {
+        return new EncryptedClientHelloHandler(context.getTlsContext());
     }
 
     @Override
-    public EncryptedClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedClientHelloParser(stream, tlsContext);
+    public EncryptedClientHelloParser getParser(Context context, InputStream stream) {
+        return new EncryptedClientHelloParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EncryptedClientHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedClientHelloPreparator(tlsContext.getChooser(), this);
+    public EncryptedClientHelloPreparator getPreparator(Context context) {
+        return new EncryptedClientHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EncryptedClientHelloSerializer getSerializer(TlsContext tlsContext) {
+    public EncryptedClientHelloSerializer getSerializer(Context context) {
         return new EncryptedClientHelloSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     public ClientHelloMessage getClientHelloInner() {

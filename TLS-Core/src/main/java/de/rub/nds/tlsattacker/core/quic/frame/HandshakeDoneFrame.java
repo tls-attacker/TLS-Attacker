@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.HandshakeDoneFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.HandshakeDoneFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.HandshakeDoneFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.HandshakeDoneFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -29,22 +29,22 @@ public class HandshakeDoneFrame extends QuicFrame {
     }
 
     @Override
-    public HandshakeDoneFrameHandler getHandler(QuicContext context) {
-        return new HandshakeDoneFrameHandler(context);
+    public HandshakeDoneFrameHandler getHandler(Context context) {
+        return new HandshakeDoneFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public HandshakeDoneFrameSerializer getSerializer(QuicContext context) {
+    public HandshakeDoneFrameSerializer getSerializer(Context context) {
         return new HandshakeDoneFrameSerializer(this);
     }
 
     @Override
-    public HandshakeDoneFramePreparator getPreparator(QuicContext context) {
+    public HandshakeDoneFramePreparator getPreparator(Context context) {
         return new HandshakeDoneFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public HandshakeDoneFrameParser getParser(QuicContext context, InputStream stream) {
+    public HandshakeDoneFrameParser getParser(Context context, InputStream stream) {
         return new HandshakeDoneFrameParser(stream);
     }
 }

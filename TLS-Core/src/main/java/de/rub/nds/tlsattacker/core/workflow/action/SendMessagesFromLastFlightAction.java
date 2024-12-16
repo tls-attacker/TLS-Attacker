@@ -17,9 +17,11 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
 
+@XmlRootElement(name = "SendMessagesFromLastFlight")
 public class SendMessagesFromLastFlightAction extends CommonSendAction {
 
     public SendMessagesFromLastFlightAction() {

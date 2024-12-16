@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.DatagramFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.DatagramFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.DatagramFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.DatagramFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -50,22 +50,22 @@ public class DatagramFrame extends QuicFrame {
     }
 
     @Override
-    public DatagramFrameHandler getHandler(QuicContext context) {
-        return new DatagramFrameHandler(context);
+    public DatagramFrameHandler getHandler(Context context) {
+        return new DatagramFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public DatagramFrameSerializer getSerializer(QuicContext context) {
+    public DatagramFrameSerializer getSerializer(Context context) {
         return new DatagramFrameSerializer(this);
     }
 
     @Override
-    public DatagramFramePreparator getPreparator(QuicContext context) {
+    public DatagramFramePreparator getPreparator(Context context) {
         return new DatagramFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public DatagramFrameParser getParser(QuicContext context, InputStream stream) {
+    public DatagramFrameParser getParser(Context context, InputStream stream) {
         return new DatagramFrameParser(stream);
     }
 

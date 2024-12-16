@@ -257,8 +257,8 @@ public class WorkflowTraceTest {
                 .setLayerStack(
                         new LayerStack(
                                 state.getContext(),
-                                new MessageLayer(state.getTlsContext()),
-                                new TcpLayer(state.getTcpContext())));
+                                new MessageLayer(state.getContext()),
+                                new TcpLayer(state.getContext())));
         sendClientHelloAction.execute(state);
         sendHeartbeatAction.execute(state);
 

@@ -39,6 +39,6 @@ public class ServerAuthzExtensionHandlerTest
         ServerAuthzExtensionMessage msg = new ServerAuthzExtensionMessage();
         msg.setAuthzFormatList(authzFormatListAsBytes);
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(authzFormatList, context.getServerAuthzDataFormatList());
+        assertEquals(authzFormatList, tlsContext.getServerAuthzDataFormatList());
     }
 }

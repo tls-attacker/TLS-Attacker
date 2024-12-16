@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -88,22 +88,22 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public SrtpExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrtpExtensionParser(stream, tlsContext);
+    public SrtpExtensionParser getParser(Context context, InputStream stream) {
+        return new SrtpExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SrtpExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SrtpExtensionPreparator(tlsContext.getChooser(), this);
+    public SrtpExtensionPreparator getPreparator(Context context) {
+        return new SrtpExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SrtpExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SrtpExtensionSerializer getSerializer(Context context) {
         return new SrtpExtensionSerializer(this);
     }
 
     @Override
-    public SrtpExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SrtpExtensionHandler(tlsContext);
+    public SrtpExtensionHandler getHandler(Context context) {
+        return new SrtpExtensionHandler(context.getTlsContext());
     }
 }

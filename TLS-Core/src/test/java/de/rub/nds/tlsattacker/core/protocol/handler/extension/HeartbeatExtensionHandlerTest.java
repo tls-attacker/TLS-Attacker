@@ -30,7 +30,7 @@ public class HeartbeatExtensionHandlerTest
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         msg.setHeartbeatMode(new byte[] {1});
         handler.adjustTLSExtensionContext(msg);
-        assertSame(HeartbeatMode.PEER_ALLOWED_TO_SEND, context.getHeartbeatMode());
+        assertSame(HeartbeatMode.PEER_ALLOWED_TO_SEND, tlsContext.getHeartbeatMode());
     }
 
     @Test
@@ -38,6 +38,6 @@ public class HeartbeatExtensionHandlerTest
         HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
         msg.setHeartbeatMode(new byte[] {(byte) 0xFF});
         handler.adjustContext(msg);
-        assertNull(context.getHeartbeatMode());
+        assertNull(tlsContext.getHeartbeatMode());
     }
 }

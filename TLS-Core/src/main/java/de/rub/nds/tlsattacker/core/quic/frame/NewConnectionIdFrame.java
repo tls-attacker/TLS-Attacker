@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.NewConnectionIdFrameHandle
 import de.rub.nds.tlsattacker.core.quic.parser.frame.NewConnectionIdFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.NewConnectionIdFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.NewConnectionIdFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -54,22 +54,22 @@ public class NewConnectionIdFrame extends QuicFrame {
     }
 
     @Override
-    public NewConnectionIdFrameHandler getHandler(QuicContext context) {
-        return new NewConnectionIdFrameHandler(context);
+    public NewConnectionIdFrameHandler getHandler(Context context) {
+        return new NewConnectionIdFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public NewConnectionIdFrameSerializer getSerializer(QuicContext context) {
+    public NewConnectionIdFrameSerializer getSerializer(Context context) {
         return new NewConnectionIdFrameSerializer(this);
     }
 
     @Override
-    public NewConnectionIdFramePreparator getPreparator(QuicContext context) {
+    public NewConnectionIdFramePreparator getPreparator(Context context) {
         return new NewConnectionIdFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public NewConnectionIdFrameParser getParser(QuicContext context, InputStream stream) {
+    public NewConnectionIdFrameParser getParser(Context context, InputStream stream) {
         return new NewConnectionIdFrameParser(stream);
     }
 

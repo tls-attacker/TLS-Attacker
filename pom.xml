@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>6.1.8-SNAPSHOT</version>
+    <version>6.2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -482,6 +482,9 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFilterFile>${main.basedir}/resources/spotbugs.xml</excludeFilterFile>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

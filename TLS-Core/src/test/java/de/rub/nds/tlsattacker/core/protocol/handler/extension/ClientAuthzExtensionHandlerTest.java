@@ -41,6 +41,6 @@ public class ClientAuthzExtensionHandlerTest
 
         handler.adjustContext(msg);
 
-        assertEquals(authzFormatList, context.getClientAuthzDataFormatList());
+        assertEquals(authzFormatList, tlsContext.getClientAuthzDataFormatList());
     }
 }

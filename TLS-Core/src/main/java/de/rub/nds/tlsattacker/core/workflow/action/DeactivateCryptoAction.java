@@ -40,13 +40,12 @@ public abstract class DeactivateCryptoAction extends ConnectionBoundAction {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof DeactivateEncryptionAction;
+        return o instanceof DeactivateEncryptionAction && super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        return hash;
+        return 17 * super.hashCode();
     }
 
     @Override

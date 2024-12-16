@@ -32,7 +32,7 @@ public class TrustedCaIndicationExtensionHandlerTest
         super(TrustedCaIndicationExtensionMessage::new, TrustedCaIndicationExtensionHandler::new);
         for (TrustedAuthority ta : trustedAuthorities) {
             TrustedAuthorityPreparator preparator =
-                    new TrustedAuthorityPreparator(context.getChooser(), ta);
+                    new TrustedAuthorityPreparator(tlsContext.getChooser(), ta);
             preparator.prepare();
         }
     }
@@ -44,7 +44,7 @@ public class TrustedCaIndicationExtensionHandlerTest
         msg.setTrustedAuthorities(trustedAuthorities);
         handler.adjustTLSExtensionContext(msg);
         assertTrustedAuthorityList(
-                trustedAuthorities, context.getTrustedCaIndicationExtensionCas());
+                trustedAuthorities, tlsContext.getTrustedCaIndicationExtensionCas());
     }
 
     public void assertTrustedAuthorityList(

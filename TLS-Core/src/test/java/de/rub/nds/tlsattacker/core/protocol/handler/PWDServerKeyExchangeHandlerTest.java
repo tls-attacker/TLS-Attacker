@@ -55,9 +55,9 @@ public class PWDServerKeyExchangeHandlerTest
                                 .getFieldX()
                                 .getData()),
                 ArrayConverter.bigIntegerToByteArray(
-                        context.getServerPWDElement().getFieldX().getData()));
-        assertArrayEquals(salt, context.getServerPWDSalt());
-        assertArrayEquals(scalar.toByteArray(), context.getServerPWDScalar().toByteArray());
-        assertEquals(NamedGroup.BRAINPOOLP256R1, context.getSelectedGroup());
+                        tlsContext.getServerPWDElement().getFieldX().getData()));
+        assertArrayEquals(salt, tlsContext.getServerPWDSalt());
+        assertArrayEquals(scalar.toByteArray(), tlsContext.getServerPWDScalar().toByteArray());
+        assertEquals(NamedGroup.BRAINPOOLP256R1, tlsContext.getSelectedGroup());
     }
 }

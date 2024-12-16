@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.proxy;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,11 +47,23 @@ public class HttpsProxy {
             try {
                 Socket socket = serverSocket.accept();
                 LOGGER.info("Received a connection");
-                ProxyConnection proxyConnection = new ProxyConnection(proxyConfig, socket);
+                Config config;
+                if (proxyConfig.getDefaultConfig() != null) {
+                    config = Config.createConfig(new File(proxyConfig.getDefaultConfig()));
+                } else {
+                    config = new Config();
+                }
+                ProxyConnection proxyConnection = new ProxyConnection(proxyConfig, config, socket);
                 Thread t = new Thread(proxyConnection);
                 t.start();
             } catch (IOException ex) {
                 LOGGER.error("Caught an IO exception...", ex);
+            } finally {
+                try {
+                    serverSocket.close();
+                } catch (IOException ex) {
+                    LOGGER.error("Caught an IO exception...", ex);
+                }
             }
         }
     }

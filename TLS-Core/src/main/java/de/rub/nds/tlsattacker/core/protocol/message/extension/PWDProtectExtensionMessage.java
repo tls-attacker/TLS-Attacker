@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PWDProtectExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -59,22 +59,22 @@ public class PWDProtectExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public PWDProtectExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDProtectExtensionParser(stream, tlsContext);
+    public PWDProtectExtensionParser getParser(Context context, InputStream stream) {
+        return new PWDProtectExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PWDProtectExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PWDProtectExtensionPreparator(tlsContext.getChooser(), this);
+    public PWDProtectExtensionPreparator getPreparator(Context context) {
+        return new PWDProtectExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public PWDProtectExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PWDProtectExtensionSerializer getSerializer(Context context) {
         return new PWDProtectExtensionSerializer(this);
     }
 
     @Override
-    public PWDProtectExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PWDProtectExtensionHandler(tlsContext);
+    public PWDProtectExtensionHandler getHandler(Context context) {
+        return new PWDProtectExtensionHandler(context.getTlsContext());
     }
 }

@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimitExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -49,22 +49,22 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public RecordSizeLimitExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RecordSizeLimitExtensionParser(stream, tlsContext);
+    public RecordSizeLimitExtensionParser getParser(Context context, InputStream stream) {
+        return new RecordSizeLimitExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public RecordSizeLimitExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordSizeLimitExtensionPreparator(tlsContext.getChooser(), this);
+    public RecordSizeLimitExtensionPreparator getPreparator(Context context) {
+        return new RecordSizeLimitExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public RecordSizeLimitExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public RecordSizeLimitExtensionSerializer getSerializer(Context context) {
         return new RecordSizeLimitExtensionSerializer(this);
     }
 
     @Override
-    public RecordSizeLimitExtensionHandler getHandler(TlsContext tlsContext) {
-        return new RecordSizeLimitExtensionHandler(tlsContext);
+    public RecordSizeLimitExtensionHandler getHandler(Context context) {
+        return new RecordSizeLimitExtensionHandler(context.getTlsContext());
     }
 }

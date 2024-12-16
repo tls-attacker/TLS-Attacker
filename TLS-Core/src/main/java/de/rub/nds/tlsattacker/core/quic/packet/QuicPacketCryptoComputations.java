@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -213,85 +214,84 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
      * Calculates all handshake client and server secrets including key, IV, and the key for header
      * protection.
      */
-    public static void calculateHandshakeSecrets(QuicContext context)
+    public static void calculateHandshakeSecrets(Context context)
             throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Handshake Secrets");
-
-        context.setAeadCipher(
+        QuicContext quicContext = context.getQuicContext();
+        quicContext.setAeadCipher(
                 Cipher.getInstance(
-                        context.getContext()
+                        context
                                 .getTlsContext()
                                 .getSelectedCipherSuite()
                                 .getCipherAlgorithm()
                                 .getJavaName()));
 
         int keyLength = 16;
-        switch (context.getContext().getTlsContext().getSelectedCipherSuite()) {
+        switch (context.getTlsContext().getSelectedCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
                 keyLength = 16;
-                context.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
                 break;
             case TLS_AES_256_GCM_SHA384:
                 keyLength = 32;
-                context.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
                 break;
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
-                context.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
+                quicContext.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
             default:
                 LOGGER.warn(
-                        "Unknown cipher suite: {}. Defaulting to AES.",
-                        context.getContext().getTlsContext().getSelectedCipherSuite());
-                context.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                        "Unsupported Cipher Suite: {}",
+                        context.getTlsContext().getSelectedCipherSuite());
+                break;
         }
 
-        context.setHkdfAlgorithm(
+        quicContext.setHkdfAlgorithm(
                 AlgorithmResolver.getHKDFAlgorithm(
-                        context.getContext().getTlsContext().getSelectedCipherSuite()));
+                        context.getTlsContext().getSelectedCipherSuite()));
 
-        HKDFAlgorithm hkdfAlgorithm = context.getHkdfAlgorithm();
-
-        QuicVersion version = context.getQuicVersion();
+        HKDFAlgorithm hkdfAlgorithm = context.getQuicContext().getHkdfAlgorithm();
+        QuicVersion version = quicContext.getQuicVersion();
 
         // client
-        context.setHandshakeClientSecret(
-                context.getContext().getTlsContext().getClientHandshakeTrafficSecret());
-        context.setHandshakeClientKey(
+        quicContext.setHandshakeClientSecret(
+                context.getTlsContext().getClientHandshakeTrafficSecret());
+        quicContext.setHandshakeClientKey(
                 deriveKeyFromSecret(
-                        version, hkdfAlgorithm, context.getHandshakeClientSecret(), keyLength));
-        context.setHandshakeClientIv(
-                deriveIvFromSecret(version, hkdfAlgorithm, context.getHandshakeClientSecret()));
-        context.setHandshakeClientHeaderProtectionKey(
+                        version, hkdfAlgorithm, quicContext.getHandshakeClientSecret(), keyLength));
+        quicContext.setHandshakeClientIv(
+                deriveIvFromSecret(version, hkdfAlgorithm, quicContext.getHandshakeClientSecret()));
+        quicContext.setHandshakeClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        version, hkdfAlgorithm, context.getHandshakeClientSecret(), keyLength));
+                        version, hkdfAlgorithm, quicContext.getHandshakeClientSecret(), keyLength));
 
         // server
-        context.setHandshakeServerSecret(
-                context.getContext().getTlsContext().getServerHandshakeTrafficSecret());
-        context.setHandshakeServerKey(
+        quicContext.setHandshakeServerSecret(
+                context.getTlsContext().getServerHandshakeTrafficSecret());
+        quicContext.setHandshakeServerKey(
                 deriveKeyFromSecret(
-                        version, hkdfAlgorithm, context.getHandshakeServerSecret(), keyLength));
-        context.setHandshakeServerIv(
-                deriveIvFromSecret(version, hkdfAlgorithm, context.getHandshakeServerSecret()));
-        context.setHandshakeServerHeaderProtectionKey(
+                        version, hkdfAlgorithm, quicContext.getHandshakeServerSecret(), keyLength));
+        quicContext.setHandshakeServerIv(
+                deriveIvFromSecret(version, hkdfAlgorithm, quicContext.getHandshakeServerSecret()));
+        quicContext.setHandshakeServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        version, hkdfAlgorithm, context.getHandshakeServerSecret(), keyLength));
+                        version, hkdfAlgorithm, quicContext.getHandshakeServerSecret(), keyLength));
 
-        context.setHandshakeSecretsInitialized(true);
+        quicContext.setHandshakeSecretsInitialized(true);
     }
 
     /**
      * Calculates all application client and server secrets including key, IV, and the key for
      * header protection.
      */
-    public static void calculateApplicationSecrets(QuicContext context)
+    public static void calculateApplicationSecrets(Context context)
             throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Application Secrets");
-
+        QuicContext quicContext = context.getQuicContext();
         int keyLength = 16;
-        switch (context.getContext().getTlsContext().getSelectedCipherSuite()) {
+        switch (context.getTlsContext().getSelectedCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
                 keyLength = 16;
@@ -302,39 +302,53 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 break;
             default:
                 LOGGER.warn(
-                        "Unknown cipher suite: {}. Defaulting to AES-128.",
-                        context.getContext().getTlsContext().getSelectedCipherSuite());
-                keyLength = 16;
+                        "Unsupported Cipher Suite: {}",
+                        context.getTlsContext().getSelectedCipherSuite());
+                break;
         }
 
-        HKDFAlgorithm hkdfAlgorithm = context.getHkdfAlgorithm();
-        QuicVersion version = context.getQuicVersion();
+        HKDFAlgorithm hkdfAlgorithm = quicContext.getHkdfAlgorithm();
+        QuicVersion version = quicContext.getQuicVersion();
 
         // client
-        context.setApplicationClientSecret(
-                context.getContext().getTlsContext().getClientApplicationTrafficSecret());
-        context.setApplicationClientKey(
+        quicContext.setApplicationClientSecret(
+                context.getTlsContext().getClientApplicationTrafficSecret());
+        quicContext.setApplicationClientKey(
                 deriveKeyFromSecret(
-                        version, hkdfAlgorithm, context.getApplicationClientSecret(), keyLength));
-        context.setApplicationClientIv(
-                deriveIvFromSecret(version, hkdfAlgorithm, context.getApplicationClientSecret()));
-        context.setApplicationClientHeaderProtectionKey(
+                        version,
+                        hkdfAlgorithm,
+                        quicContext.getApplicationClientSecret(),
+                        keyLength));
+        quicContext.setApplicationClientIv(
+                deriveIvFromSecret(
+                        version, hkdfAlgorithm, quicContext.getApplicationClientSecret()));
+        quicContext.setApplicationClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        version, hkdfAlgorithm, context.getApplicationClientSecret(), keyLength));
+                        version,
+                        hkdfAlgorithm,
+                        quicContext.getApplicationClientSecret(),
+                        keyLength));
 
         // server
-        context.setApplicationServerSecret(
-                context.getContext().getTlsContext().getServerApplicationTrafficSecret());
-        context.setApplicationServerKey(
+        quicContext.setApplicationServerSecret(
+                context.getTlsContext().getServerApplicationTrafficSecret());
+        quicContext.setApplicationServerKey(
                 deriveKeyFromSecret(
-                        version, hkdfAlgorithm, context.getApplicationServerSecret(), keyLength));
-        context.setApplicationServerIv(
-                deriveIvFromSecret(version, hkdfAlgorithm, context.getApplicationServerSecret()));
-        context.setApplicationServerHeaderProtectionKey(
+                        version,
+                        hkdfAlgorithm,
+                        quicContext.getApplicationServerSecret(),
+                        keyLength));
+        quicContext.setApplicationServerIv(
+                deriveIvFromSecret(
+                        version, hkdfAlgorithm, quicContext.getApplicationServerSecret()));
+        quicContext.setApplicationServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        version, hkdfAlgorithm, context.getApplicationServerSecret(), keyLength));
+                        version,
+                        hkdfAlgorithm,
+                        quicContext.getApplicationServerSecret(),
+                        keyLength));
 
-        context.setApplicationSecretsInitialized(true);
+        quicContext.setApplicationSecretsInitialized(true);
     }
 
     /**
@@ -346,74 +360,69 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
      * @throws CryptoException
      * @throws NoSuchAlgorithmException
      */
-    public static void calculateZeroRTTSecrets(QuicContext context)
+    public static void calculateZeroRTTSecrets(Context context)
             throws CryptoException, NoSuchPaddingException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic 0-RTT Secrets");
-
-        context.setZeroRTTCipherSuite(
-                context.getContext().getTlsContext().getEarlyDataCipherSuite());
-        context.setZeroRTTAeadCipher(
+        QuicContext quicContext = context.getQuicContext();
+        quicContext.setZeroRTTCipherSuite(context.getTlsContext().getEarlyDataCipherSuite());
+        quicContext.setZeroRTTAeadCipher(
                 Cipher.getInstance(
-                        context.getContext()
-                                .getTlsContext()
+                        context.getTlsContext()
                                 .getEarlyDataCipherSuite()
                                 .getCipherAlgorithm()
                                 .getJavaName()));
 
         int keyLength = 16;
-        switch (context.getZeroRTTCipherSuite()) {
+        switch (quicContext.getZeroRTTCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
                 keyLength = 16;
-                context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setZeroRTTHeaderProtectionCipher(
+                        Cipher.getInstance("AES/ECB/NoPadding"));
                 break;
             case TLS_AES_256_GCM_SHA384:
                 keyLength = 32;
-                context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setZeroRTTHeaderProtectionCipher(
+                        Cipher.getInstance("AES/ECB/NoPadding"));
                 break;
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
-                context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
+                quicContext.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
             default:
-                LOGGER.warn(
-                        "Unknown cipher suite: {}. Defaulting to AES.",
-                        context.getContext().getTlsContext().getSelectedCipherSuite());
-                context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                LOGGER.warn("Unsupported Cipher Suite: {}", quicContext.getZeroRTTCipherSuite());
+                break;
         }
 
-        context.setZeroRTTHKDFAlgorithm(
-                AlgorithmResolver.getHKDFAlgorithm(context.getZeroRTTCipherSuite()));
+        quicContext.setZeroRTTHKDFAlgorithm(
+                AlgorithmResolver.getHKDFAlgorithm(quicContext.getZeroRTTCipherSuite()));
 
-        HKDFAlgorithm hkdfAlgorithm = context.getZeroRTTHKDFAlgorithm();
-
-        QuicVersion version = context.getQuicVersion();
+        HKDFAlgorithm hkdfAlgorithm = quicContext.getZeroRTTHKDFAlgorithm();
+        QuicVersion version = quicContext.getQuicVersion();
 
         // client
-        context.setZeroRTTClientSecret(
-                context.getContext().getTlsContext().getClientEarlyTrafficSecret());
-        context.setZeroRTTClientKey(
+        quicContext.setZeroRTTClientSecret(context.getTlsContext().getClientEarlyTrafficSecret());
+        quicContext.setZeroRTTClientKey(
                 deriveKeyFromSecret(
-                        version, hkdfAlgorithm, context.getZeroRTTClientSecret(), keyLength));
-        context.setZeroRTTClientIv(
-                deriveIvFromSecret(version, hkdfAlgorithm, context.getZeroRTTClientSecret()));
-        context.setZeroRTTClientHeaderProtectionKey(
+                        version, hkdfAlgorithm, quicContext.getZeroRTTClientSecret(), keyLength));
+        quicContext.setZeroRTTClientIv(
+                deriveIvFromSecret(version, hkdfAlgorithm, quicContext.getZeroRTTClientSecret()));
+        quicContext.setZeroRTTClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        version, hkdfAlgorithm, context.getZeroRTTClientSecret(), keyLength));
+                        version, hkdfAlgorithm, quicContext.getZeroRTTClientSecret(), keyLength));
 
         // server
-        context.setZeroRTTServerSecret(
-                context.getContext().getTlsContext().getClientEarlyTrafficSecret());
-        context.setZeroRTTServerKey(
+        quicContext.setZeroRTTServerSecret(context.getTlsContext().getClientEarlyTrafficSecret());
+        quicContext.setZeroRTTServerKey(
                 deriveKeyFromSecret(
-                        version, hkdfAlgorithm, context.getZeroRTTServerSecret(), keyLength));
-        context.setZeroRTTServerIv(
-                deriveIvFromSecret(version, hkdfAlgorithm, context.getZeroRTTServerSecret()));
-        context.setZeroRTTServerHeaderProtectionKey(
+                        version, hkdfAlgorithm, quicContext.getZeroRTTServerSecret(), keyLength));
+        quicContext.setZeroRTTServerIv(
+                deriveIvFromSecret(version, hkdfAlgorithm, quicContext.getZeroRTTServerSecret()));
+        quicContext.setZeroRTTServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        version, hkdfAlgorithm, context.getZeroRTTServerSecret(), keyLength));
+                        version, hkdfAlgorithm, quicContext.getZeroRTTServerSecret(), keyLength));
 
-        context.setZeroRTTSecretsInitialized(true);
+        quicContext.setZeroRTTSecretsInitialized(true);
     }
 
     private static byte[] deriveKeyFromSecret(

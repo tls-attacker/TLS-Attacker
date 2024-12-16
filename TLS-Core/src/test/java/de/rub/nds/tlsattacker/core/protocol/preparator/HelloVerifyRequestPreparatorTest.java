@@ -28,8 +28,8 @@ public class HelloVerifyRequestPreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        context.getConfig().setDtlsDefaultCookieLength(10);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
+        tlsContext.getConfig().setDtlsDefaultCookieLength(10);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         preparator.prepare();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB"),

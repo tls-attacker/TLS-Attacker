@@ -62,7 +62,9 @@ public class CertificateDelegate extends Delegate {
             description = "Alias of the key to be used from Java Key Store (JKS)")
     private String alias = null;
 
-    public CertificateDelegate() {}
+    public CertificateDelegate() {
+        // Default Constructor
+    }
 
     public String getKeystore() {
         return keystore;
@@ -132,9 +134,9 @@ public class CertificateDelegate extends Delegate {
             }
         }
         List<String> missingParameters = new ArrayList<>();
-        for (String p : mandatoryParameters.keySet()) {
-            if (mandatoryParameters.get(p) == null) {
-                missingParameters.add(p);
+        for (Map.Entry<String, String> entry : mandatoryParameters.entrySet()) {
+            if (entry.getValue() == null) {
+                missingParameters.add(entry.getKey());
             }
         }
         if (missingParameters.size() == 3) {
@@ -186,8 +188,7 @@ public class CertificateDelegate extends Delegate {
             config.setEcPrivateKey(ecKey.getS());
             config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
         } else {
-            throw new UnsupportedOperationException(
-                    "This private key is not supporter:" + key.toString());
+            throw new UnsupportedOperationException("This private key is not supported:" + key);
         }
     }
 }

@@ -44,12 +44,12 @@ public class CertificateStatusRequestExtensionHandlerTest
 
         assertEquals(
                 certificateStatusRequestExtensionRequestType,
-                context.getCertificateStatusRequestExtensionRequestType());
+                tlsContext.getCertificateStatusRequestExtensionRequestType());
         assertArrayEquals(
                 certificateStatusRequestExtensionResponderIDList,
-                context.getCertificateStatusRequestExtensionResponderIDList());
+                tlsContext.getCertificateStatusRequestExtensionResponderIDList());
         assertArrayEquals(
                 certificateStatusRequestExtensionRequestExtension,
-                context.getCertificateStatusRequestExtensionRequestExtension());
+                tlsContext.getCertificateStatusRequestExtensionRequestExtension());
     }
 }

@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-class ProtocolVersionComparator implements Comparator<ProtocolVersion> {
+class ProtocolVersionComparator implements Comparator<ProtocolVersion>, Serializable {
 
     @Override
     public int compare(ProtocolVersion o1, ProtocolVersion o2) {

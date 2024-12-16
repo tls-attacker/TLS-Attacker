@@ -140,15 +140,15 @@ public class EmptyClientKeyExchangePreparatorTest
 
     public EmptyClientKeyExchangePreparatorTest() {
         super(EmptyClientKeyExchangeMessage::new, EmptyClientKeyExchangePreparator::new);
-        context.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
     }
 
     @Test
     public void testPrepare() {
-        context.setClientCertificateChain(new X509CertificateChain());
+        tlsContext.setClientCertificateChain(new X509CertificateChain());
 
         preparator.prepareHandshakeMessageContents();
 
@@ -166,13 +166,13 @@ public class EmptyClientKeyExchangePreparatorTest
     public void testPrepareHandshakeMessageContentsDH()
             throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
-        context.getServerX509Context().setSubjectDhPublicKey(DH_SERVER_PUBLIC_KEY);
-        context.getServerX509Context().setSubjectDhModulus(DH_SERVER_PUBLIC_KEY);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
+        tlsContext.getServerX509Context().setSubjectDhPublicKey(DH_SERVER_PUBLIC_KEY);
+        tlsContext.getServerX509Context().setSubjectDhModulus(DH_SERVER_PUBLIC_KEY);
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain = new X509CertificateChain();
-        context.setClientX509Context(new X509Context());
+        tlsContext.setClientX509Context(new X509Context());
 
         List<CertificateBytes> byteList =
                 CertificateIo.readPemCertificateByteList(
@@ -181,19 +181,20 @@ public class EmptyClientKeyExchangePreparatorTest
             LOGGER.debug("Trying to parse: {}", certificateBytes.getBytes());
             X509Certificate x509Certificate = new X509Certificate("x509Certificate");
             x509Certificate
-                    .getParser(context.getClientX509Context().getChooser())
+                    .getParser(tlsContext.getClientX509Context().getChooser())
                     .parse(
                             new BufferedInputStream(
                                     new ByteArrayInputStream(certificateBytes.getBytes())));
             clientCertificateChain.addCertificate(x509Certificate);
         }
-        context.getServerX509Context()
+        tlsContext
+                .getServerX509Context()
                 .setSubjectDhModulus(
                         new BigInteger(
                                 "139654574825163086931039779432700084721137093728592448263724893367282260875033276765642723398595467214600686069576825731414046467249623447307063533378369049982018500484294019122053107608715606657740629267449299233407157095954596131791080517152891252136791647808354801798603593447782078871273849261750140791763"));
-        context.setClientCertificateChain(clientCertificateChain);
+        tlsContext.setClientCertificateChain(clientCertificateChain);
         // set DH private key
-        context.getClientX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
+        tlsContext.getClientX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();
@@ -213,23 +214,26 @@ public class EmptyClientKeyExchangePreparatorTest
     public void testPrepareHandshakeMessageContentsECDSA()
             throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
 
         // testParse and set client certificate
         Point pubKey =
                 PointFormatter.formatFromByteArray(
                         (NamedEllipticCurveParameters)
-                                context.getChooser().getSelectedNamedGroup().getGroupParameters(),
+                                tlsContext
+                                        .getChooser()
+                                        .getSelectedNamedGroup()
+                                        .getGroupParameters(),
                         EC_SERVER_PUBLIC_KEY_BYTES);
-        context.getServerX509Context().setSubjectEcPublicKey(pubKey);
+        tlsContext.getServerX509Context().setSubjectEcPublicKey(pubKey);
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain =
                 CertificateIo.readPemChain(new ByteArrayInputStream(EC_CLIENT_CERT.getBytes()));
-        context.setClientCertificateChain(clientCertificateChain);
+        tlsContext.setClientCertificateChain(clientCertificateChain);
 
         // set EC private key
-        context.getClientX509Context().setSubjectEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
+        tlsContext.getClientX509Context().setSubjectEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();

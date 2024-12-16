@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -81,7 +81,7 @@ public class RecordBlockCipherTest {
                                         new CipherState(
                                                 context.getChooser().getSelectedProtocolVersion(),
                                                 context.getChooser().getSelectedCipherSuite(),
-                                                KeySetGenerator.generateKeySet(context),
+                                                KeyDerivator.generateKeySet(context),
                                                 context.isExtensionNegotiated(
                                                         ExtensionType.ENCRYPT_THEN_MAC)));
                     }

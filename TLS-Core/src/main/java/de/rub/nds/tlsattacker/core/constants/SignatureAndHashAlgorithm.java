@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -286,5 +287,19 @@ public enum SignatureAndHashAlgorithm {
 
     public boolean isGrease() {
         return this.name().startsWith("GREASE");
+    }
+
+    public boolean isRsaPssRsae() {
+        return this == RSA_PSS_RSAE_SHA256
+                || this == RSA_PSS_RSAE_SHA384
+                || this == RSA_PSS_RSAE_SHA512;
+    }
+
+    public boolean suitableForSignatureKeyType(X509PublicKeyType publicKeyType) {
+        if (isRsaPssRsae()) {
+            return publicKeyType == X509PublicKeyType.RSA;
+        } else {
+            return publicKeyType.canBeUsedWithSignatureAlgorithm(this.getSignatureAlgorithm());
+        }
     }
 }

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.MaxStreamsFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.MaxStreamsFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.MaxStreamsFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.MaxStreamsFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -44,22 +44,22 @@ public class MaxStreamsFrame extends QuicFrame {
     }
 
     @Override
-    public MaxStreamsFrameHandler getHandler(QuicContext context) {
-        return new MaxStreamsFrameHandler(context);
+    public MaxStreamsFrameHandler getHandler(Context context) {
+        return new MaxStreamsFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public MaxStreamsFrameSerializer getSerializer(QuicContext context) {
+    public MaxStreamsFrameSerializer getSerializer(Context context) {
         return new MaxStreamsFrameSerializer(this);
     }
 
     @Override
-    public MaxStreamsFramePreparator getPreparator(QuicContext context) {
+    public MaxStreamsFramePreparator getPreparator(Context context) {
         return new MaxStreamsFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public MaxStreamsFrameParser getParser(QuicContext context, InputStream stream) {
+    public MaxStreamsFrameParser getParser(Context context, InputStream stream) {
         return new MaxStreamsFrameParser(stream);
     }
 

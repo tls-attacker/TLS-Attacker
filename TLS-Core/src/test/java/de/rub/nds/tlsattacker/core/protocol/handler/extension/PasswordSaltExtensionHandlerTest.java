@@ -29,7 +29,7 @@ public class PasswordSaltExtensionHandlerTest
         PasswordSaltExtensionMessage message = new PasswordSaltExtensionMessage();
         message.setSalt(new byte[32]);
         handler.adjustContext(message);
-        assertTrue(context.isExtensionProposed(ExtensionType.PASSWORD_SALT));
-        assertArrayEquals(new byte[32], context.getServerPWDSalt());
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.PASSWORD_SALT));
+        assertArrayEquals(new byte[32], tlsContext.getServerPWDSalt());
     }
 }

@@ -39,8 +39,8 @@ public class ServerNameIndicationExtensionHandlerTest
         pairList.add(pair);
         msg.setServerNameList(pairList);
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(1, context.getClientSNIEntryList().size());
-        SNIEntry entry = context.getClientSNIEntryList().get(0);
+        assertEquals(1, tlsContext.getClientSNIEntryList().size());
+        SNIEntry entry = tlsContext.getClientSNIEntryList().get(0);
         assertEquals("localhost", entry.getName());
         assertSame(SniType.HOST_NAME, entry.getType());
     }
@@ -55,6 +55,6 @@ public class ServerNameIndicationExtensionHandlerTest
         pairList.add(pair);
         msg.setServerNameList(pairList);
         handler.adjustContext(msg);
-        assertTrue(context.getClientSNIEntryList().isEmpty());
+        assertTrue(tlsContext.getClientSNIEntryList().isEmpty());
     }
 }

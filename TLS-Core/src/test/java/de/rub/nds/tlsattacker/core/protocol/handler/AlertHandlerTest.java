@@ -29,15 +29,15 @@ public class AlertHandlerTest
     @Test
     @Override
     public void testadjustContext() {
-        context.setConnection(new OutboundConnection());
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setConnection(new OutboundConnection());
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         AlertMessage message = new AlertMessage();
         message.setDescription(AlertDescription.ACCESS_DENIED.getValue());
         message.setLevel(AlertLevel.WARNING.getValue());
         handler.adjustContext(message);
-        assertFalse(context.isReceivedFatalAlert());
+        assertFalse(tlsContext.isReceivedFatalAlert());
         message.setLevel(AlertLevel.FATAL.getValue());
         handler.adjustContext(message);
-        assertTrue(context.isReceivedFatalAlert());
+        assertTrue(tlsContext.isReceivedFatalAlert());
     }
 }

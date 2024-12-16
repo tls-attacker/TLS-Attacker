@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.RetireConnectionIdFrameHan
 import de.rub.nds.tlsattacker.core.quic.parser.frame.RetireConnectionIdFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.RetireConnectionIdFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.RetireConnectionIdFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -37,22 +37,22 @@ public class RetireConnectionIdFrame extends QuicFrame {
     }
 
     @Override
-    public RetireConnectionIdFrameHandler getHandler(QuicContext context) {
-        return new RetireConnectionIdFrameHandler(context);
+    public RetireConnectionIdFrameHandler getHandler(Context context) {
+        return new RetireConnectionIdFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public RetireConnectionIdFrameSerializer getSerializer(QuicContext context) {
+    public RetireConnectionIdFrameSerializer getSerializer(Context context) {
         return new RetireConnectionIdFrameSerializer(this);
     }
 
     @Override
-    public RetireConnectionIdFramePreparator getPreparator(QuicContext context) {
+    public RetireConnectionIdFramePreparator getPreparator(Context context) {
         return new RetireConnectionIdFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public RetireConnectionIdFrameParser getParser(QuicContext context, InputStream stream) {
+    public RetireConnectionIdFrameParser getParser(Context context, InputStream stream) {
         return new RetireConnectionIdFrameParser(stream);
     }
 

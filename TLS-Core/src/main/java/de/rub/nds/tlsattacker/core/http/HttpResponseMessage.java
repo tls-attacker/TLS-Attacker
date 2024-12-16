@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -117,19 +117,19 @@ public class HttpResponseMessage extends HttpMessage {
     }
 
     @Override
-    public HttpResponseHandler getHandler(HttpContext httpContext) {
+    public HttpResponseHandler getHandler(Context httpContext) {
         return new HttpResponseHandler();
     }
 
-    public HttpResponseParser getParser(HttpContext context, InputStream stream) {
+    public HttpResponseParser getParser(Context context, InputStream stream) {
         return new HttpResponseParser(stream);
     }
 
-    public HttpResponsePreparator getPreparator(HttpContext context) {
-        return new HttpResponsePreparator(context.getContext().getHttpContext(), this);
+    public HttpResponsePreparator getPreparator(Context context) {
+        return new HttpResponsePreparator(context.getHttpContext(), this);
     }
 
-    public HttpResponseSerializer getSerializer(HttpContext context) {
+    public HttpResponseSerializer getSerializer(Context context) {
         return new HttpResponseSerializer(this);
     }
 }

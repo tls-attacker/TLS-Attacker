@@ -17,16 +17,16 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2MessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2MessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2MessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2MessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 import java.util.List;
 
-public abstract class SSL2Message extends Message<TlsContext> {
+public abstract class SSL2Message extends Message {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;
     @XmlTransient protected boolean requiredDefault = true;
@@ -201,15 +201,15 @@ public abstract class SSL2Message extends Message<TlsContext> {
     }
 
     @Override
-    public abstract SSL2MessageHandler<? extends SSL2Message> getHandler(TlsContext context);
+    public abstract SSL2MessageHandler<? extends SSL2Message> getHandler(Context context);
 
     @Override
     public abstract SSL2MessageParser<? extends SSL2Message> getParser(
-            TlsContext context, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
-    public abstract SSL2MessagePreparator<? extends SSL2Message> getPreparator(TlsContext context);
+    public abstract SSL2MessagePreparator<? extends SSL2Message> getPreparator(Context context);
 
     @Override
-    public abstract SSL2MessageSerializer<? extends SSL2Message> getSerializer(TlsContext context);
+    public abstract SSL2MessageSerializer<? extends SSL2Message> getSerializer(Context context);
 }

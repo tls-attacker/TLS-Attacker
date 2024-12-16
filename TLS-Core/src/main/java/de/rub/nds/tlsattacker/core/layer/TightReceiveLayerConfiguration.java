@@ -20,13 +20,14 @@ import org.apache.logging.log4j.Level;
  *
  * @param <Container>
  */
-public class TightReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class TightReceiveLayerConfiguration<Container extends DataContainer>
         extends SpecificReceiveLayerConfiguration<Container> {
 
     public TightReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public TightReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }

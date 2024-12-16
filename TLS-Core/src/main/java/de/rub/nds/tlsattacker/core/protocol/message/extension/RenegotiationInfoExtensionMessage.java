@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -61,22 +61,22 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public RenegotiationInfoExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RenegotiationInfoExtensionParser(stream, tlsContext);
+    public RenegotiationInfoExtensionParser getParser(Context context, InputStream stream) {
+        return new RenegotiationInfoExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public RenegotiationInfoExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new RenegotiationInfoExtensionPreparator(tlsContext.getChooser(), this);
+    public RenegotiationInfoExtensionPreparator getPreparator(Context context) {
+        return new RenegotiationInfoExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public RenegotiationInfoExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public RenegotiationInfoExtensionSerializer getSerializer(Context context) {
         return new RenegotiationInfoExtensionSerializer(this);
     }
 
     @Override
-    public RenegotiationInfoExtensionHandler getHandler(TlsContext tlsContext) {
-        return new RenegotiationInfoExtensionHandler(tlsContext);
+    public RenegotiationInfoExtensionHandler getHandler(Context context) {
+        return new RenegotiationInfoExtensionHandler(context.getTlsContext());
     }
 }

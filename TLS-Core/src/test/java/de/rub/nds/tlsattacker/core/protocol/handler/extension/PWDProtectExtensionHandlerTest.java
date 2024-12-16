@@ -23,7 +23,7 @@ public class PWDProtectExtensionHandlerTest
 
     public PWDProtectExtensionHandlerTest() {
         super(PWDProtectExtensionMessage::new, PWDProtectExtensionHandler::new);
-        context.setConnection(new InboundConnection());
+        tlsContext.setConnection(new InboundConnection());
     }
 
     @Test
@@ -34,7 +34,7 @@ public class PWDProtectExtensionHandlerTest
                 ArrayConverter.hexStringToByteArray(
                         "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6"));
         handler.adjustContext(message);
-        assertTrue(context.isExtensionProposed(ExtensionType.PWD_PROTECT));
-        assertEquals("jens", context.getClientPWDUsername());
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.PWD_PROTECT));
+        assertEquals("jens", tlsContext.getClientPWDUsername());
     }
 }

@@ -35,15 +35,15 @@ public class CertificateRequestPreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        context.getConfig().setDistinguishedNames(new byte[] {0, 1, 2});
+        tlsContext.getConfig().setDistinguishedNames(new byte[] {0, 1, 2});
         List<ClientCertificateType> list = new LinkedList<>();
         list.add(ClientCertificateType.DSS_EPHEMERAL_DH_RESERVED);
         list.add(ClientCertificateType.RSA_EPHEMERAL_DH_RESERVED);
-        context.getConfig().setClientCertificateTypes(list);
+        tlsContext.getConfig().setClientCertificateTypes(list);
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
+        tlsContext.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] {0, 1, 2}, message.getDistinguishedNames().getValue());
         assertEquals(3, (int) message.getDistinguishedNamesLength().getValue());
@@ -55,15 +55,15 @@ public class CertificateRequestPreparatorTest
     /** Test of prepareHandshakeMessageContents method, of class CertificateRequestPreparator. */
     @Test
     public void testPrepareTls13() {
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS13);
-        context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
         createNewMessageAndPreparator(true);
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
         algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
-        context.getConfig().setDefaultCertificateRequestContext(new byte[] {0, 1, 2});
+        tlsContext.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
+        tlsContext.getConfig().setDefaultCertificateRequestContext(new byte[] {0, 1, 2});
         preparator.prepare();
         assertArrayEquals(new byte[] {0, 1, 2}, message.getCertificateRequestContext().getValue());
         assertEquals(3, (int) message.getCertificateRequestContextLength().getValue());

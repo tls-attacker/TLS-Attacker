@@ -58,7 +58,7 @@ public class ConfigIO {
         try {
             os.write(
                     tempStream
-                            .toString()
+                            .toString(StandardCharsets.UTF_8)
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {

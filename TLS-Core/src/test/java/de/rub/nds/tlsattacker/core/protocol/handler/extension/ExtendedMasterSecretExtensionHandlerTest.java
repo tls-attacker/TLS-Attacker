@@ -28,16 +28,16 @@ public class ExtendedMasterSecretExtensionHandlerTest
     @Override
     public void testadjustTLSExtensionContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(msg);
 
-        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
-        assertFalse(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
-        assertFalse(context.isUseExtendedMasterSecret());
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(tlsContext.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(tlsContext.isUseExtendedMasterSecret());
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustContext(msg);
-        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
-        assertTrue(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
-        assertTrue(context.isUseExtendedMasterSecret());
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(tlsContext.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(tlsContext.isUseExtendedMasterSecret());
     }
 }

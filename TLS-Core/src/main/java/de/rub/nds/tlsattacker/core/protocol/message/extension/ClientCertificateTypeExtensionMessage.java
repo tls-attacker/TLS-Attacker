@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientCertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -75,23 +75,22 @@ public class ClientCertificateTypeExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ClientCertificateTypeExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new ClientCertificateTypeExtensionParser(stream, tlsContext);
+    public ClientCertificateTypeExtensionParser getParser(Context context, InputStream stream) {
+        return new ClientCertificateTypeExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public ClientCertificateTypeExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientCertificateTypeExtensionPreparator(tlsContext.getChooser(), this);
+    public ClientCertificateTypeExtensionPreparator getPreparator(Context context) {
+        return new ClientCertificateTypeExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ClientCertificateTypeExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ClientCertificateTypeExtensionSerializer getSerializer(Context context) {
         return new ClientCertificateTypeExtensionSerializer(this);
     }
 
     @Override
-    public ClientCertificateTypeExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ClientCertificateTypeExtensionHandler(tlsContext);
+    public ClientCertificateTypeExtensionHandler getHandler(Context context) {
+        return new ClientCertificateTypeExtensionHandler(context.getTlsContext());
     }
 }

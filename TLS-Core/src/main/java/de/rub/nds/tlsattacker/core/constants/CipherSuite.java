@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -3216,12 +3219,12 @@ public enum CipherSuite {
         return cs;
     }
 
-    public byte[] getByteValue() {
-        return ArrayConverter.intToBytes(value, 2);
-    }
-
     public int getValue() {
         return value;
+    }
+
+    public byte[] getByteValue() {
+        return ArrayConverter.intToBytes(value, 2);
     }
 
     /**
@@ -3276,13 +3279,9 @@ public enum CipherSuite {
             case BLOCK:
                 return true;
             case AEAD:
-                if (protocolVersion != ProtocolVersion.TLS13) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return protocolVersion == ProtocolVersion.TLS13;
         }
-        return null;
+        throw new UnsupportedOperationException("CipherType " + cipherType + " is not supported");
     }
 
     public boolean isUsingMac() {
@@ -3326,7 +3325,7 @@ public enum CipherSuite {
         return (this.name().contains("_OCB"));
     }
 
-    public boolean isSteamCipherWithIV() {
+    public boolean isStreamCipherWithIV() {
         return this.name().contains("28147_CNT");
     }
 
@@ -3423,11 +3422,7 @@ public enum CipherSuite {
                                     TLS_DH_anon_WITH_RC4_128_MD5,
                                     TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA,
                                     TLS_DH_anon_WITH_DES_CBC_SHA,
-                                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA,
-                                    TLS_ECCPWD_WITH_AES_128_CCM_SHA256,
-                                    TLS_ECCPWD_WITH_AES_128_GCM_SHA256,
-                                    TLS_ECCPWD_WITH_AES_256_CCM_SHA384,
-                                    TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
+                                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();
@@ -3787,18 +3782,13 @@ public enum CipherSuite {
         return getAllCipherSuites().stream()
                 .filter(CipherSuite::isTls13)
                 .collect(Collectors.toList());
+        return getAllCipherSuites().stream()
+                .filter(CipherSuite::isTls13)
+                .collect(Collectors.toList());
     }
 
     public static List<CipherSuite> getImplementedTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList<>();
-        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
-        list.add(TLS_SM4_GCM_SM3);
-        list.add(TLS_SM4_CCM_SM3);
-        return list;
+        return getImplemented().stream().filter(CipherSuite::isTls13).collect(Collectors.toList());
     }
 
     public static List<CipherSuite> getNotImplemented() {

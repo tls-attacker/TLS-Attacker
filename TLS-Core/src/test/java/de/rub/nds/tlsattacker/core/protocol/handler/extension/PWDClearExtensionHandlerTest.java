@@ -28,6 +28,6 @@ public class PWDClearExtensionHandlerTest
         PWDClearExtensionMessage message = new PWDClearExtensionMessage();
         message.setUsername("jens");
         handler.adjustContext(message);
-        assertTrue(context.isExtensionProposed(ExtensionType.PWD_CLEAR));
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.PWD_CLEAR));
     }
 }

@@ -8,20 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringJoiner;
+
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringJoiner;
 
 @XmlRootElement(name = "SendDynamicClientKeyExchange")
 public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
