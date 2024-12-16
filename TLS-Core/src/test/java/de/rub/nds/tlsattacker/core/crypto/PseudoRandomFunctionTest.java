@@ -21,11 +21,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.crypto.tls.ProtocolVersion;
-import org.bouncycastle.crypto.tls.SecurityParameters;
-import org.bouncycastle.crypto.tls.TlsContext;
-import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.tls.ProtocolVersion;
+import org.bouncycastle.tls.SecurityParameters;
+import org.bouncycastle.tls.TlsContext;
+import org.bouncycastle.tls.TlsUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,7 +56,7 @@ public class PseudoRandomFunctionTest {
         byte[] secret = new byte[48];
         String label = "master secret";
         byte[] seed = new byte[60];
-        Random r = new Random();
+        Random r = new Random(0);
         r.nextBytes(seed);
         int size = 48;
 

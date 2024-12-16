@@ -35,7 +35,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.Digest;
 
 public class PWDComputations extends KeyExchangeComputations {
 
@@ -66,13 +65,10 @@ public class PWDComputations extends KeyExchangeComputations {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
         if (salt == null) {
-            Digest digest = HashCalculator.getDigest(HashAlgorithm.SHA256);
-            base = new byte[digest.getDigestSize()];
             byte[] usernamePW =
                     (chooser.getClientPWDUsername() + chooser.getPWDPassword())
                             .getBytes(StandardCharsets.ISO_8859_1);
-            digest.update(usernamePW, 0, usernamePW.length);
-            digest.doFinal(base, 0);
+            base = HashCalculator.compute(usernamePW, HashAlgorithm.SM3);
         } else {
             base =
                     StaticTicketCrypto.generateHMAC(
