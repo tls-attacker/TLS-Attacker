@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -18,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExten
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,19 +52,25 @@ class JaFingerprintCalculatorTest {
         extensions = new LinkedList<>();
         ecPointFormatExtensionMessage = new ECPointFormatExtensionMessage();
         ecPointFormatExtensionMessage.setExtensionType(ExtensionType.EC_POINT_FORMATS.getValue());
-        extensions.add(ecPointFormatExtensionMessage);
         renegotiationInfoExtensionMessage = new RenegotiationInfoExtensionMessage();
         renegotiationInfoExtensionMessage.setExtensionType(
                 ExtensionType.RENEGOTIATION_INFO.getValue());
-        extensions.add(renegotiationInfoExtensionMessage);
         EllipticCurvesExtensionMessage ellipticCurvesExtensionMessage =
                 new EllipticCurvesExtensionMessage();
         ellipticCurvesExtensionMessage.setExtensionType(ExtensionType.ELLIPTIC_CURVES.getValue());
-        extensions.add(ellipticCurvesExtensionMessage);
 
+        SignatureAndHashAlgorithmsExtensionMessage signatureAndHashAlgorithmsExtensionMessage =
+                new SignatureAndHashAlgorithmsExtensionMessage();
+        signatureAndHashAlgorithmsExtensionMessage.setExtensionType(
+                ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
+        ecPointFormatExtensionMessage.setPointFormats(new byte[] {0x00});
         extensions.add(ecPointFormatExtensionMessage);
-        extensions.add(renegotiationInfoExtensionMessage);
         extensions.add(ellipticCurvesExtensionMessage);
+        ellipticCurvesExtensionMessage.setSupportedGroups(
+                ArrayConverter.hexStringToByteArray(
+                        "000f0010001100120013001400150016001700180019000100020003000400050006000700080009000a000b000c000d000e001d001e0029001a001b001c01000101010201030104"));
+        extensions.add(signatureAndHashAlgorithmsExtensionMessage);
+        extensions.add(renegotiationInfoExtensionMessage);
 
         clientHelloMessage = new ClientHelloMessage();
         clientHelloMessage.setProtocolVersion(new byte[] {0x03, 0x03});
@@ -71,10 +79,18 @@ class JaFingerprintCalculatorTest {
     }
 
     @Test
-    void testGetJa3FingerprintHash() {}
+    void testGetJa3FingerprintHash() {
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("8042c60060dd584f09b72dc10430bab0"),
+                JaFingerprintCalculator.getJa3FingerprintHash(clientHelloMessage));
+    }
 
     @Test
-    void testGetJa3FingerprintString() {}
+    void testGetJa3FingerprintString() {
+        assertEquals(
+                "771,49162,11-10-13-65281,15-16-17-18-19-20-21-22-23-24-25-1-2-3-4-5-6-7-8-9-10-11-12-13-14-29-30-41-26-27-28-256-257-258-259-260,0",
+                JaFingerprintCalculator.getJa3FingerprintString(clientHelloMessage));
+    }
 
     @Test
     void testGetJa3sFingerprintHash() {
@@ -84,5 +100,9 @@ class JaFingerprintCalculatorTest {
     }
 
     @Test
-    void testGetJa3sFingerprintString() {}
+    void testGetJa3sFingerprintString() {
+        assertEquals(
+                "771,49162,11-65281",
+                JaFingerprintCalculator.getJa3sFingerprintString(serverHelloMessage));
+    }
 }
