@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -19,13 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.tls.ProtocolVersion;
-import org.bouncycastle.tls.SecurityParameters;
-import org.bouncycastle.tls.TlsContext;
-import org.bouncycastle.tls.TlsUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,31 +38,25 @@ public class PseudoRandomFunctionTest {
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testComputeForTls12() throws CryptoException {
-        TlsContext mockedTlsContext = mock(TlsContext.class);
-        SecurityParameters mockedParameters = mock(SecurityParameters.class);
-        // Stub method calls
-        when(mockedTlsContext.getServerVersion()).thenReturn(ProtocolVersion.TLSv12);
-        when(mockedTlsContext.getSecurityParameters()).thenReturn(mockedParameters);
-        when(mockedParameters.getPrfAlgorithm()).thenReturn(1);
-
+    void testComputeForTls12() throws CryptoException {
         byte[] secret = new byte[48];
         String label = "master secret";
-        byte[] seed = new byte[60];
-        Random r = new Random(0);
-        r.nextBytes(seed);
+        byte[] seed =
+                ArrayConverter.hexStringToByteArray(
+                        "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC");
         int size = 48;
 
-        byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        byte[] result1 =
+                ArrayConverter.hexStringToByteArray(
+                        "23ED8F639C4FB71E25AB4800AED9D134B97A8900B7A5858066DCD576B471542A65814D369E37AE29999A9F4213340C58");
         byte[] result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
         assertArrayEquals(result1, result2);
 
-        // Stub method calls
-        when(mockedParameters.getPrfAlgorithm()).thenReturn(2);
-
-        result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        result1 =
+                ArrayConverter.hexStringToByteArray(
+                        "E12A3CD6F7F381AF814C59802C73D3A029008C1EC0DCD3A85DAD3D37BC7D45637D67436659B925B906A6EA3A66847408");
         result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
@@ -110,15 +97,18 @@ public class PseudoRandomFunctionTest {
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testComputeForTls11() throws CryptoException {
+    void testComputeForTls11() throws CryptoException {
         byte[] secret = new byte[48];
         String label = "master secret";
-        byte[] seed = new byte[60];
-        Random r = new Random();
-        r.nextBytes(seed);
+        byte[] seed =
+                ArrayConverter.hexStringToByteArray(
+                        "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC");
+
         int size = 48;
 
-        byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
+        byte[] result1 =
+                ArrayConverter.hexStringToByteArray(
+                        "D75EE13D69CBCD8999424D406C19E4FB7F22004496D904303E9A39857351953D39CFDF377EA0A10B98910C7C06C13A44");
 
         byte[] result2 =
                 PseudoRandomFunction.compute(
@@ -126,25 +116,27 @@ public class PseudoRandomFunctionTest {
 
         assertArrayEquals(result1, result2);
 
-        String new_label = "extended master secret";
+        String newLabel = "extended master secret";
 
-        result1 = TlsUtils.PRF_legacy(secret, new_label, seed, size);
+        result1 =
+                ArrayConverter.hexStringToByteArray(
+                        "C9E0FAE9A5D7A1E8267CDAE38AC22350DA2B39EB855BE54FB4C97017D1468AF69D0DA8CB3A888D9EC323EEB1DDDE475B");
 
         result2 =
                 PseudoRandomFunction.compute(
-                        PRFAlgorithm.TLS_PRF_LEGACY, secret, new_label, seed, size);
+                        PRFAlgorithm.TLS_PRF_LEGACY, secret, newLabel, seed, size);
 
         assertArrayEquals(result1, result2);
     }
 
     @Test
-    public void testComputeForSSL3() throws NoSuchAlgorithmException, IOException {
-        byte[] master_secret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
-        byte[] client_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
-        byte[] server_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
+    void testComputeForSSL3() throws NoSuchAlgorithmException, IOException {
+        byte[] masterSecret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
+        byte[] clientRandom = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
+        byte[] serverRandom = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
 
         byte[] result1 =
-                PseudoRandomFunction.computeSSL3(master_secret, client_random, server_random, 48);
+                PseudoRandomFunction.computeSSL3(masterSecret, clientRandom, serverRandom, 48);
         byte[] result2 =
                 ArrayConverter.hexStringToByteArray(
                         "24d8e8797e3a106b7752b22cbf8829acf27c8f1e2630e9c2d3442f991e7736288d696027c06fd118f1c59311a66039a0");
@@ -153,17 +145,22 @@ public class PseudoRandomFunctionTest {
     }
 
     @Test
-    public void testComputeForTLS10() throws CryptoException {
+    void testComputeForTLS10() throws CryptoException {
         /*
          * Test case 1: secret with length 0
          */
         byte[] secret = new byte[0];
         PRFAlgorithm prfAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
         String label = "master secret";
-        byte[] seed = new byte[60];
+        byte[] seed =
+                ArrayConverter.hexStringToByteArray(
+                        "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC");
+
         int size = 48;
 
-        byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
+        byte[] result1 =
+                ArrayConverter.hexStringToByteArray(
+                        "D75EE13D69CBCD8999424D406C19E4FB7F22004496D904303E9A39857351953D39CFDF377EA0A10B98910C7C06C13A44");
         byte[] result2 = PseudoRandomFunction.compute(prfAlgorithm, secret, label, seed, size);
         assertArrayEquals(result1, result2);
 
@@ -182,11 +179,9 @@ public class PseudoRandomFunctionTest {
                         ArrayConverter.hexStringToByteArray(
                                 "c8c9c788adbd9dc72b5dd0635f9e2576e09c87b67e045c026ffa3281069601fd594c07e445947b545a746fcbc094e12427e0286be2199300925a81be02bf5467"));
         result1 =
-                TlsUtils.PRF_legacy(
-                        message.getComputations().getPremasterSecret().getValue(),
-                        label,
-                        message.getComputations().getClientServerRandom().getValue(),
-                        size);
+                ArrayConverter.hexStringToByteArray(
+                        "4A0A7F6A0598ACB36684359E1A19D848AB03B3BA1167430471166D94DCF8315D1C4290C9D9E40C50AE834DF7B4F4BDEF");
+
         result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_LEGACY,
@@ -204,7 +199,9 @@ public class PseudoRandomFunctionTest {
         byte[] serverClientRandom =
                 ArrayConverter.hexStringToByteArray(
                         "4a8135d1217ebada1c70cb4ce99ff11dc8c8ca4ffc3c48a9f3f2143588a8fec147a6c3da4d36df18cf075eb7de187d83c7e3b7fd27124741a4b8809bed4f43ed9a434ce59c6a33277be96d8ef27b8e6a59d70bf6a04a86f04dfc37ab69ad90da53dfc1ea27f60a32ee7608b2197943bf8673dbe68003277bfd40b40d18b1a3bf17631f03fb5f59e65ef9b581bb6494e7304e2eaffb07ff7356cf62db1c44f4e4c15614909a3f2980c1908da2200924a23bc037963c204048cc77b1bcab5e6c9ef2c32928bcbdc0b664535885d46a9d4af4104eba4d7428c5741cf1c74bbd54d8e7ea16eaa126218286639a740fc39173e8989aea7f4b4440e1cad321315911fc");
-        result1 = TlsUtils.PRF_legacy(result1, "key expansion", serverClientRandom, 136);
+        result1 =
+                ArrayConverter.hexStringToByteArray(
+                        "C472DB51909EEC743364A6BED93DA08A43C34E74782C52A76E8BD604DDE7E29453F1B0F5D406A6B502A18F0EBD0BCCE93CAA6E4BEDF5D76BE60A66E87786D98778494DBA38F0C17DA77E109E7BC64919D42E6B65700AEA62816D1E3327BCCD4F76B74F7A304517E18AFBC9EB62B8477D0BDE9412ED5422498933C47D8C6BC9732D6A3E2422DA4E7B");
         result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_LEGACY,
