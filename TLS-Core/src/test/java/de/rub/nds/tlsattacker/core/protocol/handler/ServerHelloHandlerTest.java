@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 
-public class ServerHelloHandlerTest
+class ServerHelloHandlerTest
         extends AbstractProtocolMessageHandlerTest<ServerHelloMessage, ServerHelloHandler> {
 
     public ServerHelloHandlerTest() {
@@ -51,7 +51,7 @@ public class ServerHelloHandlerTest
     }
 
     @Test
-    public void testadjustContextTls13() {
+    void testadjustContextTls13() {
         ServerHelloMessage message = new ServerHelloMessage();
         tlsContext
                 .getConfig()
@@ -89,7 +89,7 @@ public class ServerHelloHandlerTest
     }
 
     @Test
-    public void testadjustContextTls13PWD() {
+    void testadjustContextTls13PWD() {
         ServerHelloMessage message = new ServerHelloMessage();
         tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         message.setUnixTime(new byte[] {0, 1, 2});
