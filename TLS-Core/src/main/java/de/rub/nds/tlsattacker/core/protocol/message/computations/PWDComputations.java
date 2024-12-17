@@ -68,7 +68,7 @@ public class PWDComputations extends KeyExchangeComputations {
             byte[] usernamePW =
                     (chooser.getClientPWDUsername() + chooser.getPWDPassword())
                             .getBytes(StandardCharsets.ISO_8859_1);
-            base = HashCalculator.compute(usernamePW, HashAlgorithm.SM3);
+            base = HashCalculator.compute(usernamePW, HashAlgorithm.SHA256);
         } else {
             base =
                     StaticTicketCrypto.generateHMAC(
@@ -186,10 +186,9 @@ public class PWDComputations extends KeyExchangeComputations {
                         prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
                 LOGGER.warn(
-                        "Could not select prf for "
-                                + chooser.getSelectedProtocolVersion()
-                                + " and "
-                                + chooser.getSelectedCipherSuite());
+                        "Could not select prf for {} and {}. Returning zero bytes",
+                        chooser.getSelectedProtocolVersion(),
+                        chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }
