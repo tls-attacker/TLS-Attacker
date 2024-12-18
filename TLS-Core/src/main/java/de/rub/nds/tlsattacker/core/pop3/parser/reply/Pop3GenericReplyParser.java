@@ -30,10 +30,17 @@ public class Pop3GenericReplyParser<ReplyT extends Pop3Reply> extends Pop3ReplyP
         List<String> lines = this.readWholeReply();
         List<String> message = new ArrayList<>();
         this.parseReplyIndicator(reply, lines.get(0));
+        if (lines.get(0).startsWith("-ERR") && lines.get(0).length() > 4) {
+            message.add(lines.get(0).substring(5));
+        } else if (lines.get(0).startsWith("+OK") && lines.get(0).length() > 3) {
+            message.add(lines.get(0).substring(4));
+        } else {
+            message.add(lines.get(0));
+        }
         for (int i = 1; i < lines.size(); i++) {
             message.add(lines.get(i));
         }
 
-        reply.setHumanReadableMessage(message);
+        reply.setHumanReadableMessages(message);
     }
 }

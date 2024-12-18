@@ -69,6 +69,8 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
             reply.setStatusIndicator("+OK");
         } else if (line.matches("^-ERR.*")) {
             reply.setStatusIndicator("-ERR");
+        } else {
+            reply.setStatusIndicator("");
         }
     }
 
