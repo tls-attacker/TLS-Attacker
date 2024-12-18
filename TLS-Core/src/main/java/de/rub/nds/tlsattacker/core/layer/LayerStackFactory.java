@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -32,6 +29,7 @@ public class LayerStackFactory {
         HttpContext httpContext = context.getHttpContext();
         QuicContext quicContext = context.getQuicContext();
         SmtpContext smtpContext = context.getSmtpContext();
+        Pop3Context pop3Context = context.getPop3Context();
 
         switch (type) {
             case OPEN_VPN:
@@ -69,6 +67,11 @@ public class LayerStackFactory {
                                 new MessageLayer(tlsContext),
                                 new RecordLayer(tlsContext),
                                 new TcpLayer(tcpContext));
+                return layerStack;
+            case POP3:
+                layerStack =
+                        new LayerStack(
+                                context, new Pop3Layer(pop3Context), new TcpLayer(tcpContext));
                 return layerStack;
             case SMTP:
                 layerStack =

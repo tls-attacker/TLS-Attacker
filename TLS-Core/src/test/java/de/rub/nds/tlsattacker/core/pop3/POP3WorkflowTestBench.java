@@ -54,7 +54,7 @@ public class POP3WorkflowTestBench {
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(110, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory workflowConfigurationFactory =
@@ -88,7 +88,7 @@ public class POP3WorkflowTestBench {
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(110, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTPS);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
@@ -98,9 +98,9 @@ public class POP3WorkflowTestBench {
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
-        trace.addTlsAction(new SendAction(new USERCommand("seal")));
+        trace.addTlsAction(new SendAction(new USERCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3USERReply()));
-        trace.addTlsAction(new SendAction(new PASSCommand("s34l")));
+        trace.addTlsAction(new SendAction(new PASSCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3PASSReply()));
         trace.addTlsAction(new SendAction(new STATCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3STATReply()));

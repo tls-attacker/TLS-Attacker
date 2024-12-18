@@ -22,7 +22,10 @@ import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.pop3.command.*;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3USERReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -126,6 +129,8 @@ public class WorkflowConfigurationFactory {
                 return createDynamicClientRenegotiationWithoutResumption();
             case HTTPS:
                 return createHttpsWorkflow();
+            case POP3:
+                return createPop3Workflow();
             case SMTP:
                 return createSmtpWorkflow();
             case SMTP_STARTTLS:
@@ -629,6 +634,27 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
+    private WorkflowTrace createPop3Workflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(
+                    MessageActionFactory.createPop3Action(
+                            config, connection, ConnectionEndType.CLIENT, new USERCommand()));
+            trace.addTlsAction(
+                    MessageActionFactory.createPop3Action(
+                            config, connection, ConnectionEndType.SERVER, new Pop3USERReply()));
+        }
+        appendPop3CommandAndReplyActions(connection, trace, new USERCommand());
+        appendPop3CommandAndReplyActions(connection, trace, new PASSCommand());
+        appendPop3CommandAndReplyActions(connection, trace, new NOOPCommand());
+        appendPop3CommandAndReplyActions(connection, trace, new QUITCommand());
+        // ...
+
+        return trace;
+    }
+
     private WorkflowTrace createSmtpWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = new WorkflowTrace();
@@ -665,6 +691,21 @@ public class WorkflowConfigurationFactory {
         trace.addTlsActions(createSmtpWorkflow().getTlsActions());
 
         return trace;
+    }
+
+    private void appendPop3CommandAndReplyActions(
+            AliasedConnection connection, WorkflowTrace trace, Pop3Command command) {
+        MessageAction clientAction =
+                MessageActionFactory.createPop3Action(
+                        config, connection, ConnectionEndType.CLIENT, command);
+        trace.addTlsAction(clientAction);
+        MessageAction serverAction =
+                MessageActionFactory.createPop3Action(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        Pop3Context.getExpectedReplyType(command));
+        trace.addTlsAction(serverAction);
     }
 
     private void appendSmtpCommandAndReplyActions(
