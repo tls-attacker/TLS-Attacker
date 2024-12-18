@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -49,6 +50,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<SmtpMessage> expectedSmtpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Pop3Message> expectedPop3Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
@@ -138,6 +142,10 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     public ReceiveAction(SmtpMessage... expectedSmtpMessages) {
         this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
+    }
+
+    public ReceiveAction(Pop3Message... expectedPop3Messages) {
+        this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {

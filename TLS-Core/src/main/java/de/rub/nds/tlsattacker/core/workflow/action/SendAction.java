@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -53,6 +54,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<SmtpMessage> configuredSmtpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Pop3Message> configuredPop3Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> configuredQuicFrames;
@@ -111,6 +115,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(SmtpMessage... smtpMessage) {
         this.configuredSmtpMessages = new ArrayList<>(Arrays.asList(smtpMessage));
+    }
+
+    public SendAction(Pop3Message... pop3Message) {
+        this.configuredPop3Messages = new ArrayList<>(Arrays.asList(pop3Message));
     }
 
     public SendAction(ProtocolMessage... messages) {
