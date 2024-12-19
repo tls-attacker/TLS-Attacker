@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
-import de.rub.nds.tlsattacker.core.smtp.command.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 
 public class Pop3Context extends LayerContext {
