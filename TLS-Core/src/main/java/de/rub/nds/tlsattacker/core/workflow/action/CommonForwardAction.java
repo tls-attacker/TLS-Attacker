@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -227,6 +228,18 @@ public abstract class CommonForwardAction extends TlsAction
                         ImplementedLayers.HTTP, layerStackReceiveResult)
                 .stream()
                 .map(container -> (HttpMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SmtpMessage> getReceivedSmtpMessages() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SMTP, layerStackReceiveResult)
+                .stream()
+                .map(container -> (SmtpMessage) container)
                 .collect(Collectors.toList());
     }
 

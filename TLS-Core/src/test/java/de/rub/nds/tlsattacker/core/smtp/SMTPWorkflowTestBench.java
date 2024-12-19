@@ -234,4 +234,28 @@ public class SMTPWorkflowTestBench {
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
     }
+
+    @Test
+    void messAround() {
+        Security.addProvider(new BouncyCastleProvider());
+        Config config = Config.createConfig();
+        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
+        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("mywonderfulworld.de")));
+        State state = new State(config, trace);
+
+        WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            System.out.println(
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            System.out.println(ex);
+        }
+    }
 }

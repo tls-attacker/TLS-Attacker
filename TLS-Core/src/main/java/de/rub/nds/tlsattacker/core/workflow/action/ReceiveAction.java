@@ -144,6 +144,11 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
     }
 
+    public ReceiveAction(String connectionAlias, SmtpMessage... expectedSmtpMessages) {
+        super(connectionAlias);
+        this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
+    }
+
     public ReceiveAction(Pop3Message... expectedPop3Messages) {
         this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
     }

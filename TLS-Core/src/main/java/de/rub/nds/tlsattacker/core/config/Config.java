@@ -1253,7 +1253,8 @@ public class Config implements Serializable {
     private Integer defaultMaxEchAlpnPadding = 25;
 
     private String defaultSmtpReversePath = "seal@upb.de";
-    private List<String> defaultSmtpMessage = List.of("Hello!", "This is seal.", "Bye!");
+    private List<String> defaultSmtpMessage =
+            new ArrayList<>(List.of("Hello!", "This is seal.", "Bye!"));
 
     public String getDefaultSmtpAuth() {
         return defaultSmtpAuth;

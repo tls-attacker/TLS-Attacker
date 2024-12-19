@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class DATAReplyTest {
     @Test
     void testParse() {
-        String message = "354 Start mail input; end with <CRLF>.<CRLF>\r\n";
+        String message = "354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;\r\n";
 
         SmtpDATAReply dataReply = new SmtpDATAReply();
         SmtpGenericReplyParser<SmtpDATAReply> dataReplyParser =
@@ -33,7 +33,8 @@ public class DATAReplyTest {
         dataReplyParser.parse(dataReply);
         assertEquals(354, dataReply.getReplyCode());
         assertEquals(
-                "Start mail input; end with <CRLF>.<CRLF>", dataReply.getHumanReadableMessage());
+                "Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;",
+                dataReply.getHumanReadableMessage());
     }
 
     @Test
@@ -54,12 +55,12 @@ public class DATAReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAReply dataReply = new SmtpDATAReply();
         dataReply.setReplyCode(354);
-        dataReply.setHumanReadableMessage("Start mail input; end with <CRLF>.<CRLF>");
+        dataReply.setHumanReadableMessage("Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;");
 
         Serializer<?> serializer = dataReply.getSerializer(context);
         serializer.serialize();
         assertEquals(
-                "354 Start mail input; end with <CRLF>.<CRLF>\r\n",
+                "354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;\r\n",
                 serializer.getOutputStream().toString());
     }
 }

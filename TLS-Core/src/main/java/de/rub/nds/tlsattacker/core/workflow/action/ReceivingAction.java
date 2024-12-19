@@ -14,10 +14,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import java.util.List;
 import java.util.Set;
 
 public interface ReceivingAction {
+
+    //    List<? extends Message<? extends LayerContext>> getALLReceivedMessages();
 
     List<ProtocolMessage> getReceivedMessages();
 
@@ -26,6 +29,8 @@ public interface ReceivingAction {
     List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
     List<HttpMessage> getReceivedHttpMessages();
+
+    List<SmtpMessage> getReceivedSmtpMessages();
 
     List<QuicFrame> getReceivedQuicFrames();
 

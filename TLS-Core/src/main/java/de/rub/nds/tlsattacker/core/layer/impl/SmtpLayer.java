@@ -152,4 +152,9 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         // 550 is overloaded and the message is not standardized.
         return true;
     }
+
+    @Override
+    public boolean shouldContinueProcessing() {
+        return super.shouldContinueProcessing() && this.getUnreadBytes() == null;
+    }
 }

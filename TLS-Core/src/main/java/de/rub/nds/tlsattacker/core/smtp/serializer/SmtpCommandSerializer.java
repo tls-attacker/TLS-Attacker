@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.smtp.serializer;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 
-/*
-   This class serializes SMTP commands.
-   Typically, a command is serialized in the format "COMMAND<SP>[PARAMETERS]<CRLF>".
-   Where <SP> is a space character and <CRLF> is a carriage return followed by a line feed.
-   When there are no parameters, the command is serialized as "COMMAND<CRLF>".
-   This is according to the SMTP protocol as defined in RFC 5321.
-*/
+/**
+ * This class serializes SMTP commands. Typically, a command is serialized in the format
+ * "COMMAND&lt;SP&gt;[PARAMETERS]&lt;CRLF&gt;". Where &lt;SP&gt; is a space character and
+ * &lt;CRLF&gt; is a carriage return followed by a line feed. When there are no parameters, the
+ * command is serialized as "COMMAND&lt;CRLF&gt;". This is according to the SMTP protocol as defined
+ * in RFC 5321.
+ */
 public class SmtpCommandSerializer<CommandT extends SmtpCommand>
         extends SmtpMessageSerializer<CommandT> {
 

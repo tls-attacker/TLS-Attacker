@@ -32,7 +32,7 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         // throws EndOfStreamException if no LF is found
 
         // 4.1.1 In the interest of improved interoperability, SMTP receivers SHOULD tolerate
-        // trailing white space before the terminating <CRLF>.
+        // trailing white space before the terminating &lt;CRLF&gt;.
         String actualCommand = line.trim();
         String[] verbAndParams = actualCommand.split(" ", 2);
         smtpCommand.setVerb(verbAndParams[0]);

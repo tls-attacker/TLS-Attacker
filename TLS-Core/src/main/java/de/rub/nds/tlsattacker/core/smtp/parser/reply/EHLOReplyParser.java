@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import java.io.InputStream;
@@ -137,8 +136,10 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 if (keyword.startsWith("X") || keyword.startsWith("x")) {
                     return new LocalSmtpServiceExtension(ehloKeyword, parameters);
                 } else {
-                    throw new ParserException(
-                            "Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
+                    return new UnknownEHLOExtension(ehloKeyword, parameters);
+                    //                    throw new ParserException(
+                    //                            "Could not parse EHLOReply. Unknown EHLO keyword:
+                    // " + ehloKeyword);
                 }
         }
     }
