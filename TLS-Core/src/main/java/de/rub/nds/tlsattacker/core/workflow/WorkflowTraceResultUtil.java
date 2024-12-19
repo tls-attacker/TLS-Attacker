@@ -62,6 +62,17 @@ public class WorkflowTraceResultUtil {
         }
     }
 
+    public static ProtocolMessage getFirstReceivedMessage(
+            WorkflowTrace trace, ProtocolMessageType type, String alias) {
+        List<ProtocolMessage> messageList = getAllReceivedMessages(trace, alias);
+        messageList = filterMessageList(messageList, type);
+        if (messageList.isEmpty()) {
+            return null;
+        } else {
+            return messageList.get(0);
+        }
+    }
+
     public static SSL2Message getFirstReceivedMessage(WorkflowTrace trace, SSL2MessageType type) {
         List<SSL2Message> messageList = getAllReceivedSSL2Messages(trace);
         messageList = filterMessageList(messageList, type);
@@ -75,6 +86,18 @@ public class WorkflowTraceResultUtil {
     public static HandshakeMessage getFirstReceivedMessage(
             WorkflowTrace trace, HandshakeMessageType type) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+        List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
+        handshakeMessageList = filterMessageList(handshakeMessageList, type);
+        if (handshakeMessageList.isEmpty()) {
+            return null;
+        } else {
+            return handshakeMessageList.get(0);
+        }
+    }
+
+    public static HandshakeMessage getFirstReceivedMessage(
+            WorkflowTrace trace, HandshakeMessageType type, String alias) {
+        List<ProtocolMessage> messageList = getAllReceivedMessages(trace, alias);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
         handshakeMessageList = filterMessageList(handshakeMessageList, type);
         if (handshakeMessageList.isEmpty()) {
@@ -177,6 +200,18 @@ public class WorkflowTraceResultUtil {
     public static HandshakeMessage getFirstSentMessage(
             WorkflowTrace trace, HandshakeMessageType type) {
         List<ProtocolMessage> messageList = getAllSentMessages(trace);
+        List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
+        handshakeMessageList = filterMessageList(handshakeMessageList, type);
+        if (handshakeMessageList.isEmpty()) {
+            return null;
+        } else {
+            return handshakeMessageList.get(0);
+        }
+    }
+
+    public static HandshakeMessage getFirstSentMessage(
+            WorkflowTrace trace, HandshakeMessageType type, String alias) {
+        List<ProtocolMessage> messageList = getAllSentMessages(trace, alias);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
         handshakeMessageList = filterMessageList(handshakeMessageList, type);
         if (handshakeMessageList.isEmpty()) {
@@ -412,6 +447,17 @@ public class WorkflowTraceResultUtil {
         return receivedMessage;
     }
 
+    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, String alias) {
+        List<ProtocolMessage> receivedMessage = new LinkedList<>();
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            if (action.getAllReceivingAliases().contains(alias)
+                    && action.getReceivedMessages() != null) {
+                receivedMessage.addAll(action.getReceivedMessages());
+            }
+        }
+        return receivedMessage;
+    }
+
     public static List<SSL2Message> getAllReceivedSSL2Messages(WorkflowTrace trace) {
         List<SSL2Message> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
@@ -437,6 +483,16 @@ public class WorkflowTraceResultUtil {
         List<ProtocolMessage> sentMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
             if (action.getSentMessages() != null) {
+                sentMessages.addAll(action.getSentMessages());
+            }
+        }
+        return sentMessages;
+    }
+
+    public static List<ProtocolMessage> getAllSentMessages(WorkflowTrace trace, String alias) {
+        List<ProtocolMessage> sentMessages = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getAllSendingAliases().contains(alias) && action.getSentMessages() != null) {
                 sentMessages.addAll(action.getSentMessages());
             }
         }
