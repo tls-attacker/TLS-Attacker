@@ -237,6 +237,13 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
+
+        if (configuredPop3Messages != null) {
+            for (Pop3Message msg : configuredPop3Messages) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
+            }
+        }
+
         if (configuredQuicFrames != null) {
             for (QuicFrame frames : configuredQuicFrames) {
                 holders.addAll(frames.getAllModifiableVariableHolders());
@@ -282,7 +289,8 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 configuredQuicFrames,
                 configuredQuicPackets,
                 configuredHttpMessages,
-                configuredSmtpMessages);
+                configuredSmtpMessages,
+                configuredPop3Messages);
     }
 
     @Override
@@ -293,6 +301,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (configuredSmtpMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredSmtpMessages);
+        }
+        if (configuredPop3Messages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredPop3Messages);
         }
         if (configuredMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);

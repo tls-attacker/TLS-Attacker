@@ -1319,7 +1319,7 @@ public class Config implements Serializable {
         this.defaultPop3Username = username;
     }
 
-    private String defaultPop3Password = "p4ssw0rd";
+    private String defaultPop3Password = "s34l-p4ssw0rd!!";
 
     public String getDefaultPop3Password() {
         return this.defaultPop3Password;

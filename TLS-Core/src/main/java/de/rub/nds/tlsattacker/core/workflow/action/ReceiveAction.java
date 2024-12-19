@@ -153,6 +153,11 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
     }
 
+    public ReceiveAction(String connectionAlias, Pop3Message... expectedPop3Messages) {
+        super(connectionAlias);
+        this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
+    }
+
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(myActionOptions);
@@ -235,6 +240,14 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedSmtpMessages = expectedSmtpMessages;
     }
 
+    public List<Pop3Message> getExpectedPop3Messages() {
+        return expectedPop3Messages;
+    }
+
+    public void setExpectedPop3Messages(List<Pop3Message> expectedPop3Messages) {
+        this.expectedPop3Messages = expectedPop3Messages;
+    }
+
     public List<QuicFrame> getExpectedQuicFrames() {
         return expectedQuicFrames;
     }
@@ -279,7 +292,8 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                 expectedQuicFrames,
                 expectedQuicPackets,
                 expectedHttpMessages,
-                expectedSmtpMessages);
+                expectedSmtpMessages,
+                expectedPop3Messages);
     }
 
     @Override
@@ -290,6 +304,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         }
         if (expectedSmtpMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedSmtpMessages);
+        }
+        if (expectedPop3Messages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedPop3Messages);
         }
         if (expectedMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);

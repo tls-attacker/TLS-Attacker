@@ -151,6 +151,6 @@ public class SendRaccoonCkeAction extends CommonSendAction {
         ClientKeyExchangeMessage message =
                 generateRaccoonDhClientKeyExchangeMessage(tlsContext, withNullByte);
         return ActionHelperUtil.createSendConfiguration(
-                tlsContext, List.of(message), null, null, null, null, null, null);
+                tlsContext, List.of(message), null, null, null, null, null, null, null);
     }
 }
