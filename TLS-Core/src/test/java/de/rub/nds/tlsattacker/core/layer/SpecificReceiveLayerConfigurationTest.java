@@ -27,8 +27,6 @@ import org.junit.Test;
 
 public class SpecificReceiveLayerConfigurationTest {
 
-    public SpecificReceiveLayerConfigurationTest() {}
-
     @Test
     public void testExecutedAsPlanned() {
         List<ProtocolMessage> expectedMessages =
