@@ -300,22 +300,13 @@ public class ServerHelloMessage extends HelloMessage {
         } else {
             sb.append("null");
         }
-        if (getProtocolVersion() != null
-                && getProtocolVersion().getValue() != null
-                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-            sb.append("\n  Server Unix Time: ")
-                    .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
-        }
         sb.append("\n  Server Unix Time: ");
-        if (getProtocolVersion() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-                sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
-            } else {
-                sb.append("null");
-            }
+        if (getUnixTime() != null && getUnixTime().getValue() != null) {
+            sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         } else {
             sb.append("null");
         }
+
         sb.append("\n  Server Random: ");
         if (getRandom() != null) {
             sb.append(ArrayConverter.bytesToHexString(getRandom().getValue()));
@@ -323,12 +314,8 @@ public class ServerHelloMessage extends HelloMessage {
             sb.append("null");
         }
         sb.append("\n  Session ID: ");
-        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-                sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
-            } else {
-                sb.append("null");
-            }
+        if (getSessionId() != null && getSessionId().getValue() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
         } else {
             sb.append("null");
         }
@@ -339,14 +326,9 @@ public class ServerHelloMessage extends HelloMessage {
             sb.append("null");
         }
         sb.append("\n  Selected Compression Method: ");
-        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-                sb.append(
-                        CompressionMethod.getCompressionMethod(
-                                selectedCompressionMethod.getValue()));
-            } else {
-                sb.append("null");
-            }
+        if (getSelectedCompressionMethod() != null
+                && getSelectedCompressionMethod().getValue() != null) {
+            sb.append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()));
         } else {
             sb.append("null");
         }
