@@ -80,7 +80,7 @@ public class JaFingerprintCalculator {
 
     private static void appendCertificateCount(
             CertificateMessage certificateMessage, StringBuilder ja3StringBuilder) {
-        ja3StringBuilder.append(certificateMessage.getCertificateEntryList().size);
+        ja3StringBuilder.append(certificateMessage.getCertificateEntryList().size());
         ja3StringBuilder.append(",");
     }
 
