@@ -14,6 +14,7 @@ import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -61,11 +62,76 @@ public class JaFingerprintCalculator {
         return ja3StringBuilder.toString();
     }
 
+    /**
+     * Custom version of JA3 for certificates. It uses cert count, issuer CN length, subject CN
+     * length, publickey oid, signature algorithm oid
+     *
+     * @return
+     */
+    public static String getJa3CertFingerprintString(CertificateMessage certificateMessage) {
+        StringBuilder ja3StringBuilder = new StringBuilder();
+        appendCertificateCount(certificateMessage, ja3StringBuilder);
+        appendIssuerLength(certificateMessage, ja3StringBuilder);
+        appendSubjectLength(certificateMessage, ja3StringBuilder);
+        appendPublicKeyOid(certificateMessage, ja3StringBuilder);
+        appendSignatureAlgorithmOid(certificateMessage, ja3StringBuilder);
+        return ja3StringBuilder.toString();
+    }
+
+    private static void appendCertificateCount(
+            CertificateMessage certificateMessage, StringBuilder ja3StringBuilder) {
+        ja3StringBuilder.append(certificateMessage.getCertificateEntryList().size);
+        ja3StringBuilder.append(",");
+    }
+
+    private static void appendPublicKeyOid(
+            CertificateMessage certificateMessage, StringBuilder ja3StringBuilder) {
+        ja3StringBuilder.append(
+                certificateMessage
+                        .getX509CertificateListFromEntries()
+                        .get(0)
+                        .getPublicKey()
+                        .getX509PublicKeyType()
+                        .getOid()
+                        .toString());
+        ja3StringBuilder.append(",");
+    }
+
+    private static void appendSignatureAlgorithmOid(
+            CertificateMessage certificateMessage, StringBuilder ja3StringBuilder) {
+        ja3StringBuilder.append(
+                certificateMessage
+                        .getX509CertificateListFromEntries()
+                        .get(0)
+                        .getX509SignatureAlgorithm()
+                        .getOid()
+                        .toString());
+    }
+
+    private static void appendSubjectLength(
+            CertificateMessage certificateMessage, StringBuilder ja3StringBuilder) {
+        ja3StringBuilder.append(
+                certificateMessage
+                        .getX509CertificateListFromEntries()
+                        .get(0)
+                        .getSubjectCommonName()
+                        .length());
+    }
+
+    private static void appendIssuerLength(
+            CertificateMessage certificateMessage, StringBuilder ja3StringBuilder) {
+        ja3StringBuilder.append(
+                certificateMessage
+                        .getX509CertificateListFromEntries()
+                        .get(0)
+                        .getIssuerCommonName()
+                        .length());
+    }
+
     private static void appendPointFormats(
             ClientHelloMessage clientHelloMessage, StringBuilder ja3StringBuilder) {
         ECPointFormatExtensionMessage ecPointFormatExtensionMessage =
-                (ECPointFormatExtensionMessage)
-                        clientHelloMessage.getExtension(ECPointFormatExtensionMessage.class);
+                clientHelloMessage.getExtension(ECPointFormatExtensionMessage.class);
         if (ecPointFormatExtensionMessage != null) {
             byte[] formats = ecPointFormatExtensionMessage.getPointFormats().getValue();
             for (int i = 0; i < formats.length; i++) {
@@ -81,8 +147,7 @@ public class JaFingerprintCalculator {
     private static void appendEllipticCurves(
             ClientHelloMessage clientHelloMessage, StringBuilder ja3StringBuilder) {
         EllipticCurvesExtensionMessage ellipticCurvesExtensionMessage =
-                (EllipticCurvesExtensionMessage)
-                        clientHelloMessage.getExtension(EllipticCurvesExtensionMessage.class);
+                clientHelloMessage.getExtension(EllipticCurvesExtensionMessage.class);
         if (ellipticCurvesExtensionMessage != null) {
             boolean addedOne = false;
             ByteArrayInputStream curveStream =
