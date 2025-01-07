@@ -10,8 +10,11 @@ package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.QUITReplyParser;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
+@XmlRootElement
 public class Pop3QUITReply extends Pop3Reply {
 
     public Pop3QUITReply() {

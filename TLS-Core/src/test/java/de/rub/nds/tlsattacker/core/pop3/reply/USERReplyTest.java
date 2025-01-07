@@ -26,21 +26,16 @@ class USERReplyTest {
     public void serializeValidReply() {
         Pop3USERReply user = new Pop3USERReply();
         user.setStatusIndicator("+OK");
-        user.setUser("JuanFernandez");
-        user.setHumanReadableMessage("is a real hoopy frood");
-
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = user.getSerializer(context);
         serializer.serialize();
 
-        assertEquals(
-                "+OK JuanFernandez is a real hoopy frood\r\n",
-                serializer.getOutputStream().toString());
+        assertEquals("+OK\r\n", serializer.getOutputStream().toString());
     }
 
     @Test
     public void testParse() {
-        String message = "+OK JuanFernandez is a real hoopy frood\r\n";
+        String message = "+OK user ok\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3USERReply user = new Pop3USERReply();
@@ -51,23 +46,19 @@ class USERReplyTest {
         parser.parse(user);
 
         assertEquals("+OK", user.getStatusIndicator());
-        assertEquals("JuanFernandez", user.getUser());
-        assertEquals("is a real hoopy frood", user.getHumanReadableMessage());
+        assertEquals("user ok", user.getHumanReadableMessage());
     }
 
     @Test
-    public void parseERRReply() {
-        String reply = "-ERR JuanFernandez mailbox does not exist\r\n";
-        Pop3USERReply user = new Pop3USERReply();
+    public void parseInvalidReply() {
+        String reply = "-ERR user not ok\r\n";
+        Pop3USERReply noop = new Pop3USERReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-
         USERReplyParser parser =
-                user.getParser(
+                noop.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(user);
-
-        assertEquals(user.getStatusIndicator(), "-ERR");
-        assertEquals(user.getUser(), "JuanFernandez");
-        assertEquals(user.getHumanReadableMessage(), "mailbox does not exist");
+        assertDoesNotThrow(() -> parser.parse(noop));
+        assertEquals("-ERR", noop.getStatusIndicator());
+        assertEquals("user not ok", noop.getHumanReadableMessage());
     }
 }

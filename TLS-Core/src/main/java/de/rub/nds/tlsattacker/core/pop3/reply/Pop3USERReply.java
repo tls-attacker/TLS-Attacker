@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 @XmlRootElement
 public class Pop3USERReply extends Pop3Reply {
-    private String user;
+
 
     public Pop3USERReply() {
         super();
@@ -24,29 +24,5 @@ public class Pop3USERReply extends Pop3Reply {
     @Override
     public USERReplyParser getParser(Pop3Context context, InputStream stream) {
         return new USERReplyParser(stream);
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    @Override
-    public String serialize() {
-        char SP = ' ';
-        String CRLF = "\r\n";
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.statusIndicator);
-        sb.append(SP);
-        sb.append(this.user);
-        sb.append(SP);
-        sb.append(this.humanReadableMessage.get(0));
-        sb.append(CRLF);
-
-        return sb.toString();
     }
 }

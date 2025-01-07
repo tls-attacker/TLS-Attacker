@@ -13,6 +13,8 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /**
@@ -25,6 +27,8 @@ import java.io.InputStream;
  *
  * The STAT command does not have any parameters.
  */
+
+@XmlRootElement
 public class STATCommand extends Pop3Command {
     private static final String commandName = "STAT";
 

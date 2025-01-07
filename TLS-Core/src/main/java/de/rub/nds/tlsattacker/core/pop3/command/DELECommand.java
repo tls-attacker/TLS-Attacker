@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.DELECommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** The DELECommand deletes a message with the specified messageNumber. */
+@XmlRootElement
 public class DELECommand extends Pop3Command implements MessageNumber {
     private Integer messageNumber;
     private static final String commandName = "DELE";

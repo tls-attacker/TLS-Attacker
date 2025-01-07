@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.QUITCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
+@XmlRootElement
 public class QUITCommand extends Pop3Command {
     private static final String commandName = "QUIT";
 

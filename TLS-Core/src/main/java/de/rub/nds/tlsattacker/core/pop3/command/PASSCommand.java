@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3PASSCommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.PASSCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
+@XmlRootElement
 public class PASSCommand extends Pop3Command {
     private String password;
     private static final String commandName = "PASS";

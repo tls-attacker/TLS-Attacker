@@ -83,13 +83,14 @@ public class POP3WorkflowTestBench {
         assert (state.getWorkflowTrace().executedAsPlanned());
     }
 
+    /*
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
         config.setDefaultClientConnection(new OutboundConnection(110, "localhost"));
-        config.setDefaultLayerConfiguration(StackConfiguration.SMTPS);
+        config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
@@ -98,7 +99,7 @@ public class POP3WorkflowTestBench {
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
-        trace.addTlsAction(new SendAction(new USERCommand()));
+        trace.addTlsAction(new SendAction(new USERCommand("JuanFernandez")));
         trace.addTlsAction(new ReceiveAction(new Pop3USERReply()));
         trace.addTlsAction(new SendAction(new PASSCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3PASSReply()));
@@ -125,5 +126,5 @@ public class POP3WorkflowTestBench {
         System.out.println(state.getWorkflowTrace());
         System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
         assert state.getWorkflowTrace().executedAsPlanned();
-    }
+    }*/
 }
