@@ -39,8 +39,6 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
 
         List<String> lines = new LinkedList<>();
         try (BufferedInputStream stream = new BufferedInputStream(this.getStream())) {
-            stream.mark(Integer.MAX_VALUE);
-
             String line = "";
             while(!line.equals(".\r\n")) {
                 StringBuilder sb = new StringBuilder();
@@ -54,8 +52,6 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
                 line = sb.toString();
                 lines.add(line);
             }
-
-            stream.reset();
         } catch (IOException ignored) {
             LOGGER.warn("An IOException occurred while checking for multi-line replies. This is normal behavior if the reply was single-line. If not, the reply is likely malformed.");
         }
