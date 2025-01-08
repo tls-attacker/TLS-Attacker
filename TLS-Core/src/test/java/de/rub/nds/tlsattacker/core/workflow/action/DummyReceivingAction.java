@@ -67,15 +67,14 @@ public class DummyReceivingAction extends MessageAction
     }
 
     @Override
-    public List<SmtpMessage> getReceivedSmtpMessages() {
-        throw new UnsupportedOperationException("Unimplemented method 'getReceivedSmtpMessages'");
+    public List<Pop3Message> getReceivedPop3Messages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedPop3Messages'");
     }
 
     @Override
-    public List<Pop3Message> getReceivedPop3Messages() {
+    public List<SmtpMessage> getReceivedSmtpMessages() {
         throw new UnsupportedOperationException("Unimplemented method 'getReceivedSmtpMessages'");
     }
-
 
     @Override
     public List<QuicFrame> getReceivedQuicFrames() {

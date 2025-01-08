@@ -11,10 +11,10 @@ package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,75 +29,28 @@ import java.util.List;
  */
 public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3MessageParser<ReplyT> {
 
-    private final boolean isMultiLine;
-
     public Pop3ReplyParser(InputStream stream) {
         super(stream);
-        try {
-            isMultiLine = isMultiLine(stream);
-        } catch (IOException e) {
-            throw new ParserException(e);
-        }
     }
 
-    public List<String> readWholeReply() {
-        List<String> lines = new ArrayList<>();
-        String line;
-        if (isMultiLine) {
-            while ((line = parseSingleLine()) != null) {
-                lines.add(line);
-                if (isEndOfReply(line)) {
-                    break;
-                }
-            }
+    public void parseHumanReadableMessage(ReplyT reply, String line) {
+        String humanReadableMessage = "";
 
-            if (!lines.get(lines.size() - 1).matches("^\\.")) {
-                throw new ParserException(
-                        "No termination octet has been sent: " + lines.get(lines.size() - 1));
-            }
-        } else {
-            line = parseSingleLine();
-            lines.add(line);
-        }
+        if (line.startsWith("+OK") & line.length() > 3) humanReadableMessage = line.substring(4);
+        else if (line.startsWith("-ERR") & line.length() > 4) humanReadableMessage = line.substring(5);
 
-        return lines;
+        reply.setHumanReadableMessage(humanReadableMessage);
     }
 
     public void parseReplyIndicator(ReplyT reply, String line) {
 
-        if (line.matches("^\\+OK.*")) {
+        if (line.matches("^\\+OK.*")) { // todo: simplify to startsWith() ?
             reply.setStatusIndicator("+OK");
         } else if (line.matches("^-ERR.*")) {
             reply.setStatusIndicator("-ERR");
         } else {
             reply.setStatusIndicator("");
         }
-    }
-
-    public boolean isEndOfReply(String line) {
-        return line.matches("^\\.");
-    }
-
-    /**
-     * Checks if a reply is a MultiLine Reply. Should probably be replaced by another method on the
-     * future, but works for now.
-     *
-     * @param inputStream the input stream to read the lines from
-     * @return a boolean
-     * @throws IOException if end of stream is reached
-     */
-    public boolean isMultiLine(InputStream inputStream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        inputStream.mark(Integer.MAX_VALUE);
-        int count = 0;
-        try {
-            while (reader.readLine() != null) {
-                count++;
-            }
-        } finally {
-            inputStream.reset();
-        }
-        return count > 1;
     }
 
     public abstract void parse(ReplyT reply);

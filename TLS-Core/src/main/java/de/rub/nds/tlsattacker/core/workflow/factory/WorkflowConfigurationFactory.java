@@ -639,18 +639,15 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = new WorkflowTrace();
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            trace.addTlsAction(
-                    MessageActionFactory.createPop3Action(
-                            config, connection, ConnectionEndType.CLIENT, new USERCommand()));
-            trace.addTlsAction(
-                    MessageActionFactory.createPop3Action(
-                            config, connection, ConnectionEndType.SERVER, new Pop3USERReply()));
+            appendPop3CommandAndReplyActions(connection, trace, new USERCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new PASSCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new LISTCommand(1));
+            appendPop3CommandAndReplyActions(connection, trace, new LISTCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new NOOPCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new QUITCommand());
         }
-        appendPop3CommandAndReplyActions(connection, trace, new USERCommand());
-        appendPop3CommandAndReplyActions(connection, trace, new PASSCommand());
-        appendPop3CommandAndReplyActions(connection, trace, new NOOPCommand());
-        appendPop3CommandAndReplyActions(connection, trace, new QUITCommand());
-        // ...
+
+        // TODO: decide what to do for SERVER case
 
         return trace;
     }

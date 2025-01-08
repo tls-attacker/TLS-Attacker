@@ -20,6 +20,7 @@ public class RETRReplyParser extends Pop3ReplyParser<Pop3RETRReply> {
 
     @Override
     public void parse(Pop3RETRReply reply) {
+        /*
         List<String> lines = readWholeReply();
         this.parseReplyIndicator(reply, lines.get(0));
         for (int i = 1; i < lines.size(); i++) {
@@ -34,5 +35,7 @@ public class RETRReplyParser extends Pop3ReplyParser<Pop3RETRReply> {
         } else {
             reply.setHumanReadableMessage(lines.get(0));
         }
+
+         */
     }
 }
