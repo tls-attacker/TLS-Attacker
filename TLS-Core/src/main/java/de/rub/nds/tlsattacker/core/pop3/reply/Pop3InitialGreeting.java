@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.handler.Pop3InitialGreetingHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,5 +27,10 @@ public class Pop3InitialGreeting extends Pop3Reply {
     @Override
     public String toShortString() {
         return "POP3 Initial Greeting";
+    }
+
+    @Override
+    public Pop3InitialGreetingHandler getHandler(Pop3Context pop3Context) {
+        return new Pop3InitialGreetingHandler(pop3Context);
     }
 }

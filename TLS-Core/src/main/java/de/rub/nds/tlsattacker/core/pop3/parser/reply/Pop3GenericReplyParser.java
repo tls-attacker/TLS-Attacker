@@ -36,5 +36,6 @@ public class Pop3GenericReplyParser<ReplyT extends Pop3Reply> extends Pop3ReplyP
         else if (line.startsWith("-ERR") & line.length() > 4) humanReadableMessage = line.substring(5);
 
         reply.setHumanReadableMessage(humanReadableMessage);
+        int i = 1;
     }
 }

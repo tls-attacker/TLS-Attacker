@@ -50,7 +50,7 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(587, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
         WorkflowConfigurationFactory workflowConfigurationFactory =
@@ -100,7 +100,7 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlowSMTPS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(587, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTPS);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
@@ -153,7 +153,7 @@ public class SMTPWorkflowTestBench {
         Config config = Config.createConfig();
         config.setKeylogFilePath("/tmp/keylog.log");
         config.setWriteKeylogFile(true);
-        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(587, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
@@ -211,7 +211,7 @@ public class SMTPWorkflowTestBench {
     void testSMTPSTARTTLSWorkflowFromFactory() throws JAXBException, IOException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(587, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
@@ -239,7 +239,7 @@ public class SMTPWorkflowTestBench {
     void messAround() {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(587, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = new WorkflowTrace();

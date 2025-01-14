@@ -14,10 +14,18 @@ import de.rub.nds.tlsattacker.core.state.Context;
 
 public class Pop3Context extends LayerContext {
 
-    private Pop3Command lastCommand = null;
+    private Pop3Command lastCommand = new Pop3InitialGreetingDummy();
+
+    private boolean greetingReceived = false;
 
     public Pop3Context(Context context) {
         super(context);
+    }
+
+
+    public Pop3Reply getExpectedNextReplyType() {
+        Pop3Command command = getLastCommand();
+        return getExpectedReplyType(command);
     }
 
     public Pop3Command getLastCommand() {
@@ -28,11 +36,6 @@ public class Pop3Context extends LayerContext {
         this.lastCommand = lastCommand;
     }
 
-    public Pop3Reply getExpectedNextReplyType() {
-        Pop3Command command = getLastCommand();
-        return getExpectedReplyType(command);
-    }
-
     public static Pop3Reply getExpectedReplyType(Pop3Command command) {
         if (command == null) {
             return null;
@@ -40,6 +43,8 @@ public class Pop3Context extends LayerContext {
 
         if (command instanceof USERCommand) {
             return new Pop3USERReply();
+        } else if (command instanceof Pop3InitialGreetingDummy) {
+            return new Pop3InitialGreeting();
         } else if (command instanceof PASSCommand) {
             return new Pop3PASSReply();
         } else if (command instanceof DELECommand) {
@@ -60,5 +65,13 @@ public class Pop3Context extends LayerContext {
             throw new UnsupportedOperationException(
                     "No reply implemented for class in Pop3Context:" + command.getClass());
         }
+    }
+
+    public boolean isGreetingReceived() {
+        return greetingReceived;
+    }
+
+    public void setGreetingReceived(boolean greetingReceived) {
+        this.greetingReceived = greetingReceived;
     }
 }

@@ -49,6 +49,7 @@ public class POP3WorkflowTestBench {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
     }
 
+
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlow() throws IOException, JAXBException {
@@ -83,7 +84,7 @@ public class POP3WorkflowTestBench {
         assert (state.getWorkflowTrace().executedAsPlanned());
     }
 
-    /*
+
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
@@ -99,7 +100,7 @@ public class POP3WorkflowTestBench {
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
-        trace.addTlsAction(new SendAction(new USERCommand("JuanFernandez")));
+        trace.addTlsAction(new SendAction(new USERCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3USERReply()));
         trace.addTlsAction(new SendAction(new PASSCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3PASSReply()));
@@ -126,5 +127,5 @@ public class POP3WorkflowTestBench {
         System.out.println(state.getWorkflowTrace());
         System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
         assert state.getWorkflowTrace().executedAsPlanned();
-    }*/
+    }
 }
