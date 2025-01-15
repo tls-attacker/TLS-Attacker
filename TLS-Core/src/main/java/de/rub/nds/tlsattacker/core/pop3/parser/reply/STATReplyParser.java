@@ -21,8 +21,10 @@ public class STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
     // Ignore MultiLine for now as STAT reply is specified as single line
     @Override
     public void parse(Pop3STATReply reply) {
+        // even though this currently does not do anything, it is still necessary to call it
+        // otherwise InputStream will remain unread
+        String line = parseSingleLine();
         /*
-        List<String> lines = readWholeReply();
         this.parseReplyIndicator(reply, lines.get(0));
         String[] parts = lines.get(0).split(" ");
         if (parts.length == 2) {

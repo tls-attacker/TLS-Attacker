@@ -43,6 +43,7 @@ import java.security.Security;
  * IntelliJ
  */
 public class POP3WorkflowTestBench {
+    int port = 11100;
 
     @BeforeEach
     public void changeLoglevel() {
@@ -55,7 +56,7 @@ public class POP3WorkflowTestBench {
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(110, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory workflowConfigurationFactory =
@@ -90,13 +91,13 @@ public class POP3WorkflowTestBench {
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(110, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                factory.createWorkflowTrace(
-                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowTrace();
+//                factory.createWorkflowTrace(
+//                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
