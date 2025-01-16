@@ -244,7 +244,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             do {
                 try {
                     dataStream = getLowerLayer().getDataStream();
-                    if (dataStream.available() == 0) continue;
+                    if (dataStream.available() == 0) return getLayerResult();
                 } catch (IOException e) {
                     // the lower layer does not give us any data so we can simply return here
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
