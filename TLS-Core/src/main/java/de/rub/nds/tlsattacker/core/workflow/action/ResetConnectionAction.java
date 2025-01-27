@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicPacketLayer;
@@ -18,6 +17,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         }
         Context context = state.getContext(getConnectionAlias());
         TlsContext tlsContext = context.getTlsContext();
-        TcpContext tcpContext = context.getTcpContext();
+        TransportHandler transportHandler = context.getTransportHandler();
 
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
@@ -65,7 +65,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
         LOGGER.info("Terminating Connection");
         try {
-            tcpContext.getTransportHandler().closeClientConnection();
+            transportHandler.closeClientConnection();
         } catch (IOException ex) {
             LOGGER.debug("Could not close client connection", ex);
         }
@@ -124,9 +124,9 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         LOGGER.info("Reopening Connection");
         try {
             if (switchToIpv6) {
-                tcpContext.getTransportHandler().setUseIpv6(true);
+                transportHandler.setUseIpv6(true);
             }
-            tcpContext.getTransportHandler().initialize();
+            transportHandler.initialize();
             asPlanned = true;
         } catch (IOException ex) {
             LOGGER.debug("Could not initialize TransportHandler", ex);
