@@ -30,6 +30,9 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         // this could be made an option
         if (socket == null) {
             throw new IOException("TransportHandler not preInitalized");
+        } else if (socket.isClosed()) {
+            // allow re-initialization
+            preInitialize();
         }
         this.initialized = true;
     }
