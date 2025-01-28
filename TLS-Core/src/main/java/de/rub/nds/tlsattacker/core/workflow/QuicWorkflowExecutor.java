@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicTransportErrorCodes;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -57,19 +58,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                 retransmissionActionIndex = i;
             }
 
-            if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
-                break;
-            }
-            if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
-                break;
-            }
-            if ((config.getStopActionsAfterIOException() && isIoException())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+            if(shouldStopDueToErrorCondition()) {
                 break;
             }
 
@@ -155,6 +144,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     }
 
     private void executeRetransmission(SendingAction action) {
+        if(shouldStopDueToErrorCondition()) return;
         LOGGER.info("Executing retransmission of last sent flight");
         QuicPacketLayer packetLayer =
                 (QuicPacketLayer)
@@ -172,5 +162,42 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             state.getTlsContext().setReceivedTransportHandlerException(true);
             LOGGER.warn("Received IOException during retransmission", ex);
         }
+    }
+
+    private boolean shouldStopDueToErrorCondition() {
+        if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseframe())) {
+            LOGGER.debug(
+                    "Skipping all Actions, received ConnectionCloseFrame, StopActionsAfterConnCloseFrame active");
+            return true;
+        }
+
+        //TODO: Do we need to stop after Alerts in QUIC? They do not exist in QUIC.
+        if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
+            LOGGER.debug(
+                    "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+            return true;
+        }
+        if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
+            LOGGER.debug(
+                    "Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
+            return true;
+        }
+
+        if ((config.getStopActionsAfterIOException() && isIoException())) {
+            LOGGER.debug(
+                    "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+            return true;
+        }
+        return false;
+    }
+
+        /** Check if a at least one TLS context received a fatal alert. */
+    public boolean hasReceivedConnectionCloseframe() {
+        for (Context ctx : state.getAllContexts()) {
+            if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -778,6 +778,8 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterFatal = false;
 
+    private Boolean stopActionsAfterQuicConnectionClose = true;
+
     /**
      * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal,
      * close_notify) message
@@ -3229,6 +3231,14 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public Boolean isStopActionAfterQuicConnCloseFrame() {
+        return stopActionsAfterQuicConnectionClose;
+    }
+
+    public void setStopActionAfterQuicConnCloseFrame(Boolean stopActionsAfterQuicConnectionClose) {
+        this.stopActionsAfterQuicConnectionClose = stopActionsAfterQuicConnectionClose;
     }
 
     public Boolean isFinishWithCloseNotify() {
