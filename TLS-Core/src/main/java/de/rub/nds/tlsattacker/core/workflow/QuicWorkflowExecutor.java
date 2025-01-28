@@ -164,6 +164,9 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
+    /**
+     * Check if we have any error conditions like IOException, Alert or Connection Close to abort
+     */
     private boolean shouldStopDueToErrorCondition() {
         if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseframe())) {
             LOGGER.debug(
@@ -190,7 +193,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
         return false;
     }
 
-    /** Check if a at least one TLS context received a fatal alert. */
+    /** Check if a at least one QUIC context received a connection close frame. */
     public boolean hasReceivedConnectionCloseframe() {
         for (Context ctx : state.getAllContexts()) {
             if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
