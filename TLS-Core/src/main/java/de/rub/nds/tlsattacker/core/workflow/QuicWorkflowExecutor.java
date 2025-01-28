@@ -58,7 +58,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                 retransmissionActionIndex = i;
             }
 
-            if(shouldStopDueToErrorCondition()) {
+            if (shouldStopDueToErrorCondition()) {
                 break;
             }
 
@@ -144,7 +144,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     }
 
     private void executeRetransmission(SendingAction action) {
-        if(shouldStopDueToErrorCondition()) return;
+        if (shouldStopDueToErrorCondition()) return;
         LOGGER.info("Executing retransmission of last sent flight");
         QuicPacketLayer packetLayer =
                 (QuicPacketLayer)
@@ -171,10 +171,9 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             return true;
         }
 
-        //TODO: Do we need to stop after Alerts in QUIC? They do not exist in QUIC.
+        // TODO: Do we need to stop after Alerts in QUIC? They do not exist in QUIC.
         if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-            LOGGER.debug(
-                    "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+            LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
             return true;
         }
         if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
@@ -191,7 +190,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
         return false;
     }
 
-        /** Check if a at least one TLS context received a fatal alert. */
+    /** Check if a at least one TLS context received a fatal alert. */
     public boolean hasReceivedConnectionCloseframe() {
         for (Context ctx : state.getAllContexts()) {
             if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
