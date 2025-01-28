@@ -62,7 +62,7 @@ public enum NamedGroup {
     SECP256R1_MLKEM768(new byte[] {0x11, (byte) 0xEB}, null),
     SECP256R1(new byte[] {(byte) 0, (byte) 23}, NamedEllipticCurveParameters.SECP256R1),
     SECP384R1(new byte[] {(byte) 0, (byte) 24}, NamedEllipticCurveParameters.SECP384R1),
-    SECP384R1_MLKEM1024(new byte[]{0x11, (byte) 0xEC}, null),
+    SECP384R1_MLKEM1024(new byte[] {0x11, (byte) 0xEC}, null),
     SECP521R1(new byte[] {(byte) 0, (byte) 25}, NamedEllipticCurveParameters.SECP521R1),
     BRAINPOOLP256R1(new byte[] {(byte) 0, (byte) 26}, NamedEllipticCurveParameters.BRAINPOOLP256R1),
     BRAINPOOLP384R1(new byte[] {(byte) 0, (byte) 27}, NamedEllipticCurveParameters.BRAINPOOLP384R1),
