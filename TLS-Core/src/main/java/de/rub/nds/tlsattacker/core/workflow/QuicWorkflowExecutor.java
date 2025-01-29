@@ -174,17 +174,6 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             return true;
         }
 
-        // TODO: Do we need to stop after Alerts in QUIC? They do not exist in QUIC.
-        if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-            LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
-            return true;
-        }
-        if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
-            LOGGER.debug(
-                    "Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
-            return true;
-        }
-
         if ((config.getStopActionsAfterIOException() && isIoException())) {
             LOGGER.debug(
                     "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
