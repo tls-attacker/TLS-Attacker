@@ -155,6 +155,6 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     @Override
     public boolean shouldContinueProcessing() {
-        return super.shouldContinueProcessing() && this.getUnreadBytes() == null;
+        return super.shouldContinueProcessing() && this.getUnreadBytes() != null && this.getUnreadBytes().length > 0;
     }
 }

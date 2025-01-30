@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3USERReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -131,6 +132,8 @@ public class WorkflowConfigurationFactory {
                 return createHttpsWorkflow();
             case POP3:
                 return createPop3Workflow();
+            case POP3_STARTTLS:
+                return createPop3StarttlsWorkflow();
             case SMTP:
                 return createSmtpWorkflow();
             case SMTP_STARTTLS:
@@ -648,6 +651,20 @@ public class WorkflowConfigurationFactory {
         }
 
         // TODO: decide what to do for SERVER case
+
+        return trace;
+    }
+
+    private WorkflowTrace createPop3StarttlsWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
+        // kind of dirty changing it from the back, but otherwise we have to rework the whole
+        // dynamic handshake mechanism
+        trace.addTlsAction(0, new SendAction(new STLSCommand()));
+        trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
+        trace.addTlsAction(2, new STARTTLSAction());
+
+        trace.addTlsActions(createPop3Workflow().getTlsActions());
 
         return trace;
     }

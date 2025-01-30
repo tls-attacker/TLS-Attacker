@@ -22,6 +22,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.EnumSet;
+
 /**
  * This action toggles the MessageLayer and RecordLayer to the LayerStack to enable opportunistic
  * TLS communication. If the MessageLayer and RecordLayer are already present in the LayerStack,
@@ -52,7 +54,7 @@ public class STARTTLSAction extends ConnectionBoundAction {
                 state.getContext().getLayerStack().getHighestLayer().getLayerType();
         // only SMTP is supported for now, because explicit application command for upgrading is
         // needed
-        if (topLevelType != ImplementedLayers.SMTP) {
+        if (!EnumSet.of(ImplementedLayers.SMTP, ImplementedLayers.POP3).contains(topLevelType)) {
             throw new ActionExecutionException("STARTTLS is not defined for this protocol");
         }
         if (isExecuted()) {

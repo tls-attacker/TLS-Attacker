@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.pop3.command.PASSCommand;
-import de.rub.nds.tlsattacker.core.pop3.command.QUITCommand;
-import de.rub.nds.tlsattacker.core.pop3.command.STATCommand;
-import de.rub.nds.tlsattacker.core.pop3.command.USERCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -101,14 +98,53 @@ public class POP3WorkflowTestBench {
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
+        trace.addTlsAction(new SendAction(new STLSCommand()));
+        trace.addTlsAction(new ReceiveAction(new Pop3STLSReply()));
         trace.addTlsAction(new SendAction(new USERCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3USERReply()));
         trace.addTlsAction(new SendAction(new PASSCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3PASSReply()));
         trace.addTlsAction(new SendAction(new STATCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3STATReply()));
+        trace.addTlsAction(new SendAction(new RETRCommand()));
+        trace.addTlsAction(new ReceiveAction(new Pop3RETRReply()));
         trace.addTlsAction(new SendAction(new QUITCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3QUITReply()));
+
+        System.out.println(trace);
+        State state = new State(config, trace);
+
+        WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
+
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            System.out.println(
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            System.out.println(ex);
+        }
+
+        System.out.println(state.getWorkflowTrace());
+        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
+        assert state.getWorkflowTrace().executedAsPlanned();
+    }
+
+    @Tag(TestCategories.INTEGRATION_TEST)
+    @Test
+    public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
+        Security.addProvider(new BouncyCastleProvider());
+        Config config = Config.createConfig();
+        config.setKeylogFilePath("/tmp/keylog.log");
+        config.setWriteKeylogFile(true);
+        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
+        config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.POP3_STARTTLS, RunningModeType.CLIENT);
 
         System.out.println(trace);
         State state = new State(config, trace);
