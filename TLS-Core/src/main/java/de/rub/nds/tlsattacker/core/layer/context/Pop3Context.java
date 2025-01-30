@@ -61,6 +61,8 @@ public class Pop3Context extends LayerContext {
             return new Pop3RSETReply();
         } else if (command instanceof STATCommand) {
             return new Pop3STATReply();
+        } else if (command instanceof STLSCommand) {
+            return new Pop3STLSReply();
         } else {
             throw new UnsupportedOperationException(
                     "No reply implemented for class in Pop3Context:" + command.getClass());

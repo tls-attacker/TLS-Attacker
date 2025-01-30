@@ -153,7 +153,7 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setKeylogFilePath("/tmp/keylog.log");
+        config.setKeylogFilePath("/tmp/keylogfile");
         config.setWriteKeylogFile(true);
         config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
