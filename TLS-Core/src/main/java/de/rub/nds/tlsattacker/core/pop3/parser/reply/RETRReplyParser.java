@@ -23,7 +23,7 @@ public class RETRReplyParser extends Pop3ReplyParser<Pop3RETRReply> {
         List<String> multiLines = parseReply(reply);
 
         if (!multiLines.isEmpty()) {
-            reply.setMessages(multiLines);
+            reply.setMessage(multiLines);
         }
     }
 }

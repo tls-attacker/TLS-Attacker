@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 @XmlRootElement
 public class Pop3STATReply extends Pop3Reply {
-    private String messages;
-    private String messageOctets;
+    private String numberOfMessages;
+    private String mailDropSize;
 
     public Pop3STATReply() {
         super();
@@ -27,22 +27,23 @@ public class Pop3STATReply extends Pop3Reply {
         return new STATReplyParser(stream);
     }
 
-    public void setMessages(String messages) {
-        this.messages = messages;
+    public void setNumberOfMessages(String messages) {
+        this.numberOfMessages = messages;
     }
 
-    public String getMessages() {
-        return messages;
+    public String getNumberOfMessages() {
+        return numberOfMessages;
     }
 
-    public void setMessageOctets(String messageOctets) {
-        this.messageOctets = messageOctets;
+    public void setMailDropSize(String mailDropSize) {
+        this.mailDropSize = mailDropSize;
     }
 
-    public String getMessageOctets() {
-        return messageOctets;
+    public String getMailDropSize() {
+        return mailDropSize;
     }
 
+    // This will not serialize multiline replies correctly. STAT multiline replies are strongly discouraged by RFC.
     @Override
     public String serialize() {
         char SP = ' ';
@@ -52,9 +53,9 @@ public class Pop3STATReply extends Pop3Reply {
 
         sb.append(this.statusIndicator);
         sb.append(SP);
-        sb.append(this.messages);
+        sb.append(this.numberOfMessages);
         sb.append(SP);
-        sb.append(this.messageOctets);
+        sb.append(this.mailDropSize);
         sb.append(CRLF);
 
         return sb.toString();

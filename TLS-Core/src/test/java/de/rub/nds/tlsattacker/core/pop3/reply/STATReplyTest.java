@@ -26,8 +26,8 @@ class STATReplyTest {
     public void serializeValidReply() {
         Pop3STATReply stat = new Pop3STATReply();
         stat.setStatusIndicator("+OK");
-        stat.setMessages("2");
-        stat.setMessageOctets("320");
+        stat.setNumberOfMessages("2");
+        stat.setMailDropSize("320");
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = stat.getSerializer(context);
@@ -49,8 +49,8 @@ class STATReplyTest {
         parser.parse(stat);
 
         assertEquals("+OK", stat.getStatusIndicator());
-        assertEquals("2", stat.getMessages());
-        assertEquals("320", stat.getMessageOctets());
+        assertEquals("2", stat.getNumberOfMessages());
+        assertEquals("320", stat.getMailDropSize());
     }
 
     @Test

@@ -18,7 +18,7 @@ import java.util.List;
 @XmlRootElement
 public class Pop3LISTReply extends Pop3Reply {
     private List<String> messageNumbers = new ArrayList<>();
-    private List<String> messageOctets = new ArrayList<>();
+    private List<String> messageSizes = new ArrayList<>();
 
     public Pop3LISTReply() {
         super();
@@ -41,16 +41,16 @@ public class Pop3LISTReply extends Pop3Reply {
         this.messageNumbers.add(messageNumber);
     }
 
-    public void addMessageOctet(String messageOctet) {
-        this.messageOctets.add(messageOctet);
+    public void addMessageSize(String messageSize) {
+        this.messageSizes.add(messageSize);
     }
 
-    public void setMessageOctets(List<String> messageOctets) {
-        this.messageOctets = messageOctets;
+    public void setMessageSizes(List<String> messageSizes) {
+        this.messageSizes = messageSizes;
     }
 
-    public List<String> getMessageOctets() {
-        return messageOctets;
+    public List<String> getMessageSizes() {
+        return messageSizes;
     }
 
     @Override
@@ -71,10 +71,10 @@ public class Pop3LISTReply extends Pop3Reply {
         for (int i = 0; i < messageNumbers.size(); i++) {
             sb.append(messageNumbers.get(i));
             sb.append(SP);
-            sb.append(messageOctets.get(i));
+            sb.append(messageSizes.get(i));
             sb.append(CRLF);
         }
-        if (messageOctets.size() > 1) {
+        if (messageSizes.size() > 1) { // TODO: does this work for messageOctets.size = 1 and lines.size = 2 ?
             sb.append(".");
             sb.append(CRLF);
         }

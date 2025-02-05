@@ -17,7 +17,7 @@ import java.util.List;
 
 @XmlRootElement
 public class Pop3RETRReply extends Pop3Reply {
-    private List<String> messages = new ArrayList<>();
+    private List<String> message = new ArrayList<>();
 
     public Pop3RETRReply() {
         super();
@@ -28,16 +28,16 @@ public class Pop3RETRReply extends Pop3Reply {
         return new RETRReplyParser(stream);
     }
 
-    public List<String> getMessages() {
-        return messages;
+    public List<String> getMessage() {
+        return message;
     }
 
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
+    public void setMessage(List<String> message) {
+        this.message = message;
     }
 
-    public void addMessage(String message) {
-        this.messages.add(message);
+    public void addMessagePart(String messagePart) {
+        this.message.add(messagePart);
     }
 
     @Override
@@ -47,14 +47,18 @@ public class Pop3RETRReply extends Pop3Reply {
 
         StringBuilder sb = new StringBuilder();
         sb.append(this.statusIndicator);
-        sb.append(SP);
-        sb.append(this.humanReadableMessage.get(0));
+
+        if (!this.humanReadableMessages.isEmpty()) {
+            sb.append(SP);
+            sb.append(this.humanReadableMessages.get(0));
+        }
+
         sb.append(CRLF);
-        for (String s : messages) {
-            sb.append(s);
+        for (String part : this.message) {
+            sb.append(part);
             sb.append(CRLF);
         }
-        if (messages.size() > 1) {
+        if (this.message.size() > 1) { // TODO: also check this for correctness
             sb.append(".");
             sb.append(CRLF);
         }

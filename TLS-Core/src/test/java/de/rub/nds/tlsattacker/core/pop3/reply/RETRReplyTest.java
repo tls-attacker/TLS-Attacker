@@ -29,8 +29,8 @@ class RETRReplyTest {
         Pop3RETRReply ret = new Pop3RETRReply();
         ret.setStatusIndicator("+OK");
         ret.setHumanReadableMessage("113 octets");
-        ret.addMessage("Hello Juan Fernandez I hope this email finds you well.");
-        ret.addMessage("Did you hear about SEAL, a super cool project group of UPB.");
+        ret.addMessagePart("Hello Juan Fernandez I hope this email finds you well.");
+        ret.addMessagePart("Did you hear about SEAL, a super cool project group of UPB.");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = ret.getSerializer(context);
         serializer.serialize();
@@ -61,7 +61,7 @@ class RETRReplyTest {
 
         assertEquals("+OK", ret.getStatusIndicator());
         assertEquals("113 octets", ret.getHumanReadableMessage());
-        assertEquals(savedMessage, ret.getMessages());
+        assertEquals(savedMessage, ret.getMessage());
     }
 
     @Test

@@ -31,7 +31,7 @@ class LISTReplyTest {
         List<String> messageNumbers = Arrays.asList("1", "2");
         List<String> octetNumbers = Arrays.asList("350", "120");
         list.setMessageNumbers(messageNumbers);
-        list.setMessageOctets(octetNumbers);
+        list.setMessageSizes(octetNumbers);
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = list.getSerializer(context);
         serializer.serialize();
@@ -55,7 +55,7 @@ class LISTReplyTest {
 
         assertEquals("+OK", list.getStatusIndicator());
         assertEquals(messageNumbers, list.getMessageNumbers());
-        assertEquals(octetNumbers, list.getMessageOctets());
+        assertEquals(octetNumbers, list.getMessageSizes());
     }
 
     @Test
