@@ -13,41 +13,40 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.QUITReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.DELReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-class QuitReplyTest {
+class Pop3DELEReplyTest {
 
     @Test
     public void serializeValidReply() {
-        Pop3QUITReply quit = new Pop3QUITReply();
-        quit.setStatusIndicator("+OK");
-        quit.setHumanReadableMessage("dewey POP3 server signing off");
+        Pop3DELEReply del = new Pop3DELEReply();
+        del.setStatusIndicator("+OK");
+        del.setHumanReadableMessage("message 1 deleted");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = quit.getSerializer(context);
+        Serializer<?> serializer = del.getSerializer(context);
         serializer.serialize();
 
-        assertEquals(
-                "+OK dewey POP3 server signing off\r\n", serializer.getOutputStream().toString());
+        assertEquals("+OK message 1 deleted\r\n", serializer.getOutputStream().toString());
     }
 
     @Test
     public void testParse() {
-        String message = "+OK dewey POP3 server signing off\r\n";
+        String message = "-ERR message 2 already deleted\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3QUITReply quit = new Pop3QUITReply();
-        QUITReplyParser parser =
-                quit.getParser(
+        Pop3DELEReply del = new Pop3DELEReply();
+        DELReplyParser parser =
+                del.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(quit);
+        parser.parse(del);
 
-        assertEquals("+OK", quit.getStatusIndicator());
-        assertEquals("dewey POP3 server signing off", quit.getHumanReadableMessage());
+        assertEquals("-ERR", del.getStatusIndicator());
+        assertEquals("message 2 already deleted", del.getHumanReadableMessage());
     }
 }

@@ -13,21 +13,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.NOOPReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.USERReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-class NOOPReplyTest {
+class Pop3USERReplyTest {
 
     @Test
     public void serializeValidReply() {
-        Pop3NOOPReply noop = new Pop3NOOPReply();
-        noop.setStatusIndicator("+OK");
+        Pop3USERReply user = new Pop3USERReply();
+        user.setStatusIndicator("+OK");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = noop.getSerializer(context);
+        Serializer<?> serializer = user.getSerializer(context);
         serializer.serialize();
 
         assertEquals("+OK\r\n", serializer.getOutputStream().toString());
@@ -35,29 +35,30 @@ class NOOPReplyTest {
 
     @Test
     public void testParse() {
-        String message = "+OK\r\n";
+        String message = "+OK user ok\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3NOOPReply noop = new Pop3NOOPReply();
-        NOOPReplyParser parser =
-                noop.getParser(
+        Pop3USERReply user = new Pop3USERReply();
+        USERReplyParser parser =
+                user.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(noop);
+        parser.parse(user);
 
-        assertEquals("+OK", noop.getStatusIndicator());
+        assertEquals("+OK", user.getStatusIndicator());
+        assertEquals("user ok", user.getHumanReadableMessage());
     }
 
     @Test
     public void parseInvalidReply() {
-        String reply = "-ERR not ok\r\n";
-        Pop3NOOPReply noop = new Pop3NOOPReply();
+        String reply = "-ERR user not ok\r\n";
+        Pop3USERReply noop = new Pop3USERReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        NOOPReplyParser parser =
+        USERReplyParser parser =
                 noop.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
         assertDoesNotThrow(() -> parser.parse(noop));
         assertEquals("-ERR", noop.getStatusIndicator());
-        assertEquals("not ok", noop.getHumanReadableMessage());
+        assertEquals("user not ok", noop.getHumanReadableMessage());
     }
 }

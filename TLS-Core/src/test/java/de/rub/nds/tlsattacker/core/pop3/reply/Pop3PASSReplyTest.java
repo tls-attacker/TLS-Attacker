@@ -13,40 +13,40 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.DELReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.PASSReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-class DELReplyTest {
+class Pop3PASSReplyTest {
 
     @Test
     public void serializeValidReply() {
-        Pop3DELEReply del = new Pop3DELEReply();
-        del.setStatusIndicator("+OK");
-        del.setHumanReadableMessage("message 1 deleted");
+        Pop3PASSReply pass = new Pop3PASSReply();
+        pass.setStatusIndicator("+OK");
+        pass.setHumanReadableMessage("you have 2 messages");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = del.getSerializer(context);
+        Serializer<?> serializer = pass.getSerializer(context);
         serializer.serialize();
 
-        assertEquals("+OK message 1 deleted\r\n", serializer.getOutputStream().toString());
+        assertEquals("+OK you have 2 messages\r\n", serializer.getOutputStream().toString());
     }
 
     @Test
     public void testParse() {
-        String message = "-ERR message 2 already deleted\r\n";
+        String message = "+OK you have 2 messages\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3DELEReply del = new Pop3DELEReply();
-        DELReplyParser parser =
-                del.getParser(
+        Pop3PASSReply pass = new Pop3PASSReply();
+        PASSReplyParser parser =
+                pass.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(del);
+        parser.parse(pass);
 
-        assertEquals("-ERR", del.getStatusIndicator());
-        assertEquals("message 2 already deleted", del.getHumanReadableMessage());
+        assertEquals("+OK", pass.getStatusIndicator());
+        assertEquals("you have 2 messages", pass.getHumanReadableMessage());
     }
 }

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class RETRReplyTest {
+class Pop3RETRReplyTest {
 
     @Test
     public void serializeValidReply() {

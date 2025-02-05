@@ -28,10 +28,12 @@ public class STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
     }
 
     public void parseMessageData(Pop3STATReply reply) {
+        if (!reply.statusIsPositive()) return;
+
         String[] parts = reply.getHumanReadableMessage().split(" ");
         if (parts.length == 2) {
-            reply.setNumberOfMessages(parts[0]);
-            reply.setMailDropSize(parts[1]);
+            reply.setNumberOfMessages(toInteger(parts[0]));
+            reply.setMailDropSize(toInteger(parts[1]));
         }
     }
 }

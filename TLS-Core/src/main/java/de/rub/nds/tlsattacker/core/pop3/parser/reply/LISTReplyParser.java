@@ -25,8 +25,8 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
         for (String line : lines) {
             String[] parts = line.split(" ");
             if (parts.length == 2) {
-                reply.addMessageNumber(parts[0]);
-                reply.addMessageSize(parts[1]);
+                reply.addMessageNumber(toInteger(parts[0]));
+                reply.addMessageSize(toInteger(parts[1]));
             }
         }
     }

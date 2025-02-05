@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import java.io.*;
@@ -108,6 +109,15 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
             reply.setStatusIndicator("-ERR");
         } else {
             reply.setStatusIndicator("");
+        }
+    }
+
+    public int toInteger(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException ex) {
+            throw new ParserException(
+                    "Could not parse pop3-reply message data. Could not parse: " + str);
         }
     }
 

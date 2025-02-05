@@ -22,14 +22,14 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class LISTReplyTest {
+class Pop3LISTReplyTest {
 
     @Test
     public void serializeValidReply() {
         Pop3LISTReply listReply = new Pop3LISTReply();
         listReply.setStatusIndicator("+OK");
-        List<String> messageNumbers = Arrays.asList("1", "2");
-        List<String> octetNumbers = Arrays.asList("350", "120");
+        List<Integer> messageNumbers = Arrays.asList(1, 2);
+        List<Integer> octetNumbers = Arrays.asList(350, 120);
         listReply.setMessageNumbers(messageNumbers);
         listReply.setMessageSizes(octetNumbers);
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
@@ -50,8 +50,8 @@ class LISTReplyTest {
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(listReply);
-        List<String> messageNumbers = Arrays.asList("1", "2");
-        List<String> octetNumbers = Arrays.asList("120", "350");
+        List<Integer> messageNumbers = Arrays.asList(1, 2);
+        List<Integer> octetNumbers = Arrays.asList(120, 350);
 
         assertEquals("+OK", listReply.getStatusIndicator());
         assertEquals(messageNumbers, listReply.getMessageNumbers());
@@ -93,8 +93,8 @@ class LISTReplyTest {
         Pop3LISTReply listReply = new Pop3LISTReply();
         listReply.setStatusIndicator("+OK");
         listReply.setHumanReadableMessage("Providing message info.");
-        listReply.setMessageNumbers(List.of("1"));
-        listReply.setMessageSizes(List.of("128"));
+        listReply.setMessageNumbers(List.of(1));
+        listReply.setMessageSizes(List.of(128));
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = listReply.getSerializer(context);

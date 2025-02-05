@@ -50,6 +50,10 @@ public class Pop3Reply extends Pop3Message {
         return statusIndicator;
     }
 
+    public boolean statusIsPositive() {
+        return this.statusIndicator.equals("+OK");
+    }
+
     public void setHumanReadableMessage(String message) {
         this.humanReadableMessages = new ArrayList<>(List.of(message));
     }

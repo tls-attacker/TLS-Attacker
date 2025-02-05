@@ -13,55 +13,51 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.RSETReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.NOOPReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-class RSETReplyTest {
+class Pop3NOOPReplyTest {
 
     @Test
     public void serializeValidReply() {
-        Pop3RSETReply reset = new Pop3RSETReply();
-        reset.setStatusIndicator("+OK");
-        reset.setHumanReadableMessage("maildrop has 2 messages (320 octets)");
+        Pop3NOOPReply noop = new Pop3NOOPReply();
+        noop.setStatusIndicator("+OK");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = reset.getSerializer(context);
+        Serializer<?> serializer = noop.getSerializer(context);
         serializer.serialize();
 
-        assertEquals(
-                "+OK maildrop has 2 messages (320 octets)\r\n",
-                serializer.getOutputStream().toString());
+        assertEquals("+OK\r\n", serializer.getOutputStream().toString());
     }
 
     @Test
     public void testParse() {
-        String message = "+OK maildrop has 2 messages (320 octets)\r\n";
+        String message = "+OK\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3RSETReply reset = new Pop3RSETReply();
-        RSETReplyParser parser =
-                reset.getParser(
+        Pop3NOOPReply noop = new Pop3NOOPReply();
+        NOOPReplyParser parser =
+                noop.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(reset);
+        parser.parse(noop);
 
-        assertEquals("+OK", reset.getStatusIndicator());
-        assertEquals("maildrop has 2 messages (320 octets)", reset.getHumanReadableMessage());
+        assertEquals("+OK", noop.getStatusIndicator());
     }
 
     @Test
     public void parseInvalidReply() {
         String reply = "-ERR not ok\r\n";
-        Pop3RSETReply reset = new Pop3RSETReply();
+        Pop3NOOPReply noop = new Pop3NOOPReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        RSETReplyParser parser =
-                reset.getParser(
+        NOOPReplyParser parser =
+                noop.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-        assertDoesNotThrow(() -> parser.parse(reset));
-        assertEquals("-ERR", reset.getStatusIndicator());
-        assertEquals("not ok", reset.getHumanReadableMessage());
+        assertDoesNotThrow(() -> parser.parse(noop));
+        assertEquals("-ERR", noop.getStatusIndicator());
+        assertEquals("not ok", noop.getHumanReadableMessage());
     }
 }

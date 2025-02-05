@@ -19,8 +19,8 @@ import java.io.InputStream;
  */
 @XmlRootElement
 public class Pop3STATReply extends Pop3Reply {
-    private String numberOfMessages;
-    private String mailDropSize;
+    private Integer numberOfMessages;
+    private Integer mailDropSize;
 
     public Pop3STATReply() {
         super();
@@ -31,19 +31,19 @@ public class Pop3STATReply extends Pop3Reply {
         return new STATReplyParser(stream);
     }
 
-    public void setNumberOfMessages(String messages) {
+    public void setNumberOfMessages(Integer messages) {
         this.numberOfMessages = messages;
     }
 
-    public String getNumberOfMessages() {
+    public Integer getNumberOfMessages() {
         return numberOfMessages;
     }
 
-    public void setMailDropSize(String mailDropSize) {
+    public void setMailDropSize(Integer mailDropSize) {
         this.mailDropSize = mailDropSize;
     }
 
-    public String getMailDropSize() {
+    public Integer getMailDropSize() {
         return mailDropSize;
     }
 

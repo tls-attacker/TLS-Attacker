@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.pop3.reply;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.STATReplyParser;
@@ -20,14 +21,14 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-class STATReplyTest {
+class Pop3STATReplyTest {
 
     @Test
     public void serializeValidReply() {
         Pop3STATReply stat = new Pop3STATReply();
         stat.setStatusIndicator("+OK");
-        stat.setNumberOfMessages("2");
-        stat.setMailDropSize("320");
+        stat.setNumberOfMessages(2);
+        stat.setMailDropSize(320);
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = stat.getSerializer(context);
@@ -49,8 +50,8 @@ class STATReplyTest {
         parser.parse(stat);
 
         assertEquals("+OK", stat.getStatusIndicator());
-        assertEquals("2", stat.getNumberOfMessages());
-        assertEquals("320", stat.getMailDropSize());
+        assertEquals(2, stat.getNumberOfMessages());
+        assertEquals(320, stat.getMailDropSize());
     }
 
     @Test
@@ -69,7 +70,9 @@ class STATReplyTest {
     }
 
     @Test
-    public void parseOKReply() {
+    public void parseInvalidOKReply() {
+        // This test case is invalid because positive status requires message information to be
+        // present.
         String reply = "+OK no Info\r\n";
         Pop3STATReply stat = new Pop3STATReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
@@ -78,8 +81,6 @@ class STATReplyTest {
                 stat.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
-        assertDoesNotThrow(() -> parser.parse(stat));
-        assertEquals(stat.getStatusIndicator(), "+OK");
-        assertEquals(stat.getHumanReadableMessage(), "no Info");
+        assertThrows(ParserException.class, () -> parser.parse(stat));
     }
 }

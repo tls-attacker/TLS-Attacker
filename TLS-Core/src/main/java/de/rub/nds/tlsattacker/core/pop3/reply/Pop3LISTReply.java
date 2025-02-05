@@ -21,8 +21,8 @@ import java.util.List;
  */
 @XmlRootElement
 public class Pop3LISTReply extends Pop3Reply {
-    private List<String> messageNumbers = new ArrayList<>();
-    private List<String> messageSizes = new ArrayList<>();
+    private List<Integer> messageNumbers = new ArrayList<>();
+    private List<Integer> messageSizes = new ArrayList<>();
 
     public Pop3LISTReply() {
         super();
@@ -33,27 +33,27 @@ public class Pop3LISTReply extends Pop3Reply {
         return new LISTReplyParser(stream);
     }
 
-    public void setMessageNumbers(List<String> messageNumbers) {
+    public void setMessageNumbers(List<Integer> messageNumbers) {
         this.messageNumbers = messageNumbers;
     }
 
-    public List<String> getMessageNumbers() {
+    public List<Integer> getMessageNumbers() {
         return messageNumbers;
     }
 
-    public void addMessageNumber(String messageNumber) {
+    public void addMessageNumber(Integer messageNumber) {
         this.messageNumbers.add(messageNumber);
     }
 
-    public void addMessageSize(String messageSize) {
+    public void addMessageSize(Integer messageSize) {
         this.messageSizes.add(messageSize);
     }
 
-    public void setMessageSizes(List<String> messageSizes) {
+    public void setMessageSizes(List<Integer> messageSizes) {
         this.messageSizes = messageSizes;
     }
 
-    public List<String> getMessageSizes() {
+    public List<Integer> getMessageSizes() {
         return messageSizes;
     }
 
