@@ -30,9 +30,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A layer that handles the SMTP protocol. It can send and receive SmtpMessages, which represent
- * both commands and replies. Mainly supports acting as a client right now. Currently it does not
+ * both commands and replies. Mainly supports acting as a client right now. Currently, it does not
  * parse received commands into the correct subclass, but rather into a generic SmtpReply object.
- * Will fallback to SmtpUnknownReply if the type of reply is unclear, but falling back for
+ * Will fall back to SmtpUnknownReply if the type of reply is unclear, but falling back for
  * nonsensical replies is not yet implemented.
  */
 public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
@@ -88,7 +88,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
      * reply. In the future, we want to parse this into an UnknownReply and handle it accordingly.
      *
      * <p>When receiving a command, the SmtpLayer will parse it into a SmtpCommand object and does
-     * not parse it into the correct subclass. This is because it essentially reading the stream to
+     * not parse it into the correct subclass. This is because it's essentially reading the stream to
      * infer the correct Parser and then repeating the stream again to parse it. Will hopefully be
      * implemented in the future.
      *
