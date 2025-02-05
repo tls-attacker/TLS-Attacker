@@ -54,7 +54,6 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
         pop3Command.setArguments(arguments);
         tryParseMessageNumber(pop3Command, lineContents[1]);
 
-        // TODO: check whether there are multi-argument commands
         if (lineContents.length > 2) {
             LOGGER.warn(
                     "Expected one argument but got: "

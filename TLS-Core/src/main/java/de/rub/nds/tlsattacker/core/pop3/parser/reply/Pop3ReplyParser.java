@@ -99,7 +99,7 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
     }
 
     public void parseReplyIndicator(ReplyT reply, String line) {
-        if (line.matches("^\\+OK.*")) { // todo: simplify to startsWith() ?
+        if (line.matches("^\\+OK.*")) {
             reply.setStatusIndicator("+OK");
         } else if (line.matches("^-ERR.*")) {
             reply.setStatusIndicator("-ERR");

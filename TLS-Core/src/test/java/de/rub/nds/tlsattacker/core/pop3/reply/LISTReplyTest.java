@@ -26,14 +26,14 @@ class LISTReplyTest {
 
     @Test
     public void serializeValidReply() {
-        Pop3LISTReply list = new Pop3LISTReply();
-        list.setStatusIndicator("+OK");
+        Pop3LISTReply listReply = new Pop3LISTReply();
+        listReply.setStatusIndicator("+OK");
         List<String> messageNumbers = Arrays.asList("1", "2");
         List<String> octetNumbers = Arrays.asList("350", "120");
-        list.setMessageNumbers(messageNumbers);
-        list.setMessageSizes(octetNumbers);
+        listReply.setMessageNumbers(messageNumbers);
+        listReply.setMessageSizes(octetNumbers);
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = list.getSerializer(context);
+        Serializer<?> serializer = listReply.getSerializer(context);
         serializer.serialize();
 
         assertEquals("+OK\r\n1 350\r\n2 120\r\n.\r\n", serializer.getOutputStream().toString());
@@ -44,47 +44,62 @@ class LISTReplyTest {
         String message = "+OK displaying messages\r\n1 120\r\n2 350\r\n.\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3LISTReply list = new Pop3LISTReply();
+        Pop3LISTReply listReply = new Pop3LISTReply();
         LISTReplyParser parser =
-                list.getParser(
+                listReply.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(list);
+        parser.parse(listReply);
         List<String> messageNumbers = Arrays.asList("1", "2");
         List<String> octetNumbers = Arrays.asList("120", "350");
 
-        assertEquals("+OK", list.getStatusIndicator());
-        assertEquals(messageNumbers, list.getMessageNumbers());
-        assertEquals(octetNumbers, list.getMessageSizes());
+        assertEquals("+OK", listReply.getStatusIndicator());
+        assertEquals(messageNumbers, listReply.getMessageNumbers());
+        assertEquals(octetNumbers, listReply.getMessageSizes());
     }
 
     @Test
     public void parseInvalidReply() {
         String reply = "-ERR no Info\r\n";
-        Pop3LISTReply list = new Pop3LISTReply();
+        Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
         LISTReplyParser parser =
-                list.getParser(
+                listReply.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
-        assertDoesNotThrow(() -> parser.parse(list));
-        assertEquals(list.getStatusIndicator(), "-ERR");
-        assertEquals(list.getHumanReadableMessage(), "no Info");
+        assertDoesNotThrow(() -> parser.parse(listReply));
+        assertEquals(listReply.getStatusIndicator(), "-ERR");
+        assertEquals(listReply.getHumanReadableMessage(), "no Info");
     }
 
     @Test
     public void parseOKReply() {
         String reply = "+OK no Info\r\n";
-        Pop3LISTReply list = new Pop3LISTReply();
+        Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
         LISTReplyParser parser =
-                list.getParser(
+                listReply.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
-        assertDoesNotThrow(() -> parser.parse(list));
-        assertEquals(list.getStatusIndicator(), "+OK");
-        assertEquals(list.getHumanReadableMessage(), "no Info");
+        assertDoesNotThrow(() -> parser.parse(listReply));
+        assertEquals(listReply.getStatusIndicator(), "+OK");
+        assertEquals(listReply.getHumanReadableMessage(), "no Info");
+    }
+
+    @Test
+    public void testSerializeTwoLineReply() {
+        Pop3LISTReply listReply = new Pop3LISTReply();
+        listReply.setStatusIndicator("+OK");
+        listReply.setHumanReadableMessage("Providing message info.");
+        listReply.setMessageNumbers(List.of("1"));
+        listReply.setMessageSizes(List.of("128"));
+
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        Serializer<?> serializer = listReply.getSerializer(context);
+        serializer.serialize();
+
+        assertEquals("+OK Providing message info.\r\n1 128\r\n.\r\n", serializer.getOutputStream().toString());
     }
 }

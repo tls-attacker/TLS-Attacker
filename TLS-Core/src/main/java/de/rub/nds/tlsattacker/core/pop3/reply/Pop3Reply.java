@@ -29,10 +29,10 @@ public class Pop3Reply extends Pop3Message {
 
     protected String statusIndicator;
 
-    protected List<String> humanReadableMessage = new ArrayList<>();
+    protected List<String> humanReadableMessages = new ArrayList<>();
 
     public Pop3Reply() {
-        this.humanReadableMessage = new ArrayList<>();
+        this.humanReadableMessages = new ArrayList<>();
     }
 
     public Pop3Reply(String statusIndicator) {
@@ -49,16 +49,16 @@ public class Pop3Reply extends Pop3Message {
     }
 
     public void setHumanReadableMessage(String message) {
-        this.humanReadableMessage = new ArrayList<>(List.of(message));
+        this.humanReadableMessages = new ArrayList<>(List.of(message));
     }
 
     public void setHumanReadableMessages(List<String> humanReadableMessage) {
-        this.humanReadableMessage = humanReadableMessage;
+        this.humanReadableMessages = humanReadableMessage;
     }
 
     public String getHumanReadableMessage() {
-        if (this.humanReadableMessage.isEmpty()) return "";
-        else return this.humanReadableMessage.get(0);
+        if (this.humanReadableMessages.isEmpty()) return "";
+        else return this.humanReadableMessages.get(0);
     }
 
     @Override
@@ -89,19 +89,20 @@ public class Pop3Reply extends Pop3Message {
     public String serialize() {
         char SP = ' ';
         String CRLF = "\r\n";
+
         StringBuilder sb = new StringBuilder();
         sb.append(this.statusIndicator != null ? this.statusIndicator : "");
-        if (!this.humanReadableMessage.isEmpty()) {
+        if (!this.humanReadableMessages.isEmpty()) {
             sb.append(SP);
-            sb.append(this.humanReadableMessage.get(0));
+            sb.append(this.humanReadableMessages.get(0));
         }
         sb.append(CRLF);
-        for (int i = 1; i < this.humanReadableMessage.size(); i++) {
-            sb.append(this.humanReadableMessage.get(i));
+        for (int i = 1; i < this.humanReadableMessages.size(); i++) {
+            sb.append(this.humanReadableMessages.get(i));
             sb.append(CRLF);
         }
         // End Multiline reply
-        if (this.humanReadableMessage.size() > 1) {
+        if (this.humanReadableMessages.size() > 1) {
             sb.append(".");
             sb.append(CRLF);
         }
