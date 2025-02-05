@@ -31,8 +31,8 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
     }
 
     /**
-     * Parses keyword and arguments of a reply. If the command is expected to contain a message number,
-     * the message number will also be parsed.
+     * Parses keyword and arguments of a reply. If the command is expected to contain a message
+     * number, the message number will also be parsed.
      *
      * @param pop3Command Command that is parsed
      */
@@ -59,8 +59,9 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
 
     /**
      * As described in the MessageNumber Interface, this function will parse message numbers
-     * regardless of which pop3 command is present. This is the central parsing functionality
-     * for almost all implemented pop3 commands.
+     * regardless of which pop3 command is present. This is the central parsing functionality for
+     * almost all implemented pop3 commands.
+     *
      * @param command Any pop3 command.
      * @param possibleMessageNumber A string that may contain a message number.
      */

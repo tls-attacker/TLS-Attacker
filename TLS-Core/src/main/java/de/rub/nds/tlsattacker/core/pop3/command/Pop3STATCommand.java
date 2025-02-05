@@ -15,10 +15,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * The POP3 STAT command is used to retrieve two stats regarding the mailbox:
- *  1. The number of messages in the mailbox.
- *  2. The total size taken up by all messages (in octets).
- * The STAT command does not have any parameters.
+ * The POP3 STAT command is used to retrieve two stats regarding the mailbox: 1. The number of
+ * messages in the mailbox. 2. The total size taken up by all messages (in octets). The STAT command
+ * does not have any parameters.
  */
 @XmlRootElement
 public class Pop3STATCommand extends Pop3Command {

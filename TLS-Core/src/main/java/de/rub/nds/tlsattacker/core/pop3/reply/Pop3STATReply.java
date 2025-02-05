@@ -14,8 +14,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * The pop3 stat reply contains information regarding the mail drop. This consists of the number of messages
- * in the mail drop as well as the total size of the mail drop in octets.
+ * The pop3 stat reply contains information regarding the mail drop. This consists of the number of
+ * messages in the mail drop as well as the total size of the mail drop in octets.
  */
 @XmlRootElement
 public class Pop3STATReply extends Pop3Reply {
@@ -47,7 +47,8 @@ public class Pop3STATReply extends Pop3Reply {
         return mailDropSize;
     }
 
-    // This will not serialize multiline replies correctly. STAT multiline replies are strongly discouraged by RFC.
+    // This will not serialize multiline replies correctly. STAT multiline replies are strongly
+    // discouraged by RFC.
     @Override
     public String serialize() {
         char SP = ' ';

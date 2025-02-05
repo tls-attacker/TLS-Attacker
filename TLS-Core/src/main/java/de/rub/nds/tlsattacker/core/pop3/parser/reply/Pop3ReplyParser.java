@@ -45,15 +45,16 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
 
     /**
      * This function is the default parsing function when it's uncertain whether the reply is single
-     * or multiline.
-     * It will process the first line of a reply and store reply indicator and human-readable
-     * message in the reply class. To detect whether the reply is multiline, it will call tryParseMultiline()
-     * which reads from the stream until it is empty. If the stream is empty right away, it signifies that
-     * the reply is single-line. If not, it will return the remaining lines until the stream is empty.
-     * These lines are returned for further parsing in the specific reply parsers.
+     * or multiline. It will process the first line of a reply and store reply indicator and
+     * human-readable message in the reply class. To detect whether the reply is multiline, it will
+     * call tryParseMultiline() which reads from the stream until it is empty. If the stream is
+     * empty right away, it signifies that the reply is single-line. If not, it will return the
+     * remaining lines until the stream is empty. These lines are returned for further parsing in
+     * the specific reply parsers.
      *
      * @param reply Any pop3 reply class.
-     * @return All lines except for the first. Will return an empty list if the reply is single-line.
+     * @return All lines except for the first. Will return an empty list if the reply is
+     *     single-line.
      */
     public List<String> parseReply(ReplyT reply) {
         parseSingleLineReply(reply);
@@ -83,12 +84,14 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
                 }
 
                 if (sb.charAt(sb.length() - 1) != CR)
-                    LOGGER.warn("Reply must be terminated with CRLF but is only terminated with LF.");
+                    LOGGER.warn(
+                            "Reply must be terminated with CRLF but is only terminated with LF.");
 
                 sb.setLength(sb.length() - 1); // remove CR
 
                 line = sb.toString();
-                if (!line.equals(".")) lines.add(line); // no need to save "." because it's no actual content
+                if (!line.equals("."))
+                    lines.add(line); // no need to save "." because it's no actual content
             }
         } catch (IOException ignored) {
             LOGGER.warn(

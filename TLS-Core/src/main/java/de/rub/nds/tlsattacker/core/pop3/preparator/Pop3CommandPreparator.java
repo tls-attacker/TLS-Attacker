@@ -16,5 +16,4 @@ public class Pop3CommandPreparator<CommandT extends Pop3Command>
     public Pop3CommandPreparator(Chooser chooser, CommandT message) {
         super(chooser, message);
     }
-
 }

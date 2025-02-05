@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class models replies sent to pop3 Commands. Replies contain two possible status indicators "+OK" or "-ERR"
- * alongside a human-readable message corresponding to the status.
- * This is true for all specific pop3 replies, i.e. children of this class. Specific replies that contain additional
- * information are  elaborated on in the respective classes themselves.
+ * This class models replies sent to pop3 Commands. Replies contain two possible status indicators
+ * "+OK" or "-ERR" alongside a human-readable message corresponding to the status. This is true for
+ * all specific pop3 replies, i.e. children of this class. Specific replies that contain additional
+ * information are elaborated on in the respective classes themselves.
  */
 @XmlRootElement
 public class Pop3Reply extends Pop3Message {

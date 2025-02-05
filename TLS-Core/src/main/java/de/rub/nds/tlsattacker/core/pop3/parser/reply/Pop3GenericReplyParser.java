@@ -12,8 +12,8 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import java.io.InputStream;
 
 /**
- * This class parses simple POP3 replies that don't require own parsing logic. The parser reads a single-line
- * reply and checks for reply indicator and human-readable message.
+ * This class parses simple POP3 replies that don't require own parsing logic. The parser reads a
+ * single-line reply and checks for reply indicator and human-readable message.
  *
  * @param <ReplyT> the specific POP§ reply class
  */

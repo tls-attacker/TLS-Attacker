@@ -14,8 +14,9 @@ import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- * The specific preparators, i.e. the children of this class, will check whether necessary
- * values are set. If not, default values will be loaded from the config.
+ * The specific preparators, i.e. the children of this class, will check whether necessary values
+ * are set. If not, default values will be loaded from the config.
+ *
  * @param <MessageT> Any POP3 command or reply.
  */
 public class Pop3MessagePreparator<MessageT extends Pop3Message> extends Preparator<MessageT> {

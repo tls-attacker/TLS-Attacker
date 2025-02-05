@@ -11,12 +11,10 @@ package de.rub.nds.tlsattacker.core.pop3.parser.command;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3PASSCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- * Parses the provided password of a PASS command. The password may contain spaces, so everything past PASS is
- * considered to be the password.
+ * Parses the provided password of a PASS command. The password may contain spaces, so everything
+ * past PASS is considered to be the password.
  */
 public class Pop3PASSCommandParser extends Pop3MessageParser<Pop3PASSCommand> {
 

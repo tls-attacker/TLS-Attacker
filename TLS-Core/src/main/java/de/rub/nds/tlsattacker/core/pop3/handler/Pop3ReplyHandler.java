@@ -16,5 +16,4 @@ public class Pop3ReplyHandler<ReplyT extends Pop3Reply> extends Pop3MessageHandl
     public Pop3ReplyHandler(Pop3Context context) {
         super(context);
     }
-
 }

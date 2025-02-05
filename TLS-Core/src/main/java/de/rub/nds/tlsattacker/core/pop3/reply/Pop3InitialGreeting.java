@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.core.pop3.handler.Pop3InitialGreetingHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- * Initial Greeting of the POP3 Server when a connection is established Its only use is to be able to
- * distinguish between the initial greeting and truly unknown commands when `receiving` in
+ * Initial Greeting of the POP3 Server when a connection is established Its only use is to be able
+ * to distinguish between the initial greeting and truly unknown commands when `receiving` in
  * Pop3Layer. It should never be included in a Workflow.
  */
 @XmlRootElement

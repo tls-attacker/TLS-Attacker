@@ -100,6 +100,8 @@ class LISTReplyTest {
         Serializer<?> serializer = listReply.getSerializer(context);
         serializer.serialize();
 
-        assertEquals("+OK Providing message info.\r\n1 128\r\n.\r\n", serializer.getOutputStream().toString());
+        assertEquals(
+                "+OK Providing message info.\r\n1 128\r\n.\r\n",
+                serializer.getOutputStream().toString());
     }
 }

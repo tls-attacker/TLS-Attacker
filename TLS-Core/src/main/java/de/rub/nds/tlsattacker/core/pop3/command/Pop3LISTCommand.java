@@ -15,8 +15,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * When no parameters are specified, this command lists all messages with corresponding message information. With
- * a message number specified, it only lists the information of one message.
+ * When no parameters are specified, this command lists all messages with corresponding message
+ * information. With a message number specified, it only lists the information of one message.
  */
 @XmlRootElement
 public class Pop3LISTCommand extends Pop3Command implements MessageNumber {
