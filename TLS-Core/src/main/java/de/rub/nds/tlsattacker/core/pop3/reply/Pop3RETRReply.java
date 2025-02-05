@@ -58,7 +58,7 @@ public class Pop3RETRReply extends Pop3Reply {
             sb.append(part);
             sb.append(CRLF);
         }
-        if (this.message.size() > 1) { // TODO: also check this for correctness
+        if (!this.message.isEmpty()) {
             sb.append(".");
             sb.append(CRLF);
         }

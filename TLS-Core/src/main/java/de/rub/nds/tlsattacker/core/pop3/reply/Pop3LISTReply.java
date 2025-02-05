@@ -74,7 +74,7 @@ public class Pop3LISTReply extends Pop3Reply {
             sb.append(messageSizes.get(i));
             sb.append(CRLF);
         }
-        if (messageSizes.size() > 1) { // TODO: does this work for messageOctets.size = 1 and lines.size = 2 ?
+        if (!messageNumbers.isEmpty()) {
             sb.append(".");
             sb.append(CRLF);
         }
