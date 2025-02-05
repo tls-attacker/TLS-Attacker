@@ -43,6 +43,8 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
 
+    public static final int PREDEFINED_LEAF_CERT_INDEX = 0;
+
     @Parameter(names = "-cert", description = "PEM encoded certificate file")
     private String certificate = null;
 
@@ -117,7 +119,8 @@ public class CertificateDelegate extends Delegate {
         if (key != null) {
             LOGGER.debug("Loading private key");
             privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(
+                    config.getCertificateChainConfig().get(PREDEFINED_LEAF_CERT_INDEX), privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {
