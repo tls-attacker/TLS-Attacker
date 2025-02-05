@@ -16,7 +16,7 @@ import java.io.InputStream;
 @XmlRootElement
 public class Pop3STATReply extends Pop3Reply {
     private String messages;
-    private String octets;
+    private String messageOctets;
 
     public Pop3STATReply() {
         super();
@@ -35,12 +35,12 @@ public class Pop3STATReply extends Pop3Reply {
         return messages;
     }
 
-    public void setOctets(String octets) {
-        this.octets = octets;
+    public void setMessageOctets(String messageOctets) {
+        this.messageOctets = messageOctets;
     }
 
-    public String getOctets() {
-        return octets;
+    public String getMessageOctets() {
+        return messageOctets;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Pop3STATReply extends Pop3Reply {
         sb.append(SP);
         sb.append(this.messages);
         sb.append(SP);
-        sb.append(this.octets);
+        sb.append(this.messageOctets);
         sb.append(CRLF);
 
         return sb.toString();

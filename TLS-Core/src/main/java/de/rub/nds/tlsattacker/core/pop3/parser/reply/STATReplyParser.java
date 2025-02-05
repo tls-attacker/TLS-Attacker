@@ -21,7 +21,7 @@ public class STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
     // Ignore MultiLine for now as STAT reply is specified as single line
     @Override
     public void parse(Pop3STATReply reply) {
-        List<String> multiLines = parseMultiline(reply);
+        List<String> multiLines = parseReply(reply);
 
         // case: single line response contains necessary data
         if (multiLines.isEmpty()) parseMessageData(reply);
@@ -31,7 +31,7 @@ public class STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
         String[] parts = reply.getHumanReadableMessage().split(" ");
         if (parts.length == 2) {
             reply.setMessages(parts[0]);
-            reply.setOctets(parts[1]);
+            reply.setMessageOctets(parts[1]);
         }
     }
 }

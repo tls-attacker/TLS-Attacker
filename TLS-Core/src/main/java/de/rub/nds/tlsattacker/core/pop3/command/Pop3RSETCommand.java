@@ -10,28 +10,26 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.NOOPCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 @XmlRootElement
-public class NOOPCommand extends Pop3Command {
+public class Pop3RSETCommand extends Pop3Command {
+    private static final String commandName = "RSET";
 
-    private static final String commandName = "NOOP";
-
-    public NOOPCommand() {
+    public Pop3RSETCommand() {
         super(commandName, null);
     }
 
     @Override
-    public Pop3CommandParser<NOOPCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3RSETCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 
     @Override
-    public NOOPCommandPreparator getPreparator(Pop3Context context) {
-        return new NOOPCommandPreparator(context, this);
+    public RSETCommandPreparator getPreparator(Pop3Context context) {
+        return new RSETCommandPreparator(context, this);
     }
 
     @Override

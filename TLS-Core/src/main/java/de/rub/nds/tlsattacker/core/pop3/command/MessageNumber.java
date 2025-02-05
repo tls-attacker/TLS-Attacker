@@ -8,8 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
+/**
+ * Most, but not all, POP3 commands can have message-numbers. In order to prevent redundant
+ * parsers for all the message-number containing commands and because of class/casting restrictions
+ * of Java, this interface is used to cast generic classes to pseudo message-number classes.
+ * This significantly reduces the amount of files and code necessary for command parsing.
+ */
 public interface MessageNumber {
-    public void setMessageNumber(Integer messageNumber);
+    void setMessageNumber(Integer messageNumber);
 
-    public Integer getMessageNumber();
+    Integer getMessageNumber();
 }

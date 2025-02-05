@@ -27,7 +27,7 @@ class STATReplyTest {
         Pop3STATReply stat = new Pop3STATReply();
         stat.setStatusIndicator("+OK");
         stat.setMessages("2");
-        stat.setOctets("320");
+        stat.setMessageOctets("320");
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = stat.getSerializer(context);
@@ -50,7 +50,7 @@ class STATReplyTest {
 
         assertEquals("+OK", stat.getStatusIndicator());
         assertEquals("2", stat.getMessages());
-        assertEquals("320", stat.getOctets());
+        assertEquals("320", stat.getMessageOctets());
     }
 
     @Test

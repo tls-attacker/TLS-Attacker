@@ -22,7 +22,6 @@ public class Pop3Context extends LayerContext {
         super(context);
     }
 
-
     public Pop3Reply getExpectedNextReplyType() {
         Pop3Command command = getLastCommand();
         return getExpectedReplyType(command);
@@ -41,27 +40,27 @@ public class Pop3Context extends LayerContext {
             return null;
         }
 
-        if (command instanceof USERCommand) {
+        if (command instanceof Pop3USERCommand) {
             return new Pop3USERReply();
         } else if (command instanceof Pop3InitialGreetingDummy) {
             return new Pop3InitialGreeting();
-        } else if (command instanceof PASSCommand) {
+        } else if (command instanceof Pop3PASSCommand) {
             return new Pop3PASSReply();
-        } else if (command instanceof DELECommand) {
-            return new Pop3DELReply();
-        } else if (command instanceof LISTCommand) {
+        } else if (command instanceof Pop3DELECommand) {
+            return new Pop3DELEReply();
+        } else if (command instanceof Pop3LISTCommand) {
             return new Pop3LISTReply();
-        } else if (command instanceof NOOPCommand) {
+        } else if (command instanceof Pop3NOOPCommand) {
             return new Pop3NOOPReply();
-        } else if (command instanceof QUITCommand) {
+        } else if (command instanceof Pop3QUITCommand) {
             return new Pop3QUITReply();
-        } else if (command instanceof RETRCommand) {
+        } else if (command instanceof Pop3RETRCommand) {
             return new Pop3RETRReply();
-        } else if (command instanceof RSETCommand) {
+        } else if (command instanceof Pop3RSETCommand) {
             return new Pop3RSETReply();
-        } else if (command instanceof STATCommand) {
+        } else if (command instanceof Pop3STATCommand) {
             return new Pop3STATReply();
-        } else if (command instanceof STLSCommand) {
+        } else if (command instanceof Pop3STLSCommand) {
             return new Pop3STLSReply();
         } else {
             throw new UnsupportedOperationException(

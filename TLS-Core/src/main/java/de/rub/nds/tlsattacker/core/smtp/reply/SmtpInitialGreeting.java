@@ -26,7 +26,6 @@ public class SmtpInitialGreeting extends SmtpReply {
         return "SMTP Initial Greeting";
     }
 
-
     @Override
     public InitialGreetingHandler getHandler(SmtpContext smtpContext) {
         return new InitialGreetingHandler(smtpContext);

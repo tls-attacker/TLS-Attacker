@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.NOOPCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -21,33 +21,33 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class NOOPCommandTest {
+public class Pop3RSETCommandTest {
 
     @Test
     void testParse() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        NOOPCommand noopCommand = new NOOPCommand();
-        String message = "DELE 1\r\n";
+        Pop3RSETCommand rsetCommand = new Pop3RSETCommand();
+        String message = "RSET\r\n";
 
-        Pop3CommandParser<NOOPCommand> parser =
-                noopCommand.getParser(
+        Pop3CommandParser<Pop3RSETCommand> parser =
+                rsetCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(noopCommand);
+        parser.parse(rsetCommand);
 
-        assertEquals(noopCommand.getCommandName(), "NOOP");
+        assertEquals(rsetCommand.getCommandName(), "RSET");
     }
 
     @Test
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        NOOPCommand noopCommand = new NOOPCommand();
-        NOOPCommandPreparator preparator = noopCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = noopCommand.getSerializer(context);
+        Pop3RSETCommand rsetCommand = new Pop3RSETCommand();
+        RSETCommandPreparator preparator = rsetCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = rsetCommand.getSerializer(context);
 
         preparator.prepare();
         serializer.serialize();
 
-        assertEquals("NOOP\r\n", serializer.getOutputStream().toString());
+        assertEquals("RSET\r\n", serializer.getOutputStream().toString());
     }
 }

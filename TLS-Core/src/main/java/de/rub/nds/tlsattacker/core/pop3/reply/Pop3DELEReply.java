@@ -14,9 +14,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class Pop3DELReply extends Pop3Reply {
+public class Pop3DELEReply extends Pop3Reply {
 
-    public Pop3DELReply() {
+    public Pop3DELEReply() {
         super();
     }
 

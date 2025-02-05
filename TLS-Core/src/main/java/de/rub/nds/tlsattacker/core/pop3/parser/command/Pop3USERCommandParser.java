@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
-import de.rub.nds.tlsattacker.core.pop3.command.USERCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3USERCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Pop3USERCommandParser extends Pop3MessageParser<USERCommand> {
+public class Pop3USERCommandParser extends Pop3MessageParser<Pop3USERCommand> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Pop3USERCommandParser(InputStream stream) {
@@ -22,7 +22,7 @@ public class Pop3USERCommandParser extends Pop3MessageParser<USERCommand> {
     }
 
     @Override
-    public void parse(USERCommand userCommand) {
+    public void parse(Pop3USERCommand userCommand) {
         String line = parseSingleLine();
         String[] lineContents = line.split(" ");
         String keyword = lineContents[0];

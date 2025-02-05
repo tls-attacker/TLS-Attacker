@@ -22,8 +22,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * Representation of an POP3 Command. Commands consist of a single line with a keyword and optional
- * arguments seperated by a single space. Commands are terminated by CRLF. All according to RFC 1939
+ * This class maps pop3 commands according to RFC1939. Pop3Commands consist of a single line
+ * with a keyword and optional arguments separated by a single space. They are terminated
+ * with CRLF.
  */
 @XmlRootElement
 public class Pop3Command extends Pop3Message {

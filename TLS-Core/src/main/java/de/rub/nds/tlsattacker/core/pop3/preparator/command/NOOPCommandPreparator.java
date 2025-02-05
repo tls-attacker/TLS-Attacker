@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.NOOPCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3NOOPCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class NOOPCommandPreparator extends Pop3CommandPreparator<NOOPCommand> {
-    public NOOPCommandPreparator(Pop3Context context, NOOPCommand noopCommand) {
+public class NOOPCommandPreparator extends Pop3CommandPreparator<Pop3NOOPCommand> {
+    public NOOPCommandPreparator(Pop3Context context, Pop3NOOPCommand noopCommand) {
         super(context.getChooser(), noopCommand);
     }
 

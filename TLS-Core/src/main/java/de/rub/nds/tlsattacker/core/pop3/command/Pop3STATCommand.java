@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /**
@@ -27,17 +26,16 @@ import java.io.InputStream;
  *
  * The STAT command does not have any parameters.
  */
-
 @XmlRootElement
-public class STATCommand extends Pop3Command {
+public class Pop3STATCommand extends Pop3Command {
     private static final String commandName = "STAT";
 
-    public STATCommand() {
+    public Pop3STATCommand() {
         super(commandName, null);
     }
 
     @Override
-    public Pop3CommandParser<STATCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3STATCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 

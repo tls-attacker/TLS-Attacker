@@ -10,27 +10,26 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.QUITCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 @XmlRootElement
-public class RSETCommand extends Pop3Command {
-    private static final String commandName = "RSET";
+public class Pop3QUITCommand extends Pop3Command {
+    private static final String commandName = "QUIT";
 
-    public RSETCommand() {
+    public Pop3QUITCommand() {
         super(commandName, null);
     }
 
     @Override
-    public Pop3CommandParser<RSETCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3QUITCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 
     @Override
-    public RSETCommandPreparator getPreparator(Pop3Context context) {
-        return new RSETCommandPreparator(context, this);
+    public QUITCommandPreparator getPreparator(Pop3Context context) {
+        return new QUITCommandPreparator(context, this);
     }
 
     @Override

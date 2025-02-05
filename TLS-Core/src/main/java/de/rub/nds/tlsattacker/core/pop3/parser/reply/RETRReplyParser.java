@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3RETRReply;
-
 import java.io.InputStream;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class RETRReplyParser extends Pop3ReplyParser<Pop3RETRReply> {
 
     @Override
     public void parse(Pop3RETRReply reply) {
-        List<String> multiLines = parseMultiline(reply);
+        List<String> multiLines = parseReply(reply);
 
         if (!multiLines.isEmpty()) {
             reply.setMessages(multiLines);

@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
-import de.rub.nds.tlsattacker.core.pop3.reply.Pop3DELReply;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3DELEReply;
 import java.io.InputStream;
 
-public class DELReplyParser extends Pop3GenericReplyParser<Pop3DELReply> {
+public class DELReplyParser extends Pop3GenericReplyParser<Pop3DELEReply> {
     public DELReplyParser(InputStream stream) {
         super(stream);
     }

@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.DELECommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.NOOPCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -21,47 +21,33 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class DELECommandTest {
+public class Pop3NOOPCommandTest {
 
     @Test
     void testParse() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        DELECommand deleCommand = new DELECommand();
+        Pop3NOOPCommand noopCommand = new Pop3NOOPCommand();
         String message = "DELE 1\r\n";
 
-        Pop3CommandParser<DELECommand> parser =
-                deleCommand.getParser(
+        Pop3CommandParser<Pop3NOOPCommand> parser =
+                noopCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(deleCommand);
+        parser.parse(noopCommand);
 
-        assertEquals(deleCommand.getMessageNumber(), 1);
-        assertEquals(deleCommand.getCommandName(), "DELE");
+        assertEquals(noopCommand.getCommandName(), "NOOP");
     }
 
     @Test
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        DELECommand deleCommand = new DELECommand(1);
-        DELECommandPreparator preparator = deleCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context);
+        Pop3NOOPCommand noopCommand = new Pop3NOOPCommand();
+        NOOPCommandPreparator preparator = noopCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = noopCommand.getSerializer(context);
 
         preparator.prepare();
         serializer.serialize();
 
-        assertEquals("DELE 1\r\n", serializer.getOutputStream().toString());
-    }
-
-    @Test
-    void testDefaultSerialize() {
-        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        DELECommand deleCommand = new DELECommand();
-        DELECommandPreparator preparator = deleCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context);
-
-        preparator.prepare();
-        serializer.serialize();
-
-        assertEquals("DELE 1\r\n", serializer.getOutputStream().toString());
+        assertEquals("NOOP\r\n", serializer.getOutputStream().toString());
     }
 }

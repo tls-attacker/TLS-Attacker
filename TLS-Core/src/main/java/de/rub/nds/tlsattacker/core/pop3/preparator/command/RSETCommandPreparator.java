@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.RSETCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3RSETCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class RSETCommandPreparator extends Pop3CommandPreparator<RSETCommand> {
-    public RSETCommandPreparator(Pop3Context context, RSETCommand rsetCommand) {
+public class RSETCommandPreparator extends Pop3CommandPreparator<Pop3RSETCommand> {
+    public RSETCommandPreparator(Pop3Context context, Pop3RSETCommand rsetCommand) {
         super(context.getChooser(), rsetCommand);
     }
 

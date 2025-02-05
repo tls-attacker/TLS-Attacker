@@ -12,21 +12,20 @@ import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.RETRCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
-/** The RETRCommand retrieves the message with the specified messageNumber. */
+/** The Pop3RETRCommand retrieves the message with the specified messageNumber. */
 @XmlRootElement
-public class RETRCommand extends Pop3Command implements MessageNumber {
+public class Pop3RETRCommand extends Pop3Command implements MessageNumber {
 
     private Integer messageNumber;
     private static final String commandName = "RETR";
 
-    public RETRCommand() {
+    public Pop3RETRCommand() {
         super(commandName);
     }
 
-    public RETRCommand(int messageNumber) {
+    public Pop3RETRCommand(int messageNumber) {
         super(commandName, String.valueOf(messageNumber));
         this.messageNumber = messageNumber;
     }
@@ -45,7 +44,7 @@ public class RETRCommand extends Pop3Command implements MessageNumber {
     }
 
     @Override
-    public Pop3CommandParser<RETRCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3RETRCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 

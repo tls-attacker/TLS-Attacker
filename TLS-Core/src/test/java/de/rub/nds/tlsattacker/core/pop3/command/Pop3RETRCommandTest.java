@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.RETRCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -21,33 +21,47 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class RSETCommandTest {
+public class Pop3RETRCommandTest {
 
     @Test
     void testParse() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        RSETCommand rsetCommand = new RSETCommand();
-        String message = "RSET\r\n";
+        Pop3RETRCommand retrCommand = new Pop3RETRCommand();
+        String message = "RETR 1\r\n";
 
-        Pop3CommandParser<RSETCommand> parser =
-                rsetCommand.getParser(
+        Pop3CommandParser<Pop3RETRCommand> parser =
+                retrCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(rsetCommand);
+        parser.parse(retrCommand);
 
-        assertEquals(rsetCommand.getCommandName(), "RSET");
+        assertEquals(retrCommand.getMessageNumber(), 1);
+        assertEquals(retrCommand.getCommandName(), "RETR");
     }
 
     @Test
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        RSETCommand rsetCommand = new RSETCommand();
-        RSETCommandPreparator preparator = rsetCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = rsetCommand.getSerializer(context);
+        Pop3RETRCommand retrCommand = new Pop3RETRCommand(1);
+        RETRCommandPreparator preparator = retrCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context);
 
         preparator.prepare();
         serializer.serialize();
 
-        assertEquals("RSET\r\n", serializer.getOutputStream().toString());
+        assertEquals("RETR 1\r\n", serializer.getOutputStream().toString());
+    }
+
+    @Test
+    void testDefaultSerialize() {
+        Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        Pop3RETRCommand retrCommand = new Pop3RETRCommand();
+        RETRCommandPreparator preparator = retrCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context);
+
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("RETR 1\r\n", serializer.getOutputStream().toString());
     }
 }

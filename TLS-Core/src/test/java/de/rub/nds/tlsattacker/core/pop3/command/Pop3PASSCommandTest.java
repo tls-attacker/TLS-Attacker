@@ -21,12 +21,12 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class PASSCommandTest {
+public class Pop3PASSCommandTest {
 
     @Test
     void testParse() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        PASSCommand passCommand = new PASSCommand();
+        Pop3PASSCommand passCommand = new Pop3PASSCommand();
         String message = "PASS p4ssw0rd\r\n";
 
         Pop3PASSCommandParser parser =
@@ -42,7 +42,7 @@ public class PASSCommandTest {
     @Test
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        PASSCommand passCommand = new PASSCommand("qwertzuiop");
+        Pop3PASSCommand passCommand = new Pop3PASSCommand("qwertzuiop");
         PASSCommandPreparator preparator = passCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context);
 
@@ -55,7 +55,7 @@ public class PASSCommandTest {
     @Test
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        PASSCommand passCommand = new PASSCommand();
+        Pop3PASSCommand passCommand = new Pop3PASSCommand();
         PASSCommandPreparator preparator = passCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context);
 

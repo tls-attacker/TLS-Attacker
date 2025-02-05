@@ -17,6 +17,4 @@ public class Pop3CommandPreparator<CommandT extends Pop3Command>
         super(chooser, message);
     }
 
-    @Override
-    public void prepare() {}
 }

@@ -26,14 +26,13 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
+import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.security.Security;
 
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
@@ -46,7 +45,6 @@ public class POP3WorkflowTestBench {
     public void changeLoglevel() {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
     }
-
 
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
@@ -82,7 +80,6 @@ public class POP3WorkflowTestBench {
         assert (state.getWorkflowTrace().executedAsPlanned());
     }
 
-
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
@@ -93,22 +90,22 @@ public class POP3WorkflowTestBench {
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = new WorkflowTrace();
-//                factory.createWorkflowTrace(
-//                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+        //                factory.createWorkflowTrace(
+        //                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
-        trace.addTlsAction(new SendAction(new STLSCommand()));
+        trace.addTlsAction(new SendAction(new Pop3STLSCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3STLSReply()));
-        trace.addTlsAction(new SendAction(new USERCommand()));
+        trace.addTlsAction(new SendAction(new Pop3USERCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3USERReply()));
-        trace.addTlsAction(new SendAction(new PASSCommand()));
+        trace.addTlsAction(new SendAction(new Pop3PASSCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3PASSReply()));
-        trace.addTlsAction(new SendAction(new STATCommand()));
+        trace.addTlsAction(new SendAction(new Pop3STATCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3STATReply()));
-        trace.addTlsAction(new SendAction(new RETRCommand()));
+        trace.addTlsAction(new SendAction(new Pop3RETRCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3RETRReply()));
-        trace.addTlsAction(new SendAction(new QUITCommand()));
+        trace.addTlsAction(new SendAction(new Pop3QUITCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3QUITReply()));
 
         System.out.println(trace);

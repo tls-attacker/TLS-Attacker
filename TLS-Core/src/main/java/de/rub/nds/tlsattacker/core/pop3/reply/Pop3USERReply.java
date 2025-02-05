@@ -16,7 +16,6 @@ import java.io.InputStream;
 @XmlRootElement
 public class Pop3USERReply extends Pop3Reply {
 
-
     public Pop3USERReply() {
         super();
     }

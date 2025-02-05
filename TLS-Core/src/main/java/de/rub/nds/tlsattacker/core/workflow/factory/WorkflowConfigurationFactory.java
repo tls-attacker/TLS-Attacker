@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
-import de.rub.nds.tlsattacker.core.pop3.reply.Pop3USERReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -642,12 +641,12 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = new WorkflowTrace();
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            appendPop3CommandAndReplyActions(connection, trace, new USERCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new PASSCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new LISTCommand(1));
-            appendPop3CommandAndReplyActions(connection, trace, new LISTCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new NOOPCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new QUITCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3USERCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3PASSCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand(1));
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3NOOPCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3QUITCommand());
         }
 
         // TODO: decide what to do for SERVER case
@@ -660,7 +659,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
         // kind of dirty changing it from the back, but otherwise we have to rework the whole
         // dynamic handshake mechanism
-        trace.addTlsAction(0, new SendAction(new STLSCommand()));
+        trace.addTlsAction(0, new SendAction(new Pop3STLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
         trace.addTlsAction(2, new STARTTLSAction());
 

@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.PASSCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3PASSCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class PASSCommandPreparator extends Pop3CommandPreparator<PASSCommand> {
-    public PASSCommandPreparator(Pop3Context context, PASSCommand passCommand) {
+public class PASSCommandPreparator extends Pop3CommandPreparator<Pop3PASSCommand> {
+    public PASSCommandPreparator(Pop3Context context, Pop3PASSCommand passCommand) {
         super(context.getChooser(), passCommand);
     }
 

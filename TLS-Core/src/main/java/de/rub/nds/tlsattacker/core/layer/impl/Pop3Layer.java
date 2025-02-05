@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3MessageHandler;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;

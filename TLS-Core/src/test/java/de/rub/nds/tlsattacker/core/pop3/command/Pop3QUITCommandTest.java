@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.QUITCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -21,33 +21,33 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class STATCommandTest {
+public class Pop3QUITCommandTest {
 
     @Test
     void testParse() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        STATCommand statCommand = new STATCommand();
-        String message = "STAT\r\n";
+        Pop3QUITCommand quitCommand = new Pop3QUITCommand();
+        String message = "QUIT\r\n";
 
-        Pop3CommandParser<STATCommand> parser =
-                statCommand.getParser(
+        Pop3CommandParser<Pop3QUITCommand> parser =
+                quitCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(statCommand);
+        parser.parse(quitCommand);
 
-        assertEquals(statCommand.getCommandName(), "STAT");
+        assertEquals(quitCommand.getCommandName(), "QUIT");
     }
 
     @Test
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        STATCommand statCommand = new STATCommand();
-        STATCommandPreparator preparator = statCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context);
+        Pop3QUITCommand quitCommand = new Pop3QUITCommand();
+        QUITCommandPreparator preparator = quitCommand.getPreparator(context);
+        Pop3MessageSerializer<?> serializer = quitCommand.getSerializer(context);
 
         preparator.prepare();
         serializer.serialize();
 
-        assertEquals("STAT\r\n", serializer.getOutputStream().toString());
+        assertEquals("QUIT\r\n", serializer.getOutputStream().toString());
     }
 }

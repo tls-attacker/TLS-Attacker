@@ -10,28 +10,31 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3USERCommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.STLSCommandPreparator;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.USERCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.NOOPCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 @XmlRootElement
-public class STLSCommand extends Pop3Command {
-    private static final String commandName = "STLS";
+public class Pop3NOOPCommand extends Pop3Command {
 
-    public STLSCommand() {
-        super(commandName);
+    private static final String commandName = "NOOP";
+
+    public Pop3NOOPCommand() {
+        super(commandName, null);
     }
 
     @Override
-    public Pop3CommandParser<STLSCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3NOOPCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 
     @Override
-    public STLSCommandPreparator getPreparator(Pop3Context context) {
-        return new STLSCommandPreparator(context, this);
+    public NOOPCommandPreparator getPreparator(Pop3Context context) {
+        return new NOOPCommandPreparator(context, this);
+    }
+
+    @Override
+    public String getCommandName() {
+        return commandName;
     }
 }

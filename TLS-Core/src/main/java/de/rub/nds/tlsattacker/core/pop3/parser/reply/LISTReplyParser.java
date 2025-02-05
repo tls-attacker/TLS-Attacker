@@ -9,11 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3LISTReply;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.*;
-import java.util.LinkedList;
 import java.util.List;
 
 public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
@@ -22,16 +18,9 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
         super(stream);
     }
 
-    /*
-    Idea:
-    1. Always parse first line.
-    2. Try multiline parsing.
-        - Multiline present? => Read stream until .CRLF
-        - No multiline here? => Exception is thrown and caught.
-     */
     @Override
     public void parse(Pop3LISTReply reply) {
-        List<String> lines = parseMultiline(reply);
+        List<String> lines = parseReply(reply);
 
         for (String line : lines) {
             String[] parts = line.split(" ");

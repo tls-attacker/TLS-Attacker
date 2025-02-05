@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.QUITCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3QUITCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class QUITCommandPreparator extends Pop3CommandPreparator<QUITCommand> {
-    public QUITCommandPreparator(Pop3Context context, QUITCommand quitCommand) {
+public class QUITCommandPreparator extends Pop3CommandPreparator<Pop3QUITCommand> {
+    public QUITCommandPreparator(Pop3Context context, Pop3QUITCommand quitCommand) {
         super(context.getChooser(), quitCommand);
     }
 

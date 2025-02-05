@@ -10,14 +10,6 @@ package de.rub.nds.tlsattacker.core.pop3.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-
 public class Pop3ReplyParserTest {
 
     /*

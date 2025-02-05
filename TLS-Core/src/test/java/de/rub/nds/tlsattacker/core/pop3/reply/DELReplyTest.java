@@ -24,7 +24,7 @@ class DELReplyTest {
 
     @Test
     public void serializeValidReply() {
-        Pop3DELReply del = new Pop3DELReply();
+        Pop3DELEReply del = new Pop3DELEReply();
         del.setStatusIndicator("+OK");
         del.setHumanReadableMessage("message 1 deleted");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
@@ -39,7 +39,7 @@ class DELReplyTest {
         String message = "-ERR message 2 already deleted\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3DELReply del = new Pop3DELReply();
+        Pop3DELEReply del = new Pop3DELEReply();
         DELReplyParser parser =
                 del.getParser(
                         context,

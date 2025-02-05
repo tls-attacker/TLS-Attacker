@@ -10,31 +10,25 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.QUITCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.STLSCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 @XmlRootElement
-public class QUITCommand extends Pop3Command {
-    private static final String commandName = "QUIT";
+public class Pop3STLSCommand extends Pop3Command {
+    private static final String commandName = "STLS";
 
-    public QUITCommand() {
-        super(commandName, null);
+    public Pop3STLSCommand() {
+        super(commandName);
     }
 
     @Override
-    public Pop3CommandParser<QUITCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3STLSCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 
     @Override
-    public QUITCommandPreparator getPreparator(Pop3Context context) {
-        return new QUITCommandPreparator(context, this);
-    }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
+    public STLSCommandPreparator getPreparator(Pop3Context context) {
+        return new STLSCommandPreparator(context, this);
     }
 }

@@ -22,9 +22,6 @@ public class Pop3ReplyPreparator<ReplyT extends Pop3Reply> extends Pop3MessagePr
     }
 
     @Override
-    public void prepare() {}
-
-    @Override
     public Pop3Context getContext() {
         return context;
     }

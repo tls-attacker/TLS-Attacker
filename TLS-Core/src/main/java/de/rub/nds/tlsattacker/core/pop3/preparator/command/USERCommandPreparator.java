@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.USERCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3USERCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class USERCommandPreparator extends Pop3CommandPreparator<USERCommand> {
-    public USERCommandPreparator(Pop3Context context, USERCommand userCommand) {
+public class USERCommandPreparator extends Pop3CommandPreparator<Pop3USERCommand> {
+    public USERCommandPreparator(Pop3Context context, Pop3USERCommand userCommand) {
         super(context.getChooser(), userCommand);
     }
 

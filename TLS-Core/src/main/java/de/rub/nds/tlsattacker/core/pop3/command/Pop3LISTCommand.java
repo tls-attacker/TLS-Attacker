@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.LISTCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /**
@@ -20,18 +19,17 @@ import java.io.InputStream;
  * a message number specified, it only lists the information of one message.
  */
 @XmlRootElement
-public class LISTCommand extends Pop3Command implements MessageNumber {
+public class Pop3LISTCommand extends Pop3Command implements MessageNumber {
 
-    private Integer messageNumber; // optional, TODO: decide whether having this as a string is more
-    // convenient
+    private Integer messageNumber; // optional, see boolean variable hasMessageNumber
     private boolean hasMessageNumber = false;
     private static final String commandName = "LIST";
 
-    public LISTCommand() {
+    public Pop3LISTCommand() {
         super(commandName, null);
     }
 
-    public LISTCommand(int messageNumber) {
+    public Pop3LISTCommand(int messageNumber) {
         super(commandName, String.valueOf(messageNumber));
         this.messageNumber = messageNumber;
         this.hasMessageNumber = true;
@@ -43,7 +41,8 @@ public class LISTCommand extends Pop3Command implements MessageNumber {
     }
 
     public Integer getMessageNumber() {
-        return this.messageNumber;
+        if (this.hasMessageNumber) return this.messageNumber;
+        else return -1;
     }
 
     public boolean hasMessageNumber() {
@@ -56,7 +55,7 @@ public class LISTCommand extends Pop3Command implements MessageNumber {
     }
 
     @Override
-    public Pop3CommandParser<LISTCommand> getParser(Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<Pop3LISTCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 

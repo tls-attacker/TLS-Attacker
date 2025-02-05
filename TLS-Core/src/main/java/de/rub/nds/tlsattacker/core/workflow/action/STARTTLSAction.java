@@ -19,10 +19,9 @@ import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.EnumSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.EnumSet;
 
 /**
  * This action toggles the MessageLayer and RecordLayer to the LayerStack to enable opportunistic
