@@ -41,7 +41,7 @@ class LISTReplyTest {
 
     @Test
     public void testParse() {
-        String message = "+OK displaying messages\r\n 1 120\r\n 2 350\r\n .\r\n";
+        String message = "+OK displaying messages\r\n1 120\r\n2 350\r\n.\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3LISTReply list = new Pop3LISTReply();

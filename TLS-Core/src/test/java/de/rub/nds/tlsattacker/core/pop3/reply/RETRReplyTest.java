@@ -44,8 +44,8 @@ class RETRReplyTest {
     @Test
     public void testParse() {
         String message =
-                "+OK 113 octets\r\n Hello Juan Fernandez I hope this email finds you well."
-                        + "\r\n Did you hear about SEAL, a super cool project group of UPB.\r\n.\r\n";
+                "+OK 113 octets\r\nHello Juan Fernandez I hope this email finds you well."
+                        + "\r\nDid you hear about SEAL, a super cool project group of UPB.\r\n.\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRReply ret = new Pop3RETRReply();

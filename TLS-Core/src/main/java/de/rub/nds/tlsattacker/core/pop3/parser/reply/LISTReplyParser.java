@@ -18,8 +18,6 @@ import java.util.List;
 
 public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public LISTReplyParser(InputStream stream) {
         super(stream);
     }
@@ -33,28 +31,7 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
      */
     @Override
     public void parse(Pop3LISTReply reply) {
-        String firstLine = parseSingleLine();
-        parseReplyIndicator(reply, firstLine);
-        parseHumanReadableMessage(reply, firstLine);
-
-        List<String> lines = new LinkedList<>();
-        try (BufferedInputStream stream = new BufferedInputStream(this.getStream())) {
-            String line = "";
-            while(!line.equals(".\r\n")) {
-                StringBuilder sb = new StringBuilder();
-                int c = stream.read();
-
-                while(c != 10) { // 10 is LF
-                    sb.append((char) c);
-                    c = stream.read();
-                }
-
-                line = sb.toString();
-                lines.add(line);
-            }
-        } catch (IOException ignored) {
-            LOGGER.warn("An IOException occurred while checking for multi-line replies. This is normal behavior if the reply was single-line. If not, the reply is likely malformed.");
-        }
+        List<String> lines = parseMultiline(reply);
 
         for (String line : lines) {
             String[] parts = line.split(" ");

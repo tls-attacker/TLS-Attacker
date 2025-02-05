@@ -57,11 +57,16 @@ public class Pop3LISTReply extends Pop3Reply {
     public String serialize() {
         char SP = ' ';
         String CRLF = "\r\n";
+        String humanReadableMessage = this.getHumanReadableMessage();
 
         StringBuilder sb = new StringBuilder();
         sb.append(this.statusIndicator);
-        sb.append(SP);
-        sb.append(this.humanReadableMessage);
+
+        if (!humanReadableMessage.isEmpty()) {
+            sb.append(SP);
+            sb.append(humanReadableMessage);
+        }
+
         sb.append(CRLF);
         for (int i = 0; i < messageNumbers.size(); i++) {
             sb.append(messageNumbers.get(i));

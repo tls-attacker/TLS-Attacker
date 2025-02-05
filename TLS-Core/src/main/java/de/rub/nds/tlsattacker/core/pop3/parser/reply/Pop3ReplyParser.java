@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,6 +30,8 @@ import java.util.List;
  */
 public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3MessageParser<ReplyT> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public Pop3ReplyParser(InputStream stream) {
         super(stream);
     }
@@ -40,6 +43,38 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
         else if (line.startsWith("-ERR") & line.length() > 4) humanReadableMessage = line.substring(5);
 
         reply.setHumanReadableMessage(humanReadableMessage);
+    }
+
+    public List<String> parseMultiline(ReplyT reply) {
+        String firstLine = parseSingleLine();
+        parseReplyIndicator(reply, firstLine);
+        parseHumanReadableMessage(reply, firstLine);
+
+        List<String> lines = new LinkedList<>();
+        try (BufferedInputStream stream = new BufferedInputStream(this.getStream())) {
+            String line = "";
+            while(!line.equals(".")) {
+                StringBuilder sb = new StringBuilder();
+                int c = stream.read();
+
+                if (c == -1) break;
+
+                while(c != 10) { // 10 is LF
+                    sb.append((char) c);
+                    c = stream.read();
+                }
+
+                if (sb.charAt(sb.length() - 1) != 13) LOGGER.warn("Reply is malformed, unexpected behavior may occur.");
+                sb.setLength(sb.length() - 1); // remove CR
+
+                line = sb.toString();
+                if (!line.equals(".")) lines.add(line); // TODO: decide whether to save "."
+            }
+        } catch (IOException ignored) {
+            LOGGER.warn("An IOException occurred while checking for multi-line replies. This is normal behavior if the reply was single-line. If not, the reply is likely malformed.");
+        }
+
+        return lines;
     }
 
     public void parseReplyIndicator(ReplyT reply, String line) {

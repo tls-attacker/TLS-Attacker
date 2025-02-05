@@ -63,6 +63,6 @@ public class PASSCommandTest {
         serializer.serialize();
 
         // default password set in config
-        assertEquals("PASS p4ssw0rd\r\n", serializer.getOutputStream().toString());
+        assertEquals("PASS s34l-p4ssw0rd!!\r\n", serializer.getOutputStream().toString());
     }
 }
