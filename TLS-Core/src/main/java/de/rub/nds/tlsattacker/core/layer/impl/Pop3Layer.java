@@ -88,9 +88,9 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
      * reply. In the future, we want to parse this into an UnknownReply and handle it accordingly.
      *
      * <p>When receiving a command, the SmtpLayer will parse it into a SmtpCommand object and does
-     * not parse it into the correct subclass. This is because it's essentially reading the stream to
-     * infer the correct Parser and then repeating the stream again to parse it. Will hopefully be
-     * implemented in the future.
+     * not parse it into the correct subclass. This is because it's essentially reading the stream
+     * to infer the correct Parser and then repeating the stream again to parse it. Will hopefully
+     * be implemented in the future.
      *
      * @return a LayerProcessingResult containing the SmtpMessage that was received across the
      *     different layers
