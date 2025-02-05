@@ -14,6 +14,10 @@ import de.rub.nds.tlsattacker.core.pop3.preparator.command.RSETCommandPreparator
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * POP3 Servers use this command to revert deletion of messages.
+ */
+
 @XmlRootElement
 public class Pop3RSETCommand extends Pop3Command {
     private static final String commandName = "RSET";

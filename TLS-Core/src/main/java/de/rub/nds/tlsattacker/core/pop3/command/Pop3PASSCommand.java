@@ -14,6 +14,9 @@ import de.rub.nds.tlsattacker.core.pop3.preparator.command.PASSCommandPreparator
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * This command is used alongside the Pop3USERCommand as a basic means of authentication.
+ */
 @XmlRootElement
 public class Pop3PASSCommand extends Pop3Command {
     private String password;

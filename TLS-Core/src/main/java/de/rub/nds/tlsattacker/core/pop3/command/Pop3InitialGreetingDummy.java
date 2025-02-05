@@ -16,6 +16,10 @@ import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
 import java.io.InputStream;
 
+/**
+ * This is a dummy class that is necessary to process the InitialGreeting sent by the POP3 Server.
+ * It should not be included in an actual workflow.
+ */
 public class Pop3InitialGreetingDummy extends Pop3Command {
 
     @Override

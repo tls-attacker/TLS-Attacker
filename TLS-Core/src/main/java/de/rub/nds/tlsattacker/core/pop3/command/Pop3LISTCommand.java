@@ -15,7 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * With no parameters, this command lists all messages with corresponding message information. With
+ * When no parameters are specified, this command lists all messages with corresponding message information. With
  * a message number specified, it only lists the information of one message.
  */
 @XmlRootElement

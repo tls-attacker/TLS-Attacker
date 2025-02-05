@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class modelling replies to Pop3 Commands. two possible status indicators: +OK or -ERR together
- * with a human-readable message. C: QUIT S: +OK POP3 server signing off
+ * This class models replies sent to pop3 Commands. Replies contain two possible status indicators "+OK" or "-ERR"
+ * alongside a human-readable message corresponding to the status.
+ * This is true for all specific pop3 replies, i.e. children of this class. Specific replies that contain additional
+ * information are  elaborated on in the respective classes themselves.
  */
 @XmlRootElement
 public class Pop3Reply extends Pop3Message {

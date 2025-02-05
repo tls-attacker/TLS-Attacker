@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class stores the actual message of a mail, which can span over multiple lines.
+ */
 @XmlRootElement
 public class Pop3RETRReply extends Pop3Reply {
     private List<String> message = new ArrayList<>();

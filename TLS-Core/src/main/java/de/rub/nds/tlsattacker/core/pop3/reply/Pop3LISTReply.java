@@ -15,6 +15,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The POP3 LIST reply contains information regarding the messages in the mail drop.
+ * This information consists of the message numbers (identifiers) and sizes of the messages.
+ */
 @XmlRootElement
 public class Pop3LISTReply extends Pop3Reply {
     private List<String> messageNumbers = new ArrayList<>();

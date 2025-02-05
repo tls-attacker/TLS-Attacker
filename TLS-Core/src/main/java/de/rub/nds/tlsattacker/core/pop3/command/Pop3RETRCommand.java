@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.pop3.preparator.command.RETRCommandPreparator
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
-/** The Pop3RETRCommand retrieves the message with the specified messageNumber. */
+/** The Pop3RETRCommand retrieves a message with the specified messageNumber. */
 @XmlRootElement
 public class Pop3RETRCommand extends Pop3Command implements MessageNumber {
 

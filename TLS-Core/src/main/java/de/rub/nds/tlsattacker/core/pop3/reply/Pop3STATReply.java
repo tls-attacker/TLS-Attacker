@@ -13,6 +13,10 @@ import de.rub.nds.tlsattacker.core.pop3.parser.reply.STATReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * The pop3 stat reply contains information regarding the mail drop. This consists of the number of messages
+ * in the mail drop as well as the total size of the mail drop in octets.
+ */
 @XmlRootElement
 public class Pop3STATReply extends Pop3Reply {
     private String numberOfMessages;

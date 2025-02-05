@@ -12,10 +12,9 @@ import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 
 /**
- * Serializes Pop3 Commands. Commands are serialized in the form "KEYWORD<SP>[ARGUMENTS]<CRLF>" The
- * Arguments are optional without them the command becomes: "KEYWORD<CRLF>"
+ * Serializes pop3 commands on the most basic level: keyword, space, arguments, crlf.
  *
- * @param <CommandT> the Pop3 Command to serialize
+ * @param <CommandT> The pop3 command to serialize.
  */
 public class Pop3CommandSerializer<CommandT extends Pop3Command>
         extends Pop3MessageSerializer<CommandT> {

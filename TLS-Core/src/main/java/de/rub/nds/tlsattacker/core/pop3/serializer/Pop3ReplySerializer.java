@@ -11,6 +11,11 @@ package de.rub.nds.tlsattacker.core.pop3.serializer;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 
+/**
+ * The responsibility for specific reply serialization lies with the serialize() method of the specific
+ * reply class.
+ * @param <ReplyT>
+ */
 public class Pop3ReplySerializer<ReplyT extends Pop3Reply> extends Pop3MessageSerializer<ReplyT> {
 
     private final Pop3Reply reply;

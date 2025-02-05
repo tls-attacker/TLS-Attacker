@@ -16,12 +16,8 @@ import java.io.InputStream;
 
 /**
  * The POP3 STAT command is used to retrieve two stats regarding the mailbox:
- *
- * <ol>
- *   <li>The number of messages in the mailbox.
- *   <li>The total size taken up by all messages (in octets).
- * </ol>
- *
+ *  1. The number of messages in the mailbox.
+ *  2. The total size taken up by all messages (in octets).
  * The STAT command does not have any parameters.
  */
 @XmlRootElement

@@ -22,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * This class maps pop3 commands according to RFC1939. Pop3Commands consist of a single line
+ * This class maps POP3 commands according to RFC1939. Pop3Commands consist of a single line
  * with a keyword and optional arguments separated by a single space. They are terminated
  * with CRLF.
  */

@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Parses Pop3Command from an InputStream. Simple parser to set command keyword and arguments.
- * Subclasses need to implement specific parsing for specific commands
+ * Subclasses need to implement specific parsing for specific commands.
  *
  * @param <CommandT> command to be parsed
  */
@@ -26,18 +26,13 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Constructor for the Parser
-     *
-     * @param stream The Inputstream to read data from
-     */
     public Pop3CommandParser(InputStream stream) {
         super(stream);
     }
 
     /**
-     * Does general parsing of setting the keyword and arguments specific parsing of arguments is
-     * implemented by specific command parser
+     * Parses keyword and arguments of a reply. If the command is expected to contain a message number,
+     * the message number will also be parsed.
      *
      * @param pop3Command Command that is parsed
      */
@@ -62,6 +57,13 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
         }
     }
 
+    /**
+     * As described in the MessageNumber Interface, this function will parse message numbers
+     * regardless of which pop3 command is present. This is the central parsing functionality
+     * for almost all implemented pop3 commands.
+     * @param command Any pop3 command.
+     * @param possibleMessageNumber A string that may contain a message number.
+     */
     public void tryParseMessageNumber(CommandT command, String possibleMessageNumber) {
         if (!(command instanceof MessageNumber)) {
             LOGGER.warn(

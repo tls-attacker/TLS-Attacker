@@ -15,8 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The password provided in the PASS command may contain spaces, so everything past PASS is
- * considered the password.
+ * Parses the provided password of a PASS command. The password may contain spaces, so everything past PASS is
+ * considered to be the password.
  */
 public class Pop3PASSCommandParser extends Pop3MessageParser<Pop3PASSCommand> {
 
