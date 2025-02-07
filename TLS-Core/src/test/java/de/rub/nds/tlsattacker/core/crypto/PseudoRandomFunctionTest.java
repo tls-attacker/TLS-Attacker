@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -21,17 +19,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.crypto.tls.ProtocolVersion;
-import org.bouncycastle.crypto.tls.SecurityParameters;
-import org.bouncycastle.crypto.tls.TlsContext;
-import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.crypto.Mac;
+import org.bouncycastle.crypto.macs.HMac;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.util.DigestFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 public class PseudoRandomFunctionTest {
 
     @BeforeAll
@@ -46,13 +43,6 @@ public class PseudoRandomFunctionTest {
      */
     @Test
     public void testComputeForTls12() throws CryptoException {
-        TlsContext mockedTlsContext = mock(TlsContext.class);
-        SecurityParameters mockedParameters = mock(SecurityParameters.class);
-        // Stub method calls
-        when(mockedTlsContext.getServerVersion()).thenReturn(ProtocolVersion.TLSv12);
-        when(mockedTlsContext.getSecurityParameters()).thenReturn(mockedParameters);
-        when(mockedParameters.getPrfAlgorithm()).thenReturn(1);
-
         byte[] secret = new byte[48];
         String label = "master secret";
         byte[] seed = new byte[60];
@@ -60,16 +50,13 @@ public class PseudoRandomFunctionTest {
         r.nextBytes(seed);
         int size = 48;
 
-        byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        byte[] result1 = PRF(new HMac(DigestFactory.createSHA256()), secret, label, seed, size);
         byte[] result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
         assertArrayEquals(result1, result2);
 
-        // Stub method calls
-        when(mockedParameters.getPrfAlgorithm()).thenReturn(2);
-
-        result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        result1 = PRF(new HMac(DigestFactory.createSHA384()), secret, label, seed, size);
         result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
@@ -118,7 +105,7 @@ public class PseudoRandomFunctionTest {
         r.nextBytes(seed);
         int size = 48;
 
-        byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
+        byte[] result1 = PRF_legacy(secret, label, seed, size);
 
         byte[] result2 =
                 PseudoRandomFunction.compute(
@@ -128,7 +115,7 @@ public class PseudoRandomFunctionTest {
 
         String new_label = "extended master secret";
 
-        result1 = TlsUtils.PRF_legacy(secret, new_label, seed, size);
+        result1 = PRF_legacy(secret, new_label, seed, size);
 
         result2 =
                 PseudoRandomFunction.compute(
@@ -163,7 +150,7 @@ public class PseudoRandomFunctionTest {
         byte[] seed = new byte[60];
         int size = 48;
 
-        byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
+        byte[] result1 = PRF_legacy(secret, label, seed, size);
         byte[] result2 = PseudoRandomFunction.compute(prfAlgorithm, secret, label, seed, size);
         assertArrayEquals(result1, result2);
 
@@ -182,7 +169,7 @@ public class PseudoRandomFunctionTest {
                         ArrayConverter.hexStringToByteArray(
                                 "c8c9c788adbd9dc72b5dd0635f9e2576e09c87b67e045c026ffa3281069601fd594c07e445947b545a746fcbc094e12427e0286be2199300925a81be02bf5467"));
         result1 =
-                TlsUtils.PRF_legacy(
+                PRF_legacy(
                         message.getComputations().getPremasterSecret().getValue(),
                         label,
                         message.getComputations().getClientServerRandom().getValue(),
@@ -204,7 +191,7 @@ public class PseudoRandomFunctionTest {
         byte[] serverClientRandom =
                 ArrayConverter.hexStringToByteArray(
                         "4a8135d1217ebada1c70cb4ce99ff11dc8c8ca4ffc3c48a9f3f2143588a8fec147a6c3da4d36df18cf075eb7de187d83c7e3b7fd27124741a4b8809bed4f43ed9a434ce59c6a33277be96d8ef27b8e6a59d70bf6a04a86f04dfc37ab69ad90da53dfc1ea27f60a32ee7608b2197943bf8673dbe68003277bfd40b40d18b1a3bf17631f03fb5f59e65ef9b581bb6494e7304e2eaffb07ff7356cf62db1c44f4e4c15614909a3f2980c1908da2200924a23bc037963c204048cc77b1bcab5e6c9ef2c32928bcbdc0b664535885d46a9d4af4104eba4d7428c5741cf1c74bbd54d8e7ea16eaa126218286639a740fc39173e8989aea7f4b4440e1cad321315911fc");
-        result1 = TlsUtils.PRF_legacy(result1, "key expansion", serverClientRandom, 136);
+        result1 = PRF_legacy(result1, "key expansion", serverClientRandom, 136);
         result2 =
                 PseudoRandomFunction.compute(
                         PRFAlgorithm.TLS_PRF_LEGACY,
@@ -213,5 +200,64 @@ public class PseudoRandomFunctionTest {
                         serverClientRandom,
                         136);
         assertArrayEquals(result1, result2);
+    }
+
+    // The following PRF code is borrowed from BouncyCastle v1.80
+    // Import required as the methods are private within the BouncyCastle library
+    // Modified to accept raw values instead of TLSKeyMaterialSpec
+    // https://github.com/bcgit/bc-java/blob/r1rv80/prov/src/main/java/org/bouncycastle/jcajce/provider/symmetric/TLSKDF.java
+
+    private byte[] PRF(Mac prf, byte[] secret, String labelStr, byte[] seed, int size) {
+        byte[] label = Strings.toByteArray(labelStr);
+        byte[] labelSeed = Arrays.concatenate(label, seed);
+
+        byte[] buf = new byte[size];
+
+        hmac_hash(prf, secret, labelSeed, buf);
+
+        return buf;
+    }
+
+    private static byte[] PRF_legacy(byte[] secret, String labelStr, byte[] seed, int size) {
+        Mac md5Hmac = new HMac(DigestFactory.createMD5());
+        Mac sha1HMac = new HMac(DigestFactory.createSHA1());
+
+        byte[] label = Strings.toByteArray(labelStr);
+        byte[] labelSeed = Arrays.concatenate(label, seed);
+
+        int s_half = (secret.length + 1) / 2;
+        byte[] s1 = new byte[s_half];
+        byte[] s2 = new byte[s_half];
+        System.arraycopy(secret, 0, s1, 0, s_half);
+        System.arraycopy(secret, secret.length - s_half, s2, 0, s_half);
+
+        byte[] b1 = new byte[size];
+        byte[] b2 = new byte[size];
+
+        hmac_hash(md5Hmac, s1, labelSeed, b1);
+        hmac_hash(sha1HMac, s2, labelSeed, b2);
+
+        for (int i = 0; i < size; i++) {
+            b1[i] ^= b2[i];
+        }
+        return b1;
+    }
+
+    private static void hmac_hash(Mac mac, byte[] secret, byte[] seed, byte[] out) {
+        mac.init(new KeyParameter(secret));
+        byte[] a = seed;
+        int size = mac.getMacSize();
+        int iterations = (out.length + size - 1) / size;
+        byte[] buf = new byte[mac.getMacSize()];
+        byte[] buf2 = new byte[mac.getMacSize()];
+        for (int i = 0; i < iterations; i++) {
+            mac.update(a, 0, a.length);
+            mac.doFinal(buf, 0);
+            a = buf;
+            mac.update(a, 0, a.length);
+            mac.update(seed, 0, seed.length);
+            mac.doFinal(buf2, 0);
+            System.arraycopy(buf2, 0, out, (size * i), Math.min(size, out.length - (size * i)));
+        }
     }
 }

@@ -14,13 +14,7 @@ import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.exception.PreparationException;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.Bits;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -34,8 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.tls.HashAlgorithm;
-import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.crypto.util.DigestFactory;
 
 public class PWDComputations extends KeyExchangeComputations {
 
@@ -66,7 +59,7 @@ public class PWDComputations extends KeyExchangeComputations {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
         if (salt == null) {
-            Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
+            Digest digest = DigestFactory.createSHA256();
             base = new byte[digest.getDigestSize()];
             byte[] usernamePW =
                     (chooser.getClientPWDUsername() + chooser.getPWDPassword())
