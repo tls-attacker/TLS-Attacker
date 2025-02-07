@@ -999,7 +999,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public BigInteger getDhKeyExchangePeerPublicKey() {
         KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
-        if (algorithm.isKeyExchangeStaticDh()) {
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
                     .getChooser()
@@ -1016,7 +1016,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public BigInteger getDhKeyExchangeModulus() {
         KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
-        if (algorithm.isKeyExchangeStaticDh()) {
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext().getPeerX509Context().getChooser().getSubjectDhModulus();
         } else {
             return getServerEphemeralDhModulus();
@@ -1026,7 +1026,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public BigInteger getDhKeyExchangeGenerator() {
         KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
-        if (algorithm.isKeyExchangeStaticDh()) {
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
                     .getChooser()
@@ -1039,7 +1039,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public BigInteger getDhKeyExchangePrivateKey() {
         KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
-        if (algorithm.isKeyExchangeStaticDh()) {
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getTalkingX509Context()
                     .getChooser()
@@ -1056,7 +1056,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public Point getEcKeyExchangePeerPublicKey() {
         KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
-        if (algorithm.isKeyExchangeStaticEcdh()) {
+        if (algorithm != null && algorithm.isKeyExchangeStaticEcdh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
                     .getChooser()
@@ -1073,7 +1073,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public BigInteger getEcKeyExchangePrivateKey() {
         KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
-        if (algorithm.isKeyExchangeStaticEcdh()) {
+        if (algorithm != null && algorithm.isKeyExchangeStaticEcdh()) {
             return context.getTlsContext()
                     .getTalkingX509Context()
                     .getChooser()
