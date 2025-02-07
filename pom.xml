@@ -262,12 +262,16 @@
             <plugins>
                 <!--################# default lifecycle plugins #################-->
                 <!-- Plugin to compile source files -->
+                <!-- Compile source files -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
+                        <compilerArgs>
+                            <compilerArg>-proc:full</compilerArg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
                 <!-- Plugin to execute unit tests -->
@@ -444,7 +448,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.20.0</version>
+                            <version>1.25.2</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>
