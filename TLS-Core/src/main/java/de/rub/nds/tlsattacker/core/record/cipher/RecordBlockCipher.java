@@ -30,8 +30,10 @@ public final class RecordBlockCipher extends RecordCipher {
 
     /** indicates if explicit IV values should be used (as in TLS 1.1 and higher) */
     private boolean useExplicitIv;
+
     /** mac for verification of incoming messages */
     private WrappedMac readMac;
+
     /** mac object for macing outgoing messages */
     private WrappedMac writeMac;
 

@@ -21,6 +21,7 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     /** Length of the serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger publicKeyLength;
+
     /** serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;
