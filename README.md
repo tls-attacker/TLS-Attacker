@@ -152,7 +152,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
@@ -160,7 +160,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
                     <EllipticCurves/>
                 </extensions>
             </ClientHello>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <expectedMessages>
@@ -174,13 +174,13 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
         </expectedMessages>
     </Receive>
     <Send>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange>
                 <computations/>
             </RSAClientKeyExchange>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <expectedMessages>
@@ -222,7 +222,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
@@ -230,7 +230,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
                     <EllipticCurves/>
                 </extensions>
             </ClientHello>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <expectedMessages>
@@ -244,13 +244,13 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         </expectedMessages>
     </Receive>
     <Send>
-        <messages>
+        <expectedMessages>
             <RSAClientKeyExchange>
                 <computations/>
             </RSAClientKeyExchange>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </expectedMessages>
     </Send>
     <Receive>
         <expectedMessages>
@@ -259,7 +259,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         </expectedMessages>
     </Receive>
     <Send>
-        <messages>
+        <expectedMessages>
             <Heartbeat>
                 <payloadLength>
                     <IntegerExplicitValueModification>
@@ -267,12 +267,12 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
                     </IntegerExplicitValueModification>
                 </payloadLength>
             </Heartbeat>
-        </messages>
+        </expectedMessages>
     </Send>
     <Receive>
-        <messages>
+        <expectedMessages>
             <Heartbeat/>
-        </messages>
+        </expectedMessages>
     </Receive>
 </workflowTrace>
 ```
