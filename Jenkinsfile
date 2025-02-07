@@ -59,8 +59,7 @@ pipeline {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // `package` goal is required here to load modules in reactor and avoid dependency resolve conflicts
-//                    sh 'mvn -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
-                    sh 'mvn -DskipTests=true package spotbugs:spotbugs'
+                    sh 'mvn -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
                 }
             }
             post {
