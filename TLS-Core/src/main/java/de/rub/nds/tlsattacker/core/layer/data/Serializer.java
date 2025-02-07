@@ -61,7 +61,7 @@ public abstract class Serializer<T> {
                             + length
                             + " bytes.");
         }
-        appendBytes(ArrayConverter.intToBytes(i, length));
+        appendBytes(bytes);
     }
 
     /**

@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -26,23 +26,30 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public EndOfEarlyDataHandler getHandler(TlsContext tlsContext) {
-        return new EndOfEarlyDataHandler(tlsContext);
+    public EndOfEarlyDataHandler getHandler(Context context) {
+        return new EndOfEarlyDataHandler(context.getTlsContext());
     }
 
     @Override
-    public EndOfEarlyDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EndOfEarlyDataParser(stream, tlsContext);
+    public EndOfEarlyDataParser getParser(Context context, InputStream stream) {
+        return new EndOfEarlyDataParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EndOfEarlyDataPreparator getPreparator(TlsContext tlsContext) {
-        return new EndOfEarlyDataPreparator(tlsContext.getChooser(), this);
+    public EndOfEarlyDataPreparator getPreparator(Context context) {
+        return new EndOfEarlyDataPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
+    public EndOfEarlyDataSerializer getSerializer(Context context) {
         return new EndOfEarlyDataSerializer(this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("EndOfEarlyDataMessage: <empty>");
+        return sb.toString();
     }
 
     @Override

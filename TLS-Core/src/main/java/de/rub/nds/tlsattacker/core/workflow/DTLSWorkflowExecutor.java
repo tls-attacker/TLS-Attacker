@@ -35,6 +35,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
+        LOGGER.debug("Starting execution of WorkflowTrace");
         if (config.isWorkflowExecutorShouldOpen()) {
             try {
                 initAllLayer();
@@ -189,28 +190,28 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             if (action instanceof ReceivingAction) {
                 for (String alias : action.getAllAliases()) {
                     if (aliases.contains(alias)) {
-                        return i + 1;
+                        return i;
                     }
                 }
-                return i + 1;
+                return i;
             }
         }
         return 0; // We need to restart from the beginning
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
-        LOGGER.info("Executing retransmission of last sent flight");
+        LOGGER.debug("Executing retransmission for {}", action.getClass().getSimpleName());
         for (String alias : action.getAllSendingAliases()) {
             LOGGER.debug("Retransmitting records for alias {}", alias);
-            state.getTlsContext()
+            state.getTlsContext(alias)
                     .getRecordLayer()
                     .setLayerConfiguration(
                             new SpecificSendLayerConfiguration(
                                     ImplementedLayers.RECORD, action.getSentRecords()));
             try {
-                state.getTlsContext().getRecordLayer().sendConfiguration();
+                state.getTlsContext(alias).getRecordLayer().sendConfiguration();
             } catch (IOException ex) {
-                state.getTlsContext().setReceivedTransportHandlerException(true);
+                state.getTlsContext(alias).setReceivedTransportHandlerException(true);
                 LOGGER.warn("Received IOException during retransmission", ex);
             }
         }

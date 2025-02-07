@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.state.quic;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +38,7 @@ public class QuicContext extends LayerContext {
     public static final byte[] DEFAULT_INITIAL_PACKET_TOKEN = new byte[] {};
     public static final int DEFAULT_INITIAL_PACKET_NUMBER = 0;
 
-    private byte[] quicVersion;
+    private QuicVersion quicVersion;
 
     private byte[] firstDestinationConnectionId;
     private byte[] destinationConnectionId;
@@ -141,7 +141,7 @@ public class QuicContext extends LayerContext {
 
     private void init(Context context) {
         this.quicVersion = context.getConfig().getQuicVersion();
-        this.initialSalt = QuicVersion.getFromVersionBytes(quicVersion).getInitialSalt();
+        this.initialSalt = quicVersion.getInitialSalt();
         this.initialCipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         this.initialHKDFAlgorithm = AlgorithmResolver.getHKDFAlgorithm(getInitialCipherSuite());
         try {
@@ -162,7 +162,7 @@ public class QuicContext extends LayerContext {
 
     private byte[] generateRandomConnectionId(int length) {
         byte[] arr = new byte[length];
-        new Random().nextBytes(arr);
+        RandomHelper.getRandom().nextBytes(arr);
         return arr;
     }
 
@@ -318,7 +318,7 @@ public class QuicContext extends LayerContext {
         return initialAeadCipher;
     }
 
-    public byte[] getQuicVersion() {
+    public QuicVersion getQuicVersion() {
         return quicVersion;
     }
 

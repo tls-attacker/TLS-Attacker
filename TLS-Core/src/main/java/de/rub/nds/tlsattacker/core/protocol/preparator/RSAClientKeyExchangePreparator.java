@@ -43,8 +43,9 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         msg.getComputations().setModulus(chooser.getRsaKeyExchangeModulus());
         msg.getComputations().setPublicExponent(chooser.getRsaKeyExchangePublicExponent());
         BigInteger modulus = msg.getComputations().getModulus().getValue();
-        int keyByteLength = modulus.bitLength() / Bits.IN_A_BYTE;
-        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
+        int ceiledModulusByteLength =
+                (int) Math.ceil((double) modulus.bitLength() / Bits.IN_A_BYTE);
+        int randomByteLength = ceiledModulusByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
         // If the key is really really short it might be impossible to add
         // padding;
         if (randomByteLength > 0) {
@@ -74,10 +75,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                         msg.getComputations().getPublicExponent().getValue().abs(),
                         msg.getComputations().getModulus().getValue().abs());
         encrypted =
-                ArrayConverter.bigIntegerToByteArray(
-                        biEncrypted,
-                        msg.getComputations().getModulus().getValue().bitLength() / Bits.IN_A_BYTE,
-                        true);
+                ArrayConverter.bigIntegerToByteArray(biEncrypted, ceiledModulusByteLength, true);
         prepareSerializedPublicKey(msg);
         premasterSecret = manipulatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
@@ -146,7 +144,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     public byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret =
                 new BigInteger(1, msg.getPublicKey().getValue());
-        BigInteger serverPrivateKey = chooser.getServerX509Chooser().getConfig().getRsaPrivateKey();
+        BigInteger serverPrivateKey = chooser.getServerX509Chooser().getSubjectRsaPrivateKey();
         if (chooser.getServerX509Chooser().getSubjectRsaModulus().equals(BigInteger.ZERO)) {
             LOGGER.warn("RSA modulus is zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];

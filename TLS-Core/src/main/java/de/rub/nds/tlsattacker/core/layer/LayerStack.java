@@ -65,7 +65,7 @@ public class LayerStack {
     }
 
     public ProtocolLayer getHighestLayer() {
-        return getLayerList().get(0);
+        return getTopConfiguredLayer();
     }
 
     public ProtocolLayer getLowestLayer() {
@@ -107,11 +107,7 @@ public class LayerStack {
 
         // Gather results
         List<LayerProcessingResult<?>> resultList = new LinkedList<>();
-        getLayerList()
-                .forEach(
-                        layer -> {
-                            resultList.add(layer.getLayerResult());
-                        });
+        getLayerList().forEach(layer -> resultList.add(layer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }
 
@@ -130,7 +126,7 @@ public class LayerStack {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
+                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry. Expected "
                             + getLayerList().size()
                             + " but found "
                             + layerConfigurationList.size());
@@ -143,14 +139,10 @@ public class LayerStack {
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
-        // only call receive on top layer if the configuration defines expected containers
-        // enables receive actions that only expect containers on lower levels (like quic frames
-        // that do not contain tls messages)
-        ProtocolLayer topLayer = getLayerList().get(0);
-        if (!(topLayer.getLayerConfiguration() instanceof SpecificReceiveLayerConfiguration
-                && topLayer.getLayerConfiguration().getContainerList().isEmpty())) {
-            topLayer.receiveData();
-        }
+
+        ProtocolLayer topLayer = getTopConfiguredLayer();
+        topLayer.receiveData();
+
         // for quic frame specific actions like the ReceiveQuicTillAction receive data until
         // configuration is satisfied
         // if maxNumberOfQuicPacketsToReceive is set in layer config the receive function is only
@@ -172,7 +164,10 @@ public class LayerStack {
                     remainingTries--;
                 }
             } else {
-                while (quicFrameLayer.get().shouldContinueProcessing()) {
+                // TODO: If we eventually decide to drop this part of the code, the
+                // hasExperienceTimeout can be removed as well in the QuicFrameLayer
+                while (quicFrameLayer.get().shouldContinueProcessing()
+                        && !((QuicFrameLayer) quicFrameLayer.get()).hasExperiencedTimeout()) {
                     quicFrameLayer.get().receiveData();
                 }
             }
@@ -181,20 +176,47 @@ public class LayerStack {
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
             ProtocolLayer layer = getLayerList().get(i);
-            if (layer.getLayerConfiguration() != null && !layer.executedAsPlanned()) {
+            if (layer.getLayerConfiguration() != null
+                    && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)
+                    && !layer.executedAsPlanned()) {
                 try {
                     layer.receiveData();
                 } catch (UnsupportedOperationException e) {
                     // most layers dont know how to receive data themselves
                     LOGGER.debug(
-                            "Skipping layer "
-                                    + layer.getLayerType()
-                                    + ". Does not support direct data read.");
+                            "Skipping layer {}. Does not support direct data read.",
+                            layer.getLayerType());
                 }
             }
         }
 
         return gatherResults();
+    }
+
+    /**
+     * Returns the top layer that is not ignored. If all layers are ignored, we throw a
+     * RuntimeException.
+     *
+     * @return
+     */
+    private ProtocolLayer getTopConfiguredLayer() {
+        for (int i = 0; i < getLayerList().size(); i++) {
+            ProtocolLayer layer = getLayerList().get(i);
+            if (layer.getLayerConfiguration() != null
+                    && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)) {
+                return layer;
+            }
+        }
+        StringBuilder debugInformation = new StringBuilder();
+        for (ProtocolLayer layer : getLayerList()) {
+            debugInformation.append(layer.getLayerType());
+            debugInformation.append(" ");
+            debugInformation.append(layer.getLayerConfiguration());
+            debugInformation.append("\n");
+        }
+        throw new RuntimeException(
+                "No configured layer found. All layers are ignored. "
+                        + debugInformation.toString());
     }
 
     /**

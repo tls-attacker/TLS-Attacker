@@ -35,7 +35,7 @@ public class RecordTest {
     @BeforeEach
     public void setUp() {
         record = new Record();
-        Config config = Config.createConfig();
+        Config config = new Config();
         context = new Context(new State(config), new InboundConnection());
     }
 

@@ -9,13 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeReceiverContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,7 +66,9 @@ public class EncryptedClientHelloExtensionHandler
             // RFC 9180, Section 7.1
             byte[] info =
                     ArrayConverter.concatenate(
-                            "tls ech".getBytes(), new byte[] {0x00}, echConfig.getEchConfigBytes());
+                            "tls ech".getBytes(StandardCharsets.US_ASCII),
+                            new byte[] {0x00},
+                            echConfig.getEchConfigBytes());
             LOGGER.debug("Info: {}", info);
 
             byte[] payload = message.getPayload().getValue();

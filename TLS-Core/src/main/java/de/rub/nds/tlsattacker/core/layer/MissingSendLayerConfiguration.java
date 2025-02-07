@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * Send configuration that sends a list of containers to the recipient.
@@ -21,7 +22,7 @@ public class MissingSendLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {
 
     public MissingSendLayerConfiguration(LayerType layerType) {
-        super(layerType, (List) null);
+        super(layerType, (List<Container>) null);
     }
 
     @Override
@@ -37,5 +38,10 @@ public class MissingSendLayerConfiguration<Container extends DataContainer>
     @Override
     public String toCompactString() {
         return "(" + getLayerType().getName() + ") Not configured";
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return level.isMoreSpecificThan(Level.INFO); // DEBUG, TRACE etc should log it.
     }
 }

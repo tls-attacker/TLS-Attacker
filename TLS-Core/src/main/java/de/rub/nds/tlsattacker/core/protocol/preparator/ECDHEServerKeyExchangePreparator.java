@@ -15,12 +15,13 @@ import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,7 +53,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         prepareEcDhParams();
 
         SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooseSignatureAndHashAlgorithm();
+        signHashAlgo =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, false);
         prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
         byte[] signature = generateSignature(signHashAlgo, generateSignatureContents(msg));
         prepareSignature(msg, signature);

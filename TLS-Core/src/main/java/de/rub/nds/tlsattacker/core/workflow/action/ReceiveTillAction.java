@@ -10,12 +10,15 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement(name = "ReceiveTill")
@@ -107,6 +110,13 @@ public class ReceiveTillAction extends CommonReceiveAction {
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        return ActionHelperUtil.createReceiveTillConfiguration(tlsContext, waitTillMessage);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new ReceiveTillLayerConfiguration(ImplementedLayers.SSL2, waitTillMessage));
+        configurationList.add(
+                new ReceiveTillLayerConfiguration<ProtocolMessage>(
+                        ImplementedLayers.MESSAGE, waitTillMessage));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 }

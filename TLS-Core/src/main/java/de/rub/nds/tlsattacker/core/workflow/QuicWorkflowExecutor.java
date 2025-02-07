@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicTransportErrorCodes;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -43,7 +44,8 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
         try {
             initAllLayer();
         } catch (IOException ex) {
-            throw new WorkflowExecutionException(ex);
+            throw new WorkflowExecutionException(
+                    "Workflow not executed, could not initialize transport handler: ", ex);
         }
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
@@ -55,19 +57,8 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     && (tlsActions.get(i - 1) instanceof ReceivingAction)) {
                 retransmissionActionIndex = i;
             }
-            if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
-                break;
-            }
-            if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
-                break;
-            }
-            if ((config.getStopActionsAfterIOException() && isIoException())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+
+            if (shouldStopDueToErrorCondition()) {
                 break;
             }
 
@@ -97,6 +88,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
                 } else if (retransmissions == config.getMaxUDPRetransmissions()) {
+                    LOGGER.debug("Hit max retransmissions, stopping workflow");
                     break;
                 } else {
                     i = retransmissionActionIndex - 1;
@@ -105,13 +97,12 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        boolean executedAsPlanned = state.getWorkflowTrace().executedAsPlanned();
-
         if (config.isFinishWithCloseNotify()) {
             try {
-                sendConnectionCloseFrame(executedAsPlanned);
-            } catch (IOException e) {
-                LOGGER.error("Problem while sending ConnectionCloseFrame", e);
+                sendConnectionCloseFrame(
+                        state.getContext().getQuicContext().isApplicationSecretsInitialized());
+            } catch (IOException ex) {
+                LOGGER.warn("Error while sending ConnectionCloseFrame", ex);
             }
         }
 
@@ -121,22 +112,18 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             closeConnection();
         }
 
-        if (executedAsPlanned) {
-            LOGGER.info("Workflow executed as planned.");
-        } else {
-            LOGGER.info("Workflow was not executed as planned.");
-        }
-
         if (config.isResetWorkflowTracesBeforeSaving()) {
+            LOGGER.debug("Resetting WorkflowTrace");
             state.getWorkflowTrace().reset();
         }
 
         try {
             if (getAfterExecutionCallback() != null) {
+                LOGGER.debug("Executing AfterExecutionCallback");
                 getAfterExecutionCallback().apply(state);
             }
         } catch (Exception ex) {
-            LOGGER.debug("Error during AfterExecutionCallback", ex);
+            LOGGER.error("Error during AfterExecutionCallback", ex);
         }
     }
 
@@ -152,11 +139,12 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             sendAction.setConfiguredQuicPackets(List.of(new InitialPacket()));
         }
 
-        sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+        sendAction.addActionOption(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
 
     private void executeRetransmission(SendingAction action) {
+        if (shouldStopDueToErrorCondition()) return;
         LOGGER.info("Executing retransmission of last sent flight");
         QuicPacketLayer packetLayer =
                 (QuicPacketLayer)
@@ -172,6 +160,35 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             packetLayer.sendConfiguration();
         } catch (IOException ex) {
             state.getTlsContext().setReceivedTransportHandlerException(true);
+            LOGGER.warn("Received IOException during retransmission", ex);
         }
+    }
+
+    /**
+     * Check if we have any error conditions like IOException, Alert or Connection Close to abort
+     */
+    private boolean shouldStopDueToErrorCondition() {
+        if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseframe())) {
+            LOGGER.debug(
+                    "Skipping all Actions, received ConnectionCloseFrame, StopActionsAfterConnCloseFrame active");
+            return true;
+        }
+
+        if ((config.getStopActionsAfterIOException() && isIoException())) {
+            LOGGER.debug(
+                    "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+            return true;
+        }
+        return false;
+    }
+
+    /** Check if a at least one QUIC context received a connection close frame. */
+    public boolean hasReceivedConnectionCloseframe() {
+        for (Context ctx : state.getAllContexts()) {
+            if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

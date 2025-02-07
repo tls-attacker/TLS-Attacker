@@ -9,21 +9,17 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDataMessage> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EndOfEarlyDataHandler(TlsContext tlsContext) {
@@ -32,26 +28,48 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
 
     @Override
     public void adjustContext(EndOfEarlyDataMessage message) {
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            adjustClientCipherAfterEarly();
+        // nothing to adjust
+    }
+
+    @Override
+    public void adjustContextAfterSerialize(EndOfEarlyDataMessage message) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            setClientRecordCipher();
+            setServertRecordCipher();
         }
     }
 
-    private void adjustClientCipherAfterEarly() {
-        try {
-            tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-            LOGGER.debug("Setting cipher for client to use handshake secrets");
-            KeySet clientKeySet =
-                    KeySetGenerator.generateKeySet(
-                            tlsContext,
-                            tlsContext.getChooser().getSelectedProtocolVersion(),
-                            tlsContext.getActiveClientKeySetType());
-            RecordCipher recordCipherClient =
-                    RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false);
-            tlsContext.getRecordLayer().updateDecryptionCipher(recordCipherClient);
-        } catch (CryptoException | NoSuchAlgorithmException ex) {
-            LOGGER.error("Generating KeySet failed", ex);
-            throw new WorkflowExecutionException(ex);
+    private void setClientRecordCipher() {
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        KeySet keySet = tlsContext.getkeySetHandshake();
+
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext
+                    .getRecordLayer()
+                    .updateDecryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, keySet, false));
+        } else {
+            tlsContext
+                    .getRecordLayer()
+                    .updateEncryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
+        }
+    }
+
+    private void setServertRecordCipher() {
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        KeySet keySet = tlsContext.getkeySetHandshake();
+
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext
+                    .getRecordLayer()
+                    .updateDecryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
+        } else {
+            tlsContext
+                    .getRecordLayer()
+                    .updateEncryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, keySet, false));
         }
     }
 }

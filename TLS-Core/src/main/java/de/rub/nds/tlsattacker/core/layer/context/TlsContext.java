@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -36,11 +37,11 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -52,6 +53,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.Re
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.Keylogfile;
 import de.rub.nds.tlsattacker.core.state.session.IdSession;
@@ -59,6 +61,7 @@ import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -96,6 +99,9 @@ public class TlsContext extends LayerContext {
 
     /** Early traffic secret used to encrypt early data. */
     private byte[] clientEarlyTrafficSecret;
+
+    /** Handshake traffic secret in case it needs to be precalculated during early data * */
+    private KeySet keySetHandshake;
 
     /** CipherSuite used for early data. */
     private CipherSuite earlyDataCipherSuite;
@@ -483,7 +489,7 @@ public class TlsContext extends LayerContext {
 
     private List<KeyShareStoreEntry> esniServerKeyShareEntries;
 
-    private List<CipherSuite> esniServerCipherSuites = new LinkedList();
+    private List<CipherSuite> esniServerCipherSuites;
 
     private Integer esniPaddedLength;
 
@@ -517,8 +523,12 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
-        clientX509Context = new X509Context();
-        serverX509Context = new X509Context();
+        X509CertificateConfig certConfig =
+                context.getConfig()
+                        .getCertificateChainConfig()
+                        .get(CertificateDelegate.PREDEFINED_LEAF_CERT_INDEX);
+        clientX509Context = new X509Context(certConfig);
+        serverX509Context = new X509Context(certConfig);
         context.setTlsContext(this);
         init();
     }
@@ -737,7 +747,7 @@ public class TlsContext extends LayerContext {
     public void setClientSupportedProtocolVersions(
             ProtocolVersion... clientSupportedProtocolVersions) {
         this.clientSupportedProtocolVersions =
-                new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
+                new ArrayList<>(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public NamedGroup getSelectedGroup() {
@@ -870,7 +880,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientNamedGroupsList(NamedGroup... clientNamedGroupsList) {
-        this.clientNamedGroupsList = new ArrayList(Arrays.asList(clientNamedGroupsList));
+        this.clientNamedGroupsList = new ArrayList<>(Arrays.asList(clientNamedGroupsList));
     }
 
     public List<NamedGroup> getServerNamedGroupsList() {
@@ -882,7 +892,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setServerNamedGroupsList(NamedGroup... serverNamedGroupsList) {
-        this.serverNamedGroupsList = new ArrayList(Arrays.asList(serverNamedGroupsList));
+        this.serverNamedGroupsList = new ArrayList<>(Arrays.asList(serverNamedGroupsList));
     }
 
     public List<ECPointFormat> getServerPointFormatsList() {
@@ -894,7 +904,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setServerPointFormatsList(ECPointFormat... serverPointFormatsList) {
-        this.serverPointFormatsList = new ArrayList(Arrays.asList(serverPointFormatsList));
+        this.serverPointFormatsList = new ArrayList<>(Arrays.asList(serverPointFormatsList));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
@@ -909,7 +919,7 @@ public class TlsContext extends LayerContext {
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
@@ -924,7 +934,7 @@ public class TlsContext extends LayerContext {
     public void setClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
         this.clientSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(clientSupportedCertificateSignAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -936,7 +946,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSNIEntryList(SNIEntry... clientSNIEntryList) {
-        this.clientSNIEntryList = new ArrayList(Arrays.asList(clientSNIEntryList));
+        this.clientSNIEntryList = new ArrayList<>(Arrays.asList(clientSNIEntryList));
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -964,7 +974,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
-        this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
+        this.clientCertificateTypes = new ArrayList<>(Arrays.asList(clientCertificateTypes));
     }
 
     public boolean isReceivedFatalAlert() {
@@ -984,7 +994,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
-        this.clientPointFormatsList = new ArrayList(Arrays.asList(clientPointFormatsList));
+        this.clientPointFormatsList = new ArrayList<>(Arrays.asList(clientPointFormatsList));
     }
 
     public MaxFragmentLength getMaxFragmentLength() {
@@ -1022,7 +1032,7 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
         this.clientSupportedCompressions =
-                new ArrayList(Arrays.asList(clientSupportedCompressions));
+                new ArrayList<>(Arrays.asList(clientSupportedCompressions));
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
@@ -1051,7 +1061,7 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedCipherSuites(CipherSuite... clientSupportedCipherSuites) {
         this.clientSupportedCipherSuites =
-                new ArrayList(Arrays.asList(clientSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(clientSupportedCipherSuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -1066,7 +1076,7 @@ public class TlsContext extends LayerContext {
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
@@ -1081,7 +1091,7 @@ public class TlsContext extends LayerContext {
     public void setServerSupportedSignatureAlgorithmsCert(
             SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
         this.serverSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1319,8 +1329,8 @@ public class TlsContext extends LayerContext {
         this.clientKeyShareStoreEntryList = clientKeyShareStoreEntryList;
     }
 
-    public void setClientKSEntryList(KeyShareEntry... clientKSEntryList) {
-        this.clientKeyShareStoreEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
+    public void setClientKSEntryList(KeyShareStoreEntry... clientKSEntryList) {
+        this.clientKeyShareStoreEntryList = new ArrayList<>(Arrays.asList(clientKSEntryList));
     }
 
     public KeyShareStoreEntry getServerKeyShareStoreEntry() {
@@ -1357,7 +1367,7 @@ public class TlsContext extends LayerContext {
 
     public void setTokenBindingKeyParameters(
             TokenBindingKeyParameters... tokenBindingKeyParameters) {
-        this.tokenBindingKeyParameters = new ArrayList(Arrays.asList(tokenBindingKeyParameters));
+        this.tokenBindingKeyParameters = new ArrayList<>(Arrays.asList(tokenBindingKeyParameters));
     }
 
     public void setTokenBindingKeyParameters(
@@ -1630,6 +1640,20 @@ public class TlsContext extends LayerContext {
 
     public void setUseExtendedMasterSecret(boolean useExtendedMasterSecret) {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
+    }
+
+    /**
+     * @return the keySetHandshake
+     */
+    public KeySet getkeySetHandshake() {
+        return keySetHandshake;
+    }
+
+    /**
+     * @param keySetHandshake the keySetHandshake to set
+     */
+    public void setkeySetHandshake(KeySet keySetHandshake) {
+        this.keySetHandshake = keySetHandshake;
     }
 
     /**

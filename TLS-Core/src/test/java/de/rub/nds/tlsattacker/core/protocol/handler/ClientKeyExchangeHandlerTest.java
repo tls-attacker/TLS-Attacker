@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.lang3.StringUtils;
@@ -56,10 +57,10 @@ public class ClientKeyExchangeHandlerTest
         message.getComputations().setPremasterSecret(preMasterSecret);
         message.getComputations()
                 .setClientServerRandom(ArrayConverter.concatenate(clientRdm, serverRdm));
-        context.setServerRandom(serverRdm);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setPreMasterSecret(preMasterSecret);
+        tlsContext.setServerRandom(serverRdm);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        tlsContext.setPreMasterSecret(preMasterSecret);
 
         final MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");
         final MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
@@ -93,7 +94,9 @@ public class ClientKeyExchangeHandlerTest
         byte[] expectedMasterSecret =
                 ArrayConverter.concatenate(md5Digest1, md5Digest2, md5Digest3);
 
-        byte[] calculatedMasterSecret = handler.calculateMasterSecret(message);
+        byte[] calculatedMasterSecret =
+                KeyDerivator.calculateMasterSecret(
+                        tlsContext, message.getComputations().getClientServerRandom().getValue());
 
         assertArrayEquals(expectedMasterSecret, calculatedMasterSecret);
     }

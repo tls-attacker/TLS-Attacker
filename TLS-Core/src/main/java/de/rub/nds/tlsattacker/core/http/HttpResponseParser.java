@@ -8,8 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.http;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.http.header.*;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
+import de.rub.nds.tlsattacker.core.http.header.DateHeader;
+import de.rub.nds.tlsattacker.core.http.header.ExpiresHeader;
+import de.rub.nds.tlsattacker.core.http.header.GenericHttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.HostHeader;
+import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.LocationHeader;
+import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -54,27 +61,27 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
                             .replace("\n", "")
                             .replace("\r", "")
                             .trim();
-            switch (headerName) {
-                case "Host":
+            switch (headerName.toLowerCase()) {
+                case "host":
                     header = new HostHeader();
                     break;
-                case "Sec-Token-Binding":
+                case "sec-token-binding":
                     header = new TokenBindingHeader();
                     break;
-                case "Location":
+                case "location":
                     header = new LocationHeader();
                     break;
-                case "Content-Length":
+                case "content-length":
                     header = new ContentLengthHeader();
                     contentLengthHeader = (ContentLengthHeader) header;
                     break;
-                case "Expires":
+                case "expires":
                     header = new ExpiresHeader();
                     break;
-                case "Date":
+                case "date":
                     header = new DateHeader();
                     break;
-                case "Transfer-Encoding":
+                case "transfer-encoding":
                     header = new GenericHttpHeader();
                     transferEncodingHeader = (GenericHttpHeader) header;
                     break;
@@ -162,6 +169,6 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         }
 
         message.setResponseContent(httpMessageBuilder.toString());
-        LOGGER.debug(() -> new String(getAlreadyParsed()));
+        LOGGER.debug(() -> new String(getAlreadyParsed(), StandardCharsets.UTF_8));
     }
 }

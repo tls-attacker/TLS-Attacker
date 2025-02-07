@@ -8,12 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadFixedRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
@@ -44,15 +51,15 @@ public class NewSessionTicketPreparatorTest
     @Test
     @Override
     public void testPrepare() throws CryptoException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
-        context.setSelectedCompressionMethod(CompressionMethod.NULL);
-        context.setMasterSecret(
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
+        tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
+        tlsContext.setMasterSecret(
                 ArrayConverter.hexStringToByteArray(
                         "53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b")); // SessionTicketMS+SessionTicketMS+SessionTicketMS+
-        context.setClientAuthentication(false);
+        tlsContext.setClientAuthentication(false);
         TimeHelper.setProvider(new FixedTimeProvider(152113433000l)); // 0x09111119
-        context.getConfig().setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
+        tlsContext.getConfig().setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
 
         RandomHelper.setRandom(new BadFixedRandom((byte) 0x55));
         preparator.prepare();
@@ -70,7 +77,7 @@ public class NewSessionTicketPreparatorTest
                 StaticTicketCrypto.decrypt(
                         CipherAlgorithm.AES_128_CBC,
                         message.getTicket().getEncryptedState().getValue(),
-                        context.getChooser().getConfig().getSessionTicketEncryptionKey(),
+                        tlsContext.getChooser().getConfig().getSessionTicketEncryptionKey(),
                         message.getTicket().getIV().getValue());
         assertArrayEquals(
                 decrypted,
@@ -112,6 +119,6 @@ public class NewSessionTicketPreparatorTest
                         MacAlgorithm.HMAC_SHA256,
                         message.getTicket().getMAC().getValue(),
                         macinput,
-                        context.getChooser().getConfig().getSessionTicketKeyHMAC()));
+                        tlsContext.getChooser().getConfig().getSessionTicketKeyHMAC()));
     }
 }

@@ -13,16 +13,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -52,7 +49,7 @@ public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private TlsContext context;
+    private TlsContext tlsContext;
 
     @BeforeAll
     public static void setUpClass() {
@@ -61,7 +58,7 @@ public class CyclicParserSerializerTest {
 
     @BeforeEach
     public void setUp() {
-        context = new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
+        tlsContext = new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
     }
 
     public static Stream<Arguments> provideParserSerializerTestVectors() {
@@ -77,11 +74,6 @@ public class CyclicParserSerializerTest {
             String testName = messageClass.getSimpleName().replace("Message", "");
             if (Modifier.isAbstract(messageClass.getModifiers())) {
                 LOGGER.info("Encountered abstract message class, skipping it: {}", testName);
-                continue;
-            }
-            if (messageClass == DtlsHandshakeMessageFragment.class) {
-                LOGGER.debug(
-                        "Message class is DtlsHandshakeMessageFragment, will not be included in the provided test vectors");
                 continue;
             }
 
@@ -171,11 +163,11 @@ public class CyclicParserSerializerTest {
         ProtocolMessagePreparator<? extends ProtocolMessage> preparator = null;
         ProtocolMessageSerializer<? extends ProtocolMessage> serializer = null;
 
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        context.setSelectedProtocolVersion(protocolVersion);
-        context.getConfig().setHighestProtocolVersion(protocolVersion);
-        context.setLastRecordVersion(protocolVersion);
-        context.getConfig().setDefaultHighestClientProtocolVersion(protocolVersion);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setSelectedProtocolVersion(protocolVersion);
+        tlsContext.getConfig().setHighestProtocolVersion(protocolVersion);
+        tlsContext.setLastRecordVersion(protocolVersion);
+        tlsContext.getConfig().setDefaultHighestClientProtocolVersion(protocolVersion);
 
         Constructor<? extends ProtocolMessage> messageConstructor;
         if (useDefaultMessageConstructor) {
@@ -192,7 +184,7 @@ public class CyclicParserSerializerTest {
             fail("Could not create message instance for test " + testName);
         }
 
-        preparator = message.getPreparator(context);
+        preparator = message.getPreparator(tlsContext.getContext());
 
         // Skip test if preparation is not supported yet
         try {
@@ -203,25 +195,24 @@ public class CyclicParserSerializerTest {
                     "Preparator for test " + testName + " is not yet supported");
         }
 
-        serializer = message.getSerializer(context);
+        serializer = message.getSerializer(tlsContext.getContext());
         byte[] serializedMessage = serializer.serialize();
 
         byte[] messageHeader = null;
-        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
-                || message instanceof SSL2Message) {
+        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             int handshakeHeaderLength;
-            if (message instanceof SSL2Message) {
-                handshakeHeaderLength = SSL2ByteLength.LENGTH + SSL2ByteLength.MESSAGE_TYPE;
-            } else {
-                handshakeHeaderLength =
-                        HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
-            }
+
+            handshakeHeaderLength =
+                    HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+
             messageHeader = Arrays.copyOfRange(serializedMessage, 0, handshakeHeaderLength);
             serializedMessage =
                     Arrays.copyOfRange(
                             serializedMessage, handshakeHeaderLength, serializedMessage.length);
         }
-        parser = message.getParser(context, new ByteArrayInputStream(serializedMessage));
+        parser =
+                message.getParser(
+                        tlsContext.getContext(), new ByteArrayInputStream(serializedMessage));
         try {
             parser.parse(message);
         } catch (UnsupportedOperationException e) {
@@ -231,9 +222,8 @@ public class CyclicParserSerializerTest {
             LOGGER.info("EOS");
         }
 
-        serializer = message.getSerializer(context);
-        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
-                || message instanceof SSL2Message) {
+        serializer = message.getSerializer(tlsContext.getContext());
+        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             assertArrayEquals(
                     ArrayConverter.concatenate(messageHeader, serializedMessage),
                     serializer.serialize());
@@ -298,10 +288,8 @@ public class CyclicParserSerializerTest {
 
     private static Constructor getMessageConstructor(Class someClass) {
         for (Constructor c : someClass.getConstructors()) {
-            if (c.getParameterCount() == 1) {
-                if (c.getParameterTypes()[0].equals(Config.class)) {
-                    return c;
-                }
+            if (c.getParameterCount() == 1 && c.getParameterTypes()[0].equals(Config.class)) {
+                return c;
             }
         }
         LOGGER.warn("Could not find Constructor: {}", someClass.getSimpleName());

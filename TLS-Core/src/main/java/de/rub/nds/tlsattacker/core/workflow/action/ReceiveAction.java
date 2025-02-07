@@ -9,13 +9,16 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -30,12 +33,19 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "Receive")
 public class ReceiveAction extends CommonReceiveAction implements StaticReceivingAction {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SSL2Message> expectedSSL2Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Record> expectedRecords;
@@ -141,6 +151,15 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this(actionOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
+    public ReceiveAction(Set<ActionOption> actionOptions, SSL2Message... messages) {
+        setActionOptions(actionOptions);
+        this.expectedSSL2Messages = new ArrayList<>(Arrays.asList(messages));
+    }
+
+    public ReceiveAction(SSL2Message... messages) {
+        this.expectedSSL2Messages = new ArrayList<>(Arrays.asList(messages));
+    }
+
     public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(Set.of(actionOption));
@@ -171,11 +190,12 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                         + (isExecuted() ? "\n" : "(not executed)\n")
                         + "\tExpected: "
                         + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                                getExpectedDataContainerLists());
+                                getExpectedDataContainerLists(), LOGGER.getLevel());
         if (isExecuted()) {
             string +=
                     "\n\tActual: "
-                            + LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult());
+                            + LogPrinter.toHumanReadableMultiLine(
+                                    getLayerStackProcessingResult(), LOGGER.getLevel());
         }
         return string;
     }
@@ -183,7 +203,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     @Override
     public String toCompactString() {
         return LogPrinter.toHumanReadableMultiLineContainerListArray(
-                getExpectedDataContainerLists());
+                getExpectedDataContainerLists(), LOGGER.getLevel());
     }
 
     public List<ProtocolMessage> getExpectedMessages() {
@@ -196,6 +216,18 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     public void setExpectedMessages(ProtocolMessage... expectedMessages) {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+    }
+
+    public List<SSL2Message> getExpectedSSL2Messages() {
+        return expectedSSL2Messages;
+    }
+
+    public void setExpectedSSL2Messages(List<SSL2Message> expectedSSL2Messages) {
+        this.expectedSSL2Messages = expectedSSL2Messages;
+    }
+
+    public void setExpectedSSL2Messages(SSL2Message... expectedSSL2Messages) {
+        this.expectedSSL2Messages = new ArrayList<>(Arrays.asList(expectedSSL2Messages));
     }
 
     public List<HttpMessage> getExpectedHttpMessages() {
@@ -241,37 +273,78 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        return ActionHelperUtil.createReceiveLayerConfiguration(
-                tlsContext,
-                getActionOptions(),
-                expectedMessages,
-                expectedDtlsFragments,
-                expectedRecords,
-                expectedQuicFrames,
-                expectedQuicPackets,
-                expectedHttpMessages);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+
+        if (getExpectedRecords() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getExpectedRecords()));
+        }
+        if (getExpectedMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, getExpectedMessages()));
+        }
+
+        if (getExpectedSSL2Messages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getExpectedSSL2Messages()));
+        }
+
+        if (getExpectedRecords() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getExpectedRecords()));
+        }
+
+        if (getExpectedDtlsFragments() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT, getExpectedDtlsFragments()));
+        }
+        if (getExpectedHttpMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.HTTP, getExpectedHttpMessages()));
+        }
+        if (getExpectedQuicFrames() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, getExpectedQuicFrames()));
+        }
+        if (getExpectedQuicPackets() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, getExpectedQuicPackets()));
+        }
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override
-    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
-        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+    public List<List<DataContainer>> getExpectedDataContainerLists() {
+        List<List<DataContainer>> dataContainerLists = new LinkedList<>();
         if (expectedHttpMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedHttpMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedHttpMessages);
         }
         if (expectedMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedMessages);
+        }
+        if (expectedSSL2Messages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedSSL2Messages);
         }
         if (expectedDtlsFragments != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedDtlsFragments);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedDtlsFragments);
         }
         if (expectedRecords != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedRecords);
         }
         if (expectedQuicFrames != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedQuicFrames);
         }
         if (expectedQuicPackets != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicPackets);
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedQuicPackets);
         }
         return dataContainerLists;
     }

@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -26,6 +27,7 @@ import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -37,7 +39,7 @@ import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+public class Record extends ModifiableVariableHolder implements DataContainer {
 
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
@@ -278,13 +280,68 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     @Override
     public String toString() {
+
+        String contentTypeString;
+        if (contentType == null || contentType.getOriginalValue() == null) {
+            contentTypeString = "null";
+        } else {
+            ProtocolMessageType type = ProtocolMessageType.getContentType(contentType.getValue());
+            if (type == null) {
+                contentTypeString = "UNKNOWN";
+            } else {
+                contentTypeString = type.name();
+            }
+        }
+        String protocolVersionString;
+        if (protocolVersion == null || protocolVersion.getOriginalValue() == null) {
+            protocolVersionString = "null";
+        } else {
+            ProtocolVersion version =
+                    ProtocolVersion.getProtocolVersion(protocolVersion.getValue());
+            if (version == null) {
+                protocolVersionString = "UNKNOWN";
+            } else {
+                protocolVersionString = version.name();
+            }
+        }
+        String lengthString;
+        if (length == null || length.getOriginalValue() == null) {
+            lengthString = "null";
+        } else {
+            lengthString = length.getValue().toString();
+        }
+        return "Record["
+                + contentTypeString
+                + ", "
+                + protocolVersionString
+                + ", "
+                + lengthString
+                + ']';
+    }
+
+    @Override
+    public String toCompactString() {
+        String stringContentType = "unspecified";
+        String stringProtocolVersion = "unspecified";
+        String stringLength = "unspecified";
+        if (contentType != null) {
+            stringContentType = contentType.getValue().toString();
+        }
+        if (protocolVersion != null) {
+            stringContentType = ArrayConverter.bytesToHexString(protocolVersion.getValue());
+        }
+        if (length != null) {
+            stringLength = length.getValue().toString();
+        } else if (maxRecordLengthConfig != null) {
+            stringLength = maxRecordLengthConfig.toString();
+        }
         return "Record{"
                 + "contentType="
-                + contentType
+                + stringContentType
                 + ", protocolVersion="
-                + protocolVersion
+                + stringProtocolVersion
                 + ", length="
-                + length
+                + stringLength
                 + '}';
     }
 
@@ -354,22 +411,23 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     // TODO Fix this mess for records
     @Override
-    public RecordParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RecordParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    public RecordParser getParser(Context context, InputStream stream) {
+        return new RecordParser(
+                stream, context.getTlsContext().getLastRecordVersion(), context.getTlsContext());
     }
 
     @Override
-    public RecordPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordPreparator(tlsContext, this, null, contentMessageType, null);
+    public RecordPreparator getPreparator(Context context) {
+        return new RecordPreparator(context.getTlsContext(), this, null, contentMessageType, null);
     }
 
     @Override
-    public RecordSerializer getSerializer(TlsContext context) {
+    public RecordSerializer getSerializer(Context context) {
         return new RecordSerializer(this);
     }
 
     @Override
-    public Handler<Record> getHandler(TlsContext tlsContext) {
+    public Handler<Record> getHandler(Context context) {
         return null; // TODO
     }
 }

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
 public class GenericDataContainerFilter extends DataContainerFilter {
 
-    private final Class filteredClass;
+    private final Class<? extends DataContainer> filteredClass;
 
     public GenericDataContainerFilter(Class<? extends DataContainer> filteredClass) {
         this.filteredClass = filteredClass;

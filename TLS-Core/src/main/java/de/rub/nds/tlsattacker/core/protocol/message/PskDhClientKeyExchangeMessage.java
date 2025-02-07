@@ -13,12 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDhClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDhClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -80,23 +79,22 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<PskDhClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
-        return new PskDhClientKeyExchangeHandler(tlsContext);
+    public PskDhClientKeyExchangeHandler getHandler(Context context) {
+        return new PskDhClientKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PskDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDhClientKeyExchangeParser(stream, tlsContext);
+    public PskDhClientKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PskDhClientKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PskDhClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskDhClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskDhClientKeyExchangePreparator getPreparator(Context context) {
+        return new PskDhClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PskDhClientKeyExchangeSerializer getSerializer(Context context) {
         return new PskDhClientKeyExchangeSerializer(this);
     }
 

@@ -88,7 +88,7 @@ public class SessionResumptionDelegateTest extends AbstractDelegateTest<SessionR
     /** Test of applyDelegate method, of class SessionResumptionDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-session_id";
         args[1] = "00112233445566778899AABBCCDDEEFF";
@@ -119,8 +119,8 @@ public class SessionResumptionDelegateTest extends AbstractDelegateTest<SessionR
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

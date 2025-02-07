@@ -8,10 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.asn1.model.Asn1Encodable;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
+import de.rub.nds.x509attacker.x509.model.publickey.PublicKeyContent;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -66,23 +70,28 @@ public class WorkflowTraceSerializer {
                                     .setUrls(ClasspathHelper.forPackage(packageName))
                                     .filterInputsBy(
                                             new FilterBuilder().includePackage(packageName)));
-            Set<Class<? extends TlsAction>> tlsActionClasses =
-                    reflections.getSubTypesOf(TlsAction.class);
             Set<Class<?>> classes = new HashSet<>();
             classes.add(WorkflowTrace.class);
-            classes.addAll(tlsActionClasses);
+            classes.addAll(getSerializableSubTypes(reflections, TlsAction.class));
+            classes.addAll(getSerializableSubTypes(reflections, DataContainer.class));
+            classes.addAll(getSerializableSubTypes(reflections, Asn1Encodable.class));
+            classes.addAll(getSerializableSubTypes(reflections, PublicKeyContent.class));
+            classes.addAll(getSerializableSubTypes(reflections, SignatureComputations.class));
 
-            Set<Class<? extends DataContainer>> dataContainers =
-                    reflections.getSubTypesOf(DataContainer.class);
-            classes.addAll(dataContainers);
-
-            LOGGER.debug("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
+            LOGGER.trace("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
             for (Class<?> tempClass : classes) {
-                LOGGER.debug(tempClass.getName());
+                LOGGER.trace(tempClass.getName());
             }
             context = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
         }
         return context;
+    }
+
+    private static <T> Set<Class<? extends T>> getSerializableSubTypes(
+            Reflections reflections, Class<T> clazz) {
+        return reflections.getSubTypesOf(clazz).stream()
+                .filter(listed -> !listed.isInterface())
+                .collect(Collectors.toSet());
     }
 
     public static synchronized void setJAXBContext(JAXBContext context)
@@ -139,7 +148,7 @@ public class WorkflowTraceSerializer {
 
             outputStream.write(
                     xmlOutputStream
-                            .toString()
+                            .toString(StandardCharsets.UTF_8)
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
@@ -180,6 +189,9 @@ public class WorkflowTraceSerializer {
     public static List<WorkflowTrace> insecureReadFolder(File f) {
         if (f.isDirectory()) {
             ArrayList<WorkflowTrace> list = new ArrayList<>();
+            if (f.listFiles() == null) {
+                return list;
+            }
             for (File file : f.listFiles()) {
                 if (file.getName().startsWith(".")) {
                     // We ignore the .gitignore File
@@ -267,6 +279,9 @@ public class WorkflowTraceSerializer {
         if (f.isDirectory()) {
             LOGGER.debug("Reading WorkflowTraces from folder: {}", f.getAbsolutePath());
             ArrayList<WorkflowTrace> list = new ArrayList<>();
+            if (f.listFiles() == null) {
+                return list;
+            }
             for (File file : f.listFiles()) {
                 if (file.getName().startsWith(".")) {
                     // We ignore the .gitignore File

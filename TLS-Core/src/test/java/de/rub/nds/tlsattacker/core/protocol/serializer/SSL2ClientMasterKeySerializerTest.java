@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
 
 public class SSL2ClientMasterKeySerializerTest
-        extends AbstractProtocolMessageSerializerTest<
+        extends AbstractSSL2MessageSerializerTest<
                 SSL2ClientMasterKeyMessage, SSL2ClientMasterKeySerializer> {
 
     public SSL2ClientMasterKeySerializerTest() {

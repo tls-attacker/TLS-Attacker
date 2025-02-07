@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -181,24 +181,24 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public SrpServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new SrpServerKeyExchangeHandler(tlsContext);
+    public SrpServerKeyExchangeHandler getHandler(Context context) {
+        return new SrpServerKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public SrpServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrpServerKeyExchangeParser(stream, tlsContext);
+    public SrpServerKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new SrpServerKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SrpServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new SrpServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public SrpServerKeyExchangePreparator getPreparator(Context context) {
+        return new SrpServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SrpServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public SrpServerKeyExchangeSerializer getSerializer(Context context) {
         return new SrpServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -8,10 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StreamFrameSerializer extends QuicFrameSerializer<StreamFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public StreamFrameSerializer(StreamFrame frame) {
         super(frame);
@@ -35,21 +39,25 @@ public class StreamFrameSerializer extends QuicFrameSerializer<StreamFrame> {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getStreamId().getValue()));
+        LOGGER.debug("Stream ID: {}", frame.getStreamId().getValue());
     }
 
     protected void writeOffset() {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getOffset().getValue()));
+        LOGGER.debug("Offset: {}", frame.getOffset().getValue());
     }
 
     protected void writeLength() {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getLength().getValue()));
+        LOGGER.debug("Length: {}", frame.getLength().getValue());
     }
 
     protected void writeData() {
         appendBytes(frame.getData().getValue());
+        LOGGER.debug("Data: {}", frame.getData().getValue());
     }
 }

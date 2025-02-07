@@ -41,8 +41,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -94,12 +94,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
+                    precalculateHandshakeKeysClient();
                 }
                 if (tlsContext.getConfig().getDefaultLayerConfiguration()
                         == StackConfiguration.QUIC) {
                     try {
                         QuicPacketCryptoComputations.calculateHandshakeSecrets(
-                                tlsContext.getContext().getQuicContext());
+                                tlsContext.getContext());
                     } catch (NoSuchAlgorithmException
                             | NoSuchPaddingException
                             | CryptoException e) {
@@ -235,7 +236,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(
+            return KeyDerivator.generateKeySet(
                     tlsContext,
                     this.tlsContext.getChooser().getSelectedProtocolVersion(),
                     keySetType);
@@ -590,7 +591,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         tlsContext.setSelectedGroup(selectedKeyShareStore.getGroup());
 
-        if (selectedKeyShareStore.getGroup().isCurve()) {
+        if (selectedKeyShareStore.getGroup().isEcGroup()) {
             Point publicPoint;
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
@@ -610,5 +611,24 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
 
         return selectedKeyShareStore;
+    }
+
+    private KeySet getKeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            KeySet keySet =
+                    KeyDerivator.generateKeySet(
+                            tlsContext,
+                            tlsContext.getChooser().getSelectedProtocolVersion(),
+                            keySetType);
+            return keySet;
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
+    }
+
+    private void precalculateHandshakeKeysClient() {
+        KeySet keySet = getKeySet(tlsContext, Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        tlsContext.setkeySetHandshake(keySet);
     }
 }

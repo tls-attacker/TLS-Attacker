@@ -14,12 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -74,22 +74,22 @@ public class AlpnExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public AlpnExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlpnExtensionParser(stream, tlsContext);
+    public AlpnExtensionParser getParser(Context context, InputStream stream) {
+        return new AlpnExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public AlpnExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new AlpnExtensionPreparator(tlsContext.getChooser(), this);
+    public AlpnExtensionPreparator getPreparator(Context context) {
+        return new AlpnExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public AlpnExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public AlpnExtensionSerializer getSerializer(Context context) {
         return new AlpnExtensionSerializer(this);
     }
 
     @Override
-    public AlpnExtensionHandler getHandler(TlsContext tlsContext) {
-        return new AlpnExtensionHandler(tlsContext);
+    public AlpnExtensionHandler getHandler(Context context) {
+        return new AlpnExtensionHandler(context.getTlsContext());
     }
 }

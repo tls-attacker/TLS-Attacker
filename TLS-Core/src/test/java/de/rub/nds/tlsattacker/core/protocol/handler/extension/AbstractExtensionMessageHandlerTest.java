@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 abstract class AbstractExtensionMessageHandlerTest<
         MT extends ExtensionMessage, HT extends ExtensionHandler<MT>> {
 
-    protected TlsContext context;
+    protected TlsContext tlsContext;
 
     private final Supplier<MT> messageConstructor;
 
@@ -34,36 +34,38 @@ abstract class AbstractExtensionMessageHandlerTest<
             Supplier<MT> messageConstructor,
             Function<TlsContext, HT> handlerConstructor,
             Supplier<TlsContext> contextSupplier) {
-        this.context = contextSupplier.get();
+        this.tlsContext = contextSupplier.get();
         this.messageConstructor = messageConstructor;
-        this.handler = handlerConstructor.apply(context);
+        this.handler = handlerConstructor.apply(tlsContext);
     }
 
     AbstractExtensionMessageHandlerTest(
             Supplier<MT> messageConstructor, Function<TlsContext, HT> handlerConstructor) {
-        this.context =
+        this.tlsContext =
                 new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
-        this.handler = handlerConstructor.apply(context);
+        this.handler = handlerConstructor.apply(tlsContext);
     }
 
     /** Test of getParser method, of class ExtensionHandler. */
     @Test
     public void testGetParser() {
         assertNotNull(
-                messageConstructor.get().getParser(context, new ByteArrayInputStream(new byte[0])));
+                messageConstructor
+                        .get()
+                        .getParser(tlsContext.getContext(), new ByteArrayInputStream(new byte[0])));
     }
 
     /** Test of getPreparator method, of class ExtensionHandler. */
     @Test
     public void testGetPreparator() {
-        assertNotNull(messageConstructor.get().getPreparator(context));
+        assertNotNull(messageConstructor.get().getPreparator(tlsContext.getContext()));
     }
 
     /** Test of getSerializer method, of class ExtensionHandler. */
     @Test
     public void testGetSerializer() {
-        assertNotNull(messageConstructor.get().getSerializer(context));
+        assertNotNull(messageConstructor.get().getSerializer(tlsContext.getContext()));
     }
 
     @Test

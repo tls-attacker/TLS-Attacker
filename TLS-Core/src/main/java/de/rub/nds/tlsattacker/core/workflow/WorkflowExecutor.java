@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -15,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -133,8 +133,6 @@ public abstract class WorkflowExecutor {
                 getAfterTransportInitCallback().apply(state);
             }
             LOGGER.debug("Finished initalization of TransportHandler");
-        } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values", ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
                     "Unable to initialize the transport handler", ex);

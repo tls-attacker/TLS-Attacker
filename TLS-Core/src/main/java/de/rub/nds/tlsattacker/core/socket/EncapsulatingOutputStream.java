@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 /** An input stream that is reading from a tls attacker state */
 public class EncapsulatingOutputStream extends OutputStream {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final State state;
 

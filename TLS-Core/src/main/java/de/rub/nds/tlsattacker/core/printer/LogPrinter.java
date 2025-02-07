@@ -14,30 +14,38 @@ import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
 import java.util.StringJoiner;
+import org.apache.logging.log4j.Level;
 
 public class LogPrinter {
 
     private LogPrinter() {}
 
-    public static String toHumanReadableOneLine(List<LayerConfiguration<?>> layerConfigurations) {
+    public static String toHumanReadableOneLine(
+            List<LayerConfiguration<?>> layerConfigurations, Level level) {
         StringBuilder stringBuilder = new StringBuilder();
         for (LayerConfiguration<?> layerConfiguration : layerConfigurations) {
-            stringBuilder.append(layerConfiguration.toCompactString());
-            stringBuilder.append(" ");
+            if (layerConfiguration.shouldBeLogged(level)) {
+                stringBuilder.append(layerConfiguration.toCompactString());
+                stringBuilder.append(" ");
+            }
         }
         return stringBuilder.toString().trim();
     }
 
-    public static String toHumanReadableMultiLine(List<LayerConfiguration<?>> layerConfigurations) {
+    public static String toHumanReadableMultiLine(
+            List<LayerConfiguration<?>> layerConfigurations, Level level) {
         StringBuilder stringBuilder = new StringBuilder();
         for (LayerConfiguration<?> layerConfiguration : layerConfigurations) {
-            stringBuilder.append(layerConfiguration.toCompactString());
-            stringBuilder.append(" ");
+            if (layerConfiguration.shouldBeLogged(level)) {
+                stringBuilder.append(layerConfiguration.toCompactString());
+                stringBuilder.append(" ");
+            }
         }
         return stringBuilder.toString().trim();
     }
 
-    public static String toHumanReadableMultiLine(LayerStackProcessingResult processingResult) {
+    public static String toHumanReadableMultiLine(
+            LayerStackProcessingResult processingResult, Level level) {
         StringBuilder stringBuilder = new StringBuilder();
         for (LayerProcessingResult<?> result : processingResult.getLayerProcessingResultList()) {
             stringBuilder.append(result.toCompactString());
@@ -47,10 +55,18 @@ public class LogPrinter {
         return stringBuilder.toString();
     }
 
-    public static String toHumanReadableContainerList(List<DataContainer<?>> containerList) {
+    public static String toHumanReadableContainerList(
+            List<DataContainer> containerList, Level level) {
+        if (containerList == null) {
+            return "null";
+        }
+        if (containerList.isEmpty()) {
+            return "empty";
+        }
+
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (DataContainer<?> container : containerList) {
+        for (DataContainer container : containerList) {
             joiner.add(container.toCompactString());
         }
         sb.trimToSize();
@@ -58,12 +74,12 @@ public class LogPrinter {
     }
 
     public static String toHumanReadableMultiLineContainerListArray(
-            List<List<DataContainer<?>>> containerListList) {
+            List<List<DataContainer>> containerListList, Level level) {
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (List<DataContainer<?>> containerList : containerListList) {
+        for (List<DataContainer> containerList : containerListList) {
             if (containerList != null) {
-                for (DataContainer<?> container : containerList) {
+                for (DataContainer container : containerList) {
                     joiner.add(container.toCompactString());
                 }
             }

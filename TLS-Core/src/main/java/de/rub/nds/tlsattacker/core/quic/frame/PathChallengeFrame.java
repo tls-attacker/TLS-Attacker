@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.PathChallengeFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.PathChallengeFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.PathChallengeFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.PathChallengeFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -29,27 +29,29 @@ public class PathChallengeFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
+    public static final int PATH_CHALLENGE_LENGTH = 8;
+
     public PathChallengeFrame() {
         super(QuicFrameType.PATH_CHALLENGE_FRAME);
     }
 
     @Override
-    public PathChallengeFrameHandler getHandler(QuicContext context) {
-        return new PathChallengeFrameHandler(context);
+    public PathChallengeFrameHandler getHandler(Context context) {
+        return new PathChallengeFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public PathChallengeFrameSerializer getSerializer(QuicContext context) {
+    public PathChallengeFrameSerializer getSerializer(Context context) {
         return new PathChallengeFrameSerializer(this);
     }
 
     @Override
-    public PathChallengeFramePreparator getPreparator(QuicContext context) {
+    public PathChallengeFramePreparator getPreparator(Context context) {
         return new PathChallengeFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PathChallengeFrameParser getParser(QuicContext context, InputStream stream) {
+    public PathChallengeFrameParser getParser(Context context, InputStream stream) {
         return new PathChallengeFrameParser(stream);
     }
 

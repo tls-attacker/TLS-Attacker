@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -75,7 +75,7 @@ public class RecordStreamCipherTest {
                     && !suite.name().contains("WITH_NULL_NULL")
                     && !suite.name().contains("CHACHA20_POLY1305")
                     && !suite.name().contains("RABBIT")
-                    && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
+                    && suite.getCipherType() == CipherType.STREAM
                     && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
@@ -96,7 +96,7 @@ public class RecordStreamCipherTest {
                                         new CipherState(
                                                 version,
                                                 suite,
-                                                KeySetGenerator.generateKeySet(context),
+                                                KeyDerivator.generateKeySet(context),
                                                 false));
                     }
                 }

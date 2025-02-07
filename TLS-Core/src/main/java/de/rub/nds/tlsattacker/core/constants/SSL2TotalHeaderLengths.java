@@ -14,7 +14,7 @@ public enum SSL2TotalHeaderLengths {
     ALL_BUT_ONE_BIT(0x7f),
     ALL_BUT_TWO_BIT(0x37);
 
-    private int value;
+    private final int value;
 
     SSL2TotalHeaderLengths(int value) {
         this.value = value;
@@ -22,10 +22,6 @@ public enum SSL2TotalHeaderLengths {
 
     public int getValue() {
         return this.value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 
     /*

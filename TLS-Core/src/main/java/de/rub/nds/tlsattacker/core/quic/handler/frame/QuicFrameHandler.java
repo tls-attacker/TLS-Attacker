@@ -11,12 +11,8 @@ package de.rub.nds.tlsattacker.core.quic.handler.frame;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class QuicFrameHandler<T extends QuicFrame> extends Handler<T> {
-
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     protected final QuicContext quicContext;
 

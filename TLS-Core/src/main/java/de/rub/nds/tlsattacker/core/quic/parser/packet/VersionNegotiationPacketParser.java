@@ -8,13 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.quic.parser.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
-import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketByteLength;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,13 +33,7 @@ public class VersionNegotiationPacketParser
     }
 
     protected void parseSupportedVersion(VersionNegotiationPacket packet) {
-        try {
-            while (getStream().available() > 0) {
-                packet.addSupportedVersion(
-                        parseByteArrayField(QuicPacketByteLength.QUIC_VERSION_LENGTH));
-            }
-        } catch (EndOfStreamException | ParserException | TimeoutException | IOException e) {
-            LOGGER.error("No more versions to parse in Version Negotiation Packet");
-        }
+        packet.setSupportedVersions(parseTillEnd());
+        LOGGER.debug("Supported Versions: {}", packet.getSupportedVersions().getValue());
     }
 }

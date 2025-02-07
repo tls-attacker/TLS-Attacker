@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -67,7 +67,7 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (entry.getExtensionList() != null) {
             for (ExtensionMessage extensionMessage : entry.getExtensionList()) {
-                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
+                extensionMessage.getPreparator(chooser.getContext()).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {

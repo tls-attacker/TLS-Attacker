@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -19,7 +19,7 @@ public abstract class Preparator<T> {
     protected final Chooser chooser;
     private final T object;
 
-    public Preparator(Chooser chooser, T object) {
+    protected Preparator(Chooser chooser, T object) {
         this.chooser = chooser;
         this.object = object;
         if (object == null) {

@@ -33,8 +33,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
@@ -127,8 +125,6 @@ public class SerializationFullTest {
         messages.add(new HelloRequestMessage());
         messages.add(new HelloVerifyRequestMessage());
         messages.add(new RSAClientKeyExchangeMessage());
-        messages.add(new SSL2ClientHelloMessage());
-        messages.add(new SSL2ServerHelloMessage());
         messages.add(new ServerHelloDoneMessage());
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));

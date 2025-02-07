@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -51,7 +51,7 @@ public class KeySetGeneratorTest {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version == ProtocolVersion.SSL2
                         || version == ProtocolVersion.SSL3
-                        || version.isTLS13() != suite.isTLS13()) {
+                        || version.isTLS13() != suite.isTls13()) {
                     continue;
                 }
                 builder.add(Arguments.of(version, suite));
@@ -71,6 +71,6 @@ public class KeySetGeneratorTest {
             throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedCipherSuite(cipherSuite);
         context.setSelectedProtocolVersion(protocolVersion);
-        assertNotNull(KeySetGenerator.generateKeySet(context));
+        assertNotNull(KeyDerivator.generateKeySet(context));
     }
 }

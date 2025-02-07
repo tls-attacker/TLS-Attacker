@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.mac;
 
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147Mac;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;

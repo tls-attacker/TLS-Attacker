@@ -72,16 +72,14 @@ public class EncryptedClientHelloPreparator
     private void prepareClientHelloInner() {
         LOGGER.debug("Preparing ClientHelloInner");
         ClientHelloMessage clientHelloInner = new ClientHelloMessage(chooser.getConfig());
-        clientHelloInner.getPreparator(chooser.getContext().getTlsContext()).prepare();
+        clientHelloInner.getPreparator(chooser.getContext()).prepare();
 
         // already serialize and save message bytes before the encoding process
         byte[] clientHelloInnerBytes =
                 new ClientHelloSerializer(clientHelloInner, chooser.getSelectedProtocolVersion())
                         .serialize();
         clientHelloInner.setCompleteResultingMessage(clientHelloInnerBytes);
-        clientHelloInner
-                .getHandler(chooser.getContext().getTlsContext())
-                .adjustContext(clientHelloInner);
+        clientHelloInner.getHandler(chooser.getContext()).adjustContext(clientHelloInner);
 
         msg.setClientHelloInner(clientHelloInner);
     }
@@ -98,7 +96,7 @@ public class EncryptedClientHelloPreparator
 
         this.clientHelloInnerValue =
                 clientHelloInner
-                        .getSerializer(chooser.getContext().getTlsContext())
+                        .getSerializer(chooser.getContext())
                         .serializeHandshakeMessageContent();
 
         // - zero padding
@@ -195,10 +193,13 @@ public class EncryptedClientHelloPreparator
                 msg.getExtension(ServerNameIndicationExtensionMessage.class);
         if (serverNameIndicationExtensionMessage != null) {
             byte[] serverName = chooser.getEchConfig().getPublicDomainName();
-            ServerNamePair pair =
-                    new ServerNamePair(chooser.getConfig().getSniType().getValue(), serverName);
-            serverNameIndicationExtensionMessage.getServerNameList().clear();
-            serverNameIndicationExtensionMessage.getServerNameList().add(pair);
+            // attempt to change first pair, otherwise leave configuration as is
+            ServerNamePair serverNamePair =
+                    serverNameIndicationExtensionMessage.getServerNameList().get(0);
+            if (serverNamePair != null) {
+                serverNamePair.setServerNameTypeConfig(chooser.getConfig().getSniType().getValue());
+                serverNamePair.setServerNameConfig(serverName);
+            }
             ServerNameIndicationExtensionSerializer serializer =
                     new ServerNameIndicationExtensionSerializer(
                             serverNameIndicationExtensionMessage);
@@ -248,9 +249,7 @@ public class EncryptedClientHelloPreparator
     }
 
     private void prepareEncryptClientHelloOuter() {
-        byte[] aad =
-                msg.getSerializer(chooser.getContext().getTlsContext())
-                        .serializeHandshakeMessageContent();
+        byte[] aad = msg.getSerializer(chooser.getContext()).serializeHandshakeMessageContent();
         LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =

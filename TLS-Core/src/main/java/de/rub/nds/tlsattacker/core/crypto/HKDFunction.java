@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
 import javax.crypto.Mac;
@@ -63,14 +64,6 @@ public class HKDFunction {
     public static final String CLIENT_IN = "client in";
 
     public static final String SERVER_IN = "server in";
-
-    public static final String QUIC_KU = "quic ku";
-
-    public static final String QUIC_KEY = "quic key";
-
-    public static final String QUIC_IV = "quic iv";
-
-    public static final String QUIC_HP = "quic hp";
 
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
@@ -192,13 +185,13 @@ public class HKDFunction {
     /** Computes the HKDF-Label as defined in TLS 1.3 */
     private static byte[] labelEncoder(byte[] hashValue, String labelIn, int outLen) {
         String label = "tls13 " + labelIn;
-        int labelLength = label.getBytes().length;
+        int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
         int hashValueLength = hashValue.length;
         byte[] result =
                 ArrayConverter.concatenate(
                         ArrayConverter.intToBytes(outLen, 2),
                         ArrayConverter.intToBytes(labelLength, 1),
-                        label.getBytes(),
+                        label.getBytes(StandardCharsets.US_ASCII),
                         ArrayConverter.intToBytes(hashValueLength, 1),
                         hashValue);
         return result;

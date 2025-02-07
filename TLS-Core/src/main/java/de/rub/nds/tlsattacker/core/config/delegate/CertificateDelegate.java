@@ -43,6 +43,8 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
 
+    public static final int PREDEFINED_LEAF_CERT_INDEX = 0;
+
     @Parameter(names = "-cert", description = "PEM encoded certificate file")
     private String certificate = null;
 
@@ -62,7 +64,9 @@ public class CertificateDelegate extends Delegate {
             description = "Alias of the key to be used from Java Key Store (JKS)")
     private String alias = null;
 
-    public CertificateDelegate() {}
+    public CertificateDelegate() {
+        // Default Constructor
+    }
 
     public String getKeystore() {
         return keystore;
@@ -115,7 +119,8 @@ public class CertificateDelegate extends Delegate {
         if (key != null) {
             LOGGER.debug("Loading private key");
             privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(
+                    config.getCertificateChainConfig().get(PREDEFINED_LEAF_CERT_INDEX), privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {
@@ -132,9 +137,9 @@ public class CertificateDelegate extends Delegate {
             }
         }
         List<String> missingParameters = new ArrayList<>();
-        for (String p : mandatoryParameters.keySet()) {
-            if (mandatoryParameters.get(p) == null) {
-                missingParameters.add(p);
+        for (Map.Entry<String, String> entry : mandatoryParameters.entrySet()) {
+            if (entry.getValue() == null) {
+                missingParameters.add(entry.getKey());
             }
         }
         if (missingParameters.size() == 3) {
@@ -186,8 +191,7 @@ public class CertificateDelegate extends Delegate {
             config.setEcPrivateKey(ecKey.getS());
             config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
         } else {
-            throw new UnsupportedOperationException(
-                    "This private key is not supporter:" + key.toString());
+            throw new UnsupportedOperationException("This private key is not supported:" + key);
         }
     }
 }
