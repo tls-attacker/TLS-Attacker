@@ -127,43 +127,40 @@ public class SmtpContext extends LayerContext {
      * @return The expected reply object
      */
     public static SmtpReply getExpectedReplyType(SmtpCommand command) {
-        if (command == null) {
-            return null;
+        if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
+            // HELO's reply is a special case of EHLO's reply without any extensions - this just
+            // reuses code
+            return new SmtpEHLOReply();
+        } else if (command instanceof SmtpNOOPCommand) {
+            return new SmtpNOOPReply();
+        } else if (command instanceof SmtpAUTHCommand) {
+            return new SmtpAUTHReply();
+        } else if (command instanceof SmtpEXPNCommand) {
+            return new SmtpEXPNReply();
+        } else if (command instanceof SmtpVRFYCommand) {
+            return new SmtpVRFYReply();
+        } else if (command instanceof SmtpMAILCommand) {
+            return new SmtpMAILReply();
+        } else if (command instanceof SmtpRSETCommand) {
+            return new SmtpRSETReply();
+        } else if (command instanceof SmtpInitialGreetingDummy) {
+            return new SmtpInitialGreeting();
+        } else if (command instanceof SmtpDATACommand) {
+            return new SmtpDATAReply();
+        } else if (command instanceof SmtpRCPTCommand) {
+            return new SmtpRCPTReply();
+        } else if (command instanceof SmtpDATAContentCommand) {
+            return new SmtpDATAContentReply();
+        } else if (command instanceof SmtpHELPCommand) {
+            return new SmtpHELPReply();
+        } else if (command instanceof SmtpQUITCommand) {
+            return new SmtpQUITReply();
+        } else if (command instanceof SmtpSTARTTLSCommand) {
+            return new SmtpSTARTTLSReply();
         } else {
-            if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
-                // HELO's reply is a special case of EHLO's reply without any extensions - this just
-                // reuses code
-                return new SmtpEHLOReply();
-            } else if (command instanceof SmtpNOOPCommand) {
-                return new SmtpNOOPReply();
-            } else if (command instanceof SmtpAUTHCommand) {
-                return new SmtpAUTHReply();
-            } else if (command instanceof SmtpEXPNCommand) {
-                return new SmtpEXPNReply();
-            } else if (command instanceof SmtpVRFYCommand) {
-                return new SmtpVRFYReply();
-            } else if (command instanceof SmtpMAILCommand) {
-                return new SmtpMAILReply();
-            } else if (command instanceof SmtpRSETCommand) {
-                return new SmtpRSETReply();
-            } else if (command instanceof SmtpInitialGreetingDummy) {
-                return new SmtpInitialGreeting();
-            } else if (command instanceof SmtpDATACommand) {
-                return new SmtpDATAReply();
-            } else if (command instanceof SmtpRCPTCommand) {
-                return new SmtpRCPTReply();
-            } else if (command instanceof SmtpDATAContentCommand) {
-                return new SmtpDATAContentReply();
-            } else if (command instanceof SmtpHELPCommand) {
-                return new SmtpHELPReply();
-            } else if (command instanceof SmtpQUITCommand) {
-                return new SmtpQUITReply();
-            } else if (command instanceof SmtpSTARTTLSCommand) {
-                return new SmtpSTARTTLSReply();
-            } else {
-                throw new UnsupportedOperationException(
-                        "No reply implemented for class in SmtpContext:" + command.getClass());
-            }
+            return new SmtpUnknownReply();
+//            throw new UnsupportedOperationException(
+//                    "No reply implemented for class in SmtpContext:" + command.getClass());
         }
     }
 

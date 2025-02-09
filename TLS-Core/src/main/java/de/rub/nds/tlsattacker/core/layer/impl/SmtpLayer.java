@@ -18,11 +18,16 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.SmtpLayerHint;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnterminatedReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +44,10 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SmtpContext context;
+
+    public static final int MAX_COMMAND_LENGTH = 512;
+    public static final int MAX_REPLY_LENGTH = 1024*64; // recommendation for the minimum maximum length according 4.5.3.1.7.  Message Content
+
 
     public SmtpLayer(SmtpContext smtpContext) {
         super(ImplementedLayers.SMTP);
@@ -98,25 +107,33 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     @Override
     public LayerProcessingResult receiveData() {
         try {
+            HintedInputStream dataStream;
             do {
+                try {
+                    dataStream = getLowerLayer().getDataStream();
+                } catch (IOException e) {
+                    // the lower layer does not give us any data so we can simply return here
+                    LOGGER.warn("The lower layer did not produce a data stream: ", e);
+                    return getLayerResult();
+                }
                 if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
                     SmtpReply smtpReply = context.getExpectedNextReplyType();
-                    if (smtpReply != null) {
-                        LOGGER.trace(
-                                "Expecting reply of type: {}",
-                                smtpReply.getClass().getSimpleName());
-                    } else {
-                        smtpReply = new SmtpUnknownReply();
+                    if(smtpReply instanceof SmtpUnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
                                 smtpReply.getClass().getSimpleName());
                     }
+//                    SmtpReplyParser parser = smtpReply.getParser(context, dataStream);
+//                    parser.parse(smtpReply);
+//                    addProducedContainer(smtpReply);
                     readDataContainer(smtpReply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
                     SmtpCommand smtpCommand = new SmtpCommand();
-                    readDataContainer(smtpCommand, context);
+                    SmtpCommandParser parser = smtpCommand.getParser(context, dataStream);
+                    parser.parse(smtpCommand);
+                    addProducedContainer(smtpCommand);
                 }
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
@@ -130,16 +147,22 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                 LOGGER.debug("No messages required for layer.");
             }
         }
+        if(getUnreadBytes().length > 0) {
+            // SMTP should be a terminal layer, so we should not have any unread bytes unless it is not CRLF terminated
+
+            //previous readDataContainer() call should have consumed all bytes
+            setUnreadBytes(new byte[0]);
+            //TODO: This deserves a broader class of DataContainer, which is not SMTP-specific
+            readDataContainer(new SmtpUnterminatedReply(), context);
+            //TODO: Is this the right way to handle this? It feels like this case definitely empties the stream
+            getLowerLayer().removeDrainedInputStream();
+        }
         return getLayerResult();
     }
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public SmtpCommand getCommandType() {
-        return new SmtpCommand();
     }
 
     @Override
@@ -152,10 +175,4 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         // 550 is overloaded and the message is not standardized.
         return true;
     }
-
-    //    @Override
-    //    public boolean shouldContinueProcessing() {
-    //        return super.shouldContinueProcessing() && this.getUnreadBytes() != null &&
-    // this.getUnreadBytes().length > 0;
-    //    }
 }
