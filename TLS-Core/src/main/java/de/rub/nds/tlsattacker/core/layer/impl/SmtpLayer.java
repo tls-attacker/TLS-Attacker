@@ -96,15 +96,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     /**
      * Receives data by querying the lower layer and processing it. The SmtpLayer can receive both
-     * SmtpCommands and SmtpReplies. There are several shortcomings at the moment: Because of the
-     * command-reply structure, the type of reply is currently inferred from the preceding command.
-     * This is not ideal, as it may lead to incorrect parsing if the server sends an unexpected
-     * reply. In the future, we want to parse this into an UnknownReply and handle it accordingly.
-     *
-     * <p>When receiving a command, the SmtpLayer will parse it into a SmtpCommand object and does
-     * not parse it into the correct subclass. This is because it essentially reading the stream to
-     * infer the correct Parser and then repeating the stream again to parse it. Will hopefully be
-     * implemented in the future.
+     * SmtpCommands and SmtpReplies. There are several shortcomings at the moment:
      *
      * @return a LayerProcessingResult containing the SmtpMessage that was received across the
      *     different layers
