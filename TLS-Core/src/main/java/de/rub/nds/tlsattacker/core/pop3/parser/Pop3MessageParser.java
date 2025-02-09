@@ -11,9 +11,15 @@ package de.rub.nds.tlsattacker.core.pop3.parser;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class Pop3MessageParser<MessageT extends Pop3Message> extends Parser<MessageT> {
+
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     private static final byte LF = 0x0A;
 
@@ -34,10 +40,14 @@ public abstract class Pop3MessageParser<MessageT extends Pop3Message> extends Pa
      * @return a single line from the input
      */
     public String parseSingleLine() {
-        String lineUntilLF = parseStringTill(LF);
-        if (!lineUntilLF.endsWith("\r\n")) {
-            throw new ParserException("Reached end of stream before CRLF was found");
+        try {
+            String lineUntilLF = parseStringTill(LF);
+            if (!lineUntilLF.endsWith("\r\n")) {
+                throw new ParserException("Reached end of stream before CRLF was found");
+            }
+            return lineUntilLF.trim();
+        } catch (RuntimeException e) {
+            throw new ParserException("Could not parse single line", e);
         }
-        return lineUntilLF.trim();
     }
 }

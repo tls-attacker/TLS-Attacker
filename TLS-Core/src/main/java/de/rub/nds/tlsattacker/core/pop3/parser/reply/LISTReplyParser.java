@@ -8,20 +8,42 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3LISTReply;
 import java.io.*;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
 
     public LISTReplyParser(InputStream stream) {
-        super(stream);
+
+        super(new BufferedInputStream(stream));
     }
 
     @Override
     public void parse(Pop3LISTReply reply) {
-        List<String> lines = parseReply(reply);
+        String firstLine = parseSingleLine();
+        parseReplyIndicator(reply, firstLine);
+        parseHumanReadableMessage(reply, firstLine);
 
+        List<String> lines = new LinkedList<>();
+        //FIXME: LIST [n] prompts a single line everytime - bring Pop3Context here
+        if (reply.getStatusIndicator().equals("+OK")) {
+            try {
+                String line;
+                while ((line = parseSingleLine()) != null) {
+                    lines.add(line);
+                    if (isEndOfLIST(line)) {
+                        break;
+                    }
+                }
+            } catch (EndOfStreamException e) {
+                LOGGER.warn("End of stream reached before end of LIST reply.");
+                throw new ParserException("LIST reply not complete.");
+            }
+        }
         for (String line : lines) {
             String[] parts = line.split(" ");
             if (parts.length == 2) {
@@ -29,5 +51,9 @@ public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
                 reply.addMessageSize(toInteger(parts[1]));
             }
         }
+    }
+
+    private boolean isEndOfLIST(String line) {
+        return line.equals(".");
     }
 }

@@ -31,6 +31,7 @@ import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -38,8 +39,9 @@ import org.junit.jupiter.api.Test;
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
+@Disabled
 public class POP3WorkflowTestBench {
-    int port = 11100;
+    int PLAIN_PORT = 11100;
 
     @BeforeEach
     public void changeLoglevel() {
@@ -51,7 +53,7 @@ public class POP3WorkflowTestBench {
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory workflowConfigurationFactory =
@@ -85,7 +87,7 @@ public class POP3WorkflowTestBench {
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
@@ -95,8 +97,6 @@ public class POP3WorkflowTestBench {
 
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
-        trace.addTlsAction(new SendAction(new Pop3STLSCommand()));
-        trace.addTlsAction(new ReceiveAction(new Pop3STLSReply()));
         trace.addTlsAction(new SendAction(new Pop3USERCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3USERReply()));
         trace.addTlsAction(new SendAction(new Pop3PASSCommand()));
@@ -135,7 +135,7 @@ public class POP3WorkflowTestBench {
         Config config = Config.createConfig();
         config.setKeylogFilePath("/tmp/keylogfile");
         config.setWriteKeylogFile(true);
-        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);

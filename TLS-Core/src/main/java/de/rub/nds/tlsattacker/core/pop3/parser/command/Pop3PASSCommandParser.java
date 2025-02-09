@@ -16,7 +16,7 @@ import java.io.InputStream;
  * Parses the provided password of a PASS command. The password may contain spaces, so everything
  * past PASS is considered to be the password.
  */
-public class Pop3PASSCommandParser extends Pop3MessageParser<Pop3PASSCommand> {
+public class Pop3PASSCommandParser extends Pop3CommandParser<Pop3PASSCommand> {
 
     public Pop3PASSCommandParser(InputStream stream) {
         super(stream);

@@ -63,6 +63,7 @@ public class Pop3PASSCommandTest {
         serializer.serialize();
 
         // default password set in config
-        assertEquals("PASS s34l-p4ssw0rd!!\r\n", serializer.getOutputStream().toString());
+        String expected = "PASS " + context.getConfig().getDefaultPop3Password() + "\r\n";
+        assertEquals(expected, serializer.getOutputStream().toString());
     }
 }

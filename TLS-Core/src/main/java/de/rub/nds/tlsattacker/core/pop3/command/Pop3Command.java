@@ -45,23 +45,23 @@ public class Pop3Command extends Pop3Message {
     public Pop3Command() {}
 
     @Override
-    public Pop3MessageHandler<? extends Pop3Message> getHandler(Pop3Context pop3Context) {
+    public Pop3CommandHandler<? extends Pop3Message> getHandler(Pop3Context pop3Context) {
         return new Pop3CommandHandler<>(pop3Context);
     }
 
     @Override
-    public Pop3MessageParser<? extends Pop3Message> getParser(
+    public Pop3CommandParser<? extends Pop3Message> getParser(
             Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 
     @Override
-    public Pop3MessagePreparator<? extends Pop3Message> getPreparator(Pop3Context context) {
+    public Pop3CommandPreparator<? extends Pop3Message> getPreparator(Pop3Context context) {
         return new Pop3CommandPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public Pop3MessageSerializer<? extends Pop3Message> getSerializer(Pop3Context context) {
+    public Pop3CommandSerializer<? extends Pop3Message> getSerializer(Pop3Context context) {
         return new Pop3CommandSerializer<>(this, context);
     }
 

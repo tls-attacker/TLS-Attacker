@@ -65,7 +65,6 @@ public class Pop3LISTReply extends Pop3Reply {
 
         StringBuilder sb = new StringBuilder();
         sb.append(this.statusIndicator);
-
         if (!humanReadableMessage.isEmpty()) {
             sb.append(SP);
             sb.append(humanReadableMessage);

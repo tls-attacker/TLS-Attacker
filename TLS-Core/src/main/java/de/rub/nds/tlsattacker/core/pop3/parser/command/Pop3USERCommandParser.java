@@ -15,7 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Parses the provided username of a USER command. */
-public class Pop3USERCommandParser extends Pop3MessageParser<Pop3USERCommand> {
+public class Pop3USERCommandParser extends Pop3CommandParser<Pop3USERCommand> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Pop3USERCommandParser(InputStream stream) {

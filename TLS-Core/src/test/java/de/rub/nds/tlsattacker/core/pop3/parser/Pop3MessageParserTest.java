@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -45,6 +46,6 @@ class Pop3MessageParserTest {
         Pop3MessageParser<Pop3Message> parser =
                 new Pop3MessageParserTest.FakePop3MessageParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        assertThrows(EndOfStreamException.class, parser::parseSingleLine);
+        assertThrows(ParserException.class, parser::parseSingleLine);
     }
 }

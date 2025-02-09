@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3MessageParser<ReplyT> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public Pop3ReplyParser(InputStream stream) {
         super(stream);
     }

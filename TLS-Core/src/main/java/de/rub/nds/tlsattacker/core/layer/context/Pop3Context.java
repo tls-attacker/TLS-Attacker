@@ -68,6 +68,33 @@ public class Pop3Context extends LayerContext {
         }
     }
 
+    public static Pop3Command getCommandTypeFromCommandName(String commandName) {
+        switch (commandName) {
+            case "USER":
+                return new Pop3USERCommand();
+            case "PASS":
+                return new Pop3PASSCommand();
+            case "DELE":
+                return new Pop3DELECommand();
+            case "LIST":
+                return new Pop3LISTCommand();
+            case "NOOP":
+                return new Pop3NOOPCommand();
+            case "QUIT":
+                return new Pop3QUITCommand();
+            case "RETR":
+                return new Pop3RETRCommand();
+            case "RSET":
+                return new Pop3RSETCommand();
+            case "STAT":
+                return new Pop3STATCommand();
+            case "STLS":
+                return new Pop3STLSCommand();
+            default:
+                return new Pop3UnknownCommand();
+        }
+    }
+
     public boolean isGreetingReceived() {
         return greetingReceived;
     }
