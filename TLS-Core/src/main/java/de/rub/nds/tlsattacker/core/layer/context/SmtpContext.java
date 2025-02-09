@@ -164,6 +164,39 @@ public class SmtpContext extends LayerContext {
         }
     }
 
+    public static SmtpCommand getCommandTypeFromVerb(String verb) {
+        switch (verb) {
+            case "EHLO":
+                return new SmtpEHLOCommand();
+            case "HELO":
+                return new SmtpHELOCommand();
+            case "NOOP":
+                return new SmtpNOOPCommand();
+            case "AUTH":
+                return new SmtpAUTHCommand();
+            case "EXPN":
+                return new SmtpEXPNCommand();
+            case "VRFY":
+                return new SmtpVRFYCommand();
+            case "MAIL":
+                return new SmtpMAILCommand();
+            case "RSET":
+                return new SmtpRSETCommand();
+            case "DATA":
+                return new SmtpDATACommand();
+            case "RCPT":
+                return new SmtpRCPTCommand();
+            case "HELP":
+                return new SmtpHELPCommand();
+            case "QUIT":
+                return new SmtpQUITCommand();
+            case "STARTTLS":
+                return new SmtpSTARTTLSCommand();
+            default:
+                return new SmtpUnknownCommand();
+        }
+    }
+
     public boolean isServerOnlySupportsEHLO() {
         return serverOnlySupportsEHLO;
     }

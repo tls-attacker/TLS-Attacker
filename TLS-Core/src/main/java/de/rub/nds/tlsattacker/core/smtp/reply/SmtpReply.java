@@ -29,7 +29,9 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected Integer replyCode;
+    protected Integer replyCode = 900; // some invalid value to indicate that it was not set
+    //    protected String humanReadableMessage;
+    protected List<String> humanReadableMessages = new ArrayList<>();
 
     // hide from the user that there can be multiple human-readable messages
     // (e.g. for multiline replies)
@@ -52,9 +54,6 @@ public class SmtpReply extends SmtpMessage {
     public boolean isMultiline() {
         return this.humanReadableMessages.size() > 1;
     }
-
-    //    protected String humanReadableMessage;
-    protected List<String> humanReadableMessages;
 
     public SmtpReply() {
         this.humanReadableMessages = new ArrayList<>();
@@ -123,8 +122,11 @@ public class SmtpReply extends SmtpMessage {
         }
 
         sb.append(replyCodeString);
-        sb.append(SP);
-        sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));
+        //partly workaround for uninitialized humanReadableMessages (which should not happen), but also more in line with standard: Empty messages are not intended, but recommended to accept
+        if (!this.humanReadableMessages.isEmpty()) {
+            sb.append(SP);
+            sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));
+        }
         sb.append(CRLF);
 
         return sb.toString();
