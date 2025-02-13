@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -76,6 +77,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
@@ -717,7 +719,7 @@ public class WorkflowConfigurationFactory {
                         config,
                         connection,
                         ConnectionEndType.SERVER,
-                        Pop3Context.getExpectedReplyType(command));
+                        Pop3MappingUtil.getMatchingReply(command));
         trace.addTlsAction(serverAction);
     }
 
@@ -732,7 +734,7 @@ public class WorkflowConfigurationFactory {
                         config,
                         connection,
                         ConnectionEndType.SERVER,
-                        SmtpContext.getExpectedReplyType(command));
+                        SmtpMappingUtil.getMatchingReply(command));
         trace.addTlsAction(serverAction);
     }
 

@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.SmtpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpUnknownCommand;
@@ -135,7 +136,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                         setUnreadBytes(verbParser.getAlreadyParsed());
                         continue;
                     }
-                    SmtpCommand trueCommand = SmtpContext.getCommandTypeFromVerb(smtpCommand.getVerb());
+                    SmtpCommand trueCommand = SmtpMappingUtil.getCommandTypeFromVerb(smtpCommand.getVerb());
                     // this will be the actual parsing of the command
                     HintedLayerInputStream smtpCommandStream = new HintedLayerInputStream(new SmtpLayerHint(), this);
                     smtpCommandStream.extendStream(verbParser.getAlreadyParsed());

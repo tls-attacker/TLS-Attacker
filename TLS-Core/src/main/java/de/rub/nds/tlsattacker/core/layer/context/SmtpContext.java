@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpDATAContentReply;
@@ -116,86 +117,10 @@ public class SmtpContext extends LayerContext {
 
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
-        return getExpectedReplyType(command);
+        return SmtpMappingUtil.getMatchingReply(command);
     }
 
-    /**
-     * Given a command return an instance of the Reply object expected fpr ot. Raises an exception
-     * when a command is not implemented.
-     *
-     * @param command The command for which to get the expected reply
-     * @return The expected reply object
-     */
-    public static SmtpReply getExpectedReplyType(SmtpCommand command) {
-        if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
-            // HELO's reply is a special case of EHLO's reply without any extensions - this just
-            // reuses code
-            return new SmtpEHLOReply();
-        } else if (command instanceof SmtpNOOPCommand) {
-            return new SmtpNOOPReply();
-        } else if (command instanceof SmtpAUTHCommand) {
-            return new SmtpAUTHReply();
-        } else if (command instanceof SmtpEXPNCommand) {
-            return new SmtpEXPNReply();
-        } else if (command instanceof SmtpVRFYCommand) {
-            return new SmtpVRFYReply();
-        } else if (command instanceof SmtpMAILCommand) {
-            return new SmtpMAILReply();
-        } else if (command instanceof SmtpRSETCommand) {
-            return new SmtpRSETReply();
-        } else if (command instanceof SmtpInitialGreetingDummy) {
-            return new SmtpInitialGreeting();
-        } else if (command instanceof SmtpDATACommand) {
-            return new SmtpDATAReply();
-        } else if (command instanceof SmtpRCPTCommand) {
-            return new SmtpRCPTReply();
-        } else if (command instanceof SmtpDATAContentCommand) {
-            return new SmtpDATAContentReply();
-        } else if (command instanceof SmtpHELPCommand) {
-            return new SmtpHELPReply();
-        } else if (command instanceof SmtpQUITCommand) {
-            return new SmtpQUITReply();
-        } else if (command instanceof SmtpSTARTTLSCommand) {
-            return new SmtpSTARTTLSReply();
-        } else {
-            return new SmtpUnknownReply();
-//            throw new UnsupportedOperationException(
-//                    "No reply implemented for class in SmtpContext:" + command.getClass());
-        }
-    }
 
-    public static SmtpCommand getCommandTypeFromVerb(String verb) {
-        switch (verb) {
-            case "EHLO":
-                return new SmtpEHLOCommand();
-            case "HELO":
-                return new SmtpHELOCommand();
-            case "NOOP":
-                return new SmtpNOOPCommand();
-            case "AUTH":
-                return new SmtpAUTHCommand();
-            case "EXPN":
-                return new SmtpEXPNCommand();
-            case "VRFY":
-                return new SmtpVRFYCommand();
-            case "MAIL":
-                return new SmtpMAILCommand();
-            case "RSET":
-                return new SmtpRSETCommand();
-            case "DATA":
-                return new SmtpDATACommand();
-            case "RCPT":
-                return new SmtpRCPTCommand();
-            case "HELP":
-                return new SmtpHELPCommand();
-            case "QUIT":
-                return new SmtpQUITCommand();
-            case "STARTTLS":
-                return new SmtpSTARTTLSCommand();
-            default:
-                return new SmtpUnknownCommand();
-        }
-    }
 
     public boolean isServerOnlySupportsEHLO() {
         return serverOnlySupportsEHLO;
