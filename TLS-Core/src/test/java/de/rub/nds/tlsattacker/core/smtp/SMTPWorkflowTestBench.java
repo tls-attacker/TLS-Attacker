@@ -32,15 +32,13 @@ import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.checkerframework.checker.units.qual.C;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
+ @Disabled
 public class SMTPWorkflowTestBench {
 
     public static final int PLAIN_PORT = 2525;
