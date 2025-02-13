@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.LISTCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3LISTCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -61,7 +61,7 @@ public class Pop3LISTCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3LISTCommand listCommand = new Pop3LISTCommand();
-        LISTCommandPreparator preparator = listCommand.getPreparator(context);
+        Pop3LISTCommandPreparator preparator = listCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = listCommand.getSerializer(context);
 
         preparator.prepare();
@@ -74,7 +74,7 @@ public class Pop3LISTCommandTest {
     void testSerializeScanListing() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3LISTCommand listCommand = new Pop3LISTCommand(1);
-        LISTCommandPreparator preparator = listCommand.getPreparator(context);
+        Pop3LISTCommandPreparator preparator = listCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = listCommand.getSerializer(context);
 
         preparator.prepare();

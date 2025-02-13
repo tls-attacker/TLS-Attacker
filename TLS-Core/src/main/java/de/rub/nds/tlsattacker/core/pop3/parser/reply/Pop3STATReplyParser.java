@@ -12,9 +12,9 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STATReply;
 import java.io.InputStream;
 import java.util.List;
 
-public class STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
+public class Pop3STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
 
-    public STATReplyParser(InputStream stream) {
+    public Pop3STATReplyParser(InputStream stream) {
         super(stream);
     }
 

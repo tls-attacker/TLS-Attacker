@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3PASSCommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.PASSCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3PASSCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -43,7 +43,7 @@ public class Pop3PASSCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3PASSCommand passCommand = new Pop3PASSCommand("qwertzuiop");
-        PASSCommandPreparator preparator = passCommand.getPreparator(context);
+        Pop3PASSCommandPreparator preparator = passCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context);
 
         preparator.prepare();
@@ -56,7 +56,7 @@ public class Pop3PASSCommandTest {
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3PASSCommand passCommand = new Pop3PASSCommand();
-        PASSCommandPreparator preparator = passCommand.getPreparator(context);
+        Pop3PASSCommandPreparator preparator = passCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context);
 
         preparator.prepare();

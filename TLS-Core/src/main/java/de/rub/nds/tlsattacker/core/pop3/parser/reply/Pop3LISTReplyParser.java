@@ -15,9 +15,9 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
+public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
 
-    public LISTReplyParser(InputStream stream) {
+    public Pop3LISTReplyParser(InputStream stream) {
 
         super(new BufferedInputStream(stream));
     }

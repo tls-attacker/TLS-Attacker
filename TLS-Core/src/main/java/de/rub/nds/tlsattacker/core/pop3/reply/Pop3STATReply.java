@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.STATReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3STATReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -27,8 +27,8 @@ public class Pop3STATReply extends Pop3Reply {
     }
 
     @Override
-    public STATReplyParser getParser(Pop3Context context, InputStream stream) {
-        return new STATReplyParser(stream);
+    public Pop3STATReplyParser getParser(Pop3Context context, InputStream stream) {
+        return new Pop3STATReplyParser(stream);
     }
 
     public void setNumberOfMessages(Integer messages) {

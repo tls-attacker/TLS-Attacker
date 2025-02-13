@@ -14,13 +14,12 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.STATReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3STATReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class Pop3STATReplyTest {
@@ -45,7 +44,7 @@ class Pop3STATReplyTest {
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3STATReply stat = new Pop3STATReply();
-        STATReplyParser parser =
+        Pop3STATReplyParser parser =
                 stat.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -62,7 +61,7 @@ class Pop3STATReplyTest {
         Pop3STATReply stat = new Pop3STATReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
-        STATReplyParser parser =
+        Pop3STATReplyParser parser =
                 stat.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
@@ -79,7 +78,7 @@ class Pop3STATReplyTest {
         Pop3STATReply stat = new Pop3STATReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
-        STATReplyParser parser =
+        Pop3STATReplyParser parser =
                 stat.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 

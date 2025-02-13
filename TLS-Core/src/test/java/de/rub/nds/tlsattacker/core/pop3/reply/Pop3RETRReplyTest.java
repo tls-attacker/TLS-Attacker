@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.RETRReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3RETRReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -49,7 +49,7 @@ class Pop3RETRReplyTest {
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRReply ret = new Pop3RETRReply();
-        RETRReplyParser parser =
+        Pop3RETRReplyParser parser =
                 ret.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -70,7 +70,7 @@ class Pop3RETRReplyTest {
         Pop3RETRReply ret = new Pop3RETRReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
-        RETRReplyParser parser =
+        Pop3RETRReplyParser parser =
                 ret.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 

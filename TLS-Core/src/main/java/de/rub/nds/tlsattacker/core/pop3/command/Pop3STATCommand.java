@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3STATCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -33,8 +33,8 @@ public class Pop3STATCommand extends Pop3Command {
     }
 
     @Override
-    public STATCommandPreparator getPreparator(Pop3Context context) {
-        return new STATCommandPreparator(context, this);
+    public Pop3STATCommandPreparator getPreparator(Pop3Context context) {
+        return new Pop3STATCommandPreparator(context, this);
     }
 
     @Override

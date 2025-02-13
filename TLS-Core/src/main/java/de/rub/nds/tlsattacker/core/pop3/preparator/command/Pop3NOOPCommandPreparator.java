@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3STLSCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3NOOPCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class STLSCommandPreparator extends Pop3CommandPreparator<Pop3STLSCommand> {
-    public STLSCommandPreparator(Pop3Context context, Pop3STLSCommand starttlsCommand) {
-        super(context.getChooser(), starttlsCommand);
+public class Pop3NOOPCommandPreparator extends Pop3CommandPreparator<Pop3NOOPCommand> {
+    public Pop3NOOPCommandPreparator(Pop3Context context, Pop3NOOPCommand noopCommand) {
+        super(context.getChooser(), noopCommand);
     }
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("STLS");
+        this.getObject().setKeyword("NOOP");
     }
 }

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.DELECommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3DELECommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -43,8 +43,8 @@ public class Pop3DELECommand extends Pop3Command implements MessageNumber {
     }
 
     @Override
-    public DELECommandPreparator getPreparator(Pop3Context context) {
-        return new DELECommandPreparator(context, this);
+    public Pop3DELECommandPreparator getPreparator(Pop3Context context) {
+        return new Pop3DELECommandPreparator(context, this);
     }
 
     @Override

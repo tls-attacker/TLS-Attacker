@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.QUITCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3QUITCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -28,8 +28,8 @@ public class Pop3QUITCommand extends Pop3Command {
     }
 
     @Override
-    public QUITCommandPreparator getPreparator(Pop3Context context) {
-        return new QUITCommandPreparator(context, this);
+    public Pop3QUITCommandPreparator getPreparator(Pop3Context context) {
+        return new Pop3QUITCommandPreparator(context, this);
     }
 
     @Override

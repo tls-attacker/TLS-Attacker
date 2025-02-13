@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
-import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3NOOPReply;
 import java.io.InputStream;
 
-public class STLSReplyParser extends Pop3GenericReplyParser<Pop3STLSReply> {
-    public STLSReplyParser(InputStream stream) {
+public class Pop3NOOPReplyParser extends Pop3GenericReplyParser<Pop3NOOPReply> {
+    public Pop3NOOPReplyParser(InputStream stream) {
         super(stream);
     }
 }

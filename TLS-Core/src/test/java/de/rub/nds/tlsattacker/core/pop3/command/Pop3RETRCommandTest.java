@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.RETRCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3RETRCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -43,7 +43,7 @@ public class Pop3RETRCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRCommand retrCommand = new Pop3RETRCommand(1);
-        RETRCommandPreparator preparator = retrCommand.getPreparator(context);
+        Pop3RETRCommandPreparator preparator = retrCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context);
 
         preparator.prepare();
@@ -56,7 +56,7 @@ public class Pop3RETRCommandTest {
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRCommand retrCommand = new Pop3RETRCommand();
-        RETRCommandPreparator preparator = retrCommand.getPreparator(context);
+        Pop3RETRCommandPreparator preparator = retrCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context);
 
         preparator.prepare();

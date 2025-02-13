@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.RSETReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3RSETReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -42,7 +42,7 @@ class Pop3RSETReplyTest {
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RSETReply reset = new Pop3RSETReply();
-        RSETReplyParser parser =
+        Pop3RSETReplyParser parser =
                 reset.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -57,7 +57,7 @@ class Pop3RSETReplyTest {
         String reply = "-ERR not ok\r\n";
         Pop3RSETReply reset = new Pop3RSETReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        RSETReplyParser parser =
+        Pop3RSETReplyParser parser =
                 reset.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
         assertDoesNotThrow(() -> parser.parse(reset));

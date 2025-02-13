@@ -12,8 +12,8 @@ import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class LISTCommandPreparator extends Pop3CommandPreparator<Pop3LISTCommand> {
-    public LISTCommandPreparator(Pop3Context context, Pop3LISTCommand listCommand) {
+public class Pop3LISTCommandPreparator extends Pop3CommandPreparator<Pop3LISTCommand> {
+    public Pop3LISTCommandPreparator(Pop3Context context, Pop3LISTCommand listCommand) {
         super(context.getChooser(), listCommand);
     }
 

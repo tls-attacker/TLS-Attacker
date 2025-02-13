@@ -12,9 +12,9 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3RETRReply;
 import java.io.InputStream;
 import java.util.List;
 
-public class RETRReplyParser extends Pop3ReplyParser<Pop3RETRReply> {
+public class Pop3RETRReplyParser extends Pop3ReplyParser<Pop3RETRReply> {
 
-    public RETRReplyParser(InputStream stream) {
+    public Pop3RETRReplyParser(InputStream stream) {
         super(stream);
     }
 

@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3STATCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3QUITCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class STATCommandPreparator extends Pop3CommandPreparator<Pop3STATCommand> {
-    public STATCommandPreparator(Pop3Context context, Pop3STATCommand statCommand) {
-        super(context.getChooser(), statCommand);
+public class Pop3QUITCommandPreparator extends Pop3CommandPreparator<Pop3QUITCommand> {
+    public Pop3QUITCommandPreparator(Pop3Context context, Pop3QUITCommand quitCommand) {
+        super(context.getChooser(), quitCommand);
     }
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("STAT");
+        this.getObject().setKeyword("QUIT");
     }
 }

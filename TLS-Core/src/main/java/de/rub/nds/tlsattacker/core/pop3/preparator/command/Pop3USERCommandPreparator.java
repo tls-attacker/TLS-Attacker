@@ -9,21 +9,21 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3PASSCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3USERCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class PASSCommandPreparator extends Pop3CommandPreparator<Pop3PASSCommand> {
-    public PASSCommandPreparator(Pop3Context context, Pop3PASSCommand passCommand) {
-        super(context.getChooser(), passCommand);
+public class Pop3USERCommandPreparator extends Pop3CommandPreparator<Pop3USERCommand> {
+    public Pop3USERCommandPreparator(Pop3Context context, Pop3USERCommand userCommand) {
+        super(context.getChooser(), userCommand);
     }
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("PASS");
-        if (this.getObject().getPassword() == null) {
-            this.getObject().setPassword(chooser.getConfig().getDefaultPop3Password());
+        this.getObject().setKeyword("USER");
+        if (this.getObject().getUsername() == null) {
+            this.getObject().setUsername(chooser.getConfig().getDefaultPop3Username());
         }
 
-        this.getObject().setArguments(this.getObject().getPassword());
+        this.getObject().setArguments(this.getObject().getUsername());
     }
 }

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.LISTReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3LISTReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -45,7 +45,7 @@ class Pop3LISTReplyTest {
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3LISTReply listReply = new Pop3LISTReply();
-        LISTReplyParser parser =
+        Pop3LISTReplyParser parser =
                 listReply.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -64,7 +64,7 @@ class Pop3LISTReplyTest {
         Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
-        LISTReplyParser parser =
+        Pop3LISTReplyParser parser =
                 listReply.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
@@ -79,7 +79,7 @@ class Pop3LISTReplyTest {
         Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
 
-        LISTReplyParser parser =
+        Pop3LISTReplyParser parser =
                 listReply.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 

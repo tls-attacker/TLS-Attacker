@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.pop3.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3QUITCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3STLSCommand;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 
-public class QUITCommandPreparator extends Pop3CommandPreparator<Pop3QUITCommand> {
-    public QUITCommandPreparator(Pop3Context context, Pop3QUITCommand quitCommand) {
-        super(context.getChooser(), quitCommand);
+public class Pop3STLSCommandPreparator extends Pop3CommandPreparator<Pop3STLSCommand> {
+    public Pop3STLSCommandPreparator(Pop3Context context, Pop3STLSCommand starttlsCommand) {
+        super(context.getChooser(), starttlsCommand);
     }
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("QUIT");
+        this.getObject().setKeyword("STLS");
     }
 }

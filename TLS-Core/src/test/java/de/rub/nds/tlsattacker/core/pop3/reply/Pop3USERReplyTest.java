@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.USERReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3USERReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -39,7 +39,7 @@ class Pop3USERReplyTest {
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3USERReply user = new Pop3USERReply();
-        USERReplyParser parser =
+        Pop3USERReplyParser parser =
                 user.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -54,7 +54,7 @@ class Pop3USERReplyTest {
         String reply = "-ERR user not ok\r\n";
         Pop3USERReply noop = new Pop3USERReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        USERReplyParser parser =
+        Pop3USERReplyParser parser =
                 noop.getParser(
                         context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
         assertDoesNotThrow(() -> parser.parse(noop));

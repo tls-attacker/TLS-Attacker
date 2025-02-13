@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.STATCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3STATCommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -42,7 +42,7 @@ public class Pop3STATCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3STATCommand statCommand = new Pop3STATCommand();
-        STATCommandPreparator preparator = statCommand.getPreparator(context);
+        Pop3STATCommandPreparator preparator = statCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context);
 
         preparator.prepare();
