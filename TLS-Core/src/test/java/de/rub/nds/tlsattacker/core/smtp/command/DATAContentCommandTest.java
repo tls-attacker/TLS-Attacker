@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.DATAContentParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpDATAContentParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -42,8 +42,8 @@ public class DATAContentCommandTest {
 
         SmtpDATAContentCommand dcc = new SmtpDATAContentCommand();
 
-        DATAContentParser parser =
-                new DATAContentParser(
+        SmtpDATAContentParser parser =
+                new SmtpDATAContentParser(
                         new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
 
         parser.parse(dcc);
@@ -54,8 +54,8 @@ public class DATAContentCommandTest {
     public void testMissingEndSequence() {
         String content = lines[0] + CRLF + lines[1] + CRLF + lines[2] + CRLF;
 
-        DATAContentParser parser =
-                new DATAContentParser(
+        SmtpDATAContentParser parser =
+                new SmtpDATAContentParser(
                         new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
 
         SmtpDATAContentCommand dcc = new SmtpDATAContentCommand();
@@ -82,8 +82,8 @@ public class DATAContentCommandTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         String content = lines[0] + CRLF + lines[1] + CRLF + lines[2] + CRLF + "." + CRLF;
         SmtpDATAContentCommand dcc = new SmtpDATAContentCommand(content);
-        DATAContentParser parser =
-                new DATAContentParser(
+        SmtpDATAContentParser parser =
+                new SmtpDATAContentParser(
                         new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         parser.parse(dcc);
         Handler handler = dcc.getHandler(context);

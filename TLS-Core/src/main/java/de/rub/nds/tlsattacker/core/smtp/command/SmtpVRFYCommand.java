@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.VRFYCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpVRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpVRFYCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -46,12 +46,12 @@ public class SmtpVRFYCommand extends SmtpCommand {
     }
 
     @Override
-    public VRFYCommandParser getParser(SmtpContext context, InputStream stream) {
-        return new VRFYCommandParser(stream);
+    public SmtpVRFYCommandParser getParser(SmtpContext context, InputStream stream) {
+        return new SmtpVRFYCommandParser(stream);
     }
 
     @Override
-    public VRFYCommandPreparator getPreparator(SmtpContext context) {
-        return new VRFYCommandPreparator(context, this);
+    public SmtpVRFYCommandPreparator getPreparator(SmtpContext context) {
+        return new SmtpVRFYCommandPreparator(context, this);
     }
 }

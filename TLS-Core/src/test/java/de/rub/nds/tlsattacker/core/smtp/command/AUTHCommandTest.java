@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.AUTHCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpAUTHCommandParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -31,7 +31,7 @@ public class AUTHCommandTest {
         SmtpAUTHCommand auth = new SmtpAUTHCommand();
         String stringMessage = "AUTH PLAIN qweqweqwe==\r\n";
 
-        AUTHCommandParser parser =
+        SmtpAUTHCommandParser parser =
                 auth.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
@@ -48,7 +48,7 @@ public class AUTHCommandTest {
         SmtpAUTHCommand auth = new SmtpAUTHCommand();
         String stringMessage = "AUTH\r\n";
 
-        AUTHCommandParser parser =
+        SmtpAUTHCommandParser parser =
                 auth.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));

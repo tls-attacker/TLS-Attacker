@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.handler.RSETCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpRSETCommandHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,7 +35,7 @@ public class SmtpRSETCommand extends SmtpCommand {
     }
 
     @Override
-    public RSETCommandHandler getHandler(SmtpContext smtpContext) {
-        return new RSETCommandHandler(smtpContext);
+    public SmtpRSETCommandHandler getHandler(SmtpContext smtpContext) {
+        return new SmtpRSETCommandHandler(smtpContext);
     }
 }

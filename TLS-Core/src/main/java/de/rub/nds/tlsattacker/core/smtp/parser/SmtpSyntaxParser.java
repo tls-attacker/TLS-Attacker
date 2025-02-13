@@ -188,80 +188,78 @@ public final class SmtpSyntaxParser {
         // just ehlo-line
         switch (ext) {
             case "8BITMIME":
-                return new _8BITMIMEExtension();
+                return new Smtp8BITMIMEExtension();
             case "ATRN":
-                return new ATRNExtension();
+                return new SmtpATRNExtension();
             case "AUTH":
                 String[] sasl = parameters.split(" ");
-                return new AUTHExtension(new ArrayList<>(List.of(sasl)));
+                return new SmtpAUTHExtension(new ArrayList<>(List.of(sasl)));
             case "BINARYMIME":
-                return new BINARYMIMEExtension();
+                return new SmtpBINARYMIMEExtension();
             case "BURL":
                 // TODO: BURL parameter not understood in any way
-                return new BURLExtension(parameters);
+                return new SmtpBURLExtension(parameters);
             case "CHECKPOINT":
-                return new CHECKPOINTExtension();
+                return new SmtpCHECKPOINTExtension();
             case "CHUNKING":
-                return new CHUNKINGExtension();
+                return new SmtpCHUNKINGExtension();
             case "CONNEG":
-                return new CONNEGExtension();
+                return new SmtpCONNEGExtension();
             case "CONPERM":
-                return new CONPERMExtension();
+                return new SmtpCONPERMExtension();
             case "DELIVERBY":
-                return new DELIVERBYExtension();
+                return new SmtpDELIVERBYExtension();
             case "DSN":
-                return new DSNExtension();
+                return new SmtpDSNExtension();
             case "ENHANCEDSTATUSCODES":
-                return new ENHANCEDSTATUSCODESExtension();
+                return new SmtpENHANCEDSTATUSCODESExtension();
             case "ETRN":
-                return new ETRNExtension();
+                return new SmtpETRNExtension();
             case "EXPN":
-                return new EXPNExtension();
+                return new SmtpEXPNExtension();
             case "FUTURERELEASE":
-                return new FUTURERELEASEExtension();
+                return new SmtpFUTURERELEASEExtension();
             case "HELP":
-                return new HELPExtension();
+                return new SmtpHELPExtension();
             case "LIMITS":
-                return new LIMITSExtension();
+                return new SmtpLIMITSExtension();
             case "MT-PRIORITY":
                 // TODO: MT_PRIORITY parameter not understood in any way
-                return new MT_PRIORITYExtension(parameters);
+                return new SmtpMT_PRIORITYExtension(parameters);
             case "MTRK":
-                return new MTRKExtension();
+                return new SmtpMTRKExtension();
             case "NO-SOLICITING":
                 // TODO: NO-SOLICITING parameter not understood in any way
-                return new NO_SOLICITINGExtension(parameters);
+                return new SmtpNO_SOLICITINGExtension(parameters);
             case "PIPELINING":
-                return new PIPELININGExtension();
+                return new SmtpPIPELININGExtension();
             case "REQUIRETLS":
-                return new REQUIRETLSExtension();
+                return new SmtpREQUIRETLSExtension();
             case "RRVS":
-                return new RRVSExtension();
+                return new SmtpRRVSExtension();
             case "SAML":
-                return new SAMLExtension();
+                return new SmtpSAMLExtension();
             case "SEND":
-                return new SENDExtension();
+                return new SmtpSENDExtension();
             case "SIZE":
                 // TODO: SIZE can have a parameter
                 int size = Integer.parseInt(parameters);
-                return new SIZEExtension(size);
+                return new SmtpSIZEExtension(size);
             case "SMTPUTF8":
-                return new SMTPUTF8Extension();
+                return new SmtpSMTPUTF8Extension();
             case "SOML":
-                return new SOMLExtension();
+                return new SmtpSOMLExtension();
             case "STARTTLS":
-                return new STARTTLSExtension();
+                return new SmtpSTARTTLSExtension();
             case "SUBMITTER":
-                return new SUBMITTERExtension();
+                return new SmtpSUBMITTERExtension();
             case "TURN":
-                return new TURNExtension();
-            case "UTF8SMTP":
-                return new UTF8SMTPExtension();
+                return new SmtpTURNExtension();
             case "VERB":
-                return new VERBExtension();
+                return new SmtpVERBExtension();
             default:
                 if (ext.startsWith("X") || ext.startsWith("x")) {
-                    return new LocalSmtpServiceExtension(ext, parameters);
+                    return new SmtpLocalServiceExtension(ext, parameters);
                 } else {
                     throw new ParserException(
                             "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);

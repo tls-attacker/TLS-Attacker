@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.HELOCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpHELOCommandParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,7 @@ public class HELOCommandTest {
     public void testParse() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpHELOCommand command = new SmtpHELOCommand();
-        HELOCommandParser parser =
+        SmtpHELOCommandParser parser =
                 command.getParser(
                         context,
                         new ByteArrayInputStream(
@@ -43,7 +43,7 @@ public class HELOCommandTest {
     public void testParseDomainTrailingSpace() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpHELOCommand command = new SmtpHELOCommand();
-        HELOCommandParser parser =
+        SmtpHELOCommandParser parser =
                 command.getParser(
                         context,
                         new ByteArrayInputStream(
@@ -57,7 +57,7 @@ public class HELOCommandTest {
     public void testParseInvalidDomain() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpHELOCommand command = new SmtpHELOCommand();
-        HELOCommandParser parser =
+        SmtpHELOCommandParser parser =
                 command.getParser(
                         context,
                         new ByteArrayInputStream(

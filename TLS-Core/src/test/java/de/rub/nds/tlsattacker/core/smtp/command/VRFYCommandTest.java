@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.VRFYCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpVRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpVRFYCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -29,10 +29,10 @@ class VRFYCommandTest {
             "VRFY john\r\n", "VRFY \"John Doe\"\r\n", "VRFY \"john.doe@gmail.com\"\r\n"
         };
 
-        VRFYCommandParser parser;
+        SmtpVRFYCommandParser parser;
         for (String command : validCommands) {
             parser =
-                    new VRFYCommandParser(
+                    new SmtpVRFYCommandParser(
                             new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
 
             SmtpVRFYCommand vrfy = new SmtpVRFYCommand();
@@ -48,7 +48,7 @@ class VRFYCommandTest {
         // given an SmtpEHLOCommand see if getSerializer leads to something worthwhile.
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpVRFYCommand vrfy = new SmtpVRFYCommand("\"john@mail.com\"");
-        VRFYCommandPreparator preparator = vrfy.getPreparator(context);
+        SmtpVRFYCommandPreparator preparator = vrfy.getPreparator(context);
         Serializer serializer = vrfy.getSerializer(context);
         preparator.prepare();
         serializer.serialize();

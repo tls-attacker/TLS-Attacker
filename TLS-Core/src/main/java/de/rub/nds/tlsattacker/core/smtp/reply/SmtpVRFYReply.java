@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpVRFYReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class SmtpVRFYReply extends SmtpReply {
 
     @Override
     public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
-        return new VRFYReplyParser(stream);
+        return new SmtpVRFYReplyParser(stream);
     }
 
     @Override

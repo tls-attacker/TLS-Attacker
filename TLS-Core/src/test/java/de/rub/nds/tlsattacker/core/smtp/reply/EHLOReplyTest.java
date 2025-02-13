@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEHLOReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -33,7 +33,7 @@ class EHLOReplyTest {
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
-        EHLOReplyParser parser =
+        SmtpEHLOReplyParser parser =
                 ehlo.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
@@ -55,7 +55,7 @@ class EHLOReplyTest {
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
-        EHLOReplyParser parser =
+        SmtpEHLOReplyParser parser =
                 ehlo.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
@@ -94,10 +94,10 @@ class EHLOReplyTest {
         ehlo.setGreeting("says Greetings");
         ehlo.setExtensions(
                 List.of(
-                        new _8BITMIMEExtension(),
-                        new ATRNExtension(),
-                        new STARTTLSExtension(),
-                        new HELPExtension()));
+                        new Smtp8BITMIMEExtension(),
+                        new SmtpATRNExtension(),
+                        new SmtpSTARTTLSExtension(),
+                        new SmtpHELPExtension()));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = ehlo.getSerializer(context);
@@ -109,8 +109,8 @@ class EHLOReplyTest {
 
     @Test
     public void testParseMalformedSingleLineReply() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "250-seal.upb.de Hello user! itsa me\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -121,8 +121,8 @@ class EHLOReplyTest {
     @Test
     @Disabled("This is RFC 5321 behavior, which we abandoned")
     public void testStandardConforminParseMultiLineReplyWithUnknownKeyword() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "250-seal.upb.de Hello user! itsa me\r\n250-STARTTLS\r\n250 UNKNOWNKEYWORD\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -132,8 +132,8 @@ class EHLOReplyTest {
 
     @Test
     public void testParseMultiLineReplyWithUnknownKeyword() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "250-seal.upb.de Hello user! itsa me\r\n250-STARTTLS\r\n250 UNKNOWNKEYWORD\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -142,14 +142,14 @@ class EHLOReplyTest {
         assertEquals("seal.upb.de", reply.getDomain());
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof STARTTLSExtension));
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof UnknownEHLOExtension));
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpUnknownEHLOExtension));
     }
 
     @Test
     public void testParseValidMultiLineReply() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "250-seal.upb.de Hello user! itsa me\r\n250-STARTTLS\r\n250 HELP\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -158,14 +158,14 @@ class EHLOReplyTest {
         assertEquals("seal.upb.de", reply.getDomain());
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof STARTTLSExtension));
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof HELPExtension));
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpHELPExtension));
     }
 
     @Test
     public void testParseCommandNotImplemented() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "502 Command not implemented\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -176,8 +176,8 @@ class EHLOReplyTest {
 
     @Test
     public void testParseMailboxUnavailable() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "550 Requested action not taken: mailbox unavailable\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -188,8 +188,8 @@ class EHLOReplyTest {
 
     @Test
     public void testParseCommandParameterNotImplemented() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "504 Command parameter not implemented\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -201,8 +201,8 @@ class EHLOReplyTest {
     @Disabled("Invalid test case")
     @Test
     public void testParseInvalidMultilineError() {
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(
                                 "502 Command not implemented\r\n250 Second line for some reason\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
