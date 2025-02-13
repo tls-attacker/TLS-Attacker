@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 
 public abstract class StreambasedTransportHandler extends TransportHandler {
 
@@ -65,7 +66,10 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
         try {
             if (inStream.available() != 0) {
                 byte[] data = new byte[inStream.available()];
-                inStream.read(data);
+                int read = inStream.read(data);
+                if (read != data.length) {
+                    return Arrays.copyOf(data, read);
+                }
                 return data;
             } else {
                 int read = inStream.read();
@@ -74,8 +78,12 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
                     stream.write(read);
                     if (inStream.available() > 0) {
                         byte[] data = new byte[inStream.available()];
-                        inStream.read(data);
-                        stream.write(data);
+                        read = inStream.read(data);
+                        if (read == -1) {
+                            cachedSocketState = SocketState.CLOSED;
+                        } else {
+                            stream.write(data, 0, read);
+                        }
                     }
                     return stream.toByteArray();
                 } else {
