@@ -68,21 +68,24 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
             // this either fails (i.e. closed) or reveals that there's still data coming
             if (inStream.available() == 0) {
                 int read = inStream.read();
-                if (read != -1) {
-                    inStream.unread(read);
+                if (read == -1) {
+                    cachedSocketState = SocketState.CLOSED;
+                    return new byte[0];
                 }
+                inStream.unread(read);
             }
-            if (inStream.available() != 0) {
-                byte[] data = new byte[inStream.available()];
-                int read = inStream.read(data);
-                if (read != data.length) {
-                    return Arrays.copyOf(data, read);
-                }
-                return data;
+            // either available was already != 0
+            // or we received a byte and pushed it back into the stream
+            // or we considered the socket closed, and returned
+            // hence this assert should never fail
+            assert inStream.available() != 0;
+
+            byte[] data = new byte[inStream.available()];
+            int read = inStream.read(data);
+            if (read != data.length) {
+                return Arrays.copyOf(data, read);
             }
-            // no data available -> closed
-            cachedSocketState = SocketState.CLOSED;
-            return new byte[0];
+            return data;
         } catch (SocketException E) {
             cachedSocketState = SocketState.SOCKET_EXCEPTION;
             return new byte[0];
