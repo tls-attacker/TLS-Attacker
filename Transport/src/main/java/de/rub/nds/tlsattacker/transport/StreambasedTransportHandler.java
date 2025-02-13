@@ -64,6 +64,14 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
     public byte[] fetchData() throws IOException {
         setTimeout(timeout);
         try {
+            // if no byte is available, try to read anyway
+            // this either fails (i.e. closed) or reveals that there's still data coming
+            if (inStream.available() == 0) {
+                int read = inStream.read();
+                if (read != -1) {
+                    inStream.unread(read);
+                }
+            }
             if (inStream.available() != 0) {
                 byte[] data = new byte[inStream.available()];
                 int read = inStream.read(data);
@@ -71,26 +79,10 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
                     return Arrays.copyOf(data, read);
                 }
                 return data;
-            } else {
-                int read = inStream.read();
-                if (read != -1) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    stream.write(read);
-                    if (inStream.available() > 0) {
-                        byte[] data = new byte[inStream.available()];
-                        read = inStream.read(data);
-                        if (read == -1) {
-                            cachedSocketState = SocketState.CLOSED;
-                        } else {
-                            stream.write(data, 0, read);
-                        }
-                    }
-                    return stream.toByteArray();
-                } else {
-                    cachedSocketState = SocketState.CLOSED;
-                    return new byte[0];
-                }
             }
+            // no data available -> closed
+            cachedSocketState = SocketState.CLOSED;
+            return new byte[0];
         } catch (SocketException E) {
             cachedSocketState = SocketState.SOCKET_EXCEPTION;
             return new byte[0];
