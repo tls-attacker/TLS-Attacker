@@ -122,7 +122,7 @@ public class HttpResponseMessage extends HttpMessage {
     }
 
     public HttpResponseParser getParser(Context context, InputStream stream) {
-        return new HttpResponseParser(stream);
+        return new HttpResponseParser(stream, context.getConfig().getDefaultMaxHttpLength());
     }
 
     public HttpResponsePreparator getPreparator(Context context) {

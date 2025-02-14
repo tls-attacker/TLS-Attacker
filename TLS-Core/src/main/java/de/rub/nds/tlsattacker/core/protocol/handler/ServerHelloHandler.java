@@ -70,6 +70,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContext(ServerHelloMessage message) {
+        adjustSelectedCipherSuite(message);
         if (tlsContext.getConfig().isAddEncryptedClientHelloExtension()
                 && tlsContext.getTransportHandler().getConnectionEndType()
                         == ConnectionEndType.CLIENT) {
@@ -495,10 +496,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] acceptConfirmationServer,
             ServerHelloMessage message) {
         Chooser chooser = tlsContext.getChooser();
+        ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
+
+        // for some reason we do not take any of the two hash functions defined in the ECH Config
+        // but instead use the
+        // hash function defined by the server's selected cipher suite.
         HKDFAlgorithm hkdfAlgorithm =
-                chooser.getEchConfig().getHpkeKeyDerivationFunction().getHkdfAlgorithm();
+                AlgorithmResolver.getHKDFAlgorithm(
+                        tlsContext.getChooser().getSelectedCipherSuite());
         try {
-            ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
             byte[] extract =
                     HKDFunction.extract(
                             hkdfAlgorithm, null, innerClientHello.getRandom().getValue());

@@ -1075,6 +1075,8 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/robots.txt";
 
+    private int defaultMaxHttpLength = 65536; // 2^16
+
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
@@ -1693,6 +1695,14 @@ public class Config implements Serializable {
 
     public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
         this.defaultHttpsRequestPath = defaultHttpsRequestPath;
+    }
+
+    public int getDefaultMaxHttpLength() {
+        return defaultMaxHttpLength;
+    }
+
+    public void setDefaultMaxHttpLength(int defaultMaxHttpLength) {
+        this.defaultMaxHttpLength = defaultMaxHttpLength;
     }
 
     public Boolean isUseFreshRandom() {

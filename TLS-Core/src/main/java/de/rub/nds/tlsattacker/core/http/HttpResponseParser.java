@@ -28,8 +28,15 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final byte LINEBREAK_BYTE = (byte) 0x0A;
 
+    private int maxHttpLength;
+
     public HttpResponseParser(InputStream stream) {
         super(stream);
+    }
+
+    public HttpResponseParser(InputStream stream, int maxHttpLength) {
+        super(stream);
+        this.maxHttpLength = maxHttpLength;
     }
 
     @Override
@@ -111,7 +118,10 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             // get bytes to parse from header
             int bytesToRead;
             try {
-                bytesToRead = Integer.parseInt(contentLengthHeader.getHeaderValue().getValue());
+                bytesToRead =
+                        Math.min(
+                                maxHttpLength,
+                                Integer.parseInt(contentLengthHeader.getHeaderValue().getValue()));
             } catch (NumberFormatException e) {
                 LOGGER.warn(
                         "Server send invalid content length header, header value {} cannot be parsed to int",
@@ -133,7 +143,8 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             // the body is encoded using <content length>\r\n<content>\r\n repeatedly, finished with
             // 0\r\n\r\n
             boolean reachedEnd = false;
-            while (!reachedEnd) {
+            int parsed_len = 0;
+            while (!reachedEnd && parsed_len < maxHttpLength) {
                 // parse length line
                 int length;
                 try {
@@ -157,8 +168,15 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
                         }
                     }
                 } else {
-                    // parse length many bytes and then expect \r\n
-                    byte[] content = parseByteArrayField(length + 2);
+                    int actual_length = Math.min(maxHttpLength - parsed_len, length);
+                    parsed_len += actual_length;
+                    byte[] content;
+                    if (actual_length < length) {
+                        content = parseByteArrayField(length);
+                    } else {
+                        // parse length many bytes and then expect \r\n
+                        content = parseByteArrayField(length + 2);
+                    }
                     httpMessageBuilder.append(new String(content, StandardCharsets.UTF_8));
                 }
             }
