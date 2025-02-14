@@ -28,13 +28,9 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final byte LINEBREAK_BYTE = (byte) 0x0A;
 
-    private int maxHttpLength;
+    private final int maxHttpLength;
     private ContentLengthHeader contentLengthHeader;
     private GenericHttpHeader transferEncodingHeader;
-
-    public HttpResponseParser(InputStream stream) {
-        super(stream);
-    }
 
     public HttpResponseParser(InputStream stream, int maxHttpLength) {
         super(stream);

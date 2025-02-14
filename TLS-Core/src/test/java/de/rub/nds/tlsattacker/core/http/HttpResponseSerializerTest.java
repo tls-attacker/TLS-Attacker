@@ -38,7 +38,7 @@ public class HttpResponseSerializerTest {
     public void testSerializeProtocolMessageContent(
             byte[] providedMessageBytes, ProtocolVersion providedProtocolVersion) {
         HttpResponseParser parser =
-                new HttpResponseParser(new ByteArrayInputStream(providedMessageBytes));
+                new HttpResponseParser(new ByteArrayInputStream(providedMessageBytes), 1000);
         HttpResponseMessage parsedMsg = new HttpResponseMessage();
         parser.parse(parsedMsg);
         HttpResponseSerializer serializer = new HttpResponseSerializer(parsedMsg);

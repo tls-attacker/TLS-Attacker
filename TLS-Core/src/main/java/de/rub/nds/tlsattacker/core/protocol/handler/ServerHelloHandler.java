@@ -84,7 +84,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedProtocolVersion(message);
         adjustSelectedCompression(message);
         adjustSelectedSessionID(message);
-        adjustSelectedCipherSuite(message);
         adjustServerRandom(message);
         adjustExtensions(message);
         warnOnConflictingExtensions();

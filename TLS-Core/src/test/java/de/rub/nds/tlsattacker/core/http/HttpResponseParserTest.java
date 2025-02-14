@@ -26,7 +26,8 @@ class HttpResponseParserTest {
         HttpResponseParser parser =
                 new HttpResponseParser(
                         new ByteArrayInputStream(
-                                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")));
+                                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
+                        1000);
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         assertThrows(EndOfStreamException.class, () -> parser.parse(parsedMessage));
     }
@@ -40,7 +41,7 @@ class HttpResponseParserTest {
 
         HttpResponseParser parser =
                 new HttpResponseParser(
-                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)), 1000);
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         parser.parse(parsedMessage);
 
@@ -81,7 +82,7 @@ class HttpResponseParserTest {
 
         HttpResponseParser parser =
                 new HttpResponseParser(
-                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)), 1000);
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         assertThrows(EndOfStreamException.class, () -> parser.parse(parsedMessage));
     }
@@ -93,7 +94,7 @@ class HttpResponseParserTest {
                         + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 3\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
         var inputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8));
-        HttpResponseParser parser = new HttpResponseParser(inputStream);
+        HttpResponseParser parser = new HttpResponseParser(inputStream, 1000);
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         parser.parse(parsedMessage);
         assertEquals("Content-Length", parsedMessage.getHeader().get(3).getHeaderName().getValue());
