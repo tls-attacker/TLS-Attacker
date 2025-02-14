@@ -36,6 +36,7 @@ public class CertificateMessage extends HandshakeMessage {
     /** request context length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger requestContextLength;
+
     /** request context */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray requestContext;

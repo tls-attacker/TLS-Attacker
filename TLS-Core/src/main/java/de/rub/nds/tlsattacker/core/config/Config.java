@@ -287,6 +287,7 @@ public class Config implements Serializable {
                             new ServerNamePair(
                                     SniType.HOST_NAME.getValue(),
                                     "example.com".getBytes(US_ASCII))));
+
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
@@ -514,6 +515,7 @@ public class Config implements Serializable {
 
     /** If we generate ClientHello with the PreSharedKey extension */
     private Boolean addPreSharedKeyExtension = false;
+
     /** If we generate ClientHello with the Padding extension */
     private Boolean addPaddingExtension = false;
 

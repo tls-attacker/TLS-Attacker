@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
 
 public abstract class StreambasedTransportHandler extends TransportHandler {
 
@@ -63,26 +64,28 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
     public byte[] fetchData() throws IOException {
         setTimeout(timeout);
         try {
-            if (inStream.available() != 0) {
-                byte[] data = new byte[inStream.available()];
-                inStream.read(data);
-                return data;
-            } else {
+            // if no byte is available, try to read anyway
+            // this either fails (i.e. closed) or reveals that there's still data coming
+            if (inStream.available() == 0) {
                 int read = inStream.read();
-                if (read != -1) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    stream.write(read);
-                    if (inStream.available() > 0) {
-                        byte[] data = new byte[inStream.available()];
-                        inStream.read(data);
-                        stream.write(data);
-                    }
-                    return stream.toByteArray();
-                } else {
+                if (read == -1) {
                     cachedSocketState = SocketState.CLOSED;
                     return new byte[0];
                 }
+                inStream.unread(read);
             }
+            // either available was already != 0
+            // or we received a byte and pushed it back into the stream
+            // or we considered the socket closed, and returned
+            // hence this assert should never fail
+            assert inStream.available() != 0;
+
+            byte[] data = new byte[inStream.available()];
+            int read = inStream.read(data);
+            if (read != data.length) {
+                return Arrays.copyOf(data, read);
+            }
+            return data;
         } catch (SocketException E) {
             cachedSocketState = SocketState.SOCKET_EXCEPTION;
             return new byte[0];

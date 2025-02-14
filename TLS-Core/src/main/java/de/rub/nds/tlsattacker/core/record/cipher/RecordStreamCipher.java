@@ -32,6 +32,7 @@ public class RecordStreamCipher extends RecordCipher {
 
     /** mac for verification of incoming messages */
     private WrappedMac readMac;
+
     /** mac object for macing outgoing messages */
     private WrappedMac writeMac;
 

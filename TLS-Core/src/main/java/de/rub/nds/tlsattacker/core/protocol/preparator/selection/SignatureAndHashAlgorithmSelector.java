@@ -86,6 +86,7 @@ public class SignatureAndHashAlgorithmSelector {
         }
         return signHashAlgo;
     }
+
     /**
      * Selects a fall-back algorithm if no common algorithm was found. We always attempt to use an
      * algorithm suitable for the public key type first.

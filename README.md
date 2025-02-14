@@ -16,7 +16,7 @@ In order to compile and use TLS-Attacker, you need to have Java and Maven instal
 $ sudo apt-get install maven
 ```
 
-TLS-Attacker currently needs Java JDK 11 to run.
+TLS-Attacker currently needs Java JDK 21 to run.
 
 If you have the correct Java version you can run the maven command from the TLS-Attacker directory:
 
@@ -41,7 +41,7 @@ If you want to use this project as a dependency, you do not have to compile it y
 <dependency>
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.2.1</version>
+    <version>7.0.0</version>
     <type>pom</type>
 </dependency>
 ```
