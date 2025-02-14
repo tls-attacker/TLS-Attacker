@@ -45,8 +45,11 @@ public class HttpResponseMessage extends HttpMessage {
     @HoldsModifiableVariable
     private List<HttpHeader> header;
 
+    @HoldsModifiableVariable private List<HttpHeader> trailer;
+
     public HttpResponseMessage() {
         header = new LinkedList<>();
+        trailer = new LinkedList<>();
     }
 
     public HttpResponseMessage(Config config) {
@@ -58,6 +61,7 @@ public class HttpResponseMessage extends HttpMessage {
         header.add(new ExpiresHeader());
         header.add(new GenericHttpHeader("Cache-Control", "private, max-age=0"));
         header.add(new GenericHttpHeader("Server", "GSE"));
+        trailer = new LinkedList<>();
     }
 
     public ModifiableString getResponseProtocol() {
@@ -106,6 +110,14 @@ public class HttpResponseMessage extends HttpMessage {
 
     public void setHeader(List<HttpHeader> header) {
         this.header = header;
+    }
+
+    public List<HttpHeader> getTrailer() {
+        return trailer;
+    }
+
+    public void setTrailer(List<HttpHeader> trailer) {
+        this.trailer = trailer;
     }
 
     public String toCompactString() {

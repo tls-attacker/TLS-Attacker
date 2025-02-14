@@ -102,4 +102,62 @@ class HttpResponseParserTest {
         assertEquals("tes", parsedMessage.getResponseContent().getValue());
         assertEquals(1, inputStream.available());
     }
+
+    @Test
+    void testParseChunkedTrailers() {
+        String message =
+                "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
+                        + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nTransfer-Encoding: chunked\r\n"
+                        + "Content-Type: text/html\r\nConnection: Closed\r\n\r\n5\r\nAAAAA\r\n5\nAAAAA\r\n"
+                        + "0\r\nTrailer1: value1\r\nTrailer2: value2\r\n\r\n";
+
+        var inputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8));
+        HttpResponseParser parser = new HttpResponseParser(inputStream, 50);
+        HttpResponseMessage parsedMessage = new HttpResponseMessage();
+        parser.parse(parsedMessage);
+        assertEquals(
+                "Transfer-Encoding", parsedMessage.getHeader().get(3).getHeaderName().getValue());
+        assertEquals("chunked", parsedMessage.getHeader().get(3).getHeaderValue().getValue());
+        assertEquals("AAAAAAAAAA", parsedMessage.getResponseContent().getValue());
+        assertEquals("Trailer1", parsedMessage.getTrailer().get(0).getHeaderName().getValue());
+        assertEquals("value1", parsedMessage.getTrailer().get(0).getHeaderValue().getValue());
+        assertEquals("Trailer2", parsedMessage.getTrailer().get(1).getHeaderName().getValue());
+        assertEquals("value2", parsedMessage.getTrailer().get(1).getHeaderValue().getValue());
+    }
+
+    @Test
+    void parseTooLongMessageContentLength() {
+        String message =
+                "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
+                        + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 1000\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\n"
+                        + "A".repeat(100);
+
+        var inputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8));
+        HttpResponseParser parser = new HttpResponseParser(inputStream, 50);
+        HttpResponseMessage parsedMessage = new HttpResponseMessage();
+        parser.parse(parsedMessage);
+        assertEquals("Content-Length", parsedMessage.getHeader().get(3).getHeaderName().getValue());
+        assertEquals("1000", parsedMessage.getHeader().get(3).getHeaderValue().getValue());
+        assertEquals("A".repeat(50), parsedMessage.getResponseContent().getValue());
+        assertEquals(50, inputStream.available());
+    }
+
+    @Test
+    void parseTooLongMessageChunked() {
+        String message =
+                "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
+                        + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nTransfer-Encoding: chunked\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\nA\r\nAAAAAAAAAA\r\n5A\r\n"
+                        + "A".repeat(90)
+                        + "\r\n\r\n";
+
+        var inputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8));
+        HttpResponseParser parser = new HttpResponseParser(inputStream, 50);
+        HttpResponseMessage parsedMessage = new HttpResponseMessage();
+        parser.parse(parsedMessage);
+        assertEquals(
+                "Transfer-Encoding", parsedMessage.getHeader().get(3).getHeaderName().getValue());
+        assertEquals("chunked", parsedMessage.getHeader().get(3).getHeaderValue().getValue());
+        assertEquals("A".repeat(50), parsedMessage.getResponseContent().getValue());
+        assertEquals(52, inputStream.available());
+    }
 }
