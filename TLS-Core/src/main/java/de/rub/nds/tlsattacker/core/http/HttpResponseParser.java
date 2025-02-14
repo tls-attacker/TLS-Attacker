@@ -29,6 +29,8 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
     private static final byte LINEBREAK_BYTE = (byte) 0x0A;
 
     private int maxHttpLength;
+    private ContentLengthHeader contentLengthHeader;
+    private GenericHttpHeader transferEncodingHeader;
 
     public HttpResponseParser(InputStream stream) {
         super(stream);
@@ -39,12 +41,13 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         this.maxHttpLength = maxHttpLength;
     }
 
+    /**
+     * Parses an HTTP response message from wire.
+     *
+     * @param message object that should be filled with content.
+     */
     @Override
     public void parse(HttpResponseMessage message) {
-        // needed for body parsing in the end, set during header parsing
-        ContentLengthHeader contentLengthHeader = null;
-        GenericHttpHeader transferEncodingHeader = null;
-
         String request = parseStringTill(LINEBREAK_BYTE);
         String[] split = request.replace("\r", " ").split(" ");
         if (split.length < 2) {
@@ -52,8 +55,37 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         }
         message.setResponseProtocol(split[0]);
         message.setResponseStatusCode(request.replaceFirst(split[0] + " ", "").trim());
-        String line = parseStringTill(LINEBREAK_BYTE);
 
+        parseHeaders(message);
+
+        if (contentLengthHeader != null && transferEncodingHeader != null) {
+            LOGGER.warn(
+                    "HTTP message contains both Content-Length and Transfer-Encoding headers, assuming Content-Length");
+        }
+
+        StringBuilder httpMessageBuilder = new StringBuilder();
+        if (contentLengthHeader != null) {
+            parseContentLength(contentLengthHeader, httpMessageBuilder);
+        } else if (transferEncodingHeader != null) {
+            parseChunked(httpMessageBuilder);
+        } else {
+            // without headers defining parsing behavior or length we parse until the end of the
+            // stream
+            httpMessageBuilder.append(new String(parseTillEnd(), StandardCharsets.UTF_8));
+        }
+        message.setResponseContent(httpMessageBuilder.toString());
+        LOGGER.debug(() -> new String(getAlreadyParsed(), StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Parses all HTTP headers from the message: known and unknown.
+     *
+     * @param message object that should be filled with content.
+     */
+    private void parseHeaders(HttpResponseMessage message) {
+
+        String line = parseStringTill(LINEBREAK_BYTE);
+        String[] split;
         // compatible with \r\n and \n line endings
         while (!line.trim().isEmpty()) {
             split = line.split(": ");
@@ -68,6 +100,7 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
                             .replace("\n", "")
                             .replace("\r", "")
                             .trim();
+
             switch (headerName.toLowerCase()) {
                 case "host":
                     header = new HostHeader();
@@ -101,92 +134,103 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             message.getHeader().add(header);
             line = parseStringTill(LINEBREAK_BYTE);
         }
+    }
 
-        // parse content as content-length or chunked when either header is present, parse until end
-        // of stream when
-        // none is present
-
-        StringBuilder httpMessageBuilder = new StringBuilder();
-
-        if (contentLengthHeader != null && transferEncodingHeader != null) {
+    /**
+     * Parses the body of the HTTP message according to the given Content-Length header.
+     *
+     * @param contentLengthHeader The Content-Length header of the HTTP message.
+     * @param httpMessageBuilder MessageBuilder to append parsed bytes to.
+     */
+    private void parseContentLength(
+            ContentLengthHeader contentLengthHeader, StringBuilder httpMessageBuilder) {
+        LOGGER.debug("Parsing HTTP message with Content Length Header");
+        // get bytes to parse from header
+        int bytesToRead;
+        try {
+            bytesToRead = Integer.parseInt(contentLengthHeader.getHeaderValue().getValue());
+        } catch (NumberFormatException e) {
             LOGGER.warn(
-                    "HTTP message contains both Content-Length and Transfer-Encoding headers, assuming Content-Length");
+                    "Server send invalid content length header, header value {} cannot be parsed to int",
+                    contentLengthHeader.getHeaderValue().getValue());
+            bytesToRead = getBytesLeft();
         }
 
-        if (contentLengthHeader != null) {
-            LOGGER.debug("Parsing HTTP message with Content Length Header");
-            // get bytes to parse from header
-            int bytesToRead;
+        if (bytesToRead > maxHttpLength) {
+            LOGGER.warn(
+                    "Received a HTTP message with size {}, truncating to maximum specified size {}",
+                    bytesToRead,
+                    maxHttpLength);
+            bytesToRead = maxHttpLength;
+        }
+
+        // persist them
+        byte[] content = parseByteArrayField(bytesToRead);
+        httpMessageBuilder.append(new String(content, StandardCharsets.UTF_8));
+        if (content.length < bytesToRead) {
+            LOGGER.warn(
+                    "Content-Length header value was larger ({}B) than actual content ({}B)",
+                    bytesToRead,
+                    content.length);
+        }
+    }
+
+    /**
+     * Parses the body of the HTTP message using chunked encoding.
+     *
+     * @param httpMessageBuilder MessageBuilder to append parsed bytes to.
+     */
+    private void parseChunked(StringBuilder httpMessageBuilder) {
+        LOGGER.debug("Parsing HTTP message with chunked encoding.");
+        // the body is encoded using <content length>\r\n<content>\r\n repeatedly, finished with
+        // 0\r\n\r\n
+        boolean reachedEnd = false;
+        int parsedLen = 0;
+        while (!reachedEnd && parsedLen < maxHttpLength) {
+            // parse length line
+            int length;
             try {
-                bytesToRead =
-                        Math.min(
-                                maxHttpLength,
-                                Integer.parseInt(contentLengthHeader.getHeaderValue().getValue()));
+                length = Integer.parseInt(parseStringTill(LINEBREAK_BYTE).trim(), 16);
+                parsedLen += length;
             } catch (NumberFormatException e) {
-                LOGGER.warn(
-                        "Server send invalid content length header, header value {} cannot be parsed to int",
-                        contentLengthHeader.getHeaderValue().getValue());
-                bytesToRead = getBytesLeft();
+                LOGGER.warn("Invalid Chunked Encoding in HTTP message: ", e);
+                return;
             }
-            // persist them
-            byte[] content = parseByteArrayField(bytesToRead);
-            httpMessageBuilder.append(new String(content, StandardCharsets.UTF_8));
-            if (content.length < bytesToRead) {
-                LOGGER.warn(
-                        "Content-Length header value was larger ({}B) than actual content ({}B)",
-                        bytesToRead,
-                        content.length);
-            }
-
-        } else if (transferEncodingHeader != null) {
-            LOGGER.debug("Parsing HTTP message with chunked encoding.");
-            // the body is encoded using <content length>\r\n<content>\r\n repeatedly, finished with
-            // 0\r\n\r\n
-            boolean reachedEnd = false;
-            int parsed_len = 0;
-            while (!reachedEnd && parsed_len < maxHttpLength) {
-                // parse length line
-                int length;
-                try {
-                    length = Integer.parseInt(parseStringTill(LINEBREAK_BYTE).trim(), 16);
-                } catch (NumberFormatException e) {
-                    LOGGER.warn("Invalid Chunked Encoding in HTTP message: ", e);
-                    return;
+            if (length == 0) {
+                // parse all trailing fields and last line
+                reachedEnd = true;
+                parseChunkedTrailing(httpMessageBuilder);
+            } else {
+                // read data of single chunk
+                if (length >= maxHttpLength - parsedLen) {
+                    length = maxHttpLength - parsedLen;
+                    LOGGER.warn(
+                            "Received a chunked HTTP message that is larger than the maximum specified size {}, truncating.",
+                            maxHttpLength);
                 }
-                if (length == 0) {
-                    // parse all trailing fields and last line
-                    reachedEnd = true;
-                    boolean parsedAllTrailing = false;
-                    while (!parsedAllTrailing) {
-                        String trailerLine = parseStringTill(LINEBREAK_BYTE);
-                        if (trailerLine.length() > 2) {
-                            // trailer line
-                            httpMessageBuilder.append(trailerLine);
-                        } else {
-                            // last line
-                            parsedAllTrailing = true;
-                        }
-                    }
-                } else {
-                    int actual_length = Math.min(maxHttpLength - parsed_len, length);
-                    parsed_len += actual_length;
-                    byte[] content;
-                    if (actual_length < length) {
-                        content = parseByteArrayField(length);
-                    } else {
-                        // parse length many bytes and then expect \r\n
-                        content = parseByteArrayField(length + 2);
-                    }
-                    httpMessageBuilder.append(new String(content, StandardCharsets.UTF_8));
-                }
+                byte[] content = parseByteArrayField(length + 2);
+                httpMessageBuilder.append(new String(content, StandardCharsets.UTF_8));
             }
-        } else {
-            // without headers defining parsing behavior or length we parse until the end of the
-            // stream
-            httpMessageBuilder.append(new String(parseTillEnd(), StandardCharsets.UTF_8));
         }
+    }
 
-        message.setResponseContent(httpMessageBuilder.toString());
-        LOGGER.debug(() -> new String(getAlreadyParsed(), StandardCharsets.UTF_8));
+    /**
+     * Parses all trailing lines and the last empty chunk of the HTTP message during chunked
+     * encoding.
+     *
+     * @param httpMessageBuilder MessageBuilder to append parsed bytes to.
+     */
+    private void parseChunkedTrailing(StringBuilder httpMessageBuilder) {
+        boolean parsedAllTrailing = false;
+        while (!parsedAllTrailing) {
+            String trailerLine = parseStringTill(LINEBREAK_BYTE);
+            if (trailerLine.length() > 2) {
+                // trailer line
+                httpMessageBuilder.append(trailerLine);
+            } else {
+                // last line
+                parsedAllTrailing = true;
+            }
+        }
     }
 }
