@@ -58,23 +58,6 @@ public class SMTPWorkflowTestBench {
         WorkflowTrace trace =
                 workflowConfigurationFactory.createWorkflowTrace(
                         WorkflowTraceType.SMTP, RunningModeType.CLIENT);
-        //        WorkflowTrace trace = new WorkflowTrace();
-        //
-        //        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
-        //        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
-        //        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
-        //        trace.addTlsAction(new SendAction(new SmtpMAILCommand()));
-        //        trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
-        //        trace.addTlsAction(new SendAction(new SmtpRCPTCommand()));
-        //        trace.addTlsAction(new ReceiveAction(new SmtpRCPTReply()));
-        //        trace.addTlsAction(new SendAction(new SmtpDATACommand()));
-        //        trace.addTlsAction(new ReceiveAction(new SmtpDATAReply()));
-        //        trace.addTlsAction(new SendAction(new SmtpDATAContentCommand("Test", "123", "lets
-        // go")));
-        //        trace.addTlsAction(new ReceiveAction(new SmtpDATAContentReply()));
-        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
-        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
-
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =
@@ -92,7 +75,7 @@ public class SMTPWorkflowTestBench {
         System.out.println(state.getWorkflowTrace().executedAsPlanned());
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
-        assert (state.getWorkflowTrace().executedAsPlanned());
+        assert state.getWorkflowTrace().executedAsPlanned();
     }
 
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -141,8 +124,9 @@ public class SMTPWorkflowTestBench {
             System.out.println(ex);
         }
 
-        System.out.println(state.getWorkflowTrace());
-        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
+        System.out.println(state.getWorkflowTrace().executedAsPlanned());
+        String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
+        System.out.println(res);
         assert state.getWorkflowTrace().executedAsPlanned();
     }
 
@@ -201,8 +185,9 @@ public class SMTPWorkflowTestBench {
             System.out.println(ex);
         }
 
-        System.out.println(state.getWorkflowTrace());
-        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
+        System.out.println(state.getWorkflowTrace().executedAsPlanned());
+        String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
+        System.out.println(res);
         assert state.getWorkflowTrace().executedAsPlanned();
     }
 
@@ -233,6 +218,7 @@ public class SMTPWorkflowTestBench {
         System.out.println(state.getWorkflowTrace().executedAsPlanned());
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
+        assert state.getWorkflowTrace().executedAsPlanned();
     }
 
     @Test

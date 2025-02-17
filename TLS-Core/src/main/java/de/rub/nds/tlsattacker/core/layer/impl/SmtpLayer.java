@@ -72,8 +72,8 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                 serializedMessages.write(serializedMessage);
                 addProducedContainer(smtpMsg);
             }
+            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
-        getLowerLayer().sendData(null, serializedMessages.toByteArray());
         return getLayerResult();
     }
 
