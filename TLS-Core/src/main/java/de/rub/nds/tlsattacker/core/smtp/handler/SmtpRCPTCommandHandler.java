@@ -19,8 +19,8 @@ public class SmtpRCPTCommandHandler extends SmtpCommandHandler<SmtpRCPTCommand> 
 
     /**
      * Save recipientBuffer from an RCPT message in context.
-     *
      * @param smtpRCPTCommand The message containing the recipient
+     * @see SmtpContext#recipientBuffer
      */
     @Override
     public void adjustContextSpecific(SmtpRCPTCommand smtpRCPTCommand) {

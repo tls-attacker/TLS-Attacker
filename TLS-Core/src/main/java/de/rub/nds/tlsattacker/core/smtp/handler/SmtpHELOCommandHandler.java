@@ -16,9 +16,14 @@ public class SmtpHELOCommandHandler extends SmtpCommandHandler<SmtpHELOCommand> 
         super(smtpContext);
     }
 
+    /**
+     * Saves the domain transmitted in the HELO command to the context.
+     * Note that compared to {@link SmtpEHLOCommandHandler}, HELOs are not allowed to contain an address literal.
+     * @param smtpCommand the command to process
+     * @see SmtpContext#clientIdentity
+     */
     @Override
     public void adjustContextSpecific(SmtpHELOCommand smtpCommand) {
-
         this.getContext().setClientIdentity(smtpCommand.getDomain());
     }
 }

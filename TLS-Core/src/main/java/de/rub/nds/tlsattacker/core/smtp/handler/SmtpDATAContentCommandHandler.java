@@ -16,6 +16,11 @@ public class SmtpDATAContentCommandHandler extends SmtpCommandHandler<SmtpDATACo
         super(context);
     }
 
+    /**
+     * Saves the data transmitted in the DATA command to the context.
+     * @param smtpCommand the command to process
+     * @see SmtpContext#mailDataBuffer
+     */
     @Override
     public void adjustContextSpecific(SmtpDATAContentCommand smtpCommand) {
         this.getContext().setMailDataBuffer(smtpCommand.getLines());

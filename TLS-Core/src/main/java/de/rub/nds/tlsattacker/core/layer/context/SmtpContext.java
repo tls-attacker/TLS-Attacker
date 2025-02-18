@@ -17,39 +17,78 @@ import java.util.List;
 
 public class SmtpContext extends LayerContext {
 
-    // describes the source of the mail (supplied via MAIL FROM)
+    /**
+     * Stores the source of the mail (supplied via MAIL FROM)
+     * Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#appendix-C">RFC 5321 Appendix C</a>:
+     * Historically, the reverse path was a list of hosts, rather than a single host.
+     */
     private List<String> reversePathBuffer = new ArrayList<>();
 
-    // describes the destination of the mail (supplied via RCPT TO)
+    /**
+     * Stores the destination of a mail (supplied via RCPT TO)
+     */
     private String forwardPathBuffer = "";
 
+    /**
+     * TODO
+     */
     private List<String> recipientBuffer = new ArrayList<>();
+    /**
+     * TODO
+     */
     private List<String> mailDataBuffer = new ArrayList<>();
+    /**
+     * TODO
+     */
     private String clientIdentity;
+    /**
+     * TODO
+     */
     private boolean serverOnlySupportsEHLO = false;
 
-    // Client can request connection close via QUIT, but MUST NOT close the connection itself
-    // intentionally before that
+    /**
+     * Whether the client requested to close the connection.
+     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC 5321</a>:
+     * <blockquote>
+     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT command and it SHOULD wait until it receives the reply (even if there was an error response to a previous command).
+     * </blockquote>
+     */
     private boolean clientRequestedClose = false;
-    // Clients SHOULD NOT close the connection until they have received the reply indicating the
-    // server has
+    /**
+     * Whether the server has acknowledged a client's request to close the connection.
+     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC 5321</a>:
+     * <blockquote>
+     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT command and it SHOULD wait until it receives the reply (even if there was an error response to a previous command).
+     * </blockquote>
+     */
     private boolean serverAcknowledgedClose = false;
 
-    // store the old context to evaluate command injection type vulns with SmtpContext through RESET
+    /**
+     * Stores the previous version of an SmtpContext, populated by {@link #resetContext()}.
+     * Resets can be directly invoked by the RESET command, but can also be indirectly mandated by the mail transaction flow, see <a href=https://datatracker.ietf.org/doc/html/rfc5321#section-3.3>RFC5321</a>.
+     * */
     private SmtpContext oldContext;
 
-    // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
-    // get the type of the reply, because the reply type cannot be determined by the content alone.
+    /**
+     * SMTP is a back and forth of commands and replies.
+     * We need to keep track of each to correctly interpret the replies, because the reply type cannot be determined by the content alone.
+     * @see SmtpMappingUtil
+     * @see de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer SmtpLayer
+     */
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
-    // The server sends a greeting when the client connects. This is the first message the client
-    // has to process, so we need to keep track of it.
+    /**
+     * Whether the initial greeting was received.
+     */
     private boolean greetingReceived = false;
 
     public SmtpContext(Context context) {
         super(context);
     }
 
+    /**
+     * Clear all buffers.
+     */
     public void clearBuffers() {
         reversePathBuffer.clear();
         forwardPathBuffer = "";
@@ -111,6 +150,10 @@ public class SmtpContext extends LayerContext {
         this.lastCommand = lastCommand;
     }
 
+    /**
+     * Get the expected reply type for the last command.
+     * @return An object of the expected reply type for the last command.
+     */
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
         return SmtpMappingUtil.getMatchingReply(command);
@@ -154,5 +197,9 @@ public class SmtpContext extends LayerContext {
 
     public void setGreetingReceived(boolean greetingReceived) {
         this.greetingReceived = greetingReceived;
+    }
+
+    public SmtpContext getOldContext() {
+        return oldContext;
     }
 }

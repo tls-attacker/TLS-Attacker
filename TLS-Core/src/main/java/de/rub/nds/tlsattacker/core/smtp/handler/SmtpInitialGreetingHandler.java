@@ -16,6 +16,11 @@ public class SmtpInitialGreetingHandler extends SmtpReplyHandler<SmtpInitialGree
         super(smtpContext);
     }
 
+    /**
+     * Sets the greeting received flag in the context.
+     * Used by the TLS-StateVulnFinder.
+     * @param smtpMessage
+     */
     @Override
     public void adjustContext(SmtpInitialGreeting smtpMessage) {
         this.getContext().setGreetingReceived(true);

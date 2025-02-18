@@ -17,6 +17,11 @@ public class SmtpRSETCommandHandler extends SmtpCommandHandler<SmtpRSETCommand> 
         super(smtpContext);
     }
 
+    /**
+     * Clears all buffers in the context.
+     * @param command the command to process
+     * @see SmtpContext#resetContext()
+     */
     @Override
     public void adjustContextSpecific(SmtpRSETCommand command) {
         this.getContext().resetContext();

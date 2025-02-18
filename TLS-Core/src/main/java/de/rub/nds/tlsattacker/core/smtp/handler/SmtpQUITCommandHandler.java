@@ -16,6 +16,11 @@ public class SmtpQUITCommandHandler extends SmtpCommandHandler<SmtpQUITCommand> 
         super(smtpContext);
     }
 
+    /**
+     * Sets the clientRequestedClose flag in the context.
+     * @param smtpCommand the command to process
+     * @see SmtpContext#clientRequestedClose
+     */
     @Override
     public void adjustContextSpecific(SmtpQUITCommand smtpCommand) {
         this.getContext().setClientRequestedClose(true);
