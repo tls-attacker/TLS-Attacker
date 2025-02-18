@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnterminatedReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,6 +74,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<SmtpMessage> configuration = getLayerConfiguration();
+        ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
             for (SmtpMessage smtpMsg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(smtpMsg, context)) {
@@ -82,9 +84,10 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                 handler.adjustContext(smtpMsg);
                 Serializer<?> serializer = smtpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                getLowerLayer().sendData(null, serializedMessage);
+                serializedMessages.write(serializedMessage);
                 addProducedContainer(smtpMsg);
             }
+            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
         return getLayerResult();
     }

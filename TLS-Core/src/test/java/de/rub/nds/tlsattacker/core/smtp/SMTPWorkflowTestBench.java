@@ -78,7 +78,7 @@ public class SMTPWorkflowTestBench {
         }
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
-        assert (state.getWorkflowTrace().executedAsPlanned());
+        assert state.getWorkflowTrace().executedAsPlanned();
     }
 
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -133,9 +133,5 @@ public class SMTPWorkflowTestBench {
                         WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
 
         runWorkflowTrace(trace);
-    }
-
-    @Test
-    void messAround() {
     }
 }

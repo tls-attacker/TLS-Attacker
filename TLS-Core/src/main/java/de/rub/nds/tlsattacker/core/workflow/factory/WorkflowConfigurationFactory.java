@@ -80,6 +80,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
@@ -676,13 +677,9 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             trace.addTlsAction(
                     MessageActionFactory.createSmtpAction(
-                            config, connection, ConnectionEndType.CLIENT, new SmtpEHLOCommand()));
-            trace.addTlsAction(
-                    MessageActionFactory.createSmtpAction(
-                            config, connection, ConnectionEndType.SERVER, new SmtpEHLOReply()));
+                            config, connection, ConnectionEndType.SERVER, new SmtpInitialGreeting()));
         }
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
-        //        appendSmtpCommandAndReplyActions(connection, trace, new SmtpHELPCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());
@@ -694,7 +691,6 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createSmtpStarttlsWorkflow() {
-
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
         // kind of dirty changing it from the back, but otherwise we have to rework the whole
@@ -703,7 +699,12 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
         trace.addTlsAction(2, new STARTTLSAction());
 
-        trace.addTlsActions(createSmtpWorkflow().getTlsActions());
+        // put InitialGreeting back to the front
+        List<TlsAction> smtpActions = createSmtpWorkflow().getTlsActions();
+        trace.addTlsAction(0, smtpActions.get(0));
+        for(int i = 1; i < smtpActions.size(); i++) {
+            trace.addTlsAction(smtpActions.get(i));
+        }
 
         return trace;
     }
