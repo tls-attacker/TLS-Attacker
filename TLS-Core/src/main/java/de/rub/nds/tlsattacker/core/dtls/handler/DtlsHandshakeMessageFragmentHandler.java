@@ -9,18 +9,16 @@
 package de.rub.nds.tlsattacker.core.dtls.handler;
 
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
 public class DtlsHandshakeMessageFragmentHandler extends Handler<DtlsHandshakeMessageFragment> {
 
-    private TlsContext context;
-
-    public DtlsHandshakeMessageFragmentHandler(TlsContext tlsContext) {
+    public DtlsHandshakeMessageFragmentHandler() {
         super();
-        this.context = tlsContext;
     }
 
     @Override
-    public void adjustContext(DtlsHandshakeMessageFragment message) {}
+    public void adjustContext(DtlsHandshakeMessageFragment message) {
+        // Nothing to adjust
+    }
 }

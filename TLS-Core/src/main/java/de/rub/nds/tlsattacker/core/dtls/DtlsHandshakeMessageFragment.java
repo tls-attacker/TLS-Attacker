@@ -79,7 +79,7 @@ public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
         this.maxFragmentLengthConfig = tlsConfig.getDtlsMaximumFragmentLength();
     }
 
-    public DtlsHandshakeMessageFragment(Config tlsConfig, int maxFragmentLengthConfig) {
+    public DtlsHandshakeMessageFragment(int maxFragmentLengthConfig) {
         this.handshakeMessageType = HandshakeMessageType.UNKNOWN;
         this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
@@ -90,12 +90,12 @@ public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
 
     @Override
     public DtlsHandshakeMessageFragmentHandler getHandler(Context context) {
-        return new DtlsHandshakeMessageFragmentHandler(context.getTlsContext());
+        return new DtlsHandshakeMessageFragmentHandler();
     }
 
     @Override
     public DtlsHandshakeMessageFragmentParser getParser(Context context, InputStream stream) {
-        return new DtlsHandshakeMessageFragmentParser(stream, context.getTlsContext());
+        return new DtlsHandshakeMessageFragmentParser(stream);
     }
 
     @Override
@@ -266,10 +266,12 @@ public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
         this.handshakeMessageType = handshakeMessageType;
     }
 
+    @Override
     public String toCompactString() {
         return this.getHandshakeMessageType().name().toUpperCase() + "_DTLS_FRAGMENT";
     }
 
+    @Override
     public String toShortString() {
         return "DTLS_FRAG";
     }

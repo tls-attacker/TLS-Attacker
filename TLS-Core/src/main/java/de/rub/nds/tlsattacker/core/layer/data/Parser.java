@@ -44,7 +44,7 @@ public abstract class Parser<T> {
      *
      * @param stream The Inputstream to read data drom
      */
-    public Parser(InputStream stream) {
+    protected Parser(InputStream stream) {
         this.stream = stream;
         outputStream = new ByteArrayOutputStream();
     }
