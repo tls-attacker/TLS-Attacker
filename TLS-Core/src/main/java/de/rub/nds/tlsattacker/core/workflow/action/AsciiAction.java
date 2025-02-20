@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.nio.charset.Charset;
 import java.util.Objects;
 
 @XmlRootElement
@@ -23,7 +24,7 @@ public abstract class AsciiAction extends TlsAction {
 
     protected AsciiAction() {
         asciiText = null;
-        encoding = null;
+        encoding = Charset.defaultCharset().name();
     }
 
     public AsciiAction(String asciiText, String encoding) {
