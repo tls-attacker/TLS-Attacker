@@ -174,7 +174,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         } else {
             for (X509PublicKeyType certKeyType : certificateKeyTypes) {
                 if (chooser.getConfig()
-                        .getDefaultSelectedSignatureAndHashAlgorithm()
+                        .getDefaultSelectedSignatureAlgorithmCert()
                         .suitableForSignatureKeyType(certKeyType)) {
                     chooser.getConfig()
                             .getCertificateChainConfig()
