@@ -74,7 +74,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -636,7 +635,10 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             trace.addTlsAction(
                     MessageActionFactory.createSmtpAction(
-                            config, connection, ConnectionEndType.SERVER, new SmtpInitialGreeting()));
+                            config,
+                            connection,
+                            ConnectionEndType.SERVER,
+                            new SmtpInitialGreeting()));
         }
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCommand());
@@ -663,7 +665,7 @@ public class WorkflowConfigurationFactory {
         // put InitialGreeting back to the front
         List<TlsAction> smtpActions = createSmtpWorkflow().getTlsActions();
         trace.addTlsAction(0, smtpActions.get(0));
-        for(int i = 1; i < smtpActions.size(); i++) {
+        for (int i = 1; i < smtpActions.size(); i++) {
             trace.addTlsAction(smtpActions.get(i));
         }
 
