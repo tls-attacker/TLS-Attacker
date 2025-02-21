@@ -31,6 +31,7 @@ import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,7 @@ import org.junit.jupiter.api.Test;
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
+@Disabled
 public class SMTPWorkflowTestBench {
 
     @BeforeEach
