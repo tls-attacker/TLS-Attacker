@@ -12,6 +12,7 @@ public class RecordByteLength {
 
     /** Content Type length */
     public static final int CONTENT_TYPE = 1;
+
     /** Record length length */
     public static final int RECORD_LENGTH = 2;
 

@@ -61,6 +61,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     private ModifiableBoolean retransmission = null;
 
     private ModifiableByteArray messageContent = null;
+
     /** List of extensions */
     @XmlElementWrapper @XmlElementRef @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;

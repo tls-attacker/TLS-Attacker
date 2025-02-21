@@ -21,36 +21,52 @@ public class ExtensionByteLength {
 
     /** Supported Elliptic Curves length field of the elliptic curve extension message */
     public static final int SUPPORTED_GROUPS = 2;
+
     /** Heartbeat mode length in the heartbeat extension message */
     public static final int HEARTBEAT_MODE = 1;
+
     /** MaxFragment length field in the MaxFragmentExtension message */
     public static final int MAX_FRAGMENT = 1;
+
     /** ServerNameType length in the ServerNameIndicationExtension */
     public static final int SERVER_NAME_TYPE = 1;
+
     /** ServerName length in the ServerNameIndicationExtension */
     public static final int SERVER_NAME = 2;
+
     /** ServerNameListLength in the ServerNameIndicationExtension */
     public static final int SERVER_NAME_LIST = 2;
+
     /** ExtendedRandomLength in the ExtendedRandomExtension */
     public static final int EXTENDED_RANDOM_LENGTH = 2;
+
     /** KeyShareGroup length in the KeyShareExtension */
     public static final int KEY_SHARE_GROUP = 2;
+
     /** KeyShare length in the KeyShareExtension */
     public static final int KEY_SHARE_LENGTH = 2;
+
     /** KeyShareListLength in the KeyShareExtension */
     public static final int KEY_SHARE_LIST_LENGTH = 2;
+
     /** KeyExchangeModes length in the PSKKeyExchangeModesExtension */
     public static final int PSK_KEY_EXCHANGE_MODES_LENGTH = 1;
+
     /** PSKIdentity length in the PreSharedKeyExtension */
     public static final int PSK_IDENTITY_LENGTH = 2;
+
     /** PSKList length in the PreSharedKeyExtension */
     public static final int PSK_IDENTITY_LIST_LENGTH = 2;
+
     /** PSKBinder length in the PreSharedKeyExtension */
     public static final int PSK_BINDER_LENGTH = 1;
+
     /** PSKBinderList length in the PreSharedKeyExtension */
     public static final int PSK_BINDER_LIST_LENGTH = 2;
+
     /** SelectedIdentity length in the PreSharedKeyExtension */
     public static final int PSK_SELECTED_IDENTITY_LENGTH = 2;
+
     /** TicketAge length in the PreSharedKeyExtension */
     public static final int TICKET_AGE_LENGTH = 4;
 
@@ -59,11 +75,13 @@ public class ExtensionByteLength {
 
     /** MaxEarlyDataSize length in the EarlyDataExtension */
     public static final int MAX_EARLY_DATA_SIZE_LENGTH = 4;
+
     /**
      * Length of the Signature and HashAlgorithm Length field of the SignatureAndHashAlgorithms
      * Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
+
     /** Supported Protocol Versions length field of the SupportedVersionsExtension message */
     public static final int SUPPORTED_PROTOCOL_VERSIONS_LENGTH = 1;
 

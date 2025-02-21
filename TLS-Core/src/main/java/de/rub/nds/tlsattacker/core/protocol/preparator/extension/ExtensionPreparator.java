@@ -68,7 +68,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     }
 
     private void prepareExtensionLength(ExtensionMessage msg) {
-        msg.setExtensionLength(content.length);
+        msg.setExtensionLength(msg.getExtensionContent().getValue().length);
         LOGGER.debug("ExtensionLength: " + msg.getExtensionLength().getValue());
     }
 

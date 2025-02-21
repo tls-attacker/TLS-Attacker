@@ -28,14 +28,19 @@ public enum HpkeKeyEncapsulationMechanism {
 
     private static final Map<BigInteger, HpkeKeyEncapsulationMechanism> MAP;
     private final byte[] byteValue;
+
     /** nSecret in RFC 9180 */
     private final int secretLength;
+
     /** nEnc in RFC 9180 */
     private final int encryptionLength;
+
     /** nPk in RFC 9180 */
     private final int publicKeyLength;
+
     /** nS in RFC 9180 */
     private final int secretKeyLength;
+
     /** auth in RFC 9180 */
     private final boolean providesAuthentication;
 

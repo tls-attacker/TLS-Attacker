@@ -30,15 +30,19 @@ public class HandshakeByteLength {
 
     /** certificates length field (certificate array can include several certificates) */
     public static final int CERTIFICATES_LENGTH = 3;
+
     /** cipher suite length field length */
     public static final int CIPHER_SUITES_LENGTH = 2;
+
     /** cipher suite byte length */
     public static final int CIPHER_SUITE = 2;
 
     /** compression length */
     public static final int COMPRESSION = 1;
+
     /** compression length field length */
     public static final int COMPRESSION_LENGTH = 1;
+
     /** message type length */
     public static final int MESSAGE_TYPE = 1;
 
@@ -74,30 +78,40 @@ public class HandshakeByteLength {
 
     /** DH modulus length */
     public static final int DH_MODULUS_LENGTH = 2;
+
     /** DH generator length */
     public static final int DH_GENERATOR_LENGTH = 2;
+
     /** DH public key length */
     public static final int DH_PUBLICKEY_LENGTH = 2;
+
     /** DHE param length */
     public static final int DHE_PARAM_LENGTH = 2;
+
     /** ECDH param length */
     public static final int ECDH_PARAM_LENGTH = 1;
+
     /** ECDHE param length */
     public static final int ECDHE_PARAM_LENGTH = 1;
 
     /** Certificate Types Count in CertRequest */
     public static final int CERTIFICATES_TYPES_COUNT = 1;
+
     /** Length of the signature hash algorithms length field */
     public static final int SIGNATURE_HASH_ALGORITHMS_LENGTH = 2;
+
     /** Length of the signature algorithm field */
     public static final int SIGNATURE = 1;
+
     /** Length of the hash algorithm field */
     public static final int HASH = 1;
+
     /** Length of the signature hash algorithms field in the certificateVerify message */
     public static final int SIGNATURE_HASH_ALGORITHM = 2;
 
     /** Length of the distinguished names length field */
     public static final int DISTINGUISHED_NAMES_LENGTH = 2;
+
     /** Length of an elliptic curve field */
     public static final int ELLIPTIC_CURVE = 1;
 
@@ -130,6 +144,7 @@ public class HandshakeByteLength {
     public static final int SRP_GENERATOR_LENGTH = 2;
 
     public static final int SRP_PUBLICKEY_LENGTH = 2;
+
     /** New Session Ticket */
     public static final int NEWSESSIONTICKET_TICKET_LENGTH = 2;
 
@@ -170,6 +185,7 @@ public class HandshakeByteLength {
 
     /** RSA modulus length */
     public static final int RSA_MODULUS_LENGTH = 2;
+
     /** RSA public key length */
     public static final int RSA_PUBLICKEY_LENGTH = 2;
 

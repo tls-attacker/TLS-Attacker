@@ -18,10 +18,12 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -208,20 +210,28 @@ public class QuicEncryptor {
                 | IllegalBlockSizeException
                 | BadPaddingException
                 | InvalidKeyException
-                | IllegalArgumentException
-                | InvalidAlgorithmParameterException ex) {
+                | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt " + packet.getPacketType().getName(), ex);
+        } catch (InvalidAlgorithmParameterException ex) {
+            LOGGER.info("Ignoring InvalidArgumentException");
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 
     private byte[] aeadEncrypt(
             byte[] associatedData, byte[] plaintext, byte[] nonce, byte[] key, Cipher aeadCipher)
-            throws InvalidAlgorithmParameterException,
-                    InvalidKeyException,
+            throws InvalidKeyException,
                     IllegalBlockSizeException,
-                    BadPaddingException {
+                    BadPaddingException,
+                    NoSuchPaddingException,
+                    NoSuchAlgorithmException,
+                    InvalidAlgorithmParameterException {
         AlgorithmParameterSpec parameterSpec;
         String algo;
+        Cipher _cipher = Cipher.getInstance(aeadCipher.getAlgorithm());
         if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
             algo = "ChaCha20";
             parameterSpec = new IvParameterSpec(nonce);
@@ -229,8 +239,8 @@ public class QuicEncryptor {
             algo = "AES";
             parameterSpec = new GCMParameterSpec(128, nonce);
         }
-        aeadCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
-        aeadCipher.updateAAD(associatedData);
-        return aeadCipher.doFinal(plaintext);
+        _cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
+        _cipher.updateAAD(associatedData);
+        return _cipher.doFinal(plaintext);
     }
 }

@@ -25,6 +25,7 @@ public class HttpResponseSerializer extends HttpMessageSerializer<HttpResponseMe
         this.message = message;
     }
 
+    // TODO: add serialization for chunked and Transfer-Encoding
     @Override
     protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();

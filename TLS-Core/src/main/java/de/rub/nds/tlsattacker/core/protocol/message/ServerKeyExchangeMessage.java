@@ -25,9 +25,11 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     /** signature and hash algorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray signatureAndHashAlgorithm;
+
     /** signature length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureLength;
+
     /** signature */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
@@ -35,6 +37,7 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     /** Length of the serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger publicKeyLength;
+
     /** serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;

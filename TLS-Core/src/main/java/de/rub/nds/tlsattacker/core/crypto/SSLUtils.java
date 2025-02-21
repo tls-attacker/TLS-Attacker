@@ -38,13 +38,13 @@ public class SSLUtils {
 
     /**
      * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC', as stated in
-     * RFC-6101. See also {@link org.bouncycastle.crypto.tls.TlsUtils} Version 1.58
+     * RFC-6101. See also {@link org.bouncycastle.tls.TlsUtils} Version 1.58
      */
     private static final byte[][] SSL3_CONST = genSSL3Const();
 
     /**
-     * This method is borrowed from package-protected method {@link
-     * org.bouncycastle.crypto.tls.TlsUtils#genSSL3Const()} Version 1.58
+     * This method is borrowed from package-protected method
+     * org.bouncycastle.tls.TlsUtils#genSSL3Const() Version 1.58
      *
      * @return the generated SSL3 consts
      */
@@ -60,8 +60,8 @@ public class SSLUtils {
     }
 
     /**
-     * This method is borrowed from package-protected method {@link
-     * org.bouncycastle.crypto.tls.TlsUtils#calculateMasterSecret_SSL(byte[], byte[])} Version 1.58
+     * This method is borrowed from package-protected method
+     * org.bouncycastle.tls.TlsUtils#calculateMasterSecret_SSL(byte[], byte[]) Version 1.58
      *
      * @param preMasterSecret the premastersecret
      * @param random The random bytes to use
@@ -102,8 +102,8 @@ public class SSLUtils {
     }
 
     /**
-     * This method is borrowed from package-protected method {@link
-     * org.bouncycastle.crypto.tls.TlsUtils#calculateKeyBlock_SSL(byte[], byte[], int)} Version 1.58
+     * This method is borrowed from package-protected method
+     * org.bouncycastle.tls.TlsUtils#calculateKeyBlock_SSL(byte[], byte[], int) Version 1.58
      *
      * @param masterSecret The master secret
      * @param random The Randombytes

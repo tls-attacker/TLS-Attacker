@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -90,6 +92,17 @@ abstract class AbstractExtensionMessagePreparatorTest<
     @Test
     public void testPrepareNoContext() {
         assertDoesNotThrow(preparator::prepare);
+    }
+
+    @Test
+    public void testWithExplicitContentModification() {
+        byte[] explicitContent = new byte[] {0x01, 0x02, 0x03};
+        message.setExtensionContent(Modifiable.explicit(explicitContent));
+        preparator.prepare();
+        assertEquals(
+                explicitContent.length,
+                (int) message.getExtensionLength().getValue(),
+                "Extension length does not respect explicit extension content");
     }
 
     protected void createNewMessageAndPreparator() {

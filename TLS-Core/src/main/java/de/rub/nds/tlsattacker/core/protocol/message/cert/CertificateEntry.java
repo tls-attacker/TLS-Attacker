@@ -46,6 +46,7 @@ public class CertificateEntry extends ModifiableVariableHolder {
     private ModifiableInteger extensionsLength;
 
     private X509Certificate x509certificate;
+
     /** If explicit certifcate bytes should be used, they can be set here */
     private byte[] x509CerticiateConfig;
 

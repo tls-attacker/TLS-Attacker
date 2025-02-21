@@ -21,14 +21,19 @@ import java.security.PrivateKey;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.crypto.interfaces.DHPrivateKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.tls.crypto.TlsCertificate;
 
 public class CertificateDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final int PREDEFINED_LEAF_CERT_INDEX = 0;
 
     @Parameter(names = "-cert", description = "PEM encoded certificate file")
     private String certificate = null;
@@ -63,7 +68,8 @@ public class CertificateDelegate extends Delegate {
         if (key != null) {
             LOGGER.debug("Loading private key");
             privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(
+                    config.getCertificateChainConfig().get(PREDEFINED_LEAF_CERT_INDEX), privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {

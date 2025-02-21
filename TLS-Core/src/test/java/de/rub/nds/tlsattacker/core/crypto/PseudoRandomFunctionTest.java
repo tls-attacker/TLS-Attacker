@@ -18,13 +18,16 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.crypto.Mac;
+import org.bouncycastle.crypto.macs.HMac;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.util.DigestFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.Strings;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 public class PseudoRandomFunctionTest {
 
     @BeforeAll
@@ -210,5 +213,64 @@ public class PseudoRandomFunctionTest {
                         serverClientRandom,
                         136);
         assertArrayEquals(result1, result2);
+    }
+
+    // The following PRF code is borrowed from BouncyCastle v1.80
+    // Import required as the methods are private within the BouncyCastle library
+    // Modified to accept raw values instead of TLSKeyMaterialSpec
+    // https://github.com/bcgit/bc-java/blob/r1rv80/prov/src/main/java/org/bouncycastle/jcajce/provider/symmetric/TLSKDF.java
+
+    private byte[] PRF(Mac prf, byte[] secret, String labelStr, byte[] seed, int size) {
+        byte[] label = Strings.toByteArray(labelStr);
+        byte[] labelSeed = Arrays.concatenate(label, seed);
+
+        byte[] buf = new byte[size];
+
+        hmac_hash(prf, secret, labelSeed, buf);
+
+        return buf;
+    }
+
+    private static byte[] PRF_legacy(byte[] secret, String labelStr, byte[] seed, int size) {
+        Mac md5Hmac = new HMac(DigestFactory.createMD5());
+        Mac sha1HMac = new HMac(DigestFactory.createSHA1());
+
+        byte[] label = Strings.toByteArray(labelStr);
+        byte[] labelSeed = Arrays.concatenate(label, seed);
+
+        int s_half = (secret.length + 1) / 2;
+        byte[] s1 = new byte[s_half];
+        byte[] s2 = new byte[s_half];
+        System.arraycopy(secret, 0, s1, 0, s_half);
+        System.arraycopy(secret, secret.length - s_half, s2, 0, s_half);
+
+        byte[] b1 = new byte[size];
+        byte[] b2 = new byte[size];
+
+        hmac_hash(md5Hmac, s1, labelSeed, b1);
+        hmac_hash(sha1HMac, s2, labelSeed, b2);
+
+        for (int i = 0; i < size; i++) {
+            b1[i] ^= b2[i];
+        }
+        return b1;
+    }
+
+    private static void hmac_hash(Mac mac, byte[] secret, byte[] seed, byte[] out) {
+        mac.init(new KeyParameter(secret));
+        byte[] a = seed;
+        int size = mac.getMacSize();
+        int iterations = (out.length + size - 1) / size;
+        byte[] buf = new byte[mac.getMacSize()];
+        byte[] buf2 = new byte[mac.getMacSize()];
+        for (int i = 0; i < iterations; i++) {
+            mac.update(a, 0, a.length);
+            mac.doFinal(buf, 0);
+            a = buf;
+            mac.update(a, 0, a.length);
+            mac.update(seed, 0, seed.length);
+            mac.doFinal(buf2, 0);
+            System.arraycopy(buf2, 0, out, (size * i), Math.min(size, out.length - (size * i)));
+        }
     }
 }
