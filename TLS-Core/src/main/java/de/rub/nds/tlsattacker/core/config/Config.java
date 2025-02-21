@@ -1260,14 +1260,16 @@ public class Config implements Serializable {
         return defaultSmtpAuth;
     }
 
+    public String getDefaultSmtpAuthCredentials() {
+        return defaultSmtpAuthCredentials;
+    }
+
     public void setDefaultSmtpAuth(String defaultSmtpAuth) {
         this.defaultSmtpAuth = defaultSmtpAuth;
     }
 
-    // only works for one step authentication
-    // b64(\0seal@upb.de\0password)
-    private String defaultSmtpAuth = "PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk";
-
+    private String defaultSmtpAuth = "PLAIN";
+    private String defaultSmtpAuthCredentials = "AHNlYWxAdXBiLmRlAHBhc3N3b3Jk";
     private String defaultSmtpMailingList = "members@seal.upb.de";
 
     public String getDefaultSmtpClientIdentity() {

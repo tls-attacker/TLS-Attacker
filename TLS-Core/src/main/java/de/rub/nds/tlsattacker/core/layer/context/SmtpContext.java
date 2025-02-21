@@ -138,6 +138,8 @@ public class SmtpContext extends LayerContext {
                 return new SmtpNOOPReply();
             } else if (command instanceof SmtpAUTHCommand) {
                 return new SmtpAUTHReply();
+            } else if (command instanceof SmtpAUTHCredentialsCommand) {
+                return new SmtpAUTHCredentialsReply();
             } else if (command instanceof SmtpEXPNCommand) {
                 return new SmtpEXPNReply();
             } else if (command instanceof SmtpVRFYCommand) {
