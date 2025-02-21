@@ -1371,6 +1371,7 @@
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
+    <defaultMaxHttpLength>65536</defaultMaxHttpLength>
     <starttlsType>NONE</starttlsType>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>
