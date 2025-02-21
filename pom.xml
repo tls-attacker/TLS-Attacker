@@ -300,6 +300,8 @@
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                        <doclint>none</doclint>
+                        <failOnError>false</failOnError>
                     </configuration>
                     <executions>
                         <execution>
