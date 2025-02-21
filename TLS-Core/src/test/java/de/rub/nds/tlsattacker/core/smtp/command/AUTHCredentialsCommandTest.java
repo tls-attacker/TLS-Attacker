@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.AUTHCredentialsParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -33,5 +35,18 @@ public class AUTHCredentialsCommandTest {
 
         parser.parse(authCredentials);
         assertEquals(authCredentials.getCredentials(), "qweqweqwe==");
+    }
+
+    @Test
+    void testSerialize() {
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpAUTHCredentialsCommand cmd = new SmtpAUTHCredentialsCommand("qweqweqwe==");
+
+        Preparator<?> preparator = cmd.getPreparator(context);
+        Serializer<?> serializer = cmd.getSerializer(context);
+        preparator.prepare();
+        serializer.serialize();
+
+        assertEquals("qweqweqwe==\r\n", serializer.getOutputStream().toString());
     }
 }
