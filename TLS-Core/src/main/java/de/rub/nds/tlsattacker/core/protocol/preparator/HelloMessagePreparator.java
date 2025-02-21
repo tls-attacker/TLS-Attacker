@@ -17,9 +17,6 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @param <T> The HelloMessage that should be prepared
- */
 public abstract class HelloMessagePreparator<T extends HelloMessage>
         extends HandshakeMessagePreparator<T> {
 

@@ -36,7 +36,12 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** A Layer that implements STUN/TURN & TURN ChannelMessages for ICE */
+/**
+ * A Layer that implements STUN, TURN & TURN ChannelMessages for ICE
+ *
+ * @param <RecordLayerHint> The type of the RecordLayerHint
+ * @param <IceMessage> The type of the IceMessage
+ */
 public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();

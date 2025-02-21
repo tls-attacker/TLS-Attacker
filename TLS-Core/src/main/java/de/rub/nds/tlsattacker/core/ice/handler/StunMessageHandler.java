@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 public class StunMessageHandler extends IceMessageHandler<StunMessage> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
+
     /** context */
     protected final IceContext iceContext;
 

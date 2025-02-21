@@ -16,7 +16,7 @@ import java.util.StringJoiner;
 /**
  * Contains information about a layers actions, both after sending and receiving data.
  *
- * @param <Container>
+ * @param <Container> Container type
  */
 public class LayerProcessingResult<Container extends DataContainer> {
 

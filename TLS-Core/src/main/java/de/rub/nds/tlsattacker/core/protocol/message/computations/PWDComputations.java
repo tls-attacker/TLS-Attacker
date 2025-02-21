@@ -29,8 +29,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.util.DigestFactory;
 
 public class PWDComputations extends KeyExchangeComputations {
 

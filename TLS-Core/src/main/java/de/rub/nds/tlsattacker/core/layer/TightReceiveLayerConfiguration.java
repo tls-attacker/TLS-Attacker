@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Level;
  * Very similar to {@link SpecificReceiveLayerConfiguration} but does not continue receiving
  * containers when the specified containers have been received.
  *
- * @param <Container>
+ * @param <Container> Container type
  */
 public class TightReceiveLayerConfiguration<Container extends DataContainer>
         extends SpecificReceiveLayerConfiguration<Container> {

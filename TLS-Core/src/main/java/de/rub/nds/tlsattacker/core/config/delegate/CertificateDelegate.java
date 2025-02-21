@@ -21,13 +21,10 @@ import java.security.PrivateKey;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.crypto.interfaces.DHPrivateKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.tls.crypto.TlsCertificate;
 
 public class CertificateDelegate extends Delegate {
 

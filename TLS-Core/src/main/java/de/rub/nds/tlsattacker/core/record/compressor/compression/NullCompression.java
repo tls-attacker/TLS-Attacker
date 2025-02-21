@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.record.compressor.compression;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 
-/** */
 public class NullCompression extends CompressionAlgorithm {
 
     public NullCompression() {

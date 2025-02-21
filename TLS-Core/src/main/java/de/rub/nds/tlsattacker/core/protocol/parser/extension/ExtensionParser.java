@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.io.InputStream;
 
-/** */
 public abstract class ExtensionParser<Extension extends ExtensionMessage>
         extends Parser<Extension> {
 

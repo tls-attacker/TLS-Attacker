@@ -14,7 +14,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
 @XmlRootElement(name = "FlushSessionCache")
 public class FlushSessionCacheAction extends TlsAction {
 

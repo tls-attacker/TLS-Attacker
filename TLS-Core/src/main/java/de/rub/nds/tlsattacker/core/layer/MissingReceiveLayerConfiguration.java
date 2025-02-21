@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Level;
 /**
  * Send configuration that sends a list of containers to the recipient.
  *
- * @param <Container>
+ * @param <Container> Container type
  */
 public class MissingReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {

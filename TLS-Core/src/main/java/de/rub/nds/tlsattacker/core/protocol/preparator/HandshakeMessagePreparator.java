@@ -36,9 +36,6 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @param <T> The HandshakeMessage that should be prepared
- */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         extends ProtocolMessagePreparator<T> {
 

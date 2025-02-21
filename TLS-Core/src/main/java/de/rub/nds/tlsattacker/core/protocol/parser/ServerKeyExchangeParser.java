@@ -14,9 +14,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import java.io.InputStream;
 
-/**
- * @param <T> The ServerKeyExchangeMessage that should be parsed
- */
 public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage>
         extends HandshakeMessageParser<T> {
 

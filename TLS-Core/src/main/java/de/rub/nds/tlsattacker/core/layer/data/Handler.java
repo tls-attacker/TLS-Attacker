@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-/**
- * @param <T> The Object that should be Handled
- */
 public abstract class Handler<T extends DataContainer> {
 
     public abstract void adjustContext(T container);

@@ -16,7 +16,7 @@ import java.util.List;
  * Abstracts different ReceiveConfigurations. A ReceiveLayerConfiguration always specifies a list of
  * containers the layer should receive.
  *
- * @param <Container>
+ * @param <Container> Container Type
  */
 public abstract class ReceiveLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {

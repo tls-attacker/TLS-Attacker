@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Level;
 /**
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
+ *
+ * @param <Container> Container type
  */
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {

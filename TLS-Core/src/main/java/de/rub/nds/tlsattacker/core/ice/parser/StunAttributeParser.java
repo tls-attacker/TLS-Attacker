@@ -14,7 +14,11 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
-/** A Parser class for the contents of the body of the respective attribute */
+/**
+ * A Parser class for the contents of the body of the respective attribute
+ *
+ * @param <AttributeT>
+ */
 public abstract class StunAttributeParser<AttributeT extends StunAttribute>
         extends Parser<AttributeT> {
 

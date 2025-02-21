@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Level;
  * Contains a list of {@link DataContainer} with additional information about how to send and
  * receive them and whether they were sent/received correctly.
  *
- * @param <Container>
+ * @param <Container> Container type
  */
 public abstract class LayerConfiguration<Container extends DataContainer> {
 

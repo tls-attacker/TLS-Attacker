@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.layer.data;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- * @param <T> The Object that should be prepared
- */
 public abstract class Preparator<T> {
 
     protected final Chooser chooser;

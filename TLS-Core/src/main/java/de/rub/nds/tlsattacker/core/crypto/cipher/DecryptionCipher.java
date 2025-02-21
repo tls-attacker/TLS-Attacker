@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
-/** */
 public interface DecryptionCipher {
 
     public int getBlocksize();
