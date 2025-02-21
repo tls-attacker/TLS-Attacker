@@ -14,6 +14,12 @@ import de.rub.nds.tlsattacker.core.smtp.preparator.command.AUTHCredentialsComman
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * This class is designated to AUTH credentials that were sent as standalone messages. For single
+ * line AUTH commands, an initial response can be provided instead.
+ *
+ * @see SmtpAUTHCommand
+ */
 @XmlRootElement
 public class SmtpAUTHCredentialsCommand extends SmtpCommand {
     String credentials;

@@ -10,5 +10,12 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Reply to the AUTH-Command. This is kept as a simple SmtpReply since the reply differs for each
+ * specific SASL-Mechanism used.
+ *
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpAUTHCredentialsCommand
+ * @see SmtpReply
+ */
 @XmlRootElement
 public class SmtpAUTHCredentialsReply extends SmtpReply {}
