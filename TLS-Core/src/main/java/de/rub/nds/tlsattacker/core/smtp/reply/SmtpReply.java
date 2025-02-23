@@ -122,7 +122,9 @@ public class SmtpReply extends SmtpMessage {
         }
 
         sb.append(replyCodeString);
-        //partly workaround for uninitialized humanReadableMessages (which should not happen), but also more in line with standard: Empty messages are not intended, but recommended to accept
+        // partly workaround for uninitialized humanReadableMessages (which should not happen), but
+        // also more in line with standard: Empty messages are not intended, but recommended to
+        // accept
         if (!this.humanReadableMessages.isEmpty()) {
             sb.append(SP);
             sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));

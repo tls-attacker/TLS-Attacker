@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3USERCommand;
-import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

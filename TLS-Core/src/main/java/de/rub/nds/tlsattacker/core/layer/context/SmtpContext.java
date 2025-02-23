@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.layer.context;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpDATAContentReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEXPNReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,8 +115,6 @@ public class SmtpContext extends LayerContext {
         SmtpCommand command = getLastCommand();
         return SmtpMappingUtil.getMatchingReply(command);
     }
-
-
 
     public boolean isServerOnlySupportsEHLO() {
         return serverOnlySupportsEHLO;

@@ -36,8 +36,6 @@ public class Pop3Context extends LayerContext {
         this.lastCommand = lastCommand;
     }
 
-
-
     public boolean isGreetingReceived() {
         return greetingReceived;
     }

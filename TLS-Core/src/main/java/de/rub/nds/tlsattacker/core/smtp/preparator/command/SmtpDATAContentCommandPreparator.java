@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.preparator.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 
-public class SmtpDATAContentCommandPreparator extends SmtpCommandPreparator<SmtpDATAContentCommand> {
+public class SmtpDATAContentCommandPreparator
+        extends SmtpCommandPreparator<SmtpDATAContentCommand> {
     public SmtpDATAContentCommandPreparator(SmtpContext context, SmtpDATAContentCommand command) {
         super(context.getChooser(), command);
     }

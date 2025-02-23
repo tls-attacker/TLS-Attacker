@@ -119,7 +119,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                 if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
                     Pop3Reply smtpReply = context.getExpectedNextReplyType();
-                    if(smtpReply instanceof Pop3UnknownReply) {
+                    if (smtpReply instanceof Pop3UnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
                                 smtpReply.getClass().getSimpleName());
@@ -127,7 +127,8 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                     readDataContainer(smtpReply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
-                    // this shadows the readDataContainer method from the superclass, but we need to parse the command twice to determine the correct subclass
+                    // this shadows the readDataContainer method from the superclass, but we need to
+                    // parse the command twice to determine the correct subclass
                     Pop3Command pop3Command = new Pop3Command();
                     Pop3CommandParser verbParser = pop3Command.getParser(context, dataStream);
                     try {
@@ -138,13 +139,15 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                         setUnreadBytes(verbParser.getAlreadyParsed());
                         continue;
                     }
-                    Pop3Command trueCommand = Pop3MappingUtil.getCommandFromCommandName(pop3Command.getCommandName());
+                    Pop3Command trueCommand =
+                            Pop3MappingUtil.getCommandFromCommandName(pop3Command.getCommandName());
                     // this will be the actual parsing of the command
-                    HintedLayerInputStream smtpCommandStream = new HintedLayerInputStream(new Pop3LayerHint(), this);
+                    HintedLayerInputStream smtpCommandStream =
+                            new HintedLayerInputStream(new Pop3LayerHint(), this);
                     smtpCommandStream.extendStream(verbParser.getAlreadyParsed());
                     Pop3CommandParser parser = trueCommand.getParser(context, smtpCommandStream);
                     try {
-                        //TODO: this may raise a ParserException if parameters are missing
+                        // TODO: this may raise a ParserException if parameters are missing
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);
                         preparator.prepareAfterParse();
@@ -156,7 +159,8 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                         // we fall back to the parsing as an unknown
                         try {
                             trueCommand = new Pop3UnknownCommand();
-                            HintedLayerInputStream unknownCommandStream = new HintedLayerInputStream(new Pop3LayerHint(), this);
+                            HintedLayerInputStream unknownCommandStream =
+                                    new HintedLayerInputStream(new Pop3LayerHint(), this);
                             unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
                             parser = trueCommand.getParser(context, unknownCommandStream);
                             parser.parse(trueCommand);
@@ -183,14 +187,16 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                 LOGGER.debug("No messages required for layer.");
             }
         }
-        if(getUnreadBytes().length > 0) {
-            // POP3 should be a terminal layer, so we should not have any unread bytes unless it is not CRLF terminated
+        if (getUnreadBytes().length > 0) {
+            // POP3 should be a terminal layer, so we should not have any unread bytes unless it is
+            // not CRLF terminated
 
-            //previous readDataContainer() call should have consumed all bytes
+            // previous readDataContainer() call should have consumed all bytes
             setUnreadBytes(new byte[0]);
-            //TODO: This deserves a broader class of DataContainer, which is not POP3-specific
+            // TODO: This deserves a broader class of DataContainer, which is not POP3-specific
             readDataContainer(new Pop3UnterminatedReply(), context);
-            //TODO: Is this the right way to handle this? It feels like this case definitely empties the stream
+            // TODO: Is this the right way to handle this? It feels like this case definitely
+            // empties the stream
             getLowerLayer().removeDrainedInputStream();
         }
         return getLayerResult();

@@ -11,13 +11,9 @@ package de.rub.nds.tlsattacker.core.pop3.command;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3CommandHandler;
-import de.rub.nds.tlsattacker.core.pop3.handler.Pop3MessageHandler;
-import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
-import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
-import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 

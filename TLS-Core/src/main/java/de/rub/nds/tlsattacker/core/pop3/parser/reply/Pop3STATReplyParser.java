@@ -26,7 +26,9 @@ public class Pop3STATReplyParser extends Pop3ReplyParser<Pop3STATReply> {
 
         // case: single line response contains necessary data
         if (multiLines.isEmpty()) parseMessageData(reply);
-        else throw new ParserException("Multi-line replies to the STAT command are strongly discouraged in the POP3 RFC and are considered erroneous.");
+        else
+            throw new ParserException(
+                    "Multi-line replies to the STAT command are strongly discouraged in the POP3 RFC and are considered erroneous.");
     }
 
     public void parseMessageData(Pop3STATReply reply) {

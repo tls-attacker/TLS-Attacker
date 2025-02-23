@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Parses Pop3 replies from InputStream. The default implementation only parses the status code and

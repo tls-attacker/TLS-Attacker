@@ -40,5 +40,6 @@ public abstract class SmtpMessageParser<MessageT extends SmtpMessage> extends Pa
         }
         return lineUntilLF.trim();
     }
+
     public abstract void parse(MessageT message);
 }

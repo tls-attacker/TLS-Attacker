@@ -1,29 +1,38 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3UnknownCommand;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 import org.reflections.ReflectionsException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class Pop3MappingTest {
     /**
      * Test that every subclass of Pop3Command is properly mapped to a reply via Pop3MappingUtil
-     * Using reflection here is not ideal, but it's the best way to ensure that every command is mapped for new developers.
+     * Using reflection here is not ideal, but it's the best way to ensure that every command is
+     * mapped for new developers.
      */
     @Test
     public void testEveryCommandIsMapped() {
         // Use Reflections to find all subclasses of SmtpCommand
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.pop3");
-        Set<Class<? extends Pop3Command>> commandClasses = reflections.getSubTypesOf(Pop3Command.class);
+        Set<Class<? extends Pop3Command>> commandClasses =
+                reflections.getSubTypesOf(Pop3Command.class);
 
         for (Class<? extends Pop3Command> commandClass : commandClasses) {
             try {
@@ -32,17 +41,31 @@ public class Pop3MappingTest {
 
                 // Call getReplyForCommand and assert the reply is not null
                 Pop3Reply reply = Pop3MappingUtil.getMatchingReply(command);
-                 if (command instanceof Pop3UnknownCommand) {
+                if (command instanceof Pop3UnknownCommand) {
                     continue;
                 }
-                assertFalse(reply instanceof Pop3UnknownReply, "Reply for " + commandClass.getSimpleName() + " should not be unknown. If you see this message, you need to implement a reply for this command AND link them via Pop3MappingUtil.");
-            } catch (ReflectionsException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                Assertions.fail("Failed to instantiate command or get reply for " + commandClass.getSimpleName() + ": " + e.getMessage());
+                assertFalse(
+                        reply instanceof Pop3UnknownReply,
+                        "Reply for "
+                                + commandClass.getSimpleName()
+                                + " should not be unknown. If you see this message, you need to implement a reply for this command AND link them via Pop3MappingUtil.");
+            } catch (ReflectionsException
+                    | NoSuchMethodException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | InvocationTargetException e) {
+                Assertions.fail(
+                        "Failed to instantiate command or get reply for "
+                                + commandClass.getSimpleName()
+                                + ": "
+                                + e.getMessage());
             }
         }
-    }/**
+    }
+    /**
      * Test that every subclass of Pop3Reply is properly mapped to a command via Pop3MappingUtil
-     * Using reflection here is not ideal, but it's the best way to ensure that every command is mapped for new developers.
+     * Using reflection here is not ideal, but it's the best way to ensure that every command is
+     * mapped for new developers.
      */
     @Test
     public void testEveryReplyIsMapped() {
@@ -60,9 +83,21 @@ public class Pop3MappingTest {
                 if (reply instanceof Pop3UnknownReply) {
                     continue;
                 }
-                assertFalse(command instanceof Pop3UnknownCommand, "Reply for " + replyClass.getSimpleName() + " should not be unknown. If you see this message, you need to implement a reply for this command AND link them via Pop3MappingUtil.");
-            } catch (ReflectionsException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                Assertions.fail("Failed to instantiate command or get reply for " + replyClass.getSimpleName() + ": " + e.getMessage());
+                assertFalse(
+                        command instanceof Pop3UnknownCommand,
+                        "Reply for "
+                                + replyClass.getSimpleName()
+                                + " should not be unknown. If you see this message, you need to implement a reply for this command AND link them via Pop3MappingUtil.");
+            } catch (ReflectionsException
+                    | NoSuchMethodException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | InvocationTargetException e) {
+                Assertions.fail(
+                        "Failed to instantiate command or get reply for "
+                                + replyClass.getSimpleName()
+                                + ": "
+                                + e.getMessage());
             }
         }
     }

@@ -28,9 +28,7 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpUnknownCommand;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnterminatedReply;
@@ -53,8 +51,9 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     private final SmtpContext context;
 
     public static final int MAX_COMMAND_LENGTH = 512;
-    public static final int MAX_REPLY_LENGTH = 1024*64; // recommendation for the minimum maximum length according 4.5.3.1.7.  Message Content
-
+    public static final int MAX_REPLY_LENGTH =
+            1024 * 64; // recommendation for the minimum maximum length according 4.5.3.1.7.
+    // Message Content
 
     public SmtpLayer(SmtpContext smtpContext) {
         super(ImplementedLayers.SMTP);
@@ -120,7 +119,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                 if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
                     SmtpReply smtpReply = context.getExpectedNextReplyType();
-                    if(smtpReply instanceof SmtpUnknownReply) {
+                    if (smtpReply instanceof SmtpUnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
                                 smtpReply.getClass().getSimpleName());
@@ -128,7 +127,8 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                     readDataContainer(smtpReply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
-                    // this shadows the readDataContainer method from the superclass, but we need to parse the command twice to determine the correct subclass
+                    // this shadows the readDataContainer method from the superclass, but we need to
+                    // parse the command twice to determine the correct subclass
                     SmtpCommand smtpCommand = new SmtpCommand();
                     SmtpCommandParser verbParser = smtpCommand.getParser(context, dataStream);
                     try {
@@ -139,13 +139,15 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                         setUnreadBytes(verbParser.getAlreadyParsed());
                         continue;
                     }
-                    SmtpCommand trueCommand = SmtpMappingUtil.getCommandTypeFromVerb(smtpCommand.getVerb());
+                    SmtpCommand trueCommand =
+                            SmtpMappingUtil.getCommandTypeFromVerb(smtpCommand.getVerb());
                     // this will be the actual parsing of the command
-                    HintedLayerInputStream smtpCommandStream = new HintedLayerInputStream(new SmtpLayerHint(), this);
+                    HintedLayerInputStream smtpCommandStream =
+                            new HintedLayerInputStream(new SmtpLayerHint(), this);
                     smtpCommandStream.extendStream(verbParser.getAlreadyParsed());
                     SmtpCommandParser parser = trueCommand.getParser(context, smtpCommandStream);
                     try {
-                        //TODO: this may raise a ParserException if parameters are missing
+                        // TODO: this may raise a ParserException if parameters are missing
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);
                         preparator.prepareAfterParse();
@@ -157,7 +159,8 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                         // we fall back to the parsing as an unknown
                         try {
                             trueCommand = new SmtpUnknownCommand();
-                            HintedLayerInputStream unknownCommandStream = new HintedLayerInputStream(new SmtpLayerHint(), this);
+                            HintedLayerInputStream unknownCommandStream =
+                                    new HintedLayerInputStream(new SmtpLayerHint(), this);
                             unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
                             parser = trueCommand.getParser(context, unknownCommandStream);
                             parser.parse(trueCommand);
@@ -184,14 +187,16 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                 LOGGER.debug("No messages required for layer.");
             }
         }
-        if(getUnreadBytes().length > 0) {
-            // SMTP should be a terminal layer, so we should not have any unread bytes unless it is not CRLF terminated
+        if (getUnreadBytes().length > 0) {
+            // SMTP should be a terminal layer, so we should not have any unread bytes unless it is
+            // not CRLF terminated
 
-            //previous readDataContainer() call should have consumed all bytes
+            // previous readDataContainer() call should have consumed all bytes
             setUnreadBytes(new byte[0]);
-            //TODO: This deserves a broader class of DataContainer, which is not SMTP-specific
+            // TODO: This deserves a broader class of DataContainer, which is not SMTP-specific
             readDataContainer(new SmtpUnterminatedReply(), context);
-            //TODO: Is this the right way to handle this? It feels like this case definitely empties the stream
+            // TODO: Is this the right way to handle this? It feels like this case definitely
+            // empties the stream
             getLowerLayer().removeDrainedInputStream();
         }
         return getLayerResult();

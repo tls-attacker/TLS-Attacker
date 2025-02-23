@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
 
 class Pop3STATReplyTest {

@@ -142,8 +142,11 @@ class EHLOReplyTest {
         assertEquals("seal.upb.de", reply.getDomain());
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpUnknownEHLOExtension));
+        assertTrue(
+                reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
+        assertTrue(
+                reply.getExtensions().stream()
+                        .anyMatch(e -> e instanceof SmtpUnknownEHLOExtension));
     }
 
     @Test
@@ -158,7 +161,8 @@ class EHLOReplyTest {
         assertEquals("seal.upb.de", reply.getDomain());
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
+        assertTrue(
+                reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
         assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpHELPExtension));
     }
 

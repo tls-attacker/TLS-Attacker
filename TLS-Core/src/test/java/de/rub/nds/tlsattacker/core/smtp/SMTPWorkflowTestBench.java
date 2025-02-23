@@ -28,17 +28,14 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
-import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.*;
 
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
- @Disabled
+@Disabled
 public class SMTPWorkflowTestBench {
 
     public static final int PLAIN_PORT = 2525;
@@ -49,6 +46,7 @@ public class SMTPWorkflowTestBench {
     public static void addSecurityProvider() {
         ProviderUtil.addBouncyCastleProvider();
     }
+
     @BeforeEach
     public void changeLoglevel() {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);

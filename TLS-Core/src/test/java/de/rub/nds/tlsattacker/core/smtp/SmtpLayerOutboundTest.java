@@ -1,6 +1,16 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -9,7 +19,6 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer;
-import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
@@ -20,20 +29,17 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.util.ProviderUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the SmtpLayer where TLS-Attacker acts as a client, i.e. sends commands and receives replies.
+ * Tests for the SmtpLayer where TLS-Attacker acts as a client, i.e. sends commands and receives
+ * replies.
  */
 public class SmtpLayerOutboundTest {
 
@@ -58,7 +64,8 @@ public class SmtpLayerOutboundTest {
         context.setLastCommand(new SmtpUnknownCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1) && (result.getUsedContainers().get(0) instanceof SmtpUnterminatedReply);
+        assert (result.getUsedContainers().size() == 1)
+                && (result.getUsedContainers().get(0) instanceof SmtpUnterminatedReply);
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -68,7 +75,8 @@ public class SmtpLayerOutboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         context.setLastCommand(new SmtpUnknownCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
-        assert (result.getUsedContainers().size() == 1) && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply);
+        assert (result.getUsedContainers().size() == 1)
+                && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply);
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -78,15 +86,19 @@ public class SmtpLayerOutboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         context.setLastCommand(new SmtpUnknownCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
-        assert (result.getUsedContainers().size() == 2) && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply) && (result.getUsedContainers().get(1) instanceof SmtpUnknownReply);
+        assert (result.getUsedContainers().size() == 2)
+                && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply)
+                && (result.getUsedContainers().get(1) instanceof SmtpUnknownReply);
         assertEquals(0, result.getUnreadBytes().length);
     }
 
     /**
-     * Tests if the SmtpLayer still catches the reply as an unknown reply if the original parser raises a ParserException.
-     * For replies this should only happen if a multiline reply is not terminated correctly.
+     * Tests if the SmtpLayer still catches the reply as an unknown reply if the original parser
+     * raises a ParserException. For replies this should only happen if a multiline reply is not
+     * terminated correctly.
      */
-    @Disabled("This is weird right now because no SmtpReplyParser actually throws a ParserException - multiline malformed replies are handled by the parser.")
+    @Disabled(
+            "This is weird right now because no SmtpReplyParser actually throws a ParserException - multiline malformed replies are handled by the parser.")
     @Test
     public void testFallbackToUnknownReply() {
         transportHandler.setFetchableByte("250-example.org\r\nabc\r\n".getBytes());
@@ -94,14 +106,21 @@ public class SmtpLayerOutboundTest {
         context.setLastCommand(new SmtpEHLOCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        System.out.println(Arrays.toString(result.getUnreadBytes()));;
-        assert (result.getUsedContainers().size() == 1) && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply);
+        System.out.println(Arrays.toString(result.getUnreadBytes()));
+        ;
+        assert (result.getUsedContainers().size() == 1)
+                && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply);
         assertEquals(0, result.getUnreadBytes().length);
     }
 
     @Test
     public void testSendData() {
-        assertThrows(UnsupportedOperationException.class, () -> context.getLayerStack().getLayer(SmtpLayer.class).sendData(null, "Test".getBytes()));
+        assertThrows(
+                UnsupportedOperationException.class,
+                () ->
+                        context.getLayerStack()
+                                .getLayer(SmtpLayer.class)
+                                .sendData(null, "Test".getBytes()));
     }
 
     @Test
@@ -114,11 +133,11 @@ public class SmtpLayerOutboundTest {
         SpecificSendLayerConfiguration<SmtpCommand> layerConfiguration;
 
         layerConfiguration =
-                new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.SMTP, smtpMessages);
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.SMTP, smtpMessages);
         smtpLayer.setLayerConfiguration(layerConfiguration);
         LayerProcessingResult result = smtpLayer.sendConfiguration();
         assertEquals(2, result.getUsedContainers().size());
-        assert (result.getUsedContainers().get(0) instanceof SmtpEHLOCommand) && (result.getUsedContainers().get(1) instanceof SmtpNOOPCommand);
+        assert (result.getUsedContainers().get(0) instanceof SmtpEHLOCommand)
+                && (result.getUsedContainers().get(1) instanceof SmtpNOOPCommand);
     }
 }

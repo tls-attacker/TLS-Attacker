@@ -11,11 +11,9 @@ package de.rub.nds.tlsattacker.core.pop3.parser;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public abstract class Pop3MessageParser<MessageT extends Pop3Message> extends Parser<MessageT> {
 

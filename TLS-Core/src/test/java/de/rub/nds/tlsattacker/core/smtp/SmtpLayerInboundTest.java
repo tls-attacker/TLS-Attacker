@@ -1,8 +1,18 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -15,21 +25,17 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.util.ProviderUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the SmtpLayer where TLS-Attacker acts as a server, i.e. receiving commands and sending replies.
- * Warning: This was not the focus of the original project, so the tests are not as comprehensive as the other tests. There are no according integration tests.
+ * Tests for the SmtpLayer where TLS-Attacker acts as a server, i.e. receiving commands and sending
+ * replies. Warning: This was not the focus of the original project, so the tests are not as
+ * comprehensive as the other tests. There are no according integration tests.
  */
 public class SmtpLayerInboundTest {
 
@@ -47,14 +53,14 @@ public class SmtpLayerInboundTest {
         ProviderUtil.addBouncyCastleProvider();
     }
 
-
     @Test
     public void testReceiveKnownCommand() {
         transportHandler.setFetchableByte("HELO xyz\r\n".getBytes());
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1) && (result.getUsedContainers().get(0) instanceof SmtpHELOCommand);
+        assert (result.getUsedContainers().size() == 1)
+                && (result.getUsedContainers().get(0) instanceof SmtpHELOCommand);
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getVerb().equals("HELO");
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
@@ -66,14 +72,16 @@ public class SmtpLayerInboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1) && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
+        assert (result.getUsedContainers().size() == 1)
+                && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getVerb().equals("UNKNOWNCOMMAND");
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
     }
 
     /**
-     * Tests if the SmtpLayer still saves a command as an unknown command if the original parser raises a ParserException.
+     * Tests if the SmtpLayer still saves a command as an unknown command if the original parser
+     * raises a ParserException.
      */
     @Test
     public void testFallbackToUnknownReply() {
@@ -83,14 +91,21 @@ public class SmtpLayerInboundTest {
         context.setLastCommand(new SmtpEHLOCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        System.out.println(Arrays.toString(result.getUnreadBytes()));;
-        assert (result.getUsedContainers().size() == 1) && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
+        System.out.println(Arrays.toString(result.getUnreadBytes()));
+        ;
+        assert (result.getUsedContainers().size() == 1)
+                && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
         assertEquals(0, result.getUnreadBytes().length);
     }
 
     @Test
     public void testSendData() {
-        assertThrows(UnsupportedOperationException.class, () -> context.getLayerStack().getLayer(SmtpLayer.class).sendData(null, "Test".getBytes()));
+        assertThrows(
+                UnsupportedOperationException.class,
+                () ->
+                        context.getLayerStack()
+                                .getLayer(SmtpLayer.class)
+                                .sendData(null, "Test".getBytes()));
     }
 
     @Test
@@ -103,11 +118,11 @@ public class SmtpLayerInboundTest {
         SpecificSendLayerConfiguration<SmtpReply> layerConfiguration;
 
         layerConfiguration =
-                new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.SMTP, smtpMessages);
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.SMTP, smtpMessages);
         smtpLayer.setLayerConfiguration(layerConfiguration);
         LayerProcessingResult result = smtpLayer.sendConfiguration();
         assertEquals(2, result.getUsedContainers().size());
-        assert (result.getUsedContainers().get(0) instanceof SmtpEHLOReply) && (result.getUsedContainers().get(1) instanceof SmtpNOOPReply);
+        assert (result.getUsedContainers().get(0) instanceof SmtpEHLOReply)
+                && (result.getUsedContainers().get(1) instanceof SmtpNOOPReply);
     }
 }
