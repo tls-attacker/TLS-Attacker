@@ -14,7 +14,7 @@ package de.rub.nds.tlsattacker.core.pop3.command;
  * this interface is used to cast generic classes to pseudo message-number classes. This
  * significantly reduces the amount of files and code necessary for command parsing.
  */
-public interface MessageNumber {
+public interface Pop3MessageNumber {
     void setMessageNumber(Integer messageNumber);
 
     Integer getMessageNumber();

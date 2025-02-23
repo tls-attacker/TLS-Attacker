@@ -19,7 +19,7 @@ import java.io.InputStream;
  * information. With a message number specified, it only lists the information of one message.
  */
 @XmlRootElement
-public class Pop3LISTCommand extends Pop3Command implements MessageNumber {
+public class Pop3LISTCommand extends Pop3Command implements Pop3MessageNumber {
 
     private Integer messageNumber; // optional, see boolean variable hasMessageNumber
     private boolean hasMessageNumber = false;

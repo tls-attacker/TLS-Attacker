@@ -16,7 +16,7 @@ import java.io.InputStream;
 
 /** The Pop3RETRCommand retrieves a message with the specified messageNumber. */
 @XmlRootElement
-public class Pop3RETRCommand extends Pop3Command implements MessageNumber {
+public class Pop3RETRCommand extends Pop3Command implements Pop3MessageNumber {
 
     private Integer messageNumber;
     private static final String commandName = "RETR";
