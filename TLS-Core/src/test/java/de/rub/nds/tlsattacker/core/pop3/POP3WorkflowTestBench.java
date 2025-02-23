@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  */
 @Disabled
 public class POP3WorkflowTestBench {
-    int PLAIN_PORT = 11100;
+    int PLAIN_PORT = 110;
 
     @BeforeEach
     public void changeLoglevel() {

@@ -28,8 +28,9 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
         parseReplyIndicator(reply, firstLine);
         parseHumanReadableMessage(reply, firstLine);
 
+        if (reply.isSingleLine()) return; //FIXME: LIST [n] prompts a single line everytime - bring Pop3Context here
+
         List<String> lines = new LinkedList<>();
-        //FIXME: LIST [n] prompts a single line everytime - bring Pop3Context here
         if (reply.getStatusIndicator().equals("+OK")) {
             try {
                 String line;
