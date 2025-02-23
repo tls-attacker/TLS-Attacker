@@ -42,7 +42,7 @@ public class Pop3InitialGreetingDummy extends Pop3Command {
     }
 
     @Override
-    public Pop3CommandHandler<? extends Pop3Message> getHandler(Pop3Context smtpContext) {
+    public Pop3CommandHandler<? extends Pop3Message> getHandler(Pop3Context context) {
         throw new UnsupportedOperationException(
                 "This is a dummy class that should not be included in a Workflow.");
     }

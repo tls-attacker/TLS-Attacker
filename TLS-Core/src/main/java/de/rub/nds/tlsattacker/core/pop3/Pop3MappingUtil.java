@@ -2,10 +2,6 @@ package de.rub.nds.tlsattacker.core.pop3;
 
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Pop3MappingUtil {
     public static Pop3Reply getMatchingReply(Pop3Command command) {
