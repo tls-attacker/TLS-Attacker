@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.udp;
 import de.rub.nds.tlsattacker.PacketbasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -113,6 +114,22 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Checks the current SocketState.
+     *
+     * @return The current SocketState
+     */
+    public SocketState getSocketState() {
+        if (socket.isClosed()) {
+            return SocketState.CLOSED;
+        } else if (socket.isConnected()) {
+            return SocketState.UP;
+        } else if (socket.isBound()) {
+            return SocketState.BOUND;
+        }
+        return SocketState.UNAVAILABLE;
     }
 
     public int getSrcPort() {
