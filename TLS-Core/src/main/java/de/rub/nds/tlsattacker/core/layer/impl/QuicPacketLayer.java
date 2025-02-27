@@ -263,42 +263,34 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                         QuicPacketType.getPacketTypeFromFirstByte(
                                 quicContext.getQuicVersion(), firstByte);
             }
-
+            QuicPacket reatPacket;
             // Store the packet in the buffer for further processing.
             switch (packetType) {
                 case INITIAL_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readInitialPacket(firstByte, versionBytes, dataStream));
+                    reatPacket = readInitialPacket(firstByte, versionBytes, dataStream);
                     break;
                 case HANDSHAKE_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readHandshakePacket(firstByte, versionBytes, dataStream));
+                    reatPacket = readHandshakePacket(firstByte, versionBytes, dataStream);
                     break;
                 case ONE_RTT_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readOneRTTPacket(firstByte, dataStream));
+                    reatPacket = readOneRTTPacket(firstByte, dataStream);
                     break;
                 case ZERO_RTT_PACKET:
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
-
                 case RETRY_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readRetryPacket(firstByte, dataStream));
+                    reatPacket = readRetryPacket(firstByte, dataStream);
                     break;
                 case VERSION_NEGOTIATION:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readVersionNegotiationPacket(dataStream));
+                    reatPacket = readVersionNegotiationPacket(dataStream);
                     break;
                 case UNKNOWN:
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
                 default:
-                    break;
+                    throw new IllegalStateException("Received a Packet of Unknown Type");
             }
+
+            if (!isStatelessResetPacket(reatPacket))
+                receivedPacketBuffer.get(packetType).add(reatPacket);
         }
 
         // Iterate over the buffer to identify which packets can be decrypted. Decrypt initial
@@ -588,5 +580,23 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     /** Clears the packet buffer. This function is typically used when resetting the connection. */
     public void clearReceivedPacketBuffer() {
         receivedPacketBuffer.values().forEach(ArrayList::clear);
+    }
+
+    private boolean isStatelessResetPacket(QuicPacket packet) {
+        if (packet.getPacketType() != QuicPacketType.RETRY_PACKET
+                && packet.getPacketType() != QuicPacketType.VERSION_NEGOTIATION) {
+            byte[] protectedPacketNumberAndPayload =
+                    packet.getProtectedPacketNumberAndPayload().getValue();
+            byte[] lastSixteenBytes =
+                    Arrays.copyOfRange(
+                            protectedPacketNumberAndPayload,
+                            protectedPacketNumberAndPayload.length - 16,
+                            protectedPacketNumberAndPayload.length);
+            if (quicContext.isStatelessResetToken(lastSixteenBytes)) {
+                LOGGER.debug("Received a Stateless Reset Packet with Token {}", lastSixteenBytes);
+                return true;
+            }
+        }
+        return false;
     }
 }
