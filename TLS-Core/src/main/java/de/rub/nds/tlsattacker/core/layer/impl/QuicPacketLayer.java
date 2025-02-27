@@ -122,6 +122,13 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     "Sending packet without a LayerProcessing hint. Using UNKNOWN as the type.");
         }
 
+        if (hintedType == QuicPacketType.HANDSHAKE_PACKET
+                && !quicContext.isHandshakeSecretsInitialized()) {
+            LOGGER.debug(
+                    "Processing Hint was Handshake Packet, but Handshake Secrets are not initialized yet. Downgrading to Initial Packet.");
+            hintedType = QuicPacketType.INITIAL_PACKET;
+        }
+
         List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
         try {
             if (getLayerConfiguration().getContainerList() != null && givenPackets.size() > 0) {
