@@ -594,6 +594,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 && packet.getPacketType() != QuicPacketType.VERSION_NEGOTIATION) {
             byte[] protectedPacketNumberAndPayload =
                     packet.getProtectedPacketNumberAndPayload().getValue();
+            if (protectedPacketNumberAndPayload.length < 16) {
+                return false;
+            }
             byte[] lastSixteenBytes =
                     Arrays.copyOfRange(
                             protectedPacketNumberAndPayload,
