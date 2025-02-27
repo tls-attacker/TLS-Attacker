@@ -174,6 +174,12 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             return true;
         }
 
+        if (config.stopActionAfterQuicStatelessReset() && hasReceivedStatelessReset()) {
+            LOGGER.debug(
+                    "Skipping all Actions, received StatelessReset, StopActionsAfterStatelessReset active");
+            return true;
+        }
+
         if ((config.getStopActionsAfterIOException() && isIoException())) {
             LOGGER.debug(
                     "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
@@ -186,6 +192,16 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     public boolean hasReceivedConnectionCloseframe() {
         for (Context ctx : state.getAllContexts()) {
             if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Check if a at least one QUIC context received a connection close frame. */
+    public boolean hasReceivedStatelessReset() {
+        for (Context ctx : state.getAllContexts()) {
+            if (ctx.getQuicContext().hasReceivedStatelessResetToken()) {
                 return true;
             }
         }

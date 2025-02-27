@@ -24,13 +24,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicDecryptor;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicEncryptor;
-import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
-import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
@@ -296,8 +290,13 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     throw new IllegalStateException("Received a Packet of Unknown Type");
             }
 
-            if (!isStatelessResetPacket(reatPacket))
+            if (isStatelessResetPacket(reatPacket)) {
+                quicContext.setReceivedStatelessResetToken(true);
+                addProducedContainer(new StatelessResetPseudoPacket());
+                quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
+            } else {
                 receivedPacketBuffer.get(packetType).add(reatPacket);
+            }
         }
 
         // Iterate over the buffer to identify which packets can be decrypted. Decrypt initial
