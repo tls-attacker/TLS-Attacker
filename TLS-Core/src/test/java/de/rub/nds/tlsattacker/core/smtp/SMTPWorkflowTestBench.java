@@ -150,7 +150,7 @@ public class SMTPWorkflowTestBench {
         //        trace.addTlsAction(2, new ReceiveAction(new SmtpEHLOReply()));
         //        trace.addTlsAction(3, new SendAction(new SmtpSTARTTLSCommand()));
         //        trace.addTlsAction(4, new ReceiveAction(new SmtpSTARTTLSReply()));
-        //        trace.addTlsAction(5, new STARTTLSAction());
+        //        trace.addTlsAction(5, new StartTLSAction());
         //
         //        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
         //        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
@@ -158,14 +158,14 @@ public class SMTPWorkflowTestBench {
         //        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
         //        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
         //
-        //        trace.addTlsAction(new STARTTLSAction());
+        //        trace.addTlsAction(new StartTLSAction());
         //
         //        //        trace.addTlsAction(new SendAction(new
         //        // SmtpEHLOCommand("commandinjection.seal.upb.de")));
         //        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
         //        // trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
         //
-        //        trace.addTlsAction(new STARTTLSAction());
+        //        trace.addTlsAction(new StartTLSAction());
         //
         //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
         //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
