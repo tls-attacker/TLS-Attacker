@@ -25,8 +25,9 @@ import java.io.InputStream;
  *     C: RCPT TO:&lt;seal@upb.de&gt;
  * </pre>
  *
- * where RCPT is the verb and TO:&lt;seal@upb.de&gt; is the parameter.
- * This superclass is intentionally not abstract to allow for easy creation of custom commands, e.g. see CustomCommandTest.
+ * where RCPT is the verb and TO:&lt;seal@upb.de&gt; is the parameter. This superclass is
+ * intentionally not abstract to allow for easy creation of custom commands, e.g. see
+ * CustomCommandTest.
  */
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
