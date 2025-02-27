@@ -34,7 +34,7 @@ public class StopTLSAction extends ConnectionBoundAction {
     /**
      * This action dynamically removes Record and Message layer from the
      * LayerStack during runtime and store them into StarttlsContext for later use.
-     * TODO: since the action is now STARTTLS agnostic, we should adjust StarttlsContext too
+     * TODO: since the action is now STARTTLS agnostic, we should adjust StarttlsContext name wise
      *
      * @param state the state to work on
      * @throws ActionExecutionException if action is not supported for the current protocol

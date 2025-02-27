@@ -53,7 +53,7 @@ public class StartTLSAction extends ConnectionBoundAction {
         // only SMTP is supported for now, because explicit application command for upgrading is
         // needed
         if (topLevelType != ImplementedLayers.SMTP) {
-            throw new ActionExecutionException("STARTTLS is not defined for this protocol");
+            throw new ActionExecutionException("STARTTLS is not defined for this protocol: " + topLevelType);
         }
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
