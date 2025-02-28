@@ -323,6 +323,8 @@ public class WorkflowTraceConfigurationUtil {
                 if (((HandshakeMessage) message).getHandshakeMessageType() != type) {
                     iterator.remove();
                 }
+            } else {
+                iterator.remove();
             }
         }
         return sendMessages;
@@ -338,6 +340,8 @@ public class WorkflowTraceConfigurationUtil {
                 if (((HandshakeMessage) message).getHandshakeMessageType() != type) {
                     iterator.remove();
                 }
+            } else {
+                iterator.remove();
             }
         }
         return receiveMessages;
