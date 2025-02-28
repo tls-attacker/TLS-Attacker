@@ -8,7 +8,47 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 /** Enum of SMTP service extensions as maintained by IANA. */
+@XmlSeeAlso({
+        _8BITMIMEExtension.class,
+        ATRNExtension.class,
+        AUTHExtension.class,
+        BINARYMIMEExtension.class,
+        BURLExtension.class,
+        CHECKPOINTExtension.class,
+        CHUNKINGExtension.class,
+        CONNEGExtension.class,
+        CONPERMExtension.class,
+        DELIVERBYExtension.class,
+        DSNExtension.class,
+        ENHANCEDSTATUSCODESExtension.class,
+        ETRNExtension.class,
+        EXPNExtension.class,
+        FUTURERELEASEExtension.class,
+        HELPExtension.class,
+        LIMITSExtension.class,
+        LocalSmtpServiceExtension.class,
+        MT_PRIORITYExtension.class,
+        MTRKExtension.class,
+        NO_SOLICITINGExtension.class,
+        ONEXExtension.class,
+        PIPELININGExtension.class,
+        REQUIRETLSExtension.class,
+        RRVSExtension.class,
+        SAMLExtension.class,
+        SENDExtension.class,
+        SIZEExtension.class,
+        SMTPUTF8Extension.class,
+        SOMLExtension.class,
+        STARTTLSExtension.class,
+        SUBMITTERExtension.class,
+        TURNExtension.class,
+        UnknownEHLOExtension.class,
+        UTF8SMTPExtension.class,
+        VERBExtension.class
+})
 public abstract class SmtpServiceExtension {
 
     private final String ehloKeyword;
