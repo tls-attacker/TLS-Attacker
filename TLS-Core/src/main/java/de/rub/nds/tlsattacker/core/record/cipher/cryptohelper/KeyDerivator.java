@@ -131,6 +131,12 @@ public class KeyDerivator {
         }
         LOGGER.debug("ActiveKeySetType is {}", keySetType);
         CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
+        if (cipherAlg == null) {
+            LOGGER.debug(
+                    "No cipher algorithm found for cipher suite: {}, falling back to TLS_AES_128_GCM_SHA256",
+                    cipherSuite);
+            cipherAlg = CipherSuite.TLS_AES_128_GCM_SHA256.getCipherAlgorithm();
+        }
         KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         keySet.setClientWriteKey(
