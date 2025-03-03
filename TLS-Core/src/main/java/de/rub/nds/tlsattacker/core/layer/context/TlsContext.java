@@ -36,8 +36,10 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.ToggleableLayerWrapper;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -1251,7 +1253,13 @@ public class TlsContext extends LayerContext {
     }
 
     public RecordLayer getRecordLayer() {
-        return (RecordLayer) getContext().getLayerStack().getLayer(RecordLayer.class);
+        // unwrap the record layer if it is a toggleable layer
+        // this tells me that they should not have been truly separate layers in the first place
+        ProtocolLayer recordLayer = getContext().getLayerStack().getLayer(RecordLayer.class);
+        if (recordLayer instanceof ToggleableLayerWrapper) {
+            return (RecordLayer) ((ToggleableLayerWrapper) recordLayer).getWrappedLayer();
+        }
+        return (RecordLayer) recordLayer;
     }
 
     public PRFAlgorithm getPrfAlgorithm() {

@@ -29,7 +29,9 @@ import org.apache.logging.log4j.Logger;
  * they will be removed. Even though it does not transmit the actual application-specific STARTTLS
  * command, it should only be used in protocols that support a form of STARTTLS command. Currently,
  * only SMTP is supported.
+ * @deprecated to be removed in favor of ToggleTLSLayerAction
  */
+@Deprecated
 @XmlRootElement
 public class STARTTLSAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();

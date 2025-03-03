@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.ToggleableLayerWrapper;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.util.*;
@@ -54,6 +55,18 @@ public class LayerStack {
     public final ProtocolLayer getLayer(Class<? extends ProtocolLayer> layerClass) {
         for (ProtocolLayer layer : getLayerList()) {
             if (layer.getClass().equals(layerClass)) {
+                return layer;
+            } else if (layer instanceof ToggleableLayerWrapper<?, ?> && ((ToggleableLayerWrapper<?, ?>) layer).getWrappedLayer().getClass().equals(layerClass)) {
+                // we cannot override getClass() and this method is used too often to be ignored
+                return layer;
+            }
+        }
+        return null;
+    }
+
+    public final ProtocolLayer getLayer(LayerType type) {
+        for (ProtocolLayer layer : getLayerList()) {
+            if (layer.getLayerType().equals(type)) {
                 return layer;
             }
         }
@@ -216,6 +229,7 @@ public class LayerStack {
         return Collections.unmodifiableList(layerList);
     }
 
+
     /**
      * Adds a new layer to a specific position in the layer stack. The new layer will be inserted
      * between the layer at the specified index and the layer at the index - 1. If the index is 0,
@@ -224,7 +238,9 @@ public class LayerStack {
      *
      * @param newLayer The new layer to be inserted
      * @param index The index at which the new layer should be inserted
+     * @deprecated in favor of {@link de.rub.nds.tlsattacker.core.workflow.action.ToggleLayerAction}
      */
+    @Deprecated
     public void insertLayer(ProtocolLayer newLayer, int index) {
         if (index < 0 || index > layerList.size() - 1) {
             throw new IllegalArgumentException("Layer index out of bounds");
@@ -252,7 +268,9 @@ public class LayerStack {
      *
      * @param layerType The type of the layer to be removed
      * @return The removed layer
+     * @deprecated in favor of {@link de.rub.nds.tlsattacker.core.workflow.action.ToggleLayerAction}
      */
+    @Deprecated
     public ProtocolLayer removeLayer(Class<? extends ProtocolLayer> layerType) {
         ProtocolLayer layer = getLayer(layerType);
         if (layer == null) {

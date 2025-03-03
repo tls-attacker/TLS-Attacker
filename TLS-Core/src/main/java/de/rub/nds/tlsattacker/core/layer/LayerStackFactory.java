@@ -76,7 +76,12 @@ public class LayerStackFactory {
             case SMTP:
                 layerStack =
                         new LayerStack(
-                                context, new SmtpLayer(smtpContext), new TcpLayer(tcpContext));
+                                context,
+                                new SmtpLayer(smtpContext),
+                                new ToggleableLayerWrapper<>(new MessageLayer(tlsContext), false),
+                                new ToggleableLayerWrapper<>(new RecordLayer(tlsContext), false),
+                                new TcpLayer(tcpContext)
+                        );
                 return layerStack;
             case SMTPS:
                 layerStack =
@@ -85,7 +90,8 @@ public class LayerStackFactory {
                                 new SmtpLayer(smtpContext),
                                 new MessageLayer(tlsContext),
                                 new RecordLayer(tlsContext),
-                                new TcpLayer(tcpContext));
+                                new TcpLayer(tcpContext)
+                        );
                 return layerStack;
             case SSL2:
                 layerStack =
