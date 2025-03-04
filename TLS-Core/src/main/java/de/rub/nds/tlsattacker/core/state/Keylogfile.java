@@ -45,7 +45,7 @@ public class Keylogfile {
 
     public void writeKey(String identifier, byte[] key) {
         synchronized (Keylogfile.class) {
-            if (!this.writeKeylog) {
+            if (!this.writeKeylog || tlsContext.getClientRandom() == null) {
                 return;
             }
             try {
