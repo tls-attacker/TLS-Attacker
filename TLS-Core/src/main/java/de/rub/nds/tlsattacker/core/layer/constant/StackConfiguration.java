@@ -21,6 +21,7 @@ public enum StackConfiguration {
     STARTTLS,
     HTTPS,
     POP3,
+    POP3S,
     SMTP,
     SMTPS,
     SSL2;
