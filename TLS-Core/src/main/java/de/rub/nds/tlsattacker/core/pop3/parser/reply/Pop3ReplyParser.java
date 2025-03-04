@@ -68,8 +68,8 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
         List<String> lines = new LinkedList<>();
         try (BufferedInputStream stream = new BufferedInputStream(this.getStream())) {
             String line = "";
-            char LF = 10;
-            char CR = 13;
+            char CR = '\r';
+            char LF = '\n';
             while (!line.equals(".")) { // multiline replies have to end with ".CRLF" i.e. ".\r\n"
                 StringBuilder sb = new StringBuilder();
                 int c = stream.read();
