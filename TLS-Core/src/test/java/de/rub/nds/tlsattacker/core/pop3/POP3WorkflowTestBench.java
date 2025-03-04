@@ -52,7 +52,7 @@ public class POP3WorkflowTestBench {
     @Test
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
@@ -86,7 +86,7 @@ public class POP3WorkflowTestBench {
     @Test
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
 
@@ -132,7 +132,7 @@ public class POP3WorkflowTestBench {
     @Test
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setKeylogFilePath("/tmp/keylogfile");
         config.setWriteKeylogFile(true);
         config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
