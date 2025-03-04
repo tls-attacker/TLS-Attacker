@@ -28,6 +28,7 @@ class Pop3RETRReplyTest {
     public void serializeValidReply() {
         Pop3RETRReply ret = new Pop3RETRReply();
         ret.setStatusIndicator("+OK");
+        // this is a realistic example of a POP3 response, but note that there is no guarantee for
         ret.setHumanReadableMessage("113 octets");
         ret.addMessagePart("Hello Juan Fernandez I hope this email finds you well.");
         ret.addMessagePart("Did you hear about SEAL, a super cool project group of UPB.");
