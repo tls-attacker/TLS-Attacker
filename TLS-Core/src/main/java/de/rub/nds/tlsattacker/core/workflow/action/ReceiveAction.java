@@ -283,6 +283,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        // see the shortcomings explained in ActionHelperUtil
         return ActionHelperUtil.createReceiveLayerConfiguration(
                 tlsContext,
                 getActionOptions(),

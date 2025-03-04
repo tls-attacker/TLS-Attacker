@@ -38,6 +38,8 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -48,6 +50,14 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This class provides methods that create the LayerConfigurations for the different layers of the LayerStack.
+ * They are used by the {@link SendAction} and {@link ReceiveAction} classes to actually send and receive data.
+ * TODO: This class hardcodes all implemented layers using one big signature. This is not very flexible when implementing new protocols and should be made more dynamic in the future.
+ * @see SendAction
+ * @see ReceiveAction
+ * @see LayerStack
+ */
 public class ActionHelperUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();

@@ -51,7 +51,7 @@ public class STARTTLSAction extends ConnectionBoundAction {
     public void execute(State state) throws ActionExecutionException {
         LayerType topLevelType =
                 state.getContext().getLayerStack().getHighestLayer().getLayerType();
-        // only SMTP is supported for now, because explicit application command for upgrading is
+        // only SMTP and POP3 currently because explicit application command for upgrading is
         // needed
         if (!EnumSet.of(ImplementedLayers.SMTP, ImplementedLayers.POP3).contains(topLevelType)) {
             throw new ActionExecutionException("STARTTLS is not defined for this protocol");

@@ -34,6 +34,7 @@ public class GenericReceiveAction extends CommonReceiveAction {
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        // see the shortcomings explained in ActionHelperUtil
         return ActionHelperUtil.createReceiveLayerConfiguration(
                 tlsContext, getActionOptions(), null, null, null, null, null, null, null, null);
     }

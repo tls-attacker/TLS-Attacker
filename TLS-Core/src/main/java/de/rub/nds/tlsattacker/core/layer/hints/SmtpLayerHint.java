@@ -8,4 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.layer.hints;
 
+/**
+ * Empty object required for the layer system.
+ * Because the SMTP layer is not used to as an intermediate layer, this class will remain empty.
+ * @see de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer
+ */
 public class SmtpLayerHint implements LayerProcessingHint {}
