@@ -1219,6 +1219,7 @@
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <stopActionsAfterQuicConnectionClose>true</stopActionsAfterQuicConnectionClose>
+    <stopActionsAfterQuicStatelessReset>true</stopActionsAfterQuicStatelessReset>
     <finishWithCloseNotify>false</finishWithCloseNotify>
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
