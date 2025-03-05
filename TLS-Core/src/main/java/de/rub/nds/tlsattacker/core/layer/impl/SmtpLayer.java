@@ -218,7 +218,6 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     @Override
     public boolean executedAsPlanned() {
-        // TODO: Properly check status codes etc here
         // SMTP does not work with the current TLSA semantics, as essentially every execution is
         // valid in the sense that the server will always reply with something, that could be a
         // valid reply.

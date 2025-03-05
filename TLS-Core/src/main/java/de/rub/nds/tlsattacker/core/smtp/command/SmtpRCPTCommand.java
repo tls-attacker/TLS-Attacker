@@ -31,10 +31,7 @@ import java.util.List;
 public class SmtpRCPTCommand extends SmtpCommand {
     private static final String COMMAND = "RCPT";
     private String recipient;
-    //    private List<String> hops = new ArrayList<>();
     private List<String> rcptParameters = new ArrayList<>();
-
-    //    private boolean validRecipient = true;
 
     public SmtpRCPTCommand() {
         super(COMMAND, null);
@@ -57,22 +54,6 @@ public class SmtpRCPTCommand extends SmtpCommand {
     public String getRecipient() {
         return recipient;
     }
-
-    //    public List<String> getHops() {
-    //        return hops;
-    //    }
-    //
-    //    public void setHops(List<String> hops) {
-    //        this.hops = hops;
-    //    }
-
-    //    public boolean isValidRecipient() {
-    //        return validRecipient;
-    //    }
-    //
-    //    public void setValidRecipient(boolean valid) {
-    //        this.validRecipient = valid;
-    //    }
 
     @Override
     public SmtpRCPTCommandParser getParser(SmtpContext context, InputStream stream) {

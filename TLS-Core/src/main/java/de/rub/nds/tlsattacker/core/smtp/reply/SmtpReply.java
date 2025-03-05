@@ -60,6 +60,9 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public SmtpReply(Integer replyCode) {
+        // allows a user to create a custom reply with a very specific (perhaps standard-violating)
+        // reply code
+        // we do not currently do this in the codebase, but it is a possibility, so we allow it
         super();
         this.replyCode = replyCode;
     }
