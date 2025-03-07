@@ -46,7 +46,7 @@ public class ToggleLayerAction extends ConnectionBoundAction {
     }
 
     /**
-     * This method is used to update the ToggleableLayerWrapper for different incarnations of ActivateLayerAction to implement.
+     * This method is used to update the ToggleableLayerWrapper for different incarnations of ToggleLayerAction to implement.
      */
     protected void updateLayerState(ToggleableLayerWrapper<?, ?> layerWrapper) {
         layerWrapper.setActive(!layerWrapper.isActive());
