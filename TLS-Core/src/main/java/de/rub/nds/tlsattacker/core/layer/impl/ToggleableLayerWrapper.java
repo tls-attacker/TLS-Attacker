@@ -61,6 +61,7 @@ public class ToggleableLayerWrapper<H extends LayerProcessingHint, C extends Dat
         if(this.active) {
             return wrappedLayer.sendConfiguration();
         } else {
+            // TODO: executed as planned? Or explicitly raise an exception?
             return new LayerProcessingResult<>(new ArrayList<>(), getLayerType(), true);
         }
     }
