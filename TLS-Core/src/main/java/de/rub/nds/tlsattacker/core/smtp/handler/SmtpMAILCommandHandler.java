@@ -18,8 +18,9 @@ public class SmtpMAILCommandHandler extends SmtpCommandHandler<SmtpMAILCommand> 
 
     /**
      * Saves the reverse path (i.e. sender address) transmitted in the MAIL command to the context.
+     *
      * @param smtpCommand the command to process
-     * @see SmtpContext#reversePath
+     * @see SmtpContext#getReversePathBuffer()
      */
     @Override
     public void adjustContextSpecific(SmtpMAILCommand smtpCommand) {

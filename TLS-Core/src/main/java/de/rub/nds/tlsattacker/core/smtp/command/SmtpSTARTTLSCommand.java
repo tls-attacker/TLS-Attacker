@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.workflow.action.StartTLSAction;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement

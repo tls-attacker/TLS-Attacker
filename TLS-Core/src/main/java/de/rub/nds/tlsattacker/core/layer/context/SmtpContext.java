@@ -19,91 +19,93 @@ import java.util.List;
 public class SmtpContext extends LayerContext {
 
     /**
-     * Stores the source of the mail (supplied via MAIL FROM)
-     * Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#appendix-C">RFC 5321 Appendix C</a>:
+     * Stores the source of the mail (supplied via MAIL FROM) Note <a
+     * href="https://datatracker.ietf.org/doc/html/rfc5321#appendix-C">RFC 5321 Appendix C</a>:
      * Historically, the reverse path was a list of hosts, rather than a single host.
      */
     private List<String> reversePathBuffer = new ArrayList<>();
 
-    /**
-     * Stores the destination of a mail (supplied via RCPT TO)
-     */
+    /** Stores the destination of a mail (supplied via RCPT TO) */
     private String forwardPathBuffer = "";
 
-    /**
-     * Stores the recipients of a mail (supplied via MAIL TO).
-     * Each entry is a recipient.
-     */
+    /** Stores the recipients of a mail (supplied via MAIL TO). Each entry is a recipient. */
     private List<String> recipientBuffer = new ArrayList<>();
-    /**
-     * Stores the data of a mail (supplied via DATA).
-     * Each entry is a line of the mail.
-     */
+    /** Stores the data of a mail (supplied via DATA). Each entry is a line of the mail. */
     private List<String> mailDataBuffer = new ArrayList<>();
     /**
-     * Stores the identity of the client given by EHLO/HELO.
-     * See {@link SmtpContext#clientUsedHELO}, because legacy HELO clients do not support the client identity being an address literal.
+     * Stores the identity of the client given by EHLO/HELO. See {@link SmtpContext#clientUsedHELO},
+     * because legacy HELO clients do not support the client identity being an address literal.
      */
     private String clientIdentity;
-    /**
-     * Stores the domain of the server given by the EHLO/HELO reply.
-     */
+    /** Stores the domain of the server given by the EHLO/HELO reply. */
     private String serverIdentity;
 
-    /**
-     * Stores the negotiated extensions by the server given by the EHLO reply.
-     */
+    /** Stores the negotiated extensions by the server given by the EHLO reply. */
     private List<SmtpServiceExtension> negotiatedExtensions = new ArrayList<>();
     /**
-     * Indicates whether the server supports HELO (which is very old legacy by now).
-     * This affects {@link SmtpContext#clientIdentity} and the extension negotiation.
+     * Indicates whether the server supports HELO (which is very old legacy by now). This affects
+     * {@link SmtpContext#clientIdentity} and the extension negotiation.
+     *
      * @see de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension
      */
     private boolean clientUsedHELO = false;
 
     /**
      * Whether the client requested to close the connection.
-     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC 5321</a>:
+     *
+     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC
+     * 5321</a>:
+     *
      * <blockquote>
-     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT command and it SHOULD wait until it receives the reply (even if there was an error response to a previous command).
+     *
+     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT
+     * command and it SHOULD wait until it receives the reply (even if there was an error response
+     * to a previous command).
+     *
      * </blockquote>
      */
     private boolean clientRequestedClose = false;
     /**
      * Whether the server has acknowledged a client's request to close the connection.
-     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC 5321</a>:
+     *
+     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC
+     * 5321</a>:
+     *
      * <blockquote>
-     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT command and it SHOULD wait until it receives the reply (even if there was an error response to a previous command).
+     *
+     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT
+     * command and it SHOULD wait until it receives the reply (even if there was an error response
+     * to a previous command).
+     *
      * </blockquote>
      */
     private boolean serverAcknowledgedClose = false;
 
     /**
-     * Stores the previous version of an SmtpContext, populated by {@link #resetContext()}.
-     * Resets can be directly invoked by the RESET command, but can also be indirectly mandated by the mail transaction flow, see <a href=https://datatracker.ietf.org/doc/html/rfc5321#section-3.3>RFC5321</a>.
-     * */
+     * Stores the previous version of an SmtpContext, populated by {@link #resetContext()}. Resets
+     * can be directly invoked by the RESET command, but can also be indirectly mandated by the mail
+     * transaction flow, see <a
+     * href=https://datatracker.ietf.org/doc/html/rfc5321#section-3.3>RFC5321</a>.
+     */
     private SmtpContext oldContext;
 
     /**
-     * SMTP is a back and forth of commands and replies.
-     * We need to keep track of each to correctly interpret the replies, because the reply type cannot be determined by the content alone.
+     * SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
+     * interpret the replies, because the reply type cannot be determined by the content alone.
+     *
      * @see SmtpMappingUtil
      * @see de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer SmtpLayer
      */
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
-    /**
-     * Whether the initial greeting was received.
-     */
+    /** Whether the initial greeting was received. */
     private boolean greetingReceived = false;
 
     public SmtpContext(Context context) {
         super(context);
     }
 
-    /**
-     * Clear all buffers.
-     */
+    /** Clear all buffers. */
     public void clearBuffers() {
         reversePathBuffer.clear();
         forwardPathBuffer = "";
@@ -167,6 +169,7 @@ public class SmtpContext extends LayerContext {
 
     /**
      * Get the expected reply type for the last command.
+     *
      * @return An object of the expected reply type for the last command.
      */
     public SmtpReply getExpectedNextReplyType() {
@@ -190,7 +193,7 @@ public class SmtpContext extends LayerContext {
         this.clientRequestedClose = clientRequestedClose;
     }
 
-    public boolean isServerAcknowledgedClose() {
+    public boolean getServerAcknowledgedClose() {
         return serverAcknowledgedClose;
     }
 

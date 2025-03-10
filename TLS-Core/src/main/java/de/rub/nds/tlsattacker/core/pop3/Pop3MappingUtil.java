@@ -12,9 +12,9 @@ import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
 
 /**
- * Utility class to map Pop3Commands to Pop3Replies and vice versa.
- * Also maps command names to Pop3Commands.
- * It is necessary to implement new commands and replies here, which is why we explicitly test via reflection in Pop3MappingTest.
+ * Utility class to map Pop3Commands to Pop3Replies and vice versa. Also maps command names to
+ * Pop3Commands. It is necessary to implement new commands and replies here, which is why we
+ * explicitly test via reflection in Pop3MappingTest.
  */
 public class Pop3MappingUtil {
     public static Pop3Reply getMatchingReply(Pop3Command command) {

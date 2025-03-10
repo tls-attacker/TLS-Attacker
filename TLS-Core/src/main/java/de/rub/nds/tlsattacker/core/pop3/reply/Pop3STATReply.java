@@ -48,8 +48,10 @@ public class Pop3STATReply extends Pop3Reply {
     }
 
     /**
-     * Serializes the Pop3STATReply into a string that can be sent over the network.
-     * Warning: This will not serialize multiline replies correctly. STAT multiline replies are strongly discouraged by RFC.
+     * Serializes the Pop3STATReply into a string that can be sent over the network. Warning: This
+     * will not serialize multiline replies correctly. STAT multiline replies are strongly
+     * discouraged by RFC.
+     *
      * @return The serialized string
      */
     @Override

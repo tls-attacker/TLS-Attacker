@@ -26,6 +26,7 @@ public class Pop3MappingTest {
      * Test that every subclass of Pop3Command is properly mapped to a reply via Pop3MappingUtil
      * Using reflection here is not ideal, but it's the best way to ensure that every command is
      * mapped for new developers.
+     *
      * @see Pop3MappingUtil
      */
     @Test

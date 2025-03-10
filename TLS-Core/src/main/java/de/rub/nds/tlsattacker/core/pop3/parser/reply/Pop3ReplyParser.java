@@ -19,8 +19,8 @@ import java.util.List;
  * Parses Pop3 replies from InputStream. The default implementation only parses the status code and
  * the human readable message. If more complex parsing is needed, the parse method can be
  * overridden. Multiline replies begin with the status indicator in the first line and every line
- * terminated with <CRLF> the last line is just a . followed by <CRLF>. The response is ended by
- * encountering following sequence: <CRLF>.<CRLF>
+ * terminated with &lt;CRLF&gt; the last line is just a . followed by &lt;CRLF&gt;. The response is
+ * ended by encountering following sequence: &lt;CRLF&gt;.&lt;CRLF&gt;
  *
  * @param <ReplyT> specific reply class
  */

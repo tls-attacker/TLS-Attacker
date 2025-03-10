@@ -23,8 +23,8 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
 
 /**
- * Base class for all SMTP messages.
- * SMTP messages are further divided into commands and replies.
+ * Base class for all SMTP messages. SMTP messages are further divided into commands and replies.
+ *
  * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand
  * @see de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply
  */
@@ -35,6 +35,7 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
 
     /**
      * Returns the handler responsible for handling this type of message.
+     *
      * @param context the context of the SmtpLayer
      * @return a handler for this message
      * @see de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler
@@ -44,6 +45,7 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
 
     /**
      * Returns the parser responsible for parsing this type of message.
+     *
      * @param context the {@link SmtpContext}
      * @param stream an InputStream containing the message to be parsed
      * @return a parser for this message
@@ -55,6 +57,7 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
 
     /**
      * Returns the preparator responsible for preparing this type of message.
+     *
      * @param context the {@link SmtpContext}
      * @return a preparator for this message
      * @see de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator
@@ -64,6 +67,7 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
 
     /**
      * Returns the serializer responsible for serializing this type of message.
+     *
      * @param context the {@link SmtpContext}
      * @return a serializer for this message
      * @see de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer

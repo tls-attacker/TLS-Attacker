@@ -18,8 +18,9 @@ public class SmtpQUITReplyHandler extends SmtpReplyHandler<SmtpQUITReply> {
 
     /**
      * Sets the serverAcknowledgedClose flag in the context.
+     *
      * @param container
-     * @see SmtpContext#serverAcknowledgedClose
+     * @see SmtpContext#getServerAcknowledgedClose()
      */
     @Override
     public void adjustContext(SmtpQUITReply container) {

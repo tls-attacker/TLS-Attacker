@@ -17,8 +17,8 @@ public class SmtpInitialGreetingHandler extends SmtpReplyHandler<SmtpInitialGree
     }
 
     /**
-     * Sets the greeting received flag in the context.
-     * Used by the TLS-StateVulnFinder.
+     * Sets the greeting received flag in the context. Used by the TLS-StateVulnFinder.
+     *
      * @param smtpMessage
      */
     @Override

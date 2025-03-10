@@ -53,6 +53,6 @@ public class QUITReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpQUITReply quitReply = new SmtpQUITReply();
         quitReply.getHandler(context).adjustContext(quitReply);
-        assertTrue(context.isServerAcknowledgedClose());
+        assertTrue(context.getServerAcknowledgedClose());
     }
 }

@@ -15,9 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
@@ -42,10 +40,10 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A layer that handles the SMTP protocol. It can send and receive SmtpMessages, which represent
- * both commands and replies.
- * Mainly tested for acting as a client right now.
- * Will fallback to SmtpUnknownReply if the type of reply is unclear, but falling back for
- * nonsensical replies is not yet implemented.
+ * both commands and replies. Mainly tested for acting as a client right now. Will fallback to
+ * SmtpUnknownReply if the type of reply is unclear, but falling back for nonsensical replies is not
+ * yet implemented.
+ *
  * @see SmtpMessage
  * @see SmtpCommand
  * @see SmtpReply
@@ -92,8 +90,9 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     }
 
     /**
-     * Unimplemented method.
-     * Would be used to send data from a higher layer via SMTP, which to the best of our knowledge is not a thing.
+     * Unimplemented method. Would be used to send data from a higher layer via SMTP, which to the
+     * best of our knowledge is not a thing.
+     *
      * @param hint
      * @param additionalData
      * @return
@@ -108,9 +107,12 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     /**
      * Receives data by querying the lower layer and processing it. The SmtpLayer can receive both
      * SmtpCommands and SmtpReplies.
-     * <p>Implementation-wise this disregards the usual {@link ProtocolLayer#readDataContainer} pattern to be able to parse arbitrary </p>
      *
-     * @return a LayerProcessingResult containing the SmtpMessage that was received across the different layers
+     * <p>Implementation-wise this disregards the usual {@link ProtocolLayer#readDataContainer}
+     * pattern to be able to parse arbitrary
+     *
+     * @return a LayerProcessingResult containing the SmtpMessage that was received across the
+     *     different layers
      * @see SmtpMappingUtil
      */
     @Override
