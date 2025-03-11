@@ -73,6 +73,11 @@ public class Pop3Reply extends Pop3Message {
     }
 
     @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
     public Pop3ReplyHandler<? extends Pop3Reply> getHandler(Pop3Context pop3Context) {
         return new Pop3ReplyHandler<>(pop3Context);
     }
