@@ -33,6 +33,8 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnterminatedReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,6 +69,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<Pop3Message> configuration = getLayerConfiguration();
+        ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Pop3Message pop3Msg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(pop3Msg, context)) {
@@ -76,9 +79,10 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                 handler.adjustContext(pop3Msg);
                 Serializer<?> serializer = pop3Msg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                getLowerLayer().sendData(null, serializedMessage);
+                serializedMessages.write(serializedMessage);
                 addProducedContainer(pop3Msg);
             }
+            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
         return getLayerResult();
     }
