@@ -1068,6 +1068,8 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedQuicPackets = false;
 
+    private Boolean quicDoNotPad = false;
+
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
      * HttpRequestMessage or httpParsing is disabled
@@ -4273,5 +4275,13 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterQuicStatelessReset(boolean stopActionsAfterQuicStatelessReset) {
         this.stopActionsAfterQuicStatelessReset = stopActionsAfterQuicStatelessReset;
+    }
+
+    public Boolean isQuicDoNotPad() {
+        return quicDoNotPad;
+    }
+
+    public void setQuicDoNotPad(boolean quicDoNotPad) {
+        this.quicDoNotPad = quicDoNotPad;
     }
 }

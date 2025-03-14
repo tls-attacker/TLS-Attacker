@@ -63,6 +63,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     public int offsetToPacketNumber;
     protected int padding;
 
+    protected int configuredPadding = -1;
+
     public QuicPacket() {}
 
     public QuicPacket(QuicPacketType packetType) {
@@ -399,5 +401,13 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
 
     public int getPadding() {
         return padding;
+    }
+
+    public void setConfiguredPadding(int configuredPadding) {
+        this.configuredPadding = configuredPadding;
+    }
+
+    public int getConfiguredPadding() {
+        return configuredPadding;
     }
 }

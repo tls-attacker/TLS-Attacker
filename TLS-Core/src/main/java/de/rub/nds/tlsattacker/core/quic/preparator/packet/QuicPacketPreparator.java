@@ -91,6 +91,12 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
     }
 
     protected int calculatePadding() {
+        if (packet.getConfiguredPadding() > -1) {
+            return packet.getConfiguredPadding();
+        }
+        if (context.getConfig().isQuicDoNotPad()) {
+            return 0;
+        }
         return Math.max(
                 0,
                 MiscCustomConstants.MIN_PACKET_CONTENT_SIZE
