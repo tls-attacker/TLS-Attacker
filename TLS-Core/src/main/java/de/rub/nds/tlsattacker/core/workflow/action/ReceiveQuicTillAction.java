@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -111,5 +112,103 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
         }
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("WaitTillReceive Action:\n");
+
+        sb.append("Quic Receive till:");
+        if ((expectedQuicPackets != null)) {
+            sb.append("Packets: ");
+            for (QuicPacket packet : expectedQuicPackets) {
+                sb.append(packet.toCompactString());
+                sb.append(", ");
+            }
+        }
+        if (expectedQuicFrames != null) {
+            sb.append("Frames: ");
+            for (QuicFrame frame : expectedQuicFrames) {
+                sb.append(frame.toCompactString());
+                sb.append(", ");
+            }
+        }
+        if (expectedQuicPackets == null || expectedQuicFrames == null) {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n\tActual:");
+        if ((getReceivedMessages() != null) && (!getReceivedMessages().isEmpty())) {
+            for (ProtocolMessage message : getReceivedMessages()) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder(super.toCompactString());
+        sb.append(" (");
+        if ((expectedQuicPackets != null)) {
+            for (QuicPacket packet : expectedQuicPackets) {
+                sb.append(packet.toCompactString());
+                sb.append(", ");
+            }
+        }
+        if (expectedQuicFrames != null) {
+            for (QuicFrame frame : expectedQuicFrames) {
+                sb.append(frame.toCompactString());
+                sb.append(", ");
+            }
+        }
+        if (expectedQuicPackets == null || expectedQuicFrames == null) {
+            sb.append(" (no messages set)");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        if (expectedQuicPackets != null && !expectedQuicPackets.isEmpty()) {
+            if (getReceivedQuicPackets() == null || getReceivedQuicPackets().isEmpty()) {
+                return false;
+            }
+            boolean receivedAllQuicPackets = true;
+            for (QuicPacket packet : expectedQuicPackets) {
+                boolean receivedThisPacket = false;
+                for (QuicPacket receivedPacket : getReceivedQuicPackets()) {
+                    if (packet.getClass().equals(receivedPacket.getClass())) {
+                        receivedThisPacket = true;
+                        break;
+                    }
+                }
+                receivedAllQuicPackets &= receivedThisPacket;
+            }
+            if (!receivedAllQuicPackets) return false;
+        }
+
+        if (expectedQuicFrames != null && !expectedQuicFrames.isEmpty()) {
+            if (getReceivedQuicFrames() == null || getReceivedQuicFrames().isEmpty()) {
+                return false;
+            }
+            boolean receivedAllQuicFrames = true;
+            for (QuicFrame frame : expectedQuicFrames) {
+                boolean receivedThisFrame = false;
+                for (QuicFrame receivedFrame : getReceivedQuicFrames()) {
+                    if (frame.getClass().equals(receivedFrame.getClass())) {
+                        receivedThisFrame = true;
+                        break;
+                    }
+                }
+                receivedAllQuicFrames &= receivedThisFrame;
+            }
+            if (!receivedAllQuicFrames) return false;
+        }
+
+        return true;
     }
 }

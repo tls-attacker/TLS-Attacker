@@ -58,6 +58,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private final Map<QuicPacketType, ArrayList<QuicPacket>> receivedPacketBuffer = new HashMap<>();
 
+    private boolean temporarilyDisabledAcks = false;
+
     public QuicPacketLayer(Context context) {
         super(ImplementedLayers.QUICPACKET);
         this.context = context;
@@ -565,6 +567,10 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     @Override
     public void sendAck(byte[] data) {
+        if (temporarilyDisabledAcks) {
+            return;
+        }
+
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         try {
             if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
@@ -607,5 +613,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             }
         }
         return false;
+    }
+
+    public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
+        this.temporarilyDisabledAcks = temporarilyDisabledAcks;
     }
 }
