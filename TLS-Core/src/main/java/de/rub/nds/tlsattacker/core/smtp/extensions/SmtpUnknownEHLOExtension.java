@@ -9,6 +9,10 @@
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 public class SmtpUnknownEHLOExtension extends SmtpServiceExtension {
+    public SmtpUnknownEHLOExtension() {
+        this("", "");
+    }
+
     public SmtpUnknownEHLOExtension(String ehloKeyword, String parameters) {
         super(ehloKeyword, parameters);
     }

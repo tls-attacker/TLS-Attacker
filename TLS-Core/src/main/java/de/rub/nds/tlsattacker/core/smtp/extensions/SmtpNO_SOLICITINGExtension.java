@@ -12,6 +12,10 @@ public class SmtpNO_SOLICITINGExtension extends SmtpServiceExtension {
     // TODO: Implement, so far this just enables SmtpEHLOReplyParser to read it
     private String parameters;
 
+    public SmtpNO_SOLICITINGExtension() {
+        this("");
+    }
+
     public SmtpNO_SOLICITINGExtension(String parameters) {
         super("NO-SOLICITING");
         this.parameters = parameters;
