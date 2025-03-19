@@ -78,6 +78,12 @@ public abstract class ProtocolLayer<
         this.lowerLayer = lowerLayer;
     }
 
+    /**
+     * Sends all data containers that are configured for this layer. This configuration is done
+     *
+     * @return
+     * @throws IOException
+     */
     public abstract LayerProcessingResult sendConfiguration() throws IOException;
 
     public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData)
