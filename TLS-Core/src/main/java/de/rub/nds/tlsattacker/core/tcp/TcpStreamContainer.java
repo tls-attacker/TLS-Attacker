@@ -12,8 +12,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TcpStreamContainer implements DataContainer {
 
     private transient byte[] configData;

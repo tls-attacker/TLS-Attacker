@@ -8,8 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -18,19 +24,28 @@ import java.util.StringJoiner;
  *
  * @param <Container>
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LayerProcessingResult<Container extends DataContainer> {
 
     /** List of containers that were sent or received */
+    @XmlAnyElement(lax = true)
     private List<Container> usedContainers;
 
     /** Type of layer that produced this result. */
+    @XmlAnyElement(lax = true)
     private LayerType layerType;
 
     /** Whether the layer could send or receive bytes as planned. */
     private boolean executedAsPlanned;
 
     // holds any bytes which are unread in the layer after parsing
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] unreadBytes;
+
+    private LayerProcessingResult() {
+        // JAXB needs this
+    }
 
     public LayerProcessingResult(
             List<Container> usedContainers,
