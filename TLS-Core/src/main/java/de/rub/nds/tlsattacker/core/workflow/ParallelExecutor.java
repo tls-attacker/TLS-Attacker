@@ -82,7 +82,7 @@ public class ParallelExecutor {
         this.size = size;
     }
 
-    private Future<ITask> addTask(TlsTask task) {
+    protected Future<ITask> addTask(TlsTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
@@ -104,7 +104,7 @@ public class ParallelExecutor {
         return executorService.submit(task);
     }
 
-    private Future<ITask> addStateTask(State state) {
+    protected Future<ITask> addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
