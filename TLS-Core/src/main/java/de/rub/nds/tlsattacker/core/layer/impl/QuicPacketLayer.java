@@ -350,8 +350,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             case RETRY_PACKET:
                 throw new UnsupportedOperationException("Retry Packet - Not supported yet.");
             case VERSION_NEGOTIATION:
-                throw new UnsupportedOperationException(
-                        "Version Negotiation Packet - Not supported yet.");
+                return writeVersionNegotiation((VersionNegotiationPacket) packet);
             case UNKNOWN:
                 throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
             default:
@@ -388,6 +387,11 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         encryptor.encryptZeroRTTPacket(packet);
         packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionZeroRTT(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeVersionNegotiation(VersionNegotiationPacket packet) {
+        packet.getPreparator(context).prepare();
         return packet.getSerializer(context).serialize();
     }
 

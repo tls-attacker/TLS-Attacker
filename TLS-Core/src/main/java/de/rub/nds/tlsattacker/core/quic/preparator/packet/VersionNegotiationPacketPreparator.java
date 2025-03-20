@@ -21,6 +21,5 @@ public class VersionNegotiationPacketPreparator
     @Override
     public void prepare() {
         // TODO
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

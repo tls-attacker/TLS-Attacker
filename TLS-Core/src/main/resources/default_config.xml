@@ -1376,6 +1376,7 @@
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
+    <quicDoNotPad>false</quicDoNotPad>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>
