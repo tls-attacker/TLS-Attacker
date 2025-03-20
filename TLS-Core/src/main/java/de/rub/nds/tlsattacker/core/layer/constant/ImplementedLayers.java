@@ -17,8 +17,10 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /** Holds all implemented layers of the TLS-Core, not limited to any layer of the ISO stack */
+@XmlRootElement
 public enum ImplementedLayers implements LayerType {
     TCP(TcpStreamContainer.class),
     UDP(UdpDataPacket.class),
