@@ -29,13 +29,13 @@ public abstract class LongHeaderPacketPreparator<T extends LongHeaderPacket>
         prepareQuicPacket();
     }
 
-    private void prepareSourceConnectionIdLength() {
+    protected void prepareSourceConnectionIdLength() {
         packet.setSourceConnectionIdLength((byte) packet.getSourceConnectionId().getValue().length);
         LOGGER.debug(
                 "Source Connection ID Length: {}", packet.getSourceConnectionIdLength().getValue());
     }
 
-    private void prepareSourceConnectionId() {
+    protected void prepareSourceConnectionId() {
         packet.setSourceConnectionId(context.getSourceConnectionId());
         LOGGER.debug("Source Connection ID: {}", packet.getSourceConnectionId().getValue());
     }

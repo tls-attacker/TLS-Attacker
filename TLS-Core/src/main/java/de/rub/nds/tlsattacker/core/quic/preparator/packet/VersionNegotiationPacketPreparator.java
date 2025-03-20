@@ -20,6 +20,9 @@ public class VersionNegotiationPacketPreparator
 
     @Override
     public void prepare() {
-        // TODO
+        prepareSourceConnectionId();
+        prepareSourceConnectionIdLength();
+        prepareDestinationConnectionId();
+        prepareDestinationConnectionIdLength();
     }
 }

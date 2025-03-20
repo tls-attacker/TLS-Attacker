@@ -64,13 +64,13 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
         LOGGER.debug("Unprotected Payload: {}", packet.getUnprotectedPayload().getValue());
     }
 
-    private void prepareDestinationConnectionId() {
+    protected void prepareDestinationConnectionId() {
         packet.setDestinationConnectionId(context.getDestinationConnectionId());
         LOGGER.debug(
                 "Destination Connection ID: {}", packet.getDestinationConnectionId().getValue());
     }
 
-    private void prepareDestinationConnectionIdLength() {
+    protected void prepareDestinationConnectionIdLength() {
         packet.setDestinationConnectionIdLength(
                 (byte) packet.getDestinationConnectionId().getValue().length);
         LOGGER.debug(
