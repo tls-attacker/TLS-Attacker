@@ -90,8 +90,10 @@ public class TlsContext extends LayerContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
+
     /** shared key established during the handshake */
     private byte[] clientApplicationTrafficSecret;
+
     /** shared key established during the handshake */
     private byte[] serverApplicationTrafficSecret;
 
@@ -221,8 +223,10 @@ public class TlsContext extends LayerContext {
 
     /** The renegotiation info of the RenegotiationInfo extension. */
     private byte[] renegotiationInfo;
+
     /** The requestContext from the CertificateRequest message in TLS 1.3. */
     private byte[] certificateRequestContext;
+
     /** Timestamp of the SignedCertificateTimestamp extension. */
     private byte[] signedCertificateTimestamp;
 

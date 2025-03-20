@@ -97,9 +97,9 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
                 parseMaximumNameLength(echConfig);
                 parseExtensions(echConfig);
                 break;
-                // this case is slightly broken in the RFC, the same version byte refers to two
-                // different EchConfig versions
-                // we interpret it as the newer one here
+            // this case is slightly broken in the RFC, the same version byte refers to two
+            // different EchConfig versions
+            // we interpret it as the newer one here
             case DRAFT_FF0A:
             case DRAFT_FF0B:
             case DRAFT_FF0C:

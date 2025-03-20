@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        JDK_TOOL_NAME = 'JDK 11'
+        JDK_TOOL_NAME = 'JDK 21'
         MAVEN_TOOL_NAME = 'Maven 3.9.9'
     }
 

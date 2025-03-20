@@ -299,7 +299,13 @@ public enum SignatureAndHashAlgorithm {
         if (isRsaPssRsae()) {
             return publicKeyType == X509PublicKeyType.RSA;
         } else {
-            return publicKeyType.canBeUsedWithSignatureAlgorithm(this.getSignatureAlgorithm());
+            try {
+                boolean usable =
+                        publicKeyType.canBeUsedWithSignatureAlgorithm(this.getSignatureAlgorithm());
+                return usable;
+            } catch (UnsupportedOperationException ex) {
+                return false;
+            }
         }
     }
 }
