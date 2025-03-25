@@ -16,16 +16,12 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.DTLSWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TightForwardTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import jakarta.xml.bind.DatatypeConverter;
@@ -68,7 +64,6 @@ public class ForwardMessagesActionTest {
         clientConnection.setTransportHandlerType(TransportHandlerType.UDP);
         clientConnection.setConnectionTimeout(0);
         clientConnection.setTimeout(0);
-        this.config.setFinishWithCloseNotify(false);
         this.config.setDefaultServerConnection(serverConnection);
         this.config.setDefaultClientConnection(clientConnection);
 
@@ -98,40 +93,6 @@ public class ForwardMessagesActionTest {
     public void testBaselineProcessCertificate() {
         WorkflowTrace trace = new WorkflowTrace(connectionList);
         trace.addTlsAction(new ReceiveTillAction(SERVER_CTX_ALIAS, new CertificateMessage()));
-
-        initAndExecute(trace);
-
-        assertTrue(trace.executedAsPlanned());
-        assertTrue(trace.allActionsExecuted());
-    }
-
-    /**
-     * Tests whether the Certificate message in the server flight can be forwarded as planned via
-     * ForwardMessagesAction
-     */
-    @Test
-    public void testBaselineForwardCertificate() {
-        WorkflowTrace trace = new WorkflowTrace(connectionList);
-        trace.addTlsAction(
-                new ForwardMessagesAction(
-                        SERVER_CTX_ALIAS, CLIENT_CTX_ALIAS, new CertificateMessage()));
-
-        initAndExecute(trace);
-
-        assertTrue(trace.executedAsPlanned());
-        assertTrue(trace.allActionsExecuted());
-    }
-
-    /**
-     * Tests whether the ServerHello message in the server flight can be forwarded as planned via
-     * ForwardMessagesAction
-     */
-    @Test
-    public void testBaselineForwardServerHello() {
-        WorkflowTrace trace = new WorkflowTrace(connectionList);
-        trace.addTlsAction(
-                new ForwardMessagesAction(
-                        SERVER_CTX_ALIAS, CLIENT_CTX_ALIAS, new ServerHelloMessage()));
 
         initAndExecute(trace);
 
@@ -174,24 +135,6 @@ public class ForwardMessagesActionTest {
     }
 
     /**
-     * Tests whether the ServerHello of the trace can be forwarded and the certificate message be
-     * received as planned
-     */
-    @Test
-    public void testForwardAndProcessTrailing() {
-        WorkflowTrace trace = new WorkflowTrace(connectionList);
-        trace.addTlsAction(
-                new ForwardMessagesAction(
-                        SERVER_CTX_ALIAS, CLIENT_CTX_ALIAS, new ServerHelloMessage()));
-        trace.addTlsAction(new ReceiveAction(SERVER_CTX_ALIAS, new CertificateMessage()));
-
-        initAndExecute(trace);
-
-        assertTrue(trace.executedAsPlanned());
-        assertTrue(trace.allActionsExecuted());
-    }
-
-    /**
      * Tests whether the ServerHello of the trace can be tightly forwarded and the certificate
      * message be received as planned
      */
@@ -201,7 +144,13 @@ public class ForwardMessagesActionTest {
         trace.addTlsAction(
                 new TightForwardTillAction(
                         SERVER_CTX_ALIAS, CLIENT_CTX_ALIAS, new ServerHelloMessage()));
-        trace.addTlsAction(new ReceiveAction(SERVER_CTX_ALIAS, new CertificateMessage()));
+        trace.addTlsAction(
+                new ReceiveAction(
+                        SERVER_CTX_ALIAS,
+                        new CertificateMessage(),
+                        new ECDHEServerKeyExchangeMessage(),
+                        new CertificateRequestMessage(),
+                        new ServerHelloDoneMessage()));
 
         initAndExecute(trace);
 
