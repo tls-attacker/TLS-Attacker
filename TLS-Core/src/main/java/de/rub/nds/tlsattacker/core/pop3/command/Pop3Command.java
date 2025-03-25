@@ -66,6 +66,15 @@ public class Pop3Command extends Pop3Message {
         return "POP3_CMD";
     }
 
+    @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName()
+                + " ("
+                + keyword
+                + (arguments != null ? " " + arguments : "")
+                + ")";
+    }
+
     public String getKeyword() {
         return keyword;
     }

@@ -94,7 +94,12 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getReplyCode())
+                .append(" ")
+                .append(SmtpMappingUtil.getMatchingCommand(this).getVerb())
+                .append("Reply");
+        return sb.toString();
     }
 
     public void setReplyCode(Integer replyCode) {

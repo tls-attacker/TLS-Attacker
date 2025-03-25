@@ -8,4 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-public class Pop3UnknownCommand extends Pop3Command {}
+public class Pop3UnknownCommand extends Pop3Command {
+    private static final String commandName = "UNKNOWN";
+
+    public Pop3UnknownCommand() {
+        super(commandName);
+    }
+
+}

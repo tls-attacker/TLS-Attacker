@@ -9,12 +9,14 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3ReplyHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3ReplyPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3ReplySerializer;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -74,7 +76,12 @@ public class Pop3Reply extends Pop3Message {
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getStatusIndicator())
+                .append(" ")
+                .append(Pop3MappingUtil.getMatchingCommand(this).getKeyword())
+                .append("Reply");
+        return sb.toString();
     }
 
     @Override
