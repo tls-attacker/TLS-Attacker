@@ -183,7 +183,7 @@ public class LayerStack {
 
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
-            ProtocolLayer layer = getLayerList().get(i);
+            ProtocolLayer<?, ?> layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null
                     && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)
                     && !layer.executedAsPlanned()) {
@@ -209,14 +209,14 @@ public class LayerStack {
      */
     private ProtocolLayer getTopConfiguredLayer() {
         for (int i = 0; i < getLayerList().size(); i++) {
-            ProtocolLayer layer = getLayerList().get(i);
+            ProtocolLayer<?, ?> layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null
                     && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)) {
                 return layer;
             }
         }
         StringBuilder debugInformation = new StringBuilder();
-        for (ProtocolLayer layer : getLayerList()) {
+        for (ProtocolLayer<?, ?> layer : getLayerList()) {
             debugInformation.append(layer.getLayerType());
             debugInformation.append(" ");
             debugInformation.append(layer.getLayerConfiguration());

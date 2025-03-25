@@ -122,8 +122,16 @@ public abstract class ProtocolLayer<
     public void clear() {
         producedDataContainers = new LinkedList<>();
         layerConfiguration = null;
-        currentInputStream = null;
-        nextInputStream = null;
+        try {
+            if (currentInputStream != null && currentInputStream.available() == 0) {
+                currentInputStream = null;
+            }
+            if (nextInputStream != null && nextInputStream.available() == 0) {
+                nextInputStream = null;
+            }
+        } catch (IOException e) {
+            LOGGER.error("Could not check input stream status", e);
+        }
     }
 
     protected void addProducedContainer(Container container) {
