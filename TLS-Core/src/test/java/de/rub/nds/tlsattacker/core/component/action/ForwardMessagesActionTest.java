@@ -35,7 +35,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 /** Component test that covers forward actions in fragmented DTLS */
-public class ForwardMessagesActionCT {
+public class ForwardMessagesActionTest {
 
     private static final byte[] FRAGMENTED_DTLS_SERVER_FLIGHT =
             DatatypeConverter.parseHexBinary(
@@ -50,7 +50,7 @@ public class ForwardMessagesActionCT {
 
     private final List<AliasedConnection> connectionList;
 
-    public ForwardMessagesActionCT() {
+    public ForwardMessagesActionTest() {
         Security.addProvider(new BouncyCastleProvider());
         this.config = new Config();
         this.config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
