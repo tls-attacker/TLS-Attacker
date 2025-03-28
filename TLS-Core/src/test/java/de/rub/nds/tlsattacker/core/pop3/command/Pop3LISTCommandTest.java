@@ -37,7 +37,7 @@ public class Pop3LISTCommandTest {
 
         assertEquals(listCommand.getCommandName(), "LIST");
         assertFalse(listCommand.hasMessageNumber());
-        assertEquals(listCommand.getMessageNumber(), -1);
+        assertNull(listCommand.getMessageNumber());
     }
 
     @Test
