@@ -77,8 +77,9 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
         try {
             ((Pop3MessageNumber) command).setMessageNumber(Integer.parseInt(possibleMessageNumber));
         } catch (NumberFormatException ex) {
-            throw new ParserException(
-                    "Expected numeric message number but got: " + possibleMessageNumber);
+            LOGGER.warn(
+                    "Expected numeric message number but got: [ " + possibleMessageNumber + " ]."
+            );
         }
     }
 }
