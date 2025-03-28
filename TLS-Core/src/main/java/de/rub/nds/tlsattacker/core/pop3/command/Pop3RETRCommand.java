@@ -39,11 +39,6 @@ public class Pop3RETRCommand extends Pop3Command implements Pop3MessageNumber {
     }
 
     @Override
-    public String getCommandName() {
-        return commandName;
-    }
-
-    @Override
     public Pop3CommandParser<Pop3RETRCommand> getParser(Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }

@@ -36,7 +36,7 @@ public class Pop3DELECommandTest {
         parser.parse(deleCommand);
 
         assertEquals(deleCommand.getMessageNumber(), 1);
-        assertEquals(deleCommand.getCommandName(), "DELE");
+        assertEquals(deleCommand.getKeyword(), "DELE");
     }
 
     @Test

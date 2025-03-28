@@ -35,7 +35,7 @@ public class Pop3NOOPCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noopCommand);
 
-        assertEquals(noopCommand.getCommandName(), "NOOP");
+        assertEquals(noopCommand.getKeyword(), "NOOP");
     }
 
     @Test

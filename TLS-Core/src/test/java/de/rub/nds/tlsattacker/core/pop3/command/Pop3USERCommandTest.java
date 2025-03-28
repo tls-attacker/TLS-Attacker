@@ -36,7 +36,7 @@ public class Pop3USERCommandTest {
         parser.parse(userCommand);
 
         assertEquals(userCommand.getUsername(), "juan.fernandez");
-        assertEquals(userCommand.getCommandName(), "USER");
+        assertEquals(userCommand.getKeyword(), "USER");
     }
 
     @Test

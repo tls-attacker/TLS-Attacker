@@ -143,7 +143,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                         continue;
                     }
                     Pop3Command trueCommand =
-                            Pop3MappingUtil.getCommandFromKeyword(pop3Command.getCommandName());
+                            Pop3MappingUtil.getCommandFromKeyword(pop3Command.getKeyword());
                     // this will be the actual parsing of the command
                     HintedLayerInputStream pop3CommandStream =
                             new HintedLayerInputStream(new Pop3LayerHint(), this);

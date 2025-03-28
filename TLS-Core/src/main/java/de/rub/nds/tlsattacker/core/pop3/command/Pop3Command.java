@@ -90,9 +90,4 @@ public class Pop3Command extends Pop3Message {
     public void setArguments(String arguments) {
         this.arguments = arguments;
     }
-
-    // To be overwritten by subclass:
-    public String getCommandName() {
-        return "";
-    }
 }

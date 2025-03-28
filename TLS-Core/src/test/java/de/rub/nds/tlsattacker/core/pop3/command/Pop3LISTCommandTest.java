@@ -35,7 +35,7 @@ public class Pop3LISTCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(listCommand);
 
-        assertEquals(listCommand.getCommandName(), "LIST");
+        assertEquals(listCommand.getKeyword(), "LIST");
         assertFalse(listCommand.hasMessageNumber());
         assertNull(listCommand.getMessageNumber());
     }
@@ -52,7 +52,7 @@ public class Pop3LISTCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(listCommand);
 
-        assertEquals(listCommand.getCommandName(), "LIST");
+        assertEquals(listCommand.getKeyword(), "LIST");
         assertTrue(listCommand.hasMessageNumber());
         assertEquals(listCommand.getMessageNumber(), 1);
     }

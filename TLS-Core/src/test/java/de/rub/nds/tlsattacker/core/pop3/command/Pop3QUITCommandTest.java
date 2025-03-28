@@ -35,7 +35,7 @@ public class Pop3QUITCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitCommand);
 
-        assertEquals(quitCommand.getCommandName(), "QUIT");
+        assertEquals(quitCommand.getKeyword(), "QUIT");
     }
 
     @Test

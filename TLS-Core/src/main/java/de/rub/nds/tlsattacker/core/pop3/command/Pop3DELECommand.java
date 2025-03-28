@@ -46,9 +46,4 @@ public class Pop3DELECommand extends Pop3Command implements Pop3MessageNumber {
     public Pop3DELECommandPreparator getPreparator(Pop3Context context) {
         return new Pop3DELECommandPreparator(context, this);
     }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
-    }
 }

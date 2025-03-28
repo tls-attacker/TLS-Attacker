@@ -31,9 +31,4 @@ public class Pop3QUITCommand extends Pop3Command {
     public Pop3QUITCommandPreparator getPreparator(Pop3Context context) {
         return new Pop3QUITCommandPreparator(context, this);
     }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
-    }
 }

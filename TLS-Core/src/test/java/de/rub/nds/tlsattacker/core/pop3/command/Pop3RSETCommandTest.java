@@ -35,7 +35,7 @@ public class Pop3RSETCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(rsetCommand);
 
-        assertEquals(rsetCommand.getCommandName(), "RSET");
+        assertEquals(rsetCommand.getKeyword(), "RSET");
     }
 
     @Test

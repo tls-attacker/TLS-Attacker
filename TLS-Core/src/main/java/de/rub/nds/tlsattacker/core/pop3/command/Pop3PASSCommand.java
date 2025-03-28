@@ -38,11 +38,6 @@ public class Pop3PASSCommand extends Pop3Command {
     }
 
     @Override
-    public String getCommandName() {
-        return commandName;
-    }
-
-    @Override
     public Pop3PASSCommandParser getParser(Pop3Context context, InputStream stream) {
         return new Pop3PASSCommandParser(stream);
     }

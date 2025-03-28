@@ -35,7 +35,7 @@ public class Pop3STATCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(statCommand);
 
-        assertEquals(statCommand.getCommandName(), "STAT");
+        assertEquals(statCommand.getKeyword(), "STAT");
     }
 
     @Test
