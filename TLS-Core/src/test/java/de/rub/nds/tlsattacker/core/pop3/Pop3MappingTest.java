@@ -31,7 +31,7 @@ public class Pop3MappingTest {
      */
     @Test
     public void testEveryCommandIsMapped() {
-        // Use Reflections to find all subclasses of SmtpCommand
+        // Use Reflections to find all subclasses of Pop3Command
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.pop3");
         Set<Class<? extends Pop3Command>> commandClasses =
                 reflections.getSubTypesOf(Pop3Command.class);
@@ -71,7 +71,7 @@ public class Pop3MappingTest {
      */
     @Test
     public void testEveryReplyIsMapped() {
-        // Use Reflections to find all subclasses of SmtpCommand
+        // Use Reflections to find all subclasses of Pop3Command
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.pop3");
         Set<Class<? extends Pop3Reply>> replyClasses = reflections.getSubTypesOf(Pop3Reply.class);
 

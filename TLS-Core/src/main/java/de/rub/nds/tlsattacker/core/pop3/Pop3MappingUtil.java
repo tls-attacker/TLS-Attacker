@@ -79,8 +79,8 @@ public class Pop3MappingUtil {
         }
     }
 
-    public static Pop3Command getCommandFromCommandName(String commandName) {
-        switch (commandName) {
+    public static Pop3Command getCommandFromKeyword(String keyword) {
+        switch (keyword) {
             case "USER":
                 return new Pop3USERCommand();
             case "PASS":

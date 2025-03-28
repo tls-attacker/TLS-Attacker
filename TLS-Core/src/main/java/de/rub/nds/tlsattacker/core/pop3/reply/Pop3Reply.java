@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3ReplyPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3ReplySerializer;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
