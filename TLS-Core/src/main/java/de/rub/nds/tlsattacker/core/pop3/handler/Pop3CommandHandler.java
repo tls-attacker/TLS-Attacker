@@ -23,5 +23,13 @@ public class Pop3CommandHandler<CommandT extends Pop3Command> extends Pop3Messag
         adjustContextSpecific(pop3Command);
     }
 
+    /**
+     * Adjusts the {@link Pop3Context} with the information from the command.
+     *
+     * <p>Subclasses should override this method to update the {@link Pop3Context} with the
+     * information from the command.
+     *
+     * @param pop3Command the command to process
+     */
     public void adjustContextSpecific(CommandT pop3Command) {}
 }
