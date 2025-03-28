@@ -33,14 +33,7 @@ public class Pop3LISTReply extends Pop3Reply {
 
     @Override
     public Pop3LISTReplyParser getParser(Pop3Context context, InputStream stream) {
-        // Assumption based on RFC encouragements: "LIST [messageNumber]" will always return a
-        // single line
-        Pop3Command lastCommand = context.getLastCommand();
-        this.replyIsSingleLine =
-                lastCommand instanceof Pop3LISTCommand
-                        && ((Pop3LISTCommand) lastCommand).hasMessageNumber();
-
-        return new Pop3LISTReplyParser(stream);
+        return new Pop3LISTReplyParser(context, stream);
     }
 
     public boolean isSingleLine() {

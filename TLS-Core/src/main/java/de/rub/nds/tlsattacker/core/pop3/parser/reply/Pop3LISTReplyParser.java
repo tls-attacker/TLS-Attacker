@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3LISTReply;
 import java.io.*;
 import java.util.LinkedList;
@@ -17,9 +20,11 @@ import java.util.List;
 
 public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
 
-    public Pop3LISTReplyParser(InputStream stream) {
+    Pop3Context pop3Context;
 
+    public Pop3LISTReplyParser(Pop3Context pop3Context, InputStream stream) {
         super(new BufferedInputStream(stream));
+        this.pop3Context = pop3Context;
     }
 
     @Override
@@ -28,7 +33,7 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
         parseReplyIndicator(reply, firstLine);
         parseHumanReadableMessage(reply, firstLine);
 
-        if (reply.isSingleLine()) return;
+        if (this.replyIsSingleLine()) return;
 
         List<String> lines = new LinkedList<>();
         if (reply.getStatusIndicator().equals("+OK")) {
@@ -52,6 +57,13 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
                 reply.addMessageSize(toInteger(parts[1]));
             }
         }
+    }
+
+    private boolean replyIsSingleLine() {
+        // Assumption based on RFC encouragements: "LIST [messageNumber]" will always return a
+        // single line
+        Pop3Command lastCommand = this.pop3Context.getLastCommand();
+        return lastCommand instanceof Pop3LISTCommand && ((Pop3LISTCommand) lastCommand).hasMessageNumber();
     }
 
     private boolean isEndOfLIST(String line) {
