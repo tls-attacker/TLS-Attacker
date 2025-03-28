@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3DELEReplyParser;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -39,14 +39,14 @@ class Pop3DELEReplyTest {
         String message = "-ERR message 2 already deleted\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Pop3DELEReply del = new Pop3DELEReply();
-        Pop3DELEReplyParser parser =
-                del.getParser(
+        Pop3DELEReply deleReply = new Pop3DELEReply();
+        Pop3GenericReplyParser<Pop3DELEReply> parser =
+                deleReply.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(del);
+        parser.parse(deleReply);
 
-        assertEquals("-ERR", del.getStatusIndicator());
-        assertEquals("message 2 already deleted", del.getHumanReadableMessage());
+        assertEquals("-ERR", deleReply.getStatusIndicator());
+        assertEquals("message 2 already deleted", deleReply.getHumanReadableMessage());
     }
 }
