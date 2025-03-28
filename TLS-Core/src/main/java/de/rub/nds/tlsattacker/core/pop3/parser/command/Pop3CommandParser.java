@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3MessageNumber;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
@@ -78,8 +77,7 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
             ((Pop3MessageNumber) command).setMessageNumber(Integer.parseInt(possibleMessageNumber));
         } catch (NumberFormatException ex) {
             LOGGER.warn(
-                    "Expected numeric message number but got: [ " + possibleMessageNumber + " ]."
-            );
+                    "Expected numeric message number but got: [ " + possibleMessageNumber + " ].");
         }
     }
 }

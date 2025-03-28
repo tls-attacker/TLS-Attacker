@@ -63,7 +63,8 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
         // Assumption based on RFC encouragements: "LIST [messageNumber]" will always return a
         // single line
         Pop3Command lastCommand = this.pop3Context.getLastCommand();
-        return lastCommand instanceof Pop3LISTCommand && ((Pop3LISTCommand) lastCommand).hasMessageNumber();
+        return lastCommand instanceof Pop3LISTCommand
+                && ((Pop3LISTCommand) lastCommand).hasMessageNumber();
     }
 
     private boolean isEndOfLIST(String line) {

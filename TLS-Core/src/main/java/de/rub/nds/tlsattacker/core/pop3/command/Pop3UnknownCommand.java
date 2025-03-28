@@ -14,5 +14,4 @@ public class Pop3UnknownCommand extends Pop3Command {
     public Pop3UnknownCommand() {
         super(commandName);
     }
-
 }

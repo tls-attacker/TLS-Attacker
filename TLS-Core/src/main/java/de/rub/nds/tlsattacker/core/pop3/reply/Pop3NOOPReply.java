@@ -20,7 +20,8 @@ public class Pop3NOOPReply extends Pop3Reply {
         super();
     }
 
-    public Pop3GenericReplyParser<Pop3NOOPReply> getParser(Pop3Context context, InputStream stream) {
+    public Pop3GenericReplyParser<Pop3NOOPReply> getParser(
+            Pop3Context context, InputStream stream) {
         return new Pop3GenericReplyParser<>(stream);
     }
 }

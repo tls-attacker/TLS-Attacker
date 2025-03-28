@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
 import de.rub.nds.tlsattacker.core.state.Context;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +21,16 @@ public class Pop3Context extends LayerContext {
 
     private boolean greetingReceived = false;
 
-    /** Tracks whether client has successfully authenticated themselves. **/
+    /** Tracks whether client has successfully authenticated themselves. * */
     private boolean clientIsAuthenticated = false;
 
-    /** Stores all messages that a client has marked for deletion with the DELE command. **/
+    /** Stores all messages that a client has marked for deletion with the DELE command. * */
     private List<Integer> messagesMarkedForDeletion = new ArrayList<>();
 
-    /** Stores all messages that a client has retrieved with the RETR command. **/
+    /** Stores all messages that a client has retrieved with the RETR command. * */
     private List<Integer> retrievedMessages = new ArrayList<>();
 
-    /** Tracks whether client has quit the connection with the QUIT command. **/
+    /** Tracks whether client has quit the connection with the QUIT command. * */
     private boolean clientQuitConnection = false;
 
     public Pop3Context(Context context) {

@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3LISTReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;

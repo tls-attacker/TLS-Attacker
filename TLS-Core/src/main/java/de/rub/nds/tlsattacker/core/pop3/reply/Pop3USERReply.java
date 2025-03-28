@@ -21,7 +21,8 @@ public class Pop3USERReply extends Pop3Reply {
     }
 
     @Override
-    public Pop3GenericReplyParser<Pop3USERReply> getParser(Pop3Context context, InputStream stream) {
+    public Pop3GenericReplyParser<Pop3USERReply> getParser(
+            Pop3Context context, InputStream stream) {
         return new Pop3GenericReplyParser<>(stream);
     }
 }
