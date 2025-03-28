@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.smtp.handler;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpDATAContentReply;
 
-@Deprecated
 public class SmtpDATAContentReplyHandler extends SmtpReplyHandler<SmtpDATAContentReply> {
     public SmtpDATAContentReplyHandler(SmtpContext smtpContext) {
         super(smtpContext);

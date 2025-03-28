@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpDATAContentReplyHandler;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -17,4 +20,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * @see SmtpReply
  */
 @XmlRootElement
-public class SmtpDATAContentReply extends SmtpReply {}
+public class SmtpDATAContentReply extends SmtpReply {
+    @Override
+    public SmtpReplyHandler<SmtpDATAContentReply> getHandler(SmtpContext smtpContext) {
+        return new SmtpDATAContentReplyHandler(smtpContext);
+    }
+}
