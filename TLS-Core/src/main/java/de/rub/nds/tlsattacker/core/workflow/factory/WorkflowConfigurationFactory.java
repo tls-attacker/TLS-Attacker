@@ -647,8 +647,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.SERVER,
-                            new Pop3InitialGreeting())
-            );
+                            new Pop3InitialGreeting()));
 
             appendPop3CommandAndReplyActions(connection, trace, new Pop3USERCommand());
             appendPop3CommandAndReplyActions(connection, trace, new Pop3PASSCommand());
