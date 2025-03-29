@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.smtp.reply.*;
 public class SmtpMappingUtil {
 
     /**
-     * Given a command return an instance of the Reply object expected fpr ot. Raises an exception
+     * Given a command return an instance of the Reply object expected for it. Raises an exception
      * when a command is not implemented.
      *
      * @param command The command for which to get the expected reply
