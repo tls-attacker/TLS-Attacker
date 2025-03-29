@@ -64,10 +64,10 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
         int replyCode = this.toInteger(line.substring(0, 3));
 
         // warning if status code is already set but codes are inconsistent:
-        try {
-            if (replyT.getReplyCode() != replyCode) replyCodeWarning(replyCode, line);
-        } catch (NullPointerException ignored) {
-        } // case: reply code not initialized yet
+        // try {
+        //    if (replyT.getReplyCode() != replyCode) replyCodeWarning(replyCode, line);
+        // } catch (NullPointerException ignored) {
+        // } // case: reply code not initialized yet
 
         replyT.setReplyCode(replyCode);
     }

@@ -29,7 +29,7 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected Integer replyCode = 900; // some invalid value to indicate that it was not set
+    protected Integer replyCode = 0; // some invalid value to indicate that it was not set
     //    protected String humanReadableMessage;
     protected List<String> humanReadableMessages = new ArrayList<>();
 
@@ -120,7 +120,8 @@ public class SmtpReply extends SmtpMessage {
         String CRLF = "\r\n";
 
         StringBuilder sb = new StringBuilder();
-        String replyCodeString = this.replyCode != null ? String.valueOf(this.replyCode) : "";
+        String replyCodeString =
+                this.replyCode != null ? String.format("%03d", this.replyCode) : "";
         String replyCodePrefix = this.replyCode != null ? replyCodeString + DASH : "";
 
         for (int i = 0; i < this.humanReadableMessages.size() - 1; i++) {
