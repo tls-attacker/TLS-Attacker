@@ -689,6 +689,8 @@ public class WorkflowConfigurationFactory {
                             new SmtpInitialGreeting()));
         }
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCredentialsCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());
