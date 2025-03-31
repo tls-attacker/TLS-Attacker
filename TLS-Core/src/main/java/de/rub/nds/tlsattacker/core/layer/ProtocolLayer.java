@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  * itself. It can send messages using the layer below and forward received messages to the layer
  * above.
  *
- * @param <Hint> Some layers need a hint which message they should send or receive.
+ * @param <Hint> Some layers need a hint which message they should send or receive across layers (see {@link de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint} for example).
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
@@ -78,8 +78,30 @@ public abstract class ProtocolLayer<
         this.lowerLayer = lowerLayer;
     }
 
+    /**
+     * Send the data containers specified in the layer configuration to the lower layer.
+     * This usually involves serializing the data containers into the layer's protocol-specific byte sequence and then calling {@link #sendData(LayerProcessingHint, byte[])} of the next lower layer.
+     *
+     *<p> Implementors should look at {@link de.rub.nds.tlsattacker.core.layer.impl.MessageLayer} for reference to see how to implement this method correctly (e.g. using {@link #readDataContainer(DataContainer, LayerContext, InputStream)} and {@link #addProducedContainer(DataContainer)}).
+     *
+     * <p>The layer-specific configurations are created by ActionHelperUtil.</p>
+     * @see de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil
+     * @return LayerProcessingResult Contains information about the used data containers.
+     * @throws IOException Some layers might produce IOExceptions when sending or receiving data over sockets etc.
+     */
     public abstract LayerProcessingResult sendConfiguration() throws IOException;
 
+    /**
+     * Sends byte data through this layer to the lower layer.
+     * This should only be called by the next higher layer's {@link #sendData(LayerProcessingHint, byte[])} or {@link #sendConfiguration()}.
+     *
+     * <p>Note that in TLS-Attacker, layers are not as separate as in the OSI model, so some layers may need to know additional information about the data to send it.
+     * The hint parameter can be used to encapsulate this information.
+     *
+     * @param hint a hint which can encapsulate information about the data to send
+     * @param additionalData the byte data to send
+     * @return LayerProcessingResult Contains information about the used data containers.
+     */
     public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData)
             throws IOException;
 
@@ -210,12 +232,8 @@ public abstract class ProtocolLayer<
     }
 
     public boolean shouldContinueProcessing() {
-        //        LOGGER.trace("Layer:{}", this.layerType);
         if (layerConfiguration != null) {
             if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
-                //                LOGGER.trace(
-                //                        "Should continue processing because of
-                // GenericReceiveLayerConfiguration");
                 return true;
             } else {
                 boolean successRequiresMoreContainers =
@@ -225,14 +243,6 @@ public abstract class ProtocolLayer<
                         (isDataBuffered()
                                 && ((ReceiveLayerConfiguration) layerConfiguration)
                                         .isProcessTrailingContainers());
-                //                LOGGER.trace(
-                //                        "Should continue processing because
-                // successRequiresMoreContainers: {}",
-                //                        successRequiresMoreContainers);
-                //                LOGGER.trace(
-                //                        "Should continue processing because dataIsBuffered: {}",
-                // dataIsBuffered);
-
                 return successRequiresMoreContainers || dataIsBuffered;
             }
         } else {

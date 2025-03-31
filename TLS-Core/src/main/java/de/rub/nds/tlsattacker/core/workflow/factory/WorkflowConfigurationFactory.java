@@ -660,7 +660,7 @@ public class WorkflowConfigurationFactory {
         // dynamic handshake mechanism
         trace.addTlsAction(0, new SendAction(new SmtpSTARTTLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
-        trace.addTlsAction(2, new STARTTLSAction());
+        trace.addTlsAction(2, new StartTLSAction());
 
         // put InitialGreeting back to the front
         List<TlsAction> smtpActions = createSmtpWorkflow().getTlsActions();
