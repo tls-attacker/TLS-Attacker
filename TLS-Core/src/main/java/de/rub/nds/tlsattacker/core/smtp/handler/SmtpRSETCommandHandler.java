@@ -19,6 +19,7 @@ public class SmtpRSETCommandHandler extends SmtpCommandHandler<SmtpRSETCommand> 
 
     /**
      * Clears all buffers in the context.
+     *
      * @param command the command to process
      * @see SmtpContext#resetContext()
      */

@@ -17,7 +17,11 @@ package de.rub.nds.tlsattacker.core.smtp.extensions;
  * NOT offer non-"X"-prefixed keyword values that are not described in a registered extension.
  */
 public class SmtpLocalServiceExtension extends SmtpServiceExtension {
+    public SmtpLocalServiceExtension() {
+        this("X-LOCAL", "");
+    }
+
     public SmtpLocalServiceExtension(String ehloKeyword, String parameters) {
-        super(ehloKeyword);
+        super(ehloKeyword, parameters);
     }
 }

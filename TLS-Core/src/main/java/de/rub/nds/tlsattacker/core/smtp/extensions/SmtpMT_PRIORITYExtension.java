@@ -12,6 +12,10 @@ public class SmtpMT_PRIORITYExtension extends SmtpServiceExtension {
     // TODO: Implement, so far this just enables SmtpEHLOReplyParser to read it
     private String parameter;
 
+    public SmtpMT_PRIORITYExtension() {
+        this("");
+    }
+
     public SmtpMT_PRIORITYExtension(String parameter) {
         super("MT-PRIORITY");
         this.parameter = parameter;

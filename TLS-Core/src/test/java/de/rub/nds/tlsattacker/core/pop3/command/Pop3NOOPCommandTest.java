@@ -27,7 +27,7 @@ public class Pop3NOOPCommandTest {
     void testParse() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3NOOPCommand noopCommand = new Pop3NOOPCommand();
-        String message = "DELE 1\r\n";
+        String message = "NOOP\r\n";
 
         Pop3CommandParser<Pop3NOOPCommand> parser =
                 noopCommand.getParser(
@@ -35,7 +35,7 @@ public class Pop3NOOPCommandTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noopCommand);
 
-        assertEquals(noopCommand.getCommandName(), "NOOP");
+        assertEquals("NOOP", noopCommand.getKeyword());
     }
 
     @Test

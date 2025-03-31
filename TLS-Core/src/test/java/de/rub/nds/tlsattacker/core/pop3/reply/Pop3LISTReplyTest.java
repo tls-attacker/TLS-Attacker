@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3LISTReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -44,6 +45,7 @@ class Pop3LISTReplyTest {
         String message = "+OK displaying messages\r\n1 120\r\n2 350\r\n.\r\n";
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        context.setLastCommand(new Pop3LISTCommand());
         Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3LISTReplyParser parser =
                 listReply.getParser(
@@ -63,6 +65,7 @@ class Pop3LISTReplyTest {
         String reply = "-ERR no Info\r\n";
         Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        context.setLastCommand(new Pop3LISTCommand(1));
 
         Pop3LISTReplyParser parser =
                 listReply.getParser(
@@ -75,9 +78,10 @@ class Pop3LISTReplyTest {
 
     @Test
     public void parseOKReply() {
-        String reply = "+OK no Info\r\n";
+        String reply = "+OK some info here\r\n";
         Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
+        context.setLastCommand(new Pop3LISTCommand(1));
 
         Pop3LISTReplyParser parser =
                 listReply.getParser(
@@ -85,7 +89,7 @@ class Pop3LISTReplyTest {
 
         assertDoesNotThrow(() -> parser.parse(listReply));
         assertEquals(listReply.getStatusIndicator(), "+OK");
-        assertEquals(listReply.getHumanReadableMessage(), "no Info");
+        assertEquals(listReply.getHumanReadableMessage(), "some info here");
     }
 
     @Test

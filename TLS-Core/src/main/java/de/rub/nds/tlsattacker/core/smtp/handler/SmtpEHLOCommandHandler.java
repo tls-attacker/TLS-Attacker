@@ -17,10 +17,11 @@ public class SmtpEHLOCommandHandler extends SmtpCommandHandler<SmtpEHLOCommand> 
     }
 
     /**
-     * Saves the client identity transmitted in the EHLO command to the context.
-     * Note that compared to {@link SmtpHELOCommandHandler}, EHLOs are allowed to contain a domain OR address literal.
+     * Saves the client identity transmitted in the EHLO command to the context. Note that compared
+     * to {@link SmtpHELOCommandHandler}, EHLOs are allowed to contain a domain OR address literal.
+     *
      * @param smtpCommand the command to process
-     * @see SmtpContext#clientIdentity
+     * @see SmtpContext#getClientIdentity()
      */
     @Override
     public void adjustContextSpecific(SmtpEHLOCommand smtpCommand) {

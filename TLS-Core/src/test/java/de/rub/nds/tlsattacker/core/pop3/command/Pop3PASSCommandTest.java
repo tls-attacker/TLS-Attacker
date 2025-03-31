@@ -36,7 +36,7 @@ public class Pop3PASSCommandTest {
         parser.parse(passCommand);
 
         assertEquals(passCommand.getPassword(), "p4ssw0rd");
-        assertEquals(passCommand.getCommandName(), "PASS");
+        assertEquals(passCommand.getKeyword(), "PASS");
     }
 
     @Test

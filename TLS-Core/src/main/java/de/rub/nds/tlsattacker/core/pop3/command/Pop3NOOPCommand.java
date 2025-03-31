@@ -32,9 +32,4 @@ public class Pop3NOOPCommand extends Pop3Command {
     public Pop3NOOPCommandPreparator getPreparator(Pop3Context context) {
         return new Pop3NOOPCommandPreparator(context, this);
     }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
-    }
 }

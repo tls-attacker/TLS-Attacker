@@ -39,11 +39,6 @@ public class Pop3USERCommand extends Pop3Command {
     }
 
     @Override
-    public String getCommandName() {
-        return commandName;
-    }
-
-    @Override
     public Pop3USERCommandParser getParser(Pop3Context context, InputStream stream) {
         return new Pop3USERCommandParser(stream);
     }

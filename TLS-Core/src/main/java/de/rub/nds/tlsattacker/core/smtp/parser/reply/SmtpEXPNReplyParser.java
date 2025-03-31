@@ -34,10 +34,15 @@ public class SmtpEXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
 
-            if (i == 0) this.parseReplyCode(reply, line);
-            else this.checkReplyCodeConsistency(reply.getReplyCode(), line.substring(0, 3));
+            if (i == 0) {
+                this.parseReplyCode(reply, line);
+            } else {
+                this.checkReplyCodeConsistency(reply.getReplyCode(), line.substring(0, 3));
+            }
 
-            if (line.length() <= 4) continue;
+            if (line.length() <= 4) {
+                continue;
+            }
 
             int offset = 4; // reply code and delimiter take up 4 characters
             int mailboxStartIndex = findMailboxStartIndex(line, offset);
@@ -57,15 +62,21 @@ public class SmtpEXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
         int start = offset;
         int end = -1;
         while (end < str.length()) {
-            while (start < str.length() && str.charAt(start) != '<') start++;
+            while (start < str.length() && str.charAt(start) != '<') {
+                start++;
+            }
 
             end = start;
-            while (end < str.length() && str.charAt(end) != '>') end++;
+            while (end < str.length() && str.charAt(end) != '>') {
+                end++;
+            }
 
             // check for bare minimum requirements for identifying mailboxes:
             if (end < str.length()
                     && str.substring(start, end + 1).contains("@")
-                    && end == str.length() - 1) return start;
+                    && end == str.length() - 1) {
+                return start;
+            }
         }
 
         return -1;

@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SmtpAUTHExtension extends SmtpServiceExtension {
 
     private List<String> SASLMechanisms;
+
+    public SmtpAUTHExtension() {
+        this(new ArrayList<>());
+    }
 
     public SmtpAUTHExtension(List<String> SASLMechanisms) {
         super("AUTH");

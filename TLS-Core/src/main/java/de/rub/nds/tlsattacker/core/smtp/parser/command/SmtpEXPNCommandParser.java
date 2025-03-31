@@ -20,7 +20,9 @@ public class SmtpEXPNCommandParser extends SmtpCommandParser<SmtpEXPNCommand> {
 
     @Override
     public void parseArguments(SmtpEXPNCommand expnCommand, String parameter) {
-        if (parameter == null) throw new ParserException("EXPN-Parameter can't be null.");
+        if (parameter == null) {
+            throw new ParserException("EXPN-Parameter can't be null.");
+        }
 
         // Use VRFY-Parser due to identical input:
         SmtpVRFYCommand vrfyCommand = new SmtpVRFYCommand();

@@ -12,6 +12,10 @@ public class SmtpBURLExtension extends SmtpServiceExtension {
     // TODO: Implement, so far this just enables SmtpEHLOReplyParser to read it
     private String parameter;
 
+    public SmtpBURLExtension() {
+        this("");
+    }
+
     public SmtpBURLExtension(String parameters) {
         super("BURL");
         this.parameter = parameters;

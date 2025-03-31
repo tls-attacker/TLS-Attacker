@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3LISTReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -23,7 +21,6 @@ import java.util.List;
  */
 @XmlRootElement
 public class Pop3LISTReply extends Pop3Reply {
-    boolean replyIsSingleLine = false;
     private List<Integer> messageNumbers = new ArrayList<>();
     private List<Integer> messageSizes = new ArrayList<>();
 
@@ -33,18 +30,7 @@ public class Pop3LISTReply extends Pop3Reply {
 
     @Override
     public Pop3LISTReplyParser getParser(Pop3Context context, InputStream stream) {
-        // Assumption based on RFC encouragements: "LIST [messageNumber]" will always return a
-        // single line
-        Pop3Command lastCommand = context.getLastCommand();
-        this.replyIsSingleLine =
-                lastCommand instanceof Pop3LISTCommand
-                        && ((Pop3LISTCommand) lastCommand).hasMessageNumber();
-
-        return new Pop3LISTReplyParser(stream);
-    }
-
-    public boolean isSingleLine() {
-        return this.replyIsSingleLine;
+        return new Pop3LISTReplyParser(context, stream);
     }
 
     public void setMessageNumbers(List<Integer> messageNumbers) {

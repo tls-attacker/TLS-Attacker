@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -97,8 +96,6 @@ public class SmtpLayerOutboundTest {
      * raises a ParserException. For replies this should only happen if a multiline reply is not
      * terminated correctly.
      */
-    @Disabled(
-            "This is weird right now because no SmtpReplyParser actually throws a ParserException - multiline malformed replies are handled by the parser.")
     @Test
     public void testFallbackToUnknownReply() {
         transportHandler.setFetchableByte("250-example.org\r\nabc\r\n".getBytes());

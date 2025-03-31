@@ -36,7 +36,7 @@ public class Pop3RETRCommandTest {
         parser.parse(retrCommand);
 
         assertEquals(retrCommand.getMessageNumber(), 1);
-        assertEquals(retrCommand.getCommandName(), "RETR");
+        assertEquals(retrCommand.getKeyword(), "RETR");
     }
 
     @Test

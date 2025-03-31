@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.layer.data;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 
 /**
- * The handler is used to adjust the context based on a given DataContainer being processed by a layer.
- * Handlers are often invoked implicitly when using {@link de.rub.nds.tlsattacker.core.layer.ProtocolLayer#readDataContainer ProtocolLayer#readDataContainer}.
+ * The handler is used to adjust the context based on a given DataContainer being processed by a
+ * layer. Handlers are often invoked implicitly when using {@link
+ * de.rub.nds.tlsattacker.core.layer.ProtocolLayer#readDataContainer
+ * ProtocolLayer#readDataContainer}.
+ *
  * @param <T> The Object that should be Handled
  */
 public abstract class Handler<T extends DataContainer<? extends LayerContext>> {

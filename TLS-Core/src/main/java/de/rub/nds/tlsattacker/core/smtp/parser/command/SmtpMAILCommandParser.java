@@ -47,7 +47,9 @@ public class SmtpMAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
                     command.getMAILparameters().add(MAILparameters);
                 }
             }
-        } else throwInvalidParameterException();
+        } else {
+            throwInvalidParameterException();
+        }
     }
 
     private void throwInvalidParameterException() {

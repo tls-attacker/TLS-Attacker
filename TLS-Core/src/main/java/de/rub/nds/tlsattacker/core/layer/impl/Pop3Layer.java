@@ -33,15 +33,16 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnterminatedReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A layer that handles the SMTP protocol. It can send and receive SmtpMessages, which represent
+ * A layer that handles the POP3 protocol. It can send and receive Pop3Messages, which represent
  * both commands and replies. Mainly supports acting as a client right now. Currently, it does not
- * parse received commands into the correct subclass, but rather into a generic SmtpReply object.
- * Will fall back to SmtpUnknownReply if the type of reply is unclear, but falling back for
+ * parse received commands into the correct subclass, but rather into a generic Pop3Reply object.
+ * Will fall back to Pop3UnknownReply if the type of reply is unclear, but falling back for
  * nonsensical replies is not yet implemented.
  */
 public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
@@ -55,18 +56,19 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
     }
 
     /**
-     * Sends any type of SmtpMessage to lower layers. Because SmtpMessages represent both commands
+     * Sends any type of Pop3Message to lower layers. Because Pop3Messages represent both commands
      * and replies, this method can be used to send both in the same way. It is up to the caller to
-     * ensure that the SmtpMessage is of the correct type. There are no LayerProcessingHints for
+     * ensure that the Pop3Message is of the correct type. There are no LayerProcessingHints for
      * this layer.
      *
-     * @return a LayerProcessingResult containing the SmtpMessage that was sent across the different
+     * @return a LayerProcessingResult containing the Pop3Message that was sent across the different
      *     layers
      * @throws IOException if sending the message fails for any reason
      */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<Pop3Message> configuration = getLayerConfiguration();
+        ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Pop3Message pop3Msg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(pop3Msg, context)) {
@@ -76,9 +78,10 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                 handler.adjustContext(pop3Msg);
                 Serializer<?> serializer = pop3Msg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                getLowerLayer().sendData(null, serializedMessage);
+                serializedMessages.write(serializedMessage);
                 addProducedContainer(pop3Msg);
             }
+            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
         return getLayerResult();
     }
@@ -90,18 +93,18 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
     }
 
     /**
-     * Receives data by querying the lower layer and processing it. The SmtpLayer can receive both
-     * SmtpCommands and SmtpReplies. There are several shortcomings at the moment: Because of the
+     * Receives data by querying the lower layer and processing it. The Pop3Layer can receive both
+     * Pop3Commands and Pop3Replies. There are several shortcomings at the moment: Because of the
      * command-reply structure, the type of reply is currently inferred from the preceding command.
      * This is not ideal, as it may lead to incorrect parsing if the server sends an unexpected
      * reply. In the future, we want to parse this into an UnknownReply and handle it accordingly.
      *
-     * <p>When receiving a command, the SmtpLayer will parse it into a SmtpCommand object and does
+     * <p>When receiving a command, the Pop3Layer will parse it into a Pop3Command object and does
      * not parse it into the correct subclass. This is because it's essentially reading the stream
      * to infer the correct Parser and then repeating the stream again to parse it. Will hopefully
      * be implemented in the future.
      *
-     * @return a LayerProcessingResult containing the SmtpMessage that was received across the
+     * @return a LayerProcessingResult containing the Pop3Message that was received across the
      *     different layers
      */
     @Override
@@ -118,13 +121,13 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                 }
                 if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
-                    Pop3Reply smtpReply = context.getExpectedNextReplyType();
-                    if (smtpReply instanceof Pop3UnknownReply) {
+                    Pop3Reply pop3Reply = context.getExpectedNextReplyType();
+                    if (pop3Reply instanceof Pop3UnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
-                                smtpReply.getClass().getSimpleName());
+                                pop3Reply.getClass().getSimpleName());
                     }
-                    readDataContainer(smtpReply, context);
+                    readDataContainer(pop3Reply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
                     // this shadows the readDataContainer method from the superclass, but we need to
@@ -140,12 +143,12 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                         continue;
                     }
                     Pop3Command trueCommand =
-                            Pop3MappingUtil.getCommandFromCommandName(pop3Command.getCommandName());
+                            Pop3MappingUtil.getCommandFromKeyword(pop3Command.getKeyword());
                     // this will be the actual parsing of the command
-                    HintedLayerInputStream smtpCommandStream =
+                    HintedLayerInputStream pop3CommandStream =
                             new HintedLayerInputStream(new Pop3LayerHint(), this);
-                    smtpCommandStream.extendStream(verbParser.getAlreadyParsed());
-                    Pop3CommandParser parser = trueCommand.getParser(context, smtpCommandStream);
+                    pop3CommandStream.extendStream(verbParser.getAlreadyParsed());
+                    Pop3CommandParser parser = trueCommand.getParser(context, pop3CommandStream);
                     try {
                         // TODO: this may raise a ParserException if parameters are missing
                         parser.parse(trueCommand);
@@ -214,11 +217,9 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
     @Override
     public boolean executedAsPlanned() {
         // TODO: Properly check status codes etc here
-        // SMTP does not work with the current TLSA semantics, as essentially every execution is
+        // POP3 does not work with the current TLSA semantics, as essentially every execution is
         // valid in the sense that the server will always reply with something, that could be a
         // valid reply.
-        // e.g. "550 User unknown" would be a valid reply to a HELP command because the status code
-        // 550 is overloaded and the message is not standardized.
         return true;
     }
 }

@@ -36,9 +36,4 @@ public class Pop3STATCommand extends Pop3Command {
     public Pop3STATCommandPreparator getPreparator(Pop3Context context) {
         return new Pop3STATCommandPreparator(context, this);
     }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
-    }
 }

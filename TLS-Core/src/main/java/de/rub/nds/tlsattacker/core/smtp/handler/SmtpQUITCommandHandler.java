@@ -18,6 +18,7 @@ public class SmtpQUITCommandHandler extends SmtpCommandHandler<SmtpQUITCommand> 
 
     /**
      * Sets the clientRequestedClose flag in the context.
+     *
      * @param smtpCommand the command to process
      * @see SmtpContext#clientRequestedClose
      */

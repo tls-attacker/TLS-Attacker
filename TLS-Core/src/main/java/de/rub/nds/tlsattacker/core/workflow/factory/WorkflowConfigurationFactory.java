@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -641,15 +642,23 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = new WorkflowTrace();
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(
+                    MessageActionFactory.createPop3Action(
+                            config,
+                            connection,
+                            ConnectionEndType.SERVER,
+                            new Pop3InitialGreeting()));
+
             appendPop3CommandAndReplyActions(connection, trace, new Pop3USERCommand());
             appendPop3CommandAndReplyActions(connection, trace, new Pop3PASSCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand(1));
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand());
             appendPop3CommandAndReplyActions(connection, trace, new Pop3NOOPCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3STATCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand());
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand(1));
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3RETRCommand(1));
+            appendPop3CommandAndReplyActions(connection, trace, new Pop3DELECommand(1));
             appendPop3CommandAndReplyActions(connection, trace, new Pop3QUITCommand());
         }
-
-        // TODO: decide what to do for SERVER case
 
         return trace;
     }
@@ -661,7 +670,7 @@ public class WorkflowConfigurationFactory {
         // dynamic handshake mechanism
         trace.addTlsAction(0, new SendAction(new Pop3STLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
-        trace.addTlsAction(2, new STARTTLSAction());
+        trace.addTlsAction(2, new ToggleTLSLayersAction());
 
         trace.addTlsActions(createPop3Workflow().getTlsActions());
 
@@ -680,6 +689,8 @@ public class WorkflowConfigurationFactory {
                             new SmtpInitialGreeting()));
         }
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCredentialsCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());

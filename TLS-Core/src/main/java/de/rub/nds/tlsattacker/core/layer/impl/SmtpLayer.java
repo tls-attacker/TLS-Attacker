@@ -40,20 +40,18 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A layer that handles the SMTP protocol. It can send and receive SmtpMessages, which represent
- * both commands and replies. Mainly supports acting as a client right now. Currently it does not
- * parse received commands into the correct subclass, but rather into a generic SmtpReply object.
- * Will fallback to SmtpUnknownReply if the type of reply is unclear, but falling back for
- * nonsensical replies is not yet implemented.
+ * both commands and replies. Mainly tested for acting as a client right now. Will fallback to
+ * SmtpUnknownReply if the type of reply is unclear, but falling back for nonsensical replies is not
+ * yet implemented.
+ *
+ * @see SmtpMessage
+ * @see SmtpCommand
+ * @see SmtpReply
  */
 public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SmtpContext context;
-
-    public static final int MAX_COMMAND_LENGTH = 512;
-    public static final int MAX_REPLY_LENGTH =
-            1024 * 64; // recommendation for the minimum maximum length according 4.5.3.1.7.
-    // Message Content
 
     public SmtpLayer(SmtpContext smtpContext) {
         super(ImplementedLayers.SMTP);
@@ -91,6 +89,15 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         return getLayerResult();
     }
 
+    /**
+     * Unimplemented method. Would be used to send data from a higher layer via SMTP, which to the
+     * best of our knowledge is not a thing.
+     *
+     * @param hint
+     * @param additionalData
+     * @return
+     * @throws IOException
+     */
     @Override
     public LayerProcessingResult sendData(SmtpLayerHint hint, byte[] additionalData)
             throws IOException {
@@ -99,10 +106,14 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     /**
      * Receives data by querying the lower layer and processing it. The SmtpLayer can receive both
-     * SmtpCommands and SmtpReplies. There are several shortcomings at the moment:
+     * SmtpCommands and SmtpReplies.
+     *
+     * <p>Implementation-wise this disregards the usual {@link ProtocolLayer#readDataContainer}
+     * pattern to be able to parse arbitrary
      *
      * @return a LayerProcessingResult containing the SmtpMessage that was received across the
      *     different layers
+     * @see SmtpMappingUtil
      */
     @Override
     public LayerProcessingResult receiveData() {
@@ -209,7 +220,6 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     @Override
     public boolean executedAsPlanned() {
-        // TODO: Properly check status codes etc here
         // SMTP does not work with the current TLSA semantics, as essentially every execution is
         // valid in the sense that the server will always reply with something, that could be a
         // valid reply.

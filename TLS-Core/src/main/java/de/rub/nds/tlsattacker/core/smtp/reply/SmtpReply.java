@@ -29,7 +29,7 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected Integer replyCode = 900; // some invalid value to indicate that it was not set
+    protected Integer replyCode = 0; // some invalid value to indicate that it was not set
     //    protected String humanReadableMessage;
     protected List<String> humanReadableMessages = new ArrayList<>();
 
@@ -60,6 +60,9 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public SmtpReply(Integer replyCode) {
+        // allows a user to create a custom reply with a very specific (perhaps standard-violating)
+        // reply code
+        // we do not currently do this in the codebase, but it is a possibility, so we allow it
         super();
         this.replyCode = replyCode;
     }
@@ -91,7 +94,12 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getReplyCode())
+                .append(" ")
+                .append(SmtpMappingUtil.getMatchingCommand(this).getVerb())
+                .append("Reply");
+        return sb.toString();
     }
 
     public void setReplyCode(Integer replyCode) {
@@ -112,7 +120,8 @@ public class SmtpReply extends SmtpMessage {
         String CRLF = "\r\n";
 
         StringBuilder sb = new StringBuilder();
-        String replyCodeString = this.replyCode != null ? String.valueOf(this.replyCode) : "";
+        String replyCodeString =
+                this.replyCode != null ? String.format("%03d", this.replyCode) : "";
         String replyCodePrefix = this.replyCode != null ? replyCodeString + DASH : "";
 
         for (int i = 0; i < this.humanReadableMessages.size() - 1; i++) {

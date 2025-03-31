@@ -41,17 +41,11 @@ public class Pop3LISTCommand extends Pop3Command implements Pop3MessageNumber {
     }
 
     public Integer getMessageNumber() {
-        if (this.hasMessageNumber) return this.messageNumber;
-        else return -1;
+        return this.messageNumber;
     }
 
     public boolean hasMessageNumber() {
         return hasMessageNumber;
-    }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
     }
 
     @Override

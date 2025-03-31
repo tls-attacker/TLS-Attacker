@@ -19,8 +19,8 @@ import java.util.List;
  * Parses Pop3 replies from InputStream. The default implementation only parses the status code and
  * the human readable message. If more complex parsing is needed, the parse method can be
  * overridden. Multiline replies begin with the status indicator in the first line and every line
- * terminated with <CRLF> the last line is just a . followed by <CRLF>. The response is ended by
- * encountering following sequence: <CRLF>.<CRLF>
+ * terminated with &lt;CRLF&gt; the last line is just a . followed by &lt;CRLF&gt;. The response is
+ * ended by encountering following sequence: &lt;CRLF&gt;.&lt;CRLF&gt;
  *
  * @param <ReplyT> specific reply class
  */
@@ -33,9 +33,11 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
     public void parseHumanReadableMessage(ReplyT reply, String line) {
         String humanReadableMessage = "";
 
-        if (line.startsWith("+OK") & line.length() > 3) humanReadableMessage = line.substring(4);
-        else if (line.startsWith("-ERR") & line.length() > 4)
+        if (line.startsWith("+OK") & line.length() > 3) {
+            humanReadableMessage = line.substring(4);
+        } else if (line.startsWith("-ERR") & line.length() > 4) {
             humanReadableMessage = line.substring(5);
+        }
 
         reply.setHumanReadableMessage(humanReadableMessage);
     }
@@ -68,27 +70,31 @@ public abstract class Pop3ReplyParser<ReplyT extends Pop3Reply> extends Pop3Mess
         List<String> lines = new LinkedList<>();
         try (BufferedInputStream stream = new BufferedInputStream(this.getStream())) {
             String line = "";
-            char LF = 10;
-            char CR = 13;
+            char CR = '\r';
+            char LF = '\n';
             while (!line.equals(".")) { // multiline replies have to end with ".CRLF" i.e. ".\r\n"
                 StringBuilder sb = new StringBuilder();
                 int c = stream.read();
-                if (c == -1) break; // stream is empty
+                if (c == -1) {
+                    break; // stream is empty
+                }
 
                 while (c != LF) { // while end of line is not reached
                     sb.append((char) c);
                     c = stream.read();
                 }
 
-                if (sb.charAt(sb.length() - 1) != CR)
+                if (sb.charAt(sb.length() - 1) != CR) {
                     LOGGER.warn(
                             "Reply must be terminated with CRLF but is only terminated with LF.");
+                }
 
                 sb.setLength(sb.length() - 1); // remove CR
 
                 line = sb.toString();
-                if (!line.equals("."))
+                if (!line.equals(".")) {
                     lines.add(line); // no need to save "." because it's no actual content
+                }
             }
         } catch (IOException ignored) {
             LOGGER.warn(

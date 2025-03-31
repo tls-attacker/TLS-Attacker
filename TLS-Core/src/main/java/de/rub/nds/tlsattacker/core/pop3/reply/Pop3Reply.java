@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3ReplyHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
@@ -63,13 +64,26 @@ public class Pop3Reply extends Pop3Message {
     }
 
     public String getHumanReadableMessage() {
-        if (this.humanReadableMessages.isEmpty()) return "";
-        else return this.humanReadableMessages.get(0);
+        if (this.humanReadableMessages.isEmpty()) {
+            return "";
+        } else {
+            return this.humanReadableMessages.get(0);
+        }
     }
 
     @Override
     public String toShortString() {
         return "POP3_REPLY";
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getStatusIndicator())
+                .append(" ")
+                .append(Pop3MappingUtil.getMatchingCommand(this).getKeyword())
+                .append("Reply");
+        return sb.toString();
     }
 
     @Override

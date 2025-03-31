@@ -19,13 +19,15 @@ import java.io.InputStream;
 
 /**
  * High level representation of an SMTP command. Commands are one line consisting of a verb and
- * optional parameters ending with CRLF.
- * Example:
+ * optional parameters ending with CRLF. Example:
+ *
  * <pre>
  *     C: RCPT TO:&lt;seal@upb.de&gt;
  * </pre>
  *
- * where RCPT is the verb and TO:&lt;seal@upb.de&gt; is the parameter.
+ * where RCPT is the verb and TO:&lt;seal@upb.de&gt; is the parameter. This superclass is
+ * intentionally not abstract to allow for easy creation of custom commands, e.g. see
+ * CustomCommandTest.
  */
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
@@ -36,6 +38,7 @@ public class SmtpCommand extends SmtpMessage {
     String parameters;
 
     public SmtpCommand(String verb, String parameters) {
+        // use for easy creation of custom commands
         super();
         this.verb = verb;
         this.parameters = parameters;

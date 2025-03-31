@@ -73,6 +73,15 @@ public class LayerStackFactory {
                         new LayerStack(
                                 context, new Pop3Layer(pop3Context), new TcpLayer(tcpContext));
                 return layerStack;
+            case POP3S:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new Pop3Layer(pop3Context),
+                                new MessageLayer(tlsContext),
+                                new RecordLayer(tlsContext),
+                                new TcpLayer(tcpContext));
+                return layerStack;
             case SMTP:
                 layerStack =
                         new LayerStack(

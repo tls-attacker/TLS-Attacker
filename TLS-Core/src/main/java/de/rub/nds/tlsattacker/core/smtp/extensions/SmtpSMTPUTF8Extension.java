@@ -9,7 +9,8 @@
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 public class SmtpSMTPUTF8Extension extends SmtpServiceExtension {
-    // yes the extension is called SMTPUTF8, so the name is correct
+    // yes the extension is called SMTPUTF8 (RFC5336), so the name is correct
+    // also see UTF8SMTP
     public SmtpSMTPUTF8Extension() {
         super("SMTPUTF8");
     }

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.StarttlsContext;
@@ -24,39 +23,40 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This action toggles the MessageLayer and RecordLayer to the LayerStack to enable opportunistic
- * TLS communication. If the MessageLayer and RecordLayer are already present in the LayerStack,
- * they will be removed. Even though it does not transmit the actual application-specific STARTTLS
- * command, it should only be used in protocols that support a form of STARTTLS command. Currently,
- * only SMTP is supported.
+ * This action inserts the {@link MessageLayer} and {@link RecordLayer} into the {@link LayerStack}
+ * at runtime to enable opportunistic TLS communication. If the MessageLayer and RecordLayer are
+ * already present in the LayerStack, they will be removed. Even though it does not transmit the
+ * actual application-specific STARTTLS command, it should only be used in protocols that support a
+ * form of STARTTLS command. Currently, only SMTP is supported.
  * @deprecated to be removed in favor of ToggleTLSLayerAction
  */
 @Deprecated
 @XmlRootElement
-public class STARTTLSAction extends ConnectionBoundAction {
+public class StartTLSAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();
-
-    public STARTTLSAction() {}
 
     /**
      * This action dynamically inserts Record and Message layer from the StarttlsContext into the
      * LayerStack during runtime. It is designed to work with protocols that define an explicit
-     * mechanism for upgrading from plain communication to TLS. The action only works with such
-     * protocols and will throw an exception if the highest layer in the LayerStack does not fit.
-     * For now, only SMTP is supported. Users are still responsible for performing the actual
-     * STARTTLS command in the protocol and adding a TLS handshake to the WorkflowTrace.
+     * mechanism for upgrading from plain communication to TLS (often called "STARTTLS"). The action
+     * only works with such protocols and will throw an exception if the highest layer in the
+     * LayerStack does not fit. For now, only SMTP and POP3 are supported. Users are still
+     * responsible for performing the actual STARTTLS command in the protocol and adding a TLS
+     * handshake to the WorkflowTrace.
      *
-     * @param state
-     * @throws ActionExecutionException
+     * @param state the state to work on
+     * @throws ActionExecutionException if action is not supported for the current protocol
+     * @throws ActionExecutionException if action is already executed
      */
     @Override
     public void execute(State state) throws ActionExecutionException {
         LayerType topLevelType =
                 state.getContext().getLayerStack().getHighestLayer().getLayerType();
-        // only SMTP is supported for now, because explicit application command for upgrading is
+        // only SMTP and POP3 currently because explicit application command for upgrading is
         // needed
         if (!EnumSet.of(ImplementedLayers.SMTP, ImplementedLayers.POP3).contains(topLevelType)) {
-            throw new ActionExecutionException("STARTTLS is not defined for this protocol");
+            throw new ActionExecutionException(
+                    "STARTTLS is not defined for the top-level protocol " + topLevelType);
         }
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
@@ -70,14 +70,7 @@ public class STARTTLSAction extends ConnectionBoundAction {
         TlsContext tlsContext = state.getTlsContext();
         StarttlsContext starttlsContext = state.getStarttlsContext();
 
-        if (layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE)
-                && layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
-            ProtocolLayer oldRecordLayer = layerStack.removeLayer(RecordLayer.class);
-            state.getStarttlsContext().setRecordLayer((RecordLayer) oldRecordLayer);
-            ProtocolLayer oldMessageLayer = layerStack.removeLayer(MessageLayer.class);
-            state.getStarttlsContext().setMessageLayer((MessageLayer) oldMessageLayer);
-            setExecuted(true);
-        } else if (!layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE)
+        if (!layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE)
                 && !layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
             if (starttlsContext.getMessageLayer() == null) {
                 starttlsContext.setMessageLayer(new MessageLayer(tlsContext));
@@ -89,10 +82,9 @@ public class STARTTLSAction extends ConnectionBoundAction {
             layerStack.insertLayer(starttlsContext.getMessageLayer(), targetedLayerIndex + 1);
             setExecuted(true);
         } else {
-            // not sure why anyone would do this, but we do not meddle with such weird constructions
-            // where only one of the two exists
-            throw new ActionExecutionException(
-                    "Only one of the two TLS layers is present in the LayerStack - not suitable for STARTTLS toggle");
+            LOGGER.warn(
+                    "At least one of the layers is already present in the LayerStack, skipping StartTLS");
+            setExecuted(false);
         }
     }
 

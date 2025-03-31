@@ -32,9 +32,4 @@ public class Pop3RSETCommand extends Pop3Command {
     public Pop3RSETCommandPreparator getPreparator(Pop3Context context) {
         return new Pop3RSETCommandPreparator(context, this);
     }
-
-    @Override
-    public String getCommandName() {
-        return commandName;
-    }
 }
