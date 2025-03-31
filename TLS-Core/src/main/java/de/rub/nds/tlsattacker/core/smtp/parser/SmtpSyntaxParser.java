@@ -38,7 +38,9 @@ public final class SmtpSyntaxParser {
 
     public static boolean isValidAtomString(String str) {
         for (int i = 0; i < str.length(); i++) {
-            if (isNotAnAtomCharacter(str.charAt(i))) return false;
+            if (isNotAnAtomCharacter(str.charAt(i))) {
+                return false;
+            }
         }
 
         return true;
@@ -65,13 +67,18 @@ public final class SmtpSyntaxParser {
     private static boolean isValidDotString(String str) {
         // first and last character must be atom characters
         if (isNotAnAtomCharacter(str.charAt(0))
-                || isNotAnAtomCharacter(str.charAt(str.length() - 1))) return false;
+                || isNotAnAtomCharacter(str.charAt(str.length() - 1))) {
+            return false;
+        }
 
         for (int i = 1; i < str.length() - 1; i++) {
             char c = str.charAt(i);
-            if (isNotAnAtomCharacter(c) && c != '.') return false;
-            if (str.charAt(i - 1) == '.' && c == '.')
+            if (isNotAnAtomCharacter(c) && c != '.') {
+                return false;
+            }
+            if (str.charAt(i - 1) == '.' && c == '.') {
                 return false; // consecutive dots are not allowed
+            }
         }
 
         return true;
@@ -79,7 +86,9 @@ public final class SmtpSyntaxParser {
 
     private static int endIndexOfLocalPart(String mailbox) {
         for (int i = mailbox.length() - 1; i >= 0; i--) {
-            if (mailbox.charAt(i) != '@') continue;
+            if (mailbox.charAt(i) != '@') {
+                continue;
+            }
             return i;
         }
 
@@ -90,12 +99,16 @@ public final class SmtpSyntaxParser {
         // first and last characters have to be alphanumeric:
         if (str.isEmpty()
                 || isNotAlphanumeric(str.charAt(0))
-                || isNotAlphanumeric(str.charAt(str.length() - 1))) return false;
+                || isNotAlphanumeric(str.charAt(str.length() - 1))) {
+            return false;
+        }
 
         // characters in between may also be '-'
         for (int i = 1; i < str.length() - 1; i++) {
             char c = str.charAt(i);
-            if (isNotAlphanumeric(c) && c != '-') return false;
+            if (isNotAlphanumeric(c) && c != '-') {
+                return false;
+            }
         }
 
         return true;
@@ -105,33 +118,45 @@ public final class SmtpSyntaxParser {
         String[] subdomains = str.split("\\.");
 
         for (String subdomain : subdomains) {
-            if (!isValidSubdomain(subdomain)) return false;
+            if (!isValidSubdomain(subdomain)) {
+                return false;
+            }
         }
 
         return true;
     }
 
     private static boolean isValidAddressLiteral(String str) {
-        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']')
+        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']') {
             return false;
+        }
 
-        if (str.startsWith("[IPv6:")) str = str.substring(6, str.length() - 1);
-        else str = str.substring(1, str.length() - 1);
+        if (str.startsWith("[IPv6:")) {
+            str = str.substring(6, str.length() - 1);
+        } else {
+            str = str.substring(1, str.length() - 1);
+        }
 
         return IPAddress.isValid(str);
     }
 
     private static boolean doesNotContainControlCharacters(String str) {
         for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) < 32) return false;
+            if (str.charAt(i) < 32) {
+                return false;
+            }
         }
 
         return true;
     }
 
     private static boolean isValidLocalPart(String localPart) {
-        if (localPart.isEmpty()) return false;
-        if (isValidDotString(localPart)) return true;
+        if (localPart.isEmpty()) {
+            return false;
+        }
+        if (isValidDotString(localPart)) {
+            return true;
+        }
 
         // case: special characters were found, thus local part must be quoted string:
         return localPart.charAt(0) == '"'
@@ -147,7 +172,9 @@ public final class SmtpSyntaxParser {
     public static boolean isValidMailbox(String mailbox) {
         String localPart = mailbox.substring(0, endIndexOfLocalPart(mailbox));
 
-        if (!isValidLocalPart(localPart)) return false;
+        if (!isValidLocalPart(localPart)) {
+            return false;
+        }
 
         String mailboxEnding =
                 mailbox.substring(endIndexOfLocalPart(mailbox) + 1); // everything past @

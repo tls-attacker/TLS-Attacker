@@ -39,9 +39,15 @@ public class SmtpCommandSerializer<CommandT extends SmtpCommand>
         boolean verbExists = this.command.getVerb() != null;
         boolean parametersExist = this.command.getParameters() != null;
 
-        if (verbExists) sb.append(this.command.getVerb());
-        if (verbExists && parametersExist) sb.append(SP);
-        if (parametersExist) sb.append(this.command.getParameters());
+        if (verbExists) {
+            sb.append(this.command.getVerb());
+        }
+        if (verbExists && parametersExist) {
+            sb.append(SP);
+        }
+        if (parametersExist) {
+            sb.append(this.command.getParameters());
+        }
 
         sb.append(CRLF);
         byte[] output = sb.toString().getBytes();

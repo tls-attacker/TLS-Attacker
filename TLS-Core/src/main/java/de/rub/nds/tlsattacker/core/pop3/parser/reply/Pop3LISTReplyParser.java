@@ -33,7 +33,9 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
         parseReplyIndicator(reply, firstLine);
         parseHumanReadableMessage(reply, firstLine);
 
-        if (this.replyIsSingleLine()) return;
+        if (this.replyIsSingleLine()) {
+            return;
+        }
 
         List<String> lines = new LinkedList<>();
         if (reply.getStatusIndicator().equals("+OK")) {

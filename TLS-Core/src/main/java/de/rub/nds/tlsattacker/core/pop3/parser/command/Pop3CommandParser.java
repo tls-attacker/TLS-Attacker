@@ -42,7 +42,9 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
         String keyword = lineContents[0];
         pop3Command.setKeyword(keyword);
 
-        if (lineContents.length == 1) return;
+        if (lineContents.length == 1) {
+            return;
+        }
 
         String arguments = line.substring(keyword.length() + 1);
         pop3Command.setArguments(arguments);

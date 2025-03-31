@@ -33,8 +33,9 @@ public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyP
         List<String> reply = new ArrayList<>();
         for (String line : rawLines) {
             this.parseReplyCode(replyT, line);
-            if (line.length() <= 4)
+            if (line.length() <= 4) {
                 return; // fourth char is delimiter, so at least five chars are needed
+            }
             reply.add(line.substring(4));
         }
 

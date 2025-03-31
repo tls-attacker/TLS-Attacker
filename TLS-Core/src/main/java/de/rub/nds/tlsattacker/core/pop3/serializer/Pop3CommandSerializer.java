@@ -36,9 +36,15 @@ public class Pop3CommandSerializer<CommandT extends Pop3Command>
         boolean keywordExists = this.command.getKeyword() != null;
         boolean argumentsExist = this.command.getArguments() != null;
 
-        if (keywordExists) sb.append(this.command.getKeyword());
-        if (keywordExists && argumentsExist) sb.append(SP);
-        if (argumentsExist) sb.append(this.command.getArguments());
+        if (keywordExists) {
+            sb.append(this.command.getKeyword());
+        }
+        if (keywordExists && argumentsExist) {
+            sb.append(SP);
+        }
+        if (argumentsExist) {
+            sb.append(this.command.getArguments());
+        }
 
         sb.append(CRLF);
         byte[] output = sb.toString().getBytes();

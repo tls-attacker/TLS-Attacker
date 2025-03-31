@@ -64,8 +64,11 @@ public class Pop3Reply extends Pop3Message {
     }
 
     public String getHumanReadableMessage() {
-        if (this.humanReadableMessages.isEmpty()) return "";
-        else return this.humanReadableMessages.get(0);
+        if (this.humanReadableMessages.isEmpty()) {
+            return "";
+        } else {
+            return this.humanReadableMessages.get(0);
+        }
     }
 
     @Override

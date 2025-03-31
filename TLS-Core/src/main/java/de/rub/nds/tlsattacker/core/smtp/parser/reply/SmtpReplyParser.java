@@ -59,7 +59,9 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
     }
 
     public void parseReplyCode(ReplyT replyT, String line) {
-        if (line.length() < 3) return;
+        if (line.length() < 3) {
+            return;
+        }
 
         int replyCode = this.toInteger(line.substring(0, 3));
 

@@ -86,7 +86,9 @@ public class SmtpEHLOReply extends SmtpReply {
         }
         sb.append(CRLF);
 
-        if (!hasExtensions) return sb.toString();
+        if (!hasExtensions) {
+            return sb.toString();
+        }
 
         for (int i = 0; i < this.extensions.size() - 1; i++) {
             SmtpServiceExtension ext = this.extensions.get(i);
