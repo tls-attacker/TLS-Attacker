@@ -21,7 +21,6 @@ import java.util.List;
  */
 @XmlRootElement
 public class Pop3LISTReply extends Pop3Reply {
-    boolean replyIsSingleLine = false;
     private List<Integer> messageNumbers = new ArrayList<>();
     private List<Integer> messageSizes = new ArrayList<>();
 
@@ -32,10 +31,6 @@ public class Pop3LISTReply extends Pop3Reply {
     @Override
     public Pop3LISTReplyParser getParser(Pop3Context context, InputStream stream) {
         return new Pop3LISTReplyParser(context, stream);
-    }
-
-    public boolean isSingleLine() {
-        return this.replyIsSingleLine;
     }
 
     public void setMessageNumbers(List<Integer> messageNumbers) {
