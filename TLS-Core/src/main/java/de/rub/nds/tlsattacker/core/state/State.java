@@ -226,6 +226,14 @@ public class State {
         return getContext().getHttpContext();
     }
 
+    public Pop3Context getPop3Context(String alias) {
+        return getContext(alias).getPop3Context();
+    }
+
+    public Pop3Context getPop3Context() {
+        return getContext().getPop3Context();
+    }
+
     public SmtpContext getSmtpContext(String alias) {
         return getContext(alias).getSmtpContext();
     }

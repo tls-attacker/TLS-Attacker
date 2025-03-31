@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
@@ -31,6 +32,8 @@ public interface ReceivingAction {
     List<HttpMessage> getReceivedHttpMessages();
 
     List<SmtpMessage> getReceivedSmtpMessages();
+
+    List<Pop3Message> getReceivedPop3Messages();
 
     List<QuicFrame> getReceivedQuicFrames();
 

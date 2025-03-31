@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -49,6 +50,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<SmtpMessage> expectedSmtpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Pop3Message> expectedPop3Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
@@ -145,6 +149,15 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
     }
 
+    public ReceiveAction(Pop3Message... expectedPop3Messages) {
+        this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
+    }
+
+    public ReceiveAction(String connectionAlias, Pop3Message... expectedPop3Messages) {
+        super(connectionAlias);
+        this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
+    }
+
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(myActionOptions);
@@ -227,6 +240,14 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedSmtpMessages = expectedSmtpMessages;
     }
 
+    public List<Pop3Message> getExpectedPop3Messages() {
+        return expectedPop3Messages;
+    }
+
+    public void setExpectedPop3Messages(List<Pop3Message> expectedPop3Messages) {
+        this.expectedPop3Messages = expectedPop3Messages;
+    }
+
     public List<QuicFrame> getExpectedQuicFrames() {
         return expectedQuicFrames;
     }
@@ -262,6 +283,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        // see the shortcomings explained in ActionHelperUtil
         return ActionHelperUtil.createReceiveLayerConfiguration(
                 tlsContext,
                 getActionOptions(),
@@ -271,7 +293,8 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                 expectedQuicFrames,
                 expectedQuicPackets,
                 expectedHttpMessages,
-                expectedSmtpMessages);
+                expectedSmtpMessages,
+                expectedPop3Messages);
     }
 
     @Override
@@ -282,6 +305,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         }
         if (expectedSmtpMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedSmtpMessages);
+        }
+        if (expectedPop3Messages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedPop3Messages);
         }
         if (expectedMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);

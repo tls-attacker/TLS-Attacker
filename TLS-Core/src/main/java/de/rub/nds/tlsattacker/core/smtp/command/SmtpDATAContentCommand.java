@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.handler.DATAContentCommandHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.DATAContentParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.DATAContentCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpDATAContentCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpDATAContentParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpDATAContentCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -48,17 +48,17 @@ public class SmtpDATAContentCommand extends SmtpCommand {
     }
 
     @Override
-    public DATAContentParser getParser(SmtpContext context, InputStream stream) {
-        return new DATAContentParser(stream);
+    public SmtpDATAContentParser getParser(SmtpContext context, InputStream stream) {
+        return new SmtpDATAContentParser(stream);
     }
 
     @Override
-    public DATAContentCommandHandler getHandler(SmtpContext context) {
-        return new DATAContentCommandHandler(context);
+    public SmtpDATAContentCommandHandler getHandler(SmtpContext context) {
+        return new SmtpDATAContentCommandHandler(context);
     }
 
     @Override
-    public DATAContentCommandPreparator getPreparator(SmtpContext context) {
-        return new DATAContentCommandPreparator(context, this);
+    public SmtpDATAContentCommandPreparator getPreparator(SmtpContext context) {
+        return new SmtpDATAContentCommandPreparator(context, this);
     }
 }

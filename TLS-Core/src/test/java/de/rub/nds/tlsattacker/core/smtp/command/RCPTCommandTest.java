@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.RCPTCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.RCPTCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpRCPTCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpRCPTCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -32,8 +32,8 @@ public class RCPTCommandTest {
     void testParsePostmaster() {
         String stringMessage = "RCPT TO:<postmaster>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -47,8 +47,8 @@ public class RCPTCommandTest {
     void testParsePostmasterDomain() {
         String stringMessage = "RCPT TO:<seal@upb.de>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -62,8 +62,8 @@ public class RCPTCommandTest {
     void testParseForwardPath() {
         String stringMessage = "RCPT TO:<@rub.com,@tue.nl:seal@abc.def.ghi>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -80,8 +80,8 @@ public class RCPTCommandTest {
     void testParseAnotherForwardPath() {
         String stringMessage = "RCPT TO:<@hosta.int,@jkl.org:userc@d.bar.org>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -98,8 +98,8 @@ public class RCPTCommandTest {
     void testParseSpecialCase() {
         String stringMessage = "RCPT TO:<'*+-/=?^_`{|}~#$@nice.org>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -113,8 +113,8 @@ public class RCPTCommandTest {
     void testParseIPV6() {
         String stringMessage = "RCPT TO:<test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -128,8 +128,8 @@ public class RCPTCommandTest {
     void testParseIPV4() {
         String stringMessage = "RCPT TO:<seal@[166.84.7.99]>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -143,8 +143,8 @@ public class RCPTCommandTest {
     void testParseWorstCase() {
         String stringMessage = "RCPT TO:<\"\\@\\@\\@\\@\\@\"@gmail.com>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -158,8 +158,8 @@ public class RCPTCommandTest {
     void testParseInvalidDomain() {
         String stringMessage = "RCPT TO:<nicerdicer@>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -172,8 +172,8 @@ public class RCPTCommandTest {
     void testParseInvalidForwardPath() {
         String stringMessage = "RCPT TO:<@,@:@gmail.com>\r\n";
 
-        RCPTCommandParser parser =
-                new RCPTCommandParser(
+        SmtpRCPTCommandParser parser =
+                new SmtpRCPTCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
@@ -186,7 +186,7 @@ public class RCPTCommandTest {
     public void testSerialization() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpRCPTCommand rcptCommand = new SmtpRCPTCommand("seal@upb.de");
-        RCPTCommandPreparator preparator = rcptCommand.getPreparator(context);
+        SmtpRCPTCommandPreparator preparator = rcptCommand.getPreparator(context);
         Serializer serializer = rcptCommand.getSerializer(context);
         preparator.prepare();
         serializer.serialize();

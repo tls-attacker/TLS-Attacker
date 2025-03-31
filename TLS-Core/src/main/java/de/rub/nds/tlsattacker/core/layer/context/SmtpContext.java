@@ -8,51 +8,104 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpDATAContentReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEXPNReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SmtpContext extends LayerContext {
 
-    // describes the source of the mail (supplied via MAIL FROM)
+    /**
+     * Stores the source of the mail (supplied via MAIL FROM) Note <a
+     * href="https://datatracker.ietf.org/doc/html/rfc5321#appendix-C">RFC 5321 Appendix C</a>:
+     * Historically, the reverse path was a list of hosts, rather than a single host.
+     */
     private List<String> reversePathBuffer = new ArrayList<>();
 
-    // describes the destination of the mail (supplied via RCPT TO)
+    /** Stores the destination of a mail (supplied via RCPT TO) */
     private String forwardPathBuffer = "";
 
+    /** Stores the recipients of a mail (supplied via MAIL TO). Each entry is a recipient. */
     private List<String> recipientBuffer = new ArrayList<>();
+    /** Stores the data of a mail (supplied via DATA). Each entry is a line of the mail. */
     private List<String> mailDataBuffer = new ArrayList<>();
+    /**
+     * Stores the identity of the client given by EHLO/HELO. See {@link SmtpContext#clientUsedHELO},
+     * because legacy HELO clients do not support the client identity being an address literal.
+     */
     private String clientIdentity;
-    private boolean serverOnlySupportsEHLO = false;
+    /** Stores the domain of the server given by the EHLO/HELO reply. */
+    private String serverIdentity;
 
-    // Client can request connection close via QUIT, but MUST NOT close the connection itself
-    // intentionally before that
+    /** Stores the negotiated extensions by the server given by the EHLO reply. */
+    private List<SmtpServiceExtension> negotiatedExtensions = new ArrayList<>();
+    /**
+     * Indicates whether the server supports HELO (which is very old legacy by now). This affects
+     * {@link SmtpContext#clientIdentity} and the extension negotiation.
+     *
+     * @see de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension
+     */
+    private boolean clientUsedHELO = false;
+
+    /**
+     * Whether the client requested to close the connection.
+     *
+     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC
+     * 5321</a>:
+     *
+     * <blockquote>
+     *
+     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT
+     * command and it SHOULD wait until it receives the reply (even if there was an error response
+     * to a previous command).
+     *
+     * </blockquote>
+     */
     private boolean clientRequestedClose = false;
-    // Clients SHOULD NOT close the connection until they have received the reply indicating the
-    // server has
+    /**
+     * Whether the server has acknowledged a client's request to close the connection.
+     *
+     * <p>Note <a href="https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.1.10">RFC
+     * 5321</a>:
+     *
+     * <blockquote>
+     *
+     * The sender MUST NOT intentionally close the transmission channel until it sends a QUIT
+     * command and it SHOULD wait until it receives the reply (even if there was an error response
+     * to a previous command).
+     *
+     * </blockquote>
+     */
     private boolean serverAcknowledgedClose = false;
 
-    // store the old context to evaluate command injection type vulns with SmtpContext through RESET
+    /**
+     * Stores the previous version of an SmtpContext, populated by {@link #resetContext()}. Resets
+     * can be directly invoked by the RESET command, but can also be indirectly mandated by the mail
+     * transaction flow, see <a
+     * href=https://datatracker.ietf.org/doc/html/rfc5321#section-3.3>RFC5321</a>.
+     */
     private SmtpContext oldContext;
 
-    // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
-    // get the type of the reply, because the reply type cannot be determined by the content alone.
+    /**
+     * SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
+     * interpret the replies, because the reply type cannot be determined by the content alone.
+     *
+     * @see SmtpMappingUtil
+     * @see de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer SmtpLayer
+     */
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
-    // The server sends a greeting when the client connects. This is the first message the client
-    // has to process, so we need to keep track of it.
+    /** Whether the initial greeting was received. */
     private boolean greetingReceived = false;
 
     public SmtpContext(Context context) {
         super(context);
     }
 
+    /** Clear all buffers. */
     public void clearBuffers() {
         reversePathBuffer.clear();
         forwardPathBuffer = "";
@@ -114,65 +167,22 @@ public class SmtpContext extends LayerContext {
         this.lastCommand = lastCommand;
     }
 
+    /**
+     * Get the expected reply type for the last command.
+     *
+     * @return An object of the expected reply type for the last command.
+     */
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
-        return getExpectedReplyType(command);
+        return SmtpMappingUtil.getMatchingReply(command);
     }
 
-    /**
-     * Given a command return an instance of the Reply object expected fpr ot. Raises an exception
-     * when a command is not implemented.
-     *
-     * @param command The command for which to get the expected reply
-     * @return The expected reply object
-     */
-    public static SmtpReply getExpectedReplyType(SmtpCommand command) {
-        if (command == null) {
-            return null;
-        } else {
-            if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
-                // HELO's reply is a special case of EHLO's reply without any extensions - this just
-                // reuses code
-                return new SmtpEHLOReply();
-            } else if (command instanceof SmtpNOOPCommand) {
-                return new SmtpNOOPReply();
-            } else if (command instanceof SmtpAUTHCommand) {
-                return new SmtpAUTHReply();
-            } else if (command instanceof SmtpEXPNCommand) {
-                return new SmtpEXPNReply();
-            } else if (command instanceof SmtpVRFYCommand) {
-                return new SmtpVRFYReply();
-            } else if (command instanceof SmtpMAILCommand) {
-                return new SmtpMAILReply();
-            } else if (command instanceof SmtpRSETCommand) {
-                return new SmtpRSETReply();
-            } else if (command instanceof SmtpInitialGreetingDummy) {
-                return new SmtpInitialGreeting();
-            } else if (command instanceof SmtpDATACommand) {
-                return new SmtpDATAReply();
-            } else if (command instanceof SmtpRCPTCommand) {
-                return new SmtpRCPTReply();
-            } else if (command instanceof SmtpDATAContentCommand) {
-                return new SmtpDATAContentReply();
-            } else if (command instanceof SmtpHELPCommand) {
-                return new SmtpHELPReply();
-            } else if (command instanceof SmtpQUITCommand) {
-                return new SmtpQUITReply();
-            } else if (command instanceof SmtpSTARTTLSCommand) {
-                return new SmtpSTARTTLSReply();
-            } else {
-                throw new UnsupportedOperationException(
-                        "No reply implemented for class in SmtpContext:" + command.getClass());
-            }
-        }
+    public boolean isClientUsedHELO() {
+        return clientUsedHELO;
     }
 
-    public boolean isServerOnlySupportsEHLO() {
-        return serverOnlySupportsEHLO;
-    }
-
-    public void setServerOnlySupportsEHLO(boolean serverOnlySupportsEHLO) {
-        this.serverOnlySupportsEHLO = serverOnlySupportsEHLO;
+    public void setClientUsedHELO(boolean clientUsedHELO) {
+        this.clientUsedHELO = clientUsedHELO;
     }
 
     public boolean isClientRequestedClose() {
@@ -183,7 +193,7 @@ public class SmtpContext extends LayerContext {
         this.clientRequestedClose = clientRequestedClose;
     }
 
-    public boolean isServerAcknowledgedClose() {
+    public boolean getServerAcknowledgedClose() {
         return serverAcknowledgedClose;
     }
 
@@ -205,5 +215,25 @@ public class SmtpContext extends LayerContext {
 
     public void setGreetingReceived(boolean greetingReceived) {
         this.greetingReceived = greetingReceived;
+    }
+
+    public SmtpContext getOldContext() {
+        return oldContext;
+    }
+
+    public String getServerIdentity() {
+        return serverIdentity;
+    }
+
+    public void setServerIdentity(String serverIdentity) {
+        this.serverIdentity = serverIdentity;
+    }
+
+    public List<SmtpServiceExtension> getNegotiatedExtensions() {
+        return negotiatedExtensions;
+    }
+
+    public void setNegotiatedExtensions(List<SmtpServiceExtension> negotiatedExtensions) {
+        this.negotiatedExtensions = negotiatedExtensions;
     }
 }

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.EXPNReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEXPNReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -42,8 +42,8 @@ public class EXPNReplyTest {
     void parseAndSerializeValidReply() {
         String reply = "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n";
 
-        EXPNReplyParser parser =
-                new EXPNReplyParser(
+        SmtpEXPNReplyParser parser =
+                new SmtpEXPNReplyParser(
                         new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         SmtpEXPNReply expn = new SmtpEXPNReply();
@@ -64,8 +64,8 @@ public class EXPNReplyTest {
     @Test
     void parseValidDescriptionReply() {
         String reply = "500 Syntax error, command unrecognized\r\n";
-        EXPNReplyParser parser =
-                new EXPNReplyParser(
+        SmtpEXPNReplyParser parser =
+                new SmtpEXPNReplyParser(
                         new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         SmtpEXPNReply expn = new SmtpEXPNReply();

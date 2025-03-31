@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.handler.InitialGreetingHandler;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpInitialGreetingHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -27,7 +27,7 @@ public class SmtpInitialGreeting extends SmtpReply {
     }
 
     @Override
-    public InitialGreetingHandler getHandler(SmtpContext smtpContext) {
-        return new InitialGreetingHandler(smtpContext);
+    public SmtpInitialGreetingHandler getHandler(SmtpContext smtpContext) {
+        return new SmtpInitialGreetingHandler(smtpContext);
     }
 }

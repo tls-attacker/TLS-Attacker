@@ -45,6 +45,8 @@ public class Context {
 
     private SmtpContext smtpContext;
 
+    private Pop3Context pop3Context;
+
     private StarttlsContext starttlsContext;
 
     private TlsContext tlsContext;
@@ -95,6 +97,14 @@ public class Context {
 
     public void setSmtpContext(SmtpContext smtpContext) {
         this.smtpContext = smtpContext;
+    }
+
+    public Pop3Context getPop3Context() {
+        return pop3Context;
+    }
+
+    public void setPop3Context(Pop3Context pop3Context) {
+        this.pop3Context = pop3Context;
     }
 
     public StarttlsContext getStarttlsContext() {
@@ -189,6 +199,7 @@ public class Context {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
         smtpContext = new SmtpContext(this);
+        pop3Context = new Pop3Context(this);
         starttlsContext = new StarttlsContext(this);
         tcpContext = new TcpContext(this);
         quicContext = new QuicContext(this);

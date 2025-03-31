@@ -1298,6 +1298,38 @@ public class Config implements Serializable {
 
     private String defaultSmtpForwardPath = "test@example.com";
 
+    // ---------------------- POP3 start ----------------------//
+    private int defaultPop3MessageNumber = 1;
+
+    public int getDefaultPop3MessageNumber() {
+        return defaultPop3MessageNumber;
+    }
+
+    public void setDefaultPop3MessageNumber(int messageNumber) {
+        this.defaultPop3MessageNumber = messageNumber;
+    }
+
+    private String defaultPop3Username = "seal@upb.de";
+
+    public String getDefaultPop3Username() {
+        return this.defaultPop3Username;
+    }
+
+    public void setDefaultPop3Username(String username) {
+        this.defaultPop3Username = username;
+    }
+
+    private String defaultPop3Password = "s34l-p4ssw0rd!!";
+
+    public String getDefaultPop3Password() {
+        return this.defaultPop3Password;
+    }
+
+    public void setDefaultPop3Password(String password) {
+        this.defaultPop3Password = password;
+    }
+    // ---------------------- POP3 end ----------------------//
+
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
     private Boolean acceptContentRewritingDtlsFragments = true;

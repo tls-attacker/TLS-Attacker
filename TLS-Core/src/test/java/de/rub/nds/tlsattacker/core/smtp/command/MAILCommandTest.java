@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.MAILCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.MAILCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpMAILCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpMAILCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -28,8 +28,8 @@ public class MAILCommandTest {
     public void testStandardInput() {
         String stringMessage = "MAIL <seal@upb.de>\r\n";
 
-        MAILCommandParser parser =
-                new MAILCommandParser(
+        SmtpMAILCommandParser parser =
+                new SmtpMAILCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
@@ -40,8 +40,8 @@ public class MAILCommandTest {
     @Test
     public void testQuotedStringInput() {
         String stringMessage = "MAIL <\"seal\"@upb.de>\r\n";
-        MAILCommandParser parser =
-                new MAILCommandParser(
+        SmtpMAILCommandParser parser =
+                new SmtpMAILCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
@@ -52,8 +52,8 @@ public class MAILCommandTest {
     @Test
     public void testSpecialQuotedStringInput() {
         String stringMessage = "MAIL <\"seal@heal\"@upb.de>\r\n";
-        MAILCommandParser parser =
-                new MAILCommandParser(
+        SmtpMAILCommandParser parser =
+                new SmtpMAILCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
@@ -64,8 +64,8 @@ public class MAILCommandTest {
     @Test
     public void testInvalidInput() {
         String stringMessage = "MAIL <seal@heal@upb.de>\r\n";
-        MAILCommandParser parser =
-                new MAILCommandParser(
+        SmtpMAILCommandParser parser =
+                new SmtpMAILCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         assertThrows(IllegalArgumentException.class, () -> parser.parse(mail));
@@ -74,8 +74,8 @@ public class MAILCommandTest {
     @Test
     public void testInvalidPathInput() {
         String stringMessage = "MAIL seal@upb.de\r\n";
-        MAILCommandParser parser =
-                new MAILCommandParser(
+        SmtpMAILCommandParser parser =
+                new SmtpMAILCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         assertThrows(IllegalArgumentException.class, () -> parser.parse(mail));
@@ -84,8 +84,8 @@ public class MAILCommandTest {
     @Test
     public void testSpecialMailParameters() {
         String stringMessage = "MAIL <seal@upb.de> SIZE [\"=\"12345]\r\n";
-        MAILCommandParser parser =
-                new MAILCommandParser(
+        SmtpMAILCommandParser parser =
+                new SmtpMAILCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
@@ -105,8 +105,8 @@ public class MAILCommandTest {
             "MAIL <seal@upb.de> SIZE[\"=\"12345]\r\n"
         };
         for (String command : invalidCommands) {
-            MAILCommandParser parser =
-                    new MAILCommandParser(
+            SmtpMAILCommandParser parser =
+                    new SmtpMAILCommandParser(
                             new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
             SmtpMAILCommand mail = new SmtpMAILCommand();
             assertThrows(IllegalArgumentException.class, () -> parser.parse(mail));
@@ -117,7 +117,7 @@ public class MAILCommandTest {
     public void testSerialization() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpMAILCommand mailCommand = new SmtpMAILCommand("seal@upb.de");
-        MAILCommandPreparator preparator = mailCommand.getPreparator(context);
+        SmtpMAILCommandPreparator preparator = mailCommand.getPreparator(context);
         Serializer serializer = mailCommand.getSerializer(context);
         preparator.prepare();
         serializer.serialize();

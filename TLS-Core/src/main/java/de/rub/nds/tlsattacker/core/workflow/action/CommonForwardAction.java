@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -240,6 +241,19 @@ public abstract class CommonForwardAction extends TlsAction
                         ImplementedLayers.SMTP, layerStackReceiveResult)
                 .stream()
                 .map(container -> (SmtpMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Pop3Message> getReceivedPop3Messages() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.POP3, layerStackReceiveResult)
+                .stream()
+                .map(container -> (Pop3Message) container)
                 .collect(Collectors.toList());
     }
 

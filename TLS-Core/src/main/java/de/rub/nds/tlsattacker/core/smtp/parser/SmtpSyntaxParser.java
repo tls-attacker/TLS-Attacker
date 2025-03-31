@@ -38,7 +38,9 @@ public final class SmtpSyntaxParser {
 
     public static boolean isValidAtomString(String str) {
         for (int i = 0; i < str.length(); i++) {
-            if (isNotAnAtomCharacter(str.charAt(i))) return false;
+            if (isNotAnAtomCharacter(str.charAt(i))) {
+                return false;
+            }
         }
 
         return true;
@@ -65,13 +67,18 @@ public final class SmtpSyntaxParser {
     private static boolean isValidDotString(String str) {
         // first and last character must be atom characters
         if (isNotAnAtomCharacter(str.charAt(0))
-                || isNotAnAtomCharacter(str.charAt(str.length() - 1))) return false;
+                || isNotAnAtomCharacter(str.charAt(str.length() - 1))) {
+            return false;
+        }
 
         for (int i = 1; i < str.length() - 1; i++) {
             char c = str.charAt(i);
-            if (isNotAnAtomCharacter(c) && c != '.') return false;
-            if (str.charAt(i - 1) == '.' && c == '.')
+            if (isNotAnAtomCharacter(c) && c != '.') {
+                return false;
+            }
+            if (str.charAt(i - 1) == '.' && c == '.') {
                 return false; // consecutive dots are not allowed
+            }
         }
 
         return true;
@@ -79,7 +86,9 @@ public final class SmtpSyntaxParser {
 
     private static int endIndexOfLocalPart(String mailbox) {
         for (int i = mailbox.length() - 1; i >= 0; i--) {
-            if (mailbox.charAt(i) != '@') continue;
+            if (mailbox.charAt(i) != '@') {
+                continue;
+            }
             return i;
         }
 
@@ -90,12 +99,16 @@ public final class SmtpSyntaxParser {
         // first and last characters have to be alphanumeric:
         if (str.isEmpty()
                 || isNotAlphanumeric(str.charAt(0))
-                || isNotAlphanumeric(str.charAt(str.length() - 1))) return false;
+                || isNotAlphanumeric(str.charAt(str.length() - 1))) {
+            return false;
+        }
 
         // characters in between may also be '-'
         for (int i = 1; i < str.length() - 1; i++) {
             char c = str.charAt(i);
-            if (isNotAlphanumeric(c) && c != '-') return false;
+            if (isNotAlphanumeric(c) && c != '-') {
+                return false;
+            }
         }
 
         return true;
@@ -105,33 +118,45 @@ public final class SmtpSyntaxParser {
         String[] subdomains = str.split("\\.");
 
         for (String subdomain : subdomains) {
-            if (!isValidSubdomain(subdomain)) return false;
+            if (!isValidSubdomain(subdomain)) {
+                return false;
+            }
         }
 
         return true;
     }
 
     private static boolean isValidAddressLiteral(String str) {
-        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']')
+        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']') {
             return false;
+        }
 
-        if (str.startsWith("[IPv6:")) str = str.substring(6, str.length() - 1);
-        else str = str.substring(1, str.length() - 1);
+        if (str.startsWith("[IPv6:")) {
+            str = str.substring(6, str.length() - 1);
+        } else {
+            str = str.substring(1, str.length() - 1);
+        }
 
         return IPAddress.isValid(str);
     }
 
     private static boolean doesNotContainControlCharacters(String str) {
         for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) < 32) return false;
+            if (str.charAt(i) < 32) {
+                return false;
+            }
         }
 
         return true;
     }
 
     private static boolean isValidLocalPart(String localPart) {
-        if (localPart.isEmpty()) return false;
-        if (isValidDotString(localPart)) return true;
+        if (localPart.isEmpty()) {
+            return false;
+        }
+        if (isValidDotString(localPart)) {
+            return true;
+        }
 
         // case: special characters were found, thus local part must be quoted string:
         return localPart.charAt(0) == '"'
@@ -147,7 +172,9 @@ public final class SmtpSyntaxParser {
     public static boolean isValidMailbox(String mailbox) {
         String localPart = mailbox.substring(0, endIndexOfLocalPart(mailbox));
 
-        if (!isValidLocalPart(localPart)) return false;
+        if (!isValidLocalPart(localPart)) {
+            return false;
+        }
 
         String mailboxEnding =
                 mailbox.substring(endIndexOfLocalPart(mailbox) + 1); // everything past @
@@ -188,80 +215,78 @@ public final class SmtpSyntaxParser {
         // just ehlo-line
         switch (ext) {
             case "8BITMIME":
-                return new _8BITMIMEExtension();
+                return new Smtp8BITMIMEExtension();
             case "ATRN":
-                return new ATRNExtension();
+                return new SmtpATRNExtension();
             case "AUTH":
                 String[] sasl = parameters.split(" ");
-                return new AUTHExtension(new ArrayList<>(List.of(sasl)));
+                return new SmtpAUTHExtension(new ArrayList<>(List.of(sasl)));
             case "BINARYMIME":
-                return new BINARYMIMEExtension();
+                return new SmtpBINARYMIMEExtension();
             case "BURL":
                 // TODO: BURL parameter not understood in any way
-                return new BURLExtension(parameters);
+                return new SmtpBURLExtension(parameters);
             case "CHECKPOINT":
-                return new CHECKPOINTExtension();
+                return new SmtpCHECKPOINTExtension();
             case "CHUNKING":
-                return new CHUNKINGExtension();
+                return new SmtpCHUNKINGExtension();
             case "CONNEG":
-                return new CONNEGExtension();
+                return new SmtpCONNEGExtension();
             case "CONPERM":
-                return new CONPERMExtension();
+                return new SmtpCONPERMExtension();
             case "DELIVERBY":
-                return new DELIVERBYExtension();
+                return new SmtpDELIVERBYExtension();
             case "DSN":
-                return new DSNExtension();
+                return new SmtpDSNExtension();
             case "ENHANCEDSTATUSCODES":
-                return new ENHANCEDSTATUSCODESExtension();
+                return new SmtpENHANCEDSTATUSCODESExtension();
             case "ETRN":
-                return new ETRNExtension();
+                return new SmtpETRNExtension();
             case "EXPN":
-                return new EXPNExtension();
+                return new SmtpEXPNExtension();
             case "FUTURERELEASE":
-                return new FUTURERELEASEExtension();
+                return new SmtpFUTURERELEASEExtension();
             case "HELP":
-                return new HELPExtension();
+                return new SmtpHELPExtension();
             case "LIMITS":
-                return new LIMITSExtension();
+                return new SmtpLIMITSExtension();
             case "MT-PRIORITY":
                 // TODO: MT_PRIORITY parameter not understood in any way
-                return new MT_PRIORITYExtension(parameters);
+                return new SmtpMT_PRIORITYExtension(parameters);
             case "MTRK":
-                return new MTRKExtension();
+                return new SmtpMTRKExtension();
             case "NO-SOLICITING":
                 // TODO: NO-SOLICITING parameter not understood in any way
-                return new NO_SOLICITINGExtension(parameters);
+                return new SmtpNO_SOLICITINGExtension(parameters);
             case "PIPELINING":
-                return new PIPELININGExtension();
+                return new SmtpPIPELININGExtension();
             case "REQUIRETLS":
-                return new REQUIRETLSExtension();
+                return new SmtpREQUIRETLSExtension();
             case "RRVS":
-                return new RRVSExtension();
+                return new SmtpRRVSExtension();
             case "SAML":
-                return new SAMLExtension();
+                return new SmtpSAMLExtension();
             case "SEND":
-                return new SENDExtension();
+                return new SmtpSENDExtension();
             case "SIZE":
                 // TODO: SIZE can have a parameter
                 int size = Integer.parseInt(parameters);
-                return new SIZEExtension(size);
+                return new SmtpSIZEExtension(size);
             case "SMTPUTF8":
-                return new SMTPUTF8Extension();
+                return new SmtpSMTPUTF8Extension();
             case "SOML":
-                return new SOMLExtension();
+                return new SmtpSOMLExtension();
             case "STARTTLS":
-                return new STARTTLSExtension();
+                return new SmtpSTARTTLSExtension();
             case "SUBMITTER":
-                return new SUBMITTERExtension();
+                return new SmtpSUBMITTERExtension();
             case "TURN":
-                return new TURNExtension();
-            case "UTF8SMTP":
-                return new UTF8SMTPExtension();
+                return new SmtpTURNExtension();
             case "VERB":
-                return new VERBExtension();
+                return new SmtpVERBExtension();
             default:
                 if (ext.startsWith("X") || ext.startsWith("x")) {
-                    return new LocalSmtpServiceExtension(ext, parameters);
+                    return new SmtpLocalServiceExtension(ext, parameters);
                 } else {
                     throw new ParserException(
                             "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);

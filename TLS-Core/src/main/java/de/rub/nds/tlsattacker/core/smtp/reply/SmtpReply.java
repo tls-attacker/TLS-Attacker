@@ -29,7 +29,9 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected Integer replyCode;
+    protected Integer replyCode = 0; // some invalid value to indicate that it was not set
+    //    protected String humanReadableMessage;
+    protected List<String> humanReadableMessages = new ArrayList<>();
 
     // hide from the user that there can be multiple human-readable messages
     // (e.g. for multiline replies)
@@ -52,9 +54,6 @@ public class SmtpReply extends SmtpMessage {
     public boolean isMultiline() {
         return this.humanReadableMessages.size() > 1;
     }
-
-    //    protected String humanReadableMessage;
-    protected List<String> humanReadableMessages;
 
     public SmtpReply() {
         this.humanReadableMessages = new ArrayList<>();
@@ -95,7 +94,12 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getReplyCode())
+                .append(" ")
+                .append(SmtpMappingUtil.getMatchingCommand(this).getVerb())
+                .append("Reply");
+        return sb.toString();
     }
 
     public void setReplyCode(Integer replyCode) {
@@ -116,7 +120,8 @@ public class SmtpReply extends SmtpMessage {
         String CRLF = "\r\n";
 
         StringBuilder sb = new StringBuilder();
-        String replyCodeString = this.replyCode != null ? String.valueOf(this.replyCode) : "";
+        String replyCodeString =
+                this.replyCode != null ? String.format("%03d", this.replyCode) : "";
         String replyCodePrefix = this.replyCode != null ? replyCodeString + DASH : "";
 
         for (int i = 0; i < this.humanReadableMessages.size() - 1; i++) {
@@ -126,8 +131,13 @@ public class SmtpReply extends SmtpMessage {
         }
 
         sb.append(replyCodeString);
-        sb.append(SP);
-        sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));
+        // partly workaround for uninitialized humanReadableMessages (which should not happen), but
+        // also more in line with standard: Empty messages are not intended, but recommended to
+        // accept
+        if (!this.humanReadableMessages.isEmpty()) {
+            sb.append(SP);
+            sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));
+        }
         sb.append(CRLF);
 
         return sb.toString();

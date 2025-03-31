@@ -80,6 +80,7 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
                     null,
                     null,
                     null,
+                    null,
                     null);
         } else {
             return null;

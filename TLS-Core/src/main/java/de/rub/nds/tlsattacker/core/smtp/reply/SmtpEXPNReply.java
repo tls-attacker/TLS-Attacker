@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.EXPNReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEXPNReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -71,8 +71,8 @@ public class SmtpEXPNReply extends SmtpReply {
     }
 
     @Override
-    public EXPNReplyParser getParser(SmtpContext context, InputStream stream) {
-        return new EXPNReplyParser(stream);
+    public SmtpEXPNReplyParser getParser(SmtpContext context, InputStream stream) {
+        return new SmtpEXPNReplyParser(stream);
     }
 
     @Override

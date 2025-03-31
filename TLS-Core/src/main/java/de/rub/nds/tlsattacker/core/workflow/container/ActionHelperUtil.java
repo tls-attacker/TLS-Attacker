@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -37,6 +38,8 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -47,6 +50,17 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This class provides methods that create the LayerConfigurations for the different layers of the
+ * LayerStack. They are used by the {@link SendAction} and {@link ReceiveAction} classes to actually
+ * send and receive data. TODO: This class hardcodes all implemented layers using one big signature.
+ * This is not very flexible when implementing new protocols and should be made more dynamic in the
+ * future.
+ *
+ * @see SendAction
+ * @see ReceiveAction
+ * @see LayerStack
+ */
 public class ActionHelperUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -77,7 +91,8 @@ public class ActionHelperUtil {
             List<QuicFrame> framesToReceive,
             List<QuicPacket> packetsToReceive,
             List<HttpMessage> httpMessagesToReceive,
-            List<SmtpMessage> smtpMessagesToReceive) {
+            List<SmtpMessage> smtpMessagesToReceive,
+            List<Pop3Message> pop3MessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         List<LayerConfiguration<?>> layerConfigurationList;
@@ -99,6 +114,8 @@ public class ActionHelperUtil {
                                 ImplementedLayers.HTTP, httpMessagesToReceive, actionOptions),
                         createReceiveConfiguration(
                                 ImplementedLayers.SMTP, smtpMessagesToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.POP3, pop3MessagesToReceive, actionOptions),
                         createReceiveConfiguration(
                                 ImplementedLayers.QUICFRAME, framesToReceive, actionOptions),
                         createReceiveConfiguration(
@@ -170,7 +187,8 @@ public class ActionHelperUtil {
             List<QuicFrame> framesToSend,
             List<QuicPacket> packetsToSend,
             List<HttpMessage> httpMessagesToSend,
-            List<SmtpMessage> smtpMessagesToSend) {
+            List<SmtpMessage> smtpMessagesToSend,
+            List<Pop3Message> pop3MessagesToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration<?>> layerConfigurationsList = new LinkedList<>();
 
@@ -200,6 +218,12 @@ public class ActionHelperUtil {
             layerConfigurationsList.add(
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.SMTP, smtpMessagesToSend));
+        }
+
+        if (pop3MessagesToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.POP3, pop3MessagesToSend));
         }
 
         if (framesToSend != null) {

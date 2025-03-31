@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer.constant;
 
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
@@ -29,7 +30,8 @@ public enum ImplementedLayers implements LayerType {
     SSL2(SSL2Message.class),
     QUICPACKET(QuicPacket.class),
     QUICFRAME(QuicFrame.class),
-    SMTP(SmtpMessage.class);
+    SMTP(SmtpMessage.class),
+    POP3(Pop3Message.class);
 
     private Class<?> baseContainerClass;
 

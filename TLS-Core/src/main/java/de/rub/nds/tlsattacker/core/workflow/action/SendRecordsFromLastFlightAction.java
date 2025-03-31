@@ -47,6 +47,7 @@ public class SendRecordsFromLastFlightAction extends CommonSendAction {
                 null,
                 null,
                 null,
+                null,
                 null);
     }
 
