@@ -18,10 +18,10 @@ package de.rub.nds.tlsattacker.core.smtp.extensions;
  */
 public class SmtpLocalServiceExtension extends SmtpServiceExtension {
     public SmtpLocalServiceExtension() {
-        this("", "");
+        this("X-LOCAL", "");
     }
 
     public SmtpLocalServiceExtension(String ehloKeyword, String parameters) {
-        super(ehloKeyword);
+        super(ehloKeyword, parameters);
     }
 }

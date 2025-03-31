@@ -118,8 +118,11 @@ public class SmtpEHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 // TODO: SIZE can have a parameter
                 int size = Integer.parseInt(parameters);
                 return new SmtpSIZEExtension(size);
+            // yes these two are super similar, but they are different standards
             case "SMTPUTF8":
                 return new SmtpSMTPUTF8Extension();
+            case "UTF8SMTP":
+                return new SmtpUTF8SMTPExtension();
             case "SOML":
                 return new SmtpSOMLExtension();
             case "STARTTLS":

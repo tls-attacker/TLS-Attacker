@@ -134,4 +134,21 @@ public class SMTPWorkflowTestBench {
 
         runWorkflowTrace(trace);
     }
+
+    @Disabled
+    @Test
+    public void testCitadel() throws IOException, JAXBException {
+        initializeConfig(587, StackConfiguration.SMTP);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
+
+        trace.addTlsAction(
+                1,
+                new SendAction(new SmtpAUTHCommand("PLAIN", "AHZpY3RpbQBzZWN1cmVQYXNzd29yZA==")));
+        trace.addTlsAction(2, new ReceiveAction(new SmtpAUTHReply()));
+
+        runWorkflowTrace(trace);
+    }
 }
