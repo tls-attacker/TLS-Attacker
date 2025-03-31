@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.handler.EHLOCommandHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.EHLOCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.EHLOCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpEHLOCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpEHLOCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpEHLOCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;
@@ -75,17 +75,17 @@ public class SmtpEHLOCommand extends SmtpCommand {
     }
 
     @Override
-    public EHLOCommandParser getParser(SmtpContext context, InputStream stream) {
-        return new EHLOCommandParser(stream);
+    public SmtpEHLOCommandParser getParser(SmtpContext context, InputStream stream) {
+        return new SmtpEHLOCommandParser(stream);
     }
 
     @Override
-    public EHLOCommandPreparator getPreparator(SmtpContext context) {
-        return new EHLOCommandPreparator(context, this);
+    public SmtpEHLOCommandPreparator getPreparator(SmtpContext context) {
+        return new SmtpEHLOCommandPreparator(context, this);
     }
 
     @Override
-    public EHLOCommandHandler getHandler(SmtpContext context) {
-        return new EHLOCommandHandler(context);
+    public SmtpEHLOCommandHandler getHandler(SmtpContext context) {
+        return new SmtpEHLOCommandHandler(context);
     }
 }

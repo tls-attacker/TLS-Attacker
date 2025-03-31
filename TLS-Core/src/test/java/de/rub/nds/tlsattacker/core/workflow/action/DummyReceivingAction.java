@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
@@ -63,6 +64,11 @@ public class DummyReceivingAction extends MessageAction
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
         throw new UnsupportedOperationException("Unimplemented method 'getReceivedHttpMessages'");
+    }
+
+    @Override
+    public List<Pop3Message> getReceivedPop3Messages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedPop3Messages'");
     }
 
     @Override

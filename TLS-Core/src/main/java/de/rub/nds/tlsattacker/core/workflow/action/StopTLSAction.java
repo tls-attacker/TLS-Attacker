@@ -12,9 +12,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
-import de.rub.nds.tlsattacker.core.layer.context.StarttlsContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -23,18 +20,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This action removes the {@link MessageLayer} and {@link RecordLayer} from the {@link LayerStack} at runtime and stores them for later.
- * If the MessageLayer and RecordLayer are not present in the LayerStack, nothing happens.
- * This class is the counterpart to the {@link StartTLSAction} and is designed to be used with application protocols that support a form of opportunistic TLS.
+ * This action removes the {@link MessageLayer} and {@link RecordLayer} from the {@link LayerStack}
+ * at runtime and stores them for later. If the MessageLayer and RecordLayer are not present in the
+ * LayerStack, nothing happens. This class is the counterpart to the {@link StartTLSAction} and is
+ * designed to be used with application protocols that support a form of opportunistic TLS.
  */
 @XmlRootElement
 public class StopTLSAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * This action dynamically removes Record and Message layer from the
-     * LayerStack during runtime and store them into StarttlsContext for later use.
-     * TODO: since the action is now STARTTLS agnostic, we should adjust StarttlsContext name wise
+     * This action dynamically removes Record and Message layer from the LayerStack during runtime
+     * and store them into StarttlsContext for later use. TODO: since the action is now STARTTLS
+     * agnostic, we should adjust StarttlsContext name wise
      *
      * @param state the state to work on
      * @throws ActionExecutionException if action is not supported for the current protocol

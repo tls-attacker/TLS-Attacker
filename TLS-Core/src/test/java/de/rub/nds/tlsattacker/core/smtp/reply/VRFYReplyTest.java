@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpVRFYReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -29,8 +29,8 @@ class VRFYReplyTest {
     @ParameterizedTest
     @MethodSource("provideValidReplies")
     void testParseValidReplies(String reply, List<String> usernames, List<String> mailboxes) {
-        VRFYReplyParser parser =
-                new VRFYReplyParser(
+        SmtpVRFYReplyParser parser =
+                new SmtpVRFYReplyParser(
                         new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         SmtpVRFYReply vrfy = new SmtpVRFYReply();
@@ -72,8 +72,8 @@ class VRFYReplyTest {
     @Test
     void parseValidDescriptionReply() {
         String reply = "500 Syntax error, command unrecognized\r\n";
-        VRFYReplyParser parser =
-                new VRFYReplyParser(
+        SmtpVRFYReplyParser parser =
+                new SmtpVRFYReplyParser(
                         new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         SmtpVRFYReply vrfyReply = new SmtpVRFYReply();

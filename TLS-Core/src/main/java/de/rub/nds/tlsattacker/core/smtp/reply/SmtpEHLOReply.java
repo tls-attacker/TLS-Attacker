@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpEHLOReplyHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEHLOReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,8 +34,13 @@ public class SmtpEHLOReply extends SmtpReply {
     }
 
     @Override
-    public EHLOReplyParser getParser(SmtpContext context, InputStream stream) {
-        return new EHLOReplyParser(stream);
+    public SmtpEHLOReplyParser getParser(SmtpContext context, InputStream stream) {
+        return new SmtpEHLOReplyParser(stream);
+    }
+
+    @Override
+    public SmtpEHLOReplyHandler getHandler(SmtpContext context) {
+        return new SmtpEHLOReplyHandler(context);
     }
 
     public String getGreeting() {
@@ -80,7 +86,9 @@ public class SmtpEHLOReply extends SmtpReply {
         }
         sb.append(CRLF);
 
-        if (!hasExtensions) return sb.toString();
+        if (!hasExtensions) {
+            return sb.toString();
+        }
 
         for (int i = 0; i < this.extensions.size() - 1; i++) {
             SmtpServiceExtension ext = this.extensions.get(i);

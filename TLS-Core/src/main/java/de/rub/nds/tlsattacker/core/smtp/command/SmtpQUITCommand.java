@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.handler.QUITCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpQUITCommandHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -31,7 +31,7 @@ public class SmtpQUITCommand extends SmtpCommand {
     }
 
     @Override
-    public QUITCommandHandler getHandler(SmtpContext smtpContext) {
-        return new QUITCommandHandler(smtpContext);
+    public SmtpQUITCommandHandler getHandler(SmtpContext smtpContext) {
+        return new SmtpQUITCommandHandler(smtpContext);
     }
 }

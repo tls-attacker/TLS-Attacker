@@ -59,15 +59,17 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
     }
 
     public void parseReplyCode(ReplyT replyT, String line) {
-        if (line.length() < 3) return;
+        if (line.length() < 3) {
+            return;
+        }
 
         int replyCode = this.toInteger(line.substring(0, 3));
 
         // warning if status code is already set but codes are inconsistent:
-        try {
-            if (replyT.getReplyCode() != replyCode) replyCodeWarning(replyCode, line);
-        } catch (NullPointerException ignored) {
-        } // case: reply code not initialized yet
+        // try {
+        //    if (replyT.getReplyCode() != replyCode) replyCodeWarning(replyCode, line);
+        // } catch (NullPointerException ignored) {
+        // } // case: reply code not initialized yet
 
         replyT.setReplyCode(replyCode);
     }

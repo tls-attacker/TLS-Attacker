@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.smtp.parser.command.EXPNCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpEXPNCommandParser;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,10 @@ public class EXPNCommandTest {
             "EXPN john\r\n", "EXPN \"John Doe\"\r\n", "EXPN \"john.doe@gmail.com\"\r\n"
         };
 
-        EXPNCommandParser parser;
+        SmtpEXPNCommandParser parser;
         for (String command : validCommands) {
             parser =
-                    new EXPNCommandParser(
+                    new SmtpEXPNCommandParser(
                             new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
 
             SmtpEXPNCommand expn = new SmtpEXPNCommand();
@@ -43,8 +43,8 @@ public class EXPNCommandTest {
         };
 
         for (String command : invalidCommands) {
-            EXPNCommandParser parser =
-                    new EXPNCommandParser(
+            SmtpEXPNCommandParser parser =
+                    new SmtpEXPNCommandParser(
                             new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
 
             SmtpEXPNCommand expn = new SmtpEXPNCommand();

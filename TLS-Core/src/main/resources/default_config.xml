@@ -1445,6 +1445,9 @@
     <defaultSmtpMailingList>members@seal.upb.de</defaultSmtpMailingList>
     <defaultSmtpClientIdentity>seal.upb.de</defaultSmtpClientIdentity>
     <defaultSmtpForwardPath>test@example.com</defaultSmtpForwardPath>
+    <defaultPop3MessageNumber>1</defaultPop3MessageNumber>
+    <defaultPop3Username>seal@upb.de</defaultPop3Username>
+    <defaultPop3Password>s34l-p4ssw0rd!!</defaultPop3Password>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>

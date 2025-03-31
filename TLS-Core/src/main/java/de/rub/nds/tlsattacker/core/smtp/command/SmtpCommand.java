@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /**
  * High level representation of an SMTP command. Commands are one line consisting of a verb and
- * optional parameters ending with CRLF. Example
+ * optional parameters ending with CRLF. Example:
  *
  * <pre>
  *     C: RCPT TO:&lt;seal@upb.de&gt;

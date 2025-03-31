@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.extensions.ATRNExtension;
-import de.rub.nds.tlsattacker.core.smtp.extensions.HELPExtension;
-import de.rub.nds.tlsattacker.core.smtp.extensions.STARTTLSExtension;
-import de.rub.nds.tlsattacker.core.smtp.extensions._8BITMIMEExtension;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.extensions.Smtp8BITMIMEExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpATRNExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpHELPExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpSTARTTLSExtension;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEHLOReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -34,8 +34,8 @@ class InitialGreetingTest {
     public void testParseSimpleNoGreeting() {
         String stringMessage = "250 seal.cs.upb.de\r\n";
 
-        EHLOReplyParser parser =
-                new EHLOReplyParser(
+        SmtpEHLOReplyParser parser =
+                new SmtpEHLOReplyParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
         parser.parse(ehlo);
@@ -55,7 +55,7 @@ class InitialGreetingTest {
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
-        EHLOReplyParser parser =
+        SmtpEHLOReplyParser parser =
                 ehlo.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
@@ -93,10 +93,10 @@ class InitialGreetingTest {
         ehlo.setGreeting("says Greetings");
         ehlo.setExtensions(
                 List.of(
-                        new _8BITMIMEExtension(),
-                        new ATRNExtension(),
-                        new STARTTLSExtension(),
-                        new HELPExtension()));
+                        new Smtp8BITMIMEExtension(),
+                        new SmtpATRNExtension(),
+                        new SmtpSTARTTLSExtension(),
+                        new SmtpHELPExtension()));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = ehlo.getSerializer(context);

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -53,6 +54,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<SmtpMessage> configuredSmtpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Pop3Message> configuredPop3Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> configuredQuicFrames;
@@ -111,6 +115,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(SmtpMessage... smtpMessage) {
         this.configuredSmtpMessages = new ArrayList<>(Arrays.asList(smtpMessage));
+    }
+
+    public SendAction(Pop3Message... pop3Message) {
+        this.configuredPop3Messages = new ArrayList<>(Arrays.asList(pop3Message));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -229,6 +237,13 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
+
+        if (configuredPop3Messages != null) {
+            for (Pop3Message msg : configuredPop3Messages) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
+            }
+        }
+
         if (configuredQuicFrames != null) {
             for (QuicFrame frames : configuredQuicFrames) {
                 holders.addAll(frames.getAllModifiableVariableHolders());
@@ -266,6 +281,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        // see the shortcomings explained in ActionHelperUtil
         return ActionHelperUtil.createSendConfiguration(
                 tlsContext,
                 configuredMessages,
@@ -274,7 +290,8 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 configuredQuicFrames,
                 configuredQuicPackets,
                 configuredHttpMessages,
-                configuredSmtpMessages);
+                configuredSmtpMessages,
+                configuredPop3Messages);
     }
 
     @Override
@@ -285,6 +302,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (configuredSmtpMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredSmtpMessages);
+        }
+        if (configuredPop3Messages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredPop3Messages);
         }
         if (configuredMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);

@@ -98,6 +98,7 @@ public class ForwardMessagesAction extends CommonForwardAction {
                 null,
                 null,
                 null,
+                null,
                 null);
     }
 
@@ -112,6 +113,6 @@ public class ForwardMessagesAction extends CommonForwardAction {
         }
 
         return ActionHelperUtil.createSendConfiguration(
-                tlsContext, receivedMessages, null, null, null, null, null, null);
+                tlsContext, receivedMessages, null, null, null, null, null, null, null);
     }
 }

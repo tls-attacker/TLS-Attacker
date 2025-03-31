@@ -43,6 +43,7 @@ public class SendMessagesFromLastFlightAction extends CommonSendAction {
                 null,
                 null,
                 null,
+                null,
                 null);
     }
 
