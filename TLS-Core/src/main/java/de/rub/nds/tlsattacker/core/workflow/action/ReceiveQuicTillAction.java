@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -107,7 +106,7 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
         }
         if (expectedQuicPackets != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new ReceiveTillLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, expectedQuicPackets));
         }
         return ActionHelperUtil.sortAndAddOptions(
