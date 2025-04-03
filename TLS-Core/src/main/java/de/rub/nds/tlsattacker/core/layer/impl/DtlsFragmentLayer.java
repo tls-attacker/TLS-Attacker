@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmissionStruct;
 import de.rub.nds.tlsattacker.core.state.Context;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -213,10 +212,7 @@ public class DtlsFragmentLayer
                     DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
                     fragment.setEpoch(tempHint.getEpoch());
                     DtlsHandshakeMessageFragmentParser parser =
-                            fragment.getParser(
-                                    context,
-                                    new ByteArrayInputStream(
-                                            dataStream.readChunk(dataStream.available())));
+                            fragment.getParser(context, dataStream);
                     parser.parse(fragment);
                     fragment.setCompleteResultingMessage(
                             fragment.getSerializer(context).serialize());
