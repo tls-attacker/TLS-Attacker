@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -102,7 +101,7 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
         if (expectedQuicFrames != null) {
             configurationList.add(
                     new ReceiveTillLayerConfiguration<>(
-                            ImplementedLayers.QUICFRAME, expectedQuicFrames));
+                            ImplementedLayers.QUICFRAME, true, expectedQuicFrames));
         }
         if (expectedQuicPackets != null) {
             configurationList.add(
@@ -115,9 +114,9 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("WaitTillReceive Action:\n");
+        StringBuilder sb = new StringBuilder("Quic Receive Until:\n");
 
-        sb.append("Quic Receive till:");
+        sb.append("\tExpected: ");
         if ((expectedQuicPackets != null)) {
             sb.append("Packets: ");
             for (QuicPacket packet : expectedQuicPackets) {
@@ -132,17 +131,34 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
                 sb.append(", ");
             }
         }
-        if (expectedQuicPackets == null || expectedQuicFrames == null) {
-            sb.append(" (no messages set)");
+        if (expectedQuicPackets == null && expectedQuicFrames == null) {
+            sb.append(" (no frames or packets set)");
         }
         sb.append("\n\tActual:");
-        if ((getReceivedMessages() != null) && (!getReceivedMessages().isEmpty())) {
-            for (ProtocolMessage message : getReceivedMessages()) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+        if (expectedQuicPackets != null && !expectedQuicPackets.isEmpty()) {
+            if ((getReceivedQuicPackets() != null) && (!getReceivedQuicPackets().isEmpty())) {
+                for (QuicPacket packet : getReceivedQuicPackets()) {
+                    sb.append(packet.toCompactString());
+                    sb.append(", ");
+                }
+            } else {
+                sb.append(" (no packets received)");
             }
+        }
+        if (expectedQuicFrames != null && !expectedQuicFrames.isEmpty()) {
+            if ((getExpectedQuicFrames() != null) && (!getExpectedQuicFrames().isEmpty())) {
+                for (QuicFrame frames : getExpectedQuicFrames()) {
+                    sb.append(frames.toCompactString());
+                    sb.append(", ");
+                }
+            } else {
+                sb.append(" (no frames receoved)");
+            }
+        }
+        if (executedAsPlanned()) {
+            sb.append("\n\t\tExecuted as planned.");
         } else {
-            sb.append(" (no messages set)");
+            sb.append("\n\t\tNot executed as planned.");
         }
         sb.append("\n");
         return sb.toString();
