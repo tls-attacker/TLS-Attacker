@@ -106,7 +106,8 @@ public class FragmentManager {
         return handshakeFragmentList;
     }
 
-    public List<DtlsHandshakeMessageFragment> getOrderedCombinedCompleteMessageFragments(boolean skipMessageSequences) {
+    public List<DtlsHandshakeMessageFragment> getOrderedCombinedCompleteMessageFragments(
+            boolean skipMessageSequences) {
         List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
         List<FragmentKey> orderedFragmentKeys = getOrderedFragmentKeys();
 

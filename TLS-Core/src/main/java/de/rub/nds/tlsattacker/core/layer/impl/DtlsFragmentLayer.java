@@ -218,15 +218,15 @@ public class DtlsFragmentLayer
                             fragment.getSerializer(context).serialize());
                     fragmentManager.addMessageFragment(fragment);
 
-
-                    // TODO this method needs a rewrite and more docu. Also the usage of currentInputStream and nextInputStream in the layer system is confusing
+                    // TODO this method needs a rewrite and more docu. Also the usage of
+                    // currentInputStream and nextInputStream in the layer system is confusing
                     List<DtlsHandshakeMessageFragment> completeMessages =
                             fragmentManager.getOrderedCombinedCompleteMessageFragments(false);
 
-                    // call the fragment interpretation mechanism just because I am afraid to remove this.
+                    // call the fragment interpretation mechanism just because I am afraid to remove
+                    // this.
                     // This should not be needed, but who knows
-                    fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
+                    fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
 
                     if (fragmentManager.areAllMessageFragmentsComplete()) {
                         // collected complete DTLS Message from the lower layer
@@ -236,12 +236,9 @@ public class DtlsFragmentLayer
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(
                                         ProtocolMessageType.HANDSHAKE,
-                                        completeMessage
-                                                .getMessageSequence()
-                                                .getValue());
+                                        completeMessage.getMessageSequence().getValue());
                         byte type = completeMessage.getType().getValue();
-                        byte[] content =
-                                completeMessage.getFragmentContent().getValue();
+                        byte[] content = completeMessage.getFragmentContent().getValue();
                         byte[] message =
                                 ArrayConverter.concatenate(
                                         new byte[] {type},
