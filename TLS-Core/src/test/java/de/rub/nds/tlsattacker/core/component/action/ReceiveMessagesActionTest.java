@@ -64,6 +64,8 @@ public class ReceiveMessagesActionTest extends ActionComponentTest {
 
         initAndExecute(trace, PacketLibrary.CLIENT_CERT_TILL_FINISHED, new byte[0]);
 
+        System.out.println(trace);
+
         assertTrue(trace.executedAsPlanned());
         assertTrue(trace.allActionsExecuted());
     }
@@ -80,7 +82,7 @@ public class ReceiveMessagesActionTest extends ActionComponentTest {
         assertTrue(trace.allActionsExecuted());
     }
 
-    /** Tests whether the Certificate message is received as planned via ReceiveTillAction */
+    /** Tests whether the Certificate message is received as planned via BufferedReceiveAction */
     @Test
     public void testBufferedReceive() {
         WorkflowTrace trace = createTrace();
@@ -93,6 +95,8 @@ public class ReceiveMessagesActionTest extends ActionComponentTest {
                         new ChangeCipherSpecMessage()));
 
         initAndExecute(trace, PacketLibrary.CLIENT_CERT_TILL_FINISHED, new byte[0]);
+
+        System.out.println(trace);
 
         assertTrue(trace.executedAsPlanned());
         assertTrue(trace.allActionsExecuted());

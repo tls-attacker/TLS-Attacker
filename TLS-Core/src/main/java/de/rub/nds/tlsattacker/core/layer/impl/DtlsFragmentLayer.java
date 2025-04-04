@@ -217,23 +217,31 @@ public class DtlsFragmentLayer
                     fragment.setCompleteResultingMessage(
                             fragment.getSerializer(context).serialize());
                     fragmentManager.addMessageFragment(fragment);
-                    List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
-                            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
+
+
+                    // TODO this method needs a rewrite and more docu. Also the usage of currentInputStream and nextInputStream in the layer system is confusing
+                    List<DtlsHandshakeMessageFragment> completeMessages =
+                            fragmentManager.getOrderedCombinedCompleteMessageFragments(false);
+
+                    // call the fragment interpretation mechanism just because I am afraid to remove this.
+                    // This should not be needed, but who knows
+                    fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
                                     true, false);
-                    // run until we received a complete fragment
-                    if (!uninterpretedMessageFragments.isEmpty()) {
-                        DtlsHandshakeMessageFragment uninterpretedMessageFragment =
-                                uninterpretedMessageFragments.get(0);
-                        addProducedContainer(uninterpretedMessageFragment);
+
+                    if (fragmentManager.areAllMessageFragmentsComplete()) {
+                        // collected complete DTLS Message from the lower layer
+                        // write latest received message to the stream for the upper layer
+                        DtlsHandshakeMessageFragment completeMessage = completeMessages.getLast();
+                        addProducedContainer(completeMessage);
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(
                                         ProtocolMessageType.HANDSHAKE,
-                                        uninterpretedMessageFragment
+                                        completeMessage
                                                 .getMessageSequence()
                                                 .getValue());
-                        byte type = uninterpretedMessageFragment.getType().getValue();
+                        byte type = completeMessage.getType().getValue();
                         byte[] content =
-                                uninterpretedMessageFragment.getFragmentContent().getValue();
+                                completeMessage.getFragmentContent().getValue();
                         byte[] message =
                                 ArrayConverter.concatenate(
                                         new byte[] {type},
@@ -257,6 +265,7 @@ public class DtlsFragmentLayer
                             nextInputStream.extendStream(message);
                         }
                     } else {
+                        // run until we received a complete message
                         receiveMoreDataForHint(desiredHint);
                     }
                 } else {
