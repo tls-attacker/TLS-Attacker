@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
@@ -47,6 +48,9 @@ public class ActionComponentTest {
         this.config.setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
         this.config.setInitialRecordVersion(ProtocolVersion.DTLS10);
         this.config.setIndividualTransportPacketsForFragments(true);
+        this.config.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
+        this.config.setDefaultServerSupportedCipherSuites(CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
+        this.config.setDefaultSelectedCipherSuite(CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256);
         InboundConnection serverConnection =
                 new InboundConnection(SERVER_CTX_ALIAS, 0, "127.0.0.1");
         serverConnection.setTransportHandlerType(TransportHandlerType.UDP);
