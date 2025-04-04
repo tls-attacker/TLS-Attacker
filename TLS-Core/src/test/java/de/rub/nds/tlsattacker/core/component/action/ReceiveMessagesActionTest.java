@@ -94,8 +94,6 @@ public class ReceiveMessagesActionTest extends ActionComponentTest {
 
         initAndExecute(trace, PacketLibrary.CLIENT_CERT_TILL_FINISHED, new byte[0]);
 
-        System.out.println(trace);
-
         assertTrue(trace.executedAsPlanned());
         assertTrue(trace.allActionsExecuted());
     }
