@@ -1316,6 +1316,7 @@
     <isQuic>false</isQuic>
     <quicRetryFlowRequired>false</quicRetryFlowRequired>
     <quicVersion>VERSION_1</quicVersion>
+    <quicImmediateCloseOnTlsError>false</quicImmediateCloseOnTlsError>
     <defaultQuicNewToken>qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/</defaultQuicNewToken>
     <defaultQuicPathChallange>qrvM3Q==</defaultQuicPathChallange>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>

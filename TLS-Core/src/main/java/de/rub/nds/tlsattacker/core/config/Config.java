@@ -803,6 +803,8 @@ public class Config implements Serializable {
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
+    private Boolean quicImmediateCloseOnTlsError = false;
+
     private byte[] defaultQuicNewToken =
             DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
@@ -4377,5 +4379,13 @@ public class Config implements Serializable {
 
     public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
         this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
+    }
+
+    public Boolean getQuicImmediateCloseOnTlsError() {
+        return quicImmediateCloseOnTlsError;
+    }
+
+    public void setQuicImmediateCloseOnTlsError(Boolean quicImmediateCloseOnTlsError) {
+        this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
     }
 }
