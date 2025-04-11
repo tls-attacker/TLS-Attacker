@@ -221,7 +221,13 @@ public class DtlsFragmentLayer
 
                     if (isRetransmission(fragment)) {
                         // We have received this message before. Do not process.
-                        LOGGER.debug("Received a retransmission");
+                        LOGGER.debug(
+                                "Received a retransmission (msgSeq={}, type={}, len={})",
+                                fragment.getMessageSequence().getValue(),
+                                fragment.getType().getValue(),
+                                fragment.getLength().getValue());
+                        // process more data to get something useful hopefully
+                        receiveMoreDataForHint(desiredHint);
                         return;
                     }
 
