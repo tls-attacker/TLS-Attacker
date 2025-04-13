@@ -237,8 +237,7 @@ public class DtlsFragmentLayer
                             fragmentManager.getOrderedCombinedCompleteMessageFragments(false);
 
                     // call the fragment interpretation mechanism just because I am afraid to remove
-                    // this.
-                    // This should not be needed, but who knows
+                    // this. This should not be needed, but who knows
                     fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
 
                     if (fragmentManager.areAllMessageFragmentsComplete()) {
@@ -304,7 +303,10 @@ public class DtlsFragmentLayer
         }
     }
 
-    /** Returns whether we have a received fragment with message sequence in our collection. */
+    /**
+     * Returns whether we have a received fragment with an equal message sequence number in our
+     * collection.
+     */
     private boolean isRetransmission(DtlsHandshakeMessageFragment messageFragment) {
         List<DtlsHandshakeMessageFragment> completeMessages =
                 fragmentManager.getOrderedCombinedCompleteMessageFragments(true);
