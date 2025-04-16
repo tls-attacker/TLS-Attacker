@@ -104,7 +104,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 }
                 if (record.shouldPrepare()) {
                     RecordPreparator preparator =
-                            record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
+                            record.getRecordPreparator(
+                                    tlsContext, encryptor, compressor, contentType);
                     preparator.prepare();
                     preparator.afterPrepare();
                 }
