@@ -63,7 +63,17 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
 
             TlsAction action = tlsActions.get(i);
+            boolean notAcknowledgeReceiving = false;
+            if (action.getActionOptions() != null) {
+                notAcknowledgeReceiving =
+                        action.getActionOptions()
+                                .contains(ActionOption.QUIC_DO_NOT_ACK_RECEPTION_OF_PACKET);
+            }
+            QuicPacketLayer layer =
+                    (QuicPacketLayer)
+                            state.getContext().getLayerStack().getLayer(QuicPacketLayer.class);
 
+            layer.setTemporarilyDisabledAcks(notAcknowledgeReceiving);
             if (!action.isExecuted()) {
                 try {
                     this.executeAction(action, state);
@@ -82,6 +92,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     }
                 }
             }
+            layer.setTemporarilyDisabledAcks(false);
 
             if (!action.executedAsPlanned()) {
                 if (config.isStopTraceAfterUnexpected()) {

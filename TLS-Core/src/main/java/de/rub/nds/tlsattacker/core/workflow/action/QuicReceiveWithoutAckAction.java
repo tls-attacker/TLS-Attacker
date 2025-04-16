@@ -19,18 +19,22 @@ import java.util.List;
 @XmlRootElement(name = "QuicReceiveWithoutAck")
 public class QuicReceiveWithoutAckAction extends ReceiveAction {
 
+    @Deprecated
     public QuicReceiveWithoutAckAction() {
         super();
     }
 
+    @Deprecated
     public QuicReceiveWithoutAckAction(List<ProtocolMessage> expectedMessages) {
         super(expectedMessages);
     }
 
+    @Deprecated
     public QuicReceiveWithoutAckAction(ProtocolMessage... expectedMessages) {
         super(expectedMessages);
     }
 
+    @Deprecated
     public QuicReceiveWithoutAckAction(QuicPacket... expectedQuicPackets) {
         super(expectedQuicPackets);
     }
