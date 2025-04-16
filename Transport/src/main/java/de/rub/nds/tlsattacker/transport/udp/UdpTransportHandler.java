@@ -34,6 +34,8 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
 
+    private int receivedBytes, sentByes = 0;
+
     /**
      * It can happen that we only read half a packet. If we do that, we need to cache the remainder
      * of the packet and return it the next time somebody reads
@@ -52,12 +54,15 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
     public void sendData(byte[] data) throws IOException {
         DatagramPacket packet = new DatagramPacket(data, data.length);
         socket.send(packet);
+        sentByes += data.length + 28;
     }
 
     @Override
     public byte[] fetchData() throws IOException {
         if (dataBufferInputStream != null && dataBufferInputStream.available() > 0) {
-            return dataBufferInputStream.readAllBytes();
+            byte[] allBytes = dataBufferInputStream.readAllBytes();
+            receivedBytes += allBytes.length;
+            return allBytes;
         } else {
             setTimeout(timeout);
             DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
@@ -65,6 +70,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
             if (!socket.isConnected()) {
                 socket.connect(packet.getSocketAddress());
             }
+            receivedBytes += packet.getLength() + 28;
             return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
         }
     }
@@ -85,7 +91,9 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         }
         // Now we got atleast amount of data bytes. If we got more, cache them
         dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        return dataBufferInputStream.readNBytes(amountOfData);
+        byte[] nBytes = dataBufferInputStream.readNBytes(amountOfData);
+        receivedBytes += nBytes.length;
+        return nBytes;
     }
 
     @Override
@@ -162,5 +170,18 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         } else {
             return socket.getInetAddress().getHostAddress();
         }
+    }
+
+    public int getSentByes() {
+        return sentByes;
+    }
+
+    public int getReceivedBytes() {
+        return receivedBytes;
+    }
+
+    public void resetByteCounter() {
+        receivedBytes = sentByes = 0;
+        LOGGER.warn("Resetting Byte Counter");
     }
 }
