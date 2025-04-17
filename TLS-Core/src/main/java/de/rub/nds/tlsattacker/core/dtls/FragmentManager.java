@@ -40,6 +40,7 @@ public class FragmentManager {
                     new FragmentCollector(
                             config,
                             fragment.getType().getValue(),
+                            fragment.getEpoch().getValue(),
                             fragment.getMessageSequence().getValue(),
                             fragment.getLength().getValue());
             fragments.put(key, collector);

@@ -315,8 +315,13 @@ public class DtlsFragmentLayer
                     || messageFragment.getMessageSequence() == null) {
                 throw new RuntimeException("fragment is missing message sequence");
             }
+            if (fragment.getEpoch() == null || messageFragment.getEpoch() == null) {
+                throw new RuntimeException("fragment is missing epoch");
+            }
             if (fragment.getMessageSequence().getValue().intValue()
-                    == messageFragment.getMessageSequence().getValue()) {
+                            == messageFragment.getMessageSequence().getValue()
+                    && fragment.getEpoch().getValue().intValue()
+                            == messageFragment.getEpoch().getValue().intValue()) {
                 return true;
             }
         }

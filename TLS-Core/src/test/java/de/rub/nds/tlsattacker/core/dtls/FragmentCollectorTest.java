@@ -23,7 +23,7 @@ public class FragmentCollectorTest {
 
     @BeforeEach
     public void setUp() {
-        collector = new FragmentCollector(new Config(), (byte) 0, 0, 10);
+        collector = new FragmentCollector(new Config(), (byte) 0, 0, 0, 10);
     }
 
     /** Test that addFragment is successful. (Does not throw an exception */
@@ -152,7 +152,7 @@ public class FragmentCollectorTest {
     public void testBuildCombinedFragmentAddUnfitting() {
         Config config = new Config();
         config.setAcceptOnlyFittingDtlsFragments(false);
-        collector = new FragmentCollector(config, (byte) 0, 6, 10);
+        collector = new FragmentCollector(config, (byte) 0, 0, 6, 10);
         byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 5, original, 0));
         DtlsHandshakeMessageFragment unfitting = fragmentOfMsg(0, 6, 4, original, 0);
