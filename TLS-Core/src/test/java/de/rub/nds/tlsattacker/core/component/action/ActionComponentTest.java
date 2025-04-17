@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.DTLSWorkflowExecutor;
@@ -25,6 +24,8 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.security.Security;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -75,11 +76,23 @@ public class ActionComponentTest {
     }
 
     protected void assertDataWrittenToClient() {
-        assertTrue(clientTransportHandler.getSentBytes().length > 0);
+        assertTrue(getSendToClient().length > 0);
     }
 
     protected void assertDataWrittenToServer() {
-        assertTrue(serverTransportHandler.getSentBytes().length > 0);
+        assertTrue(getSendToServer().length > 0);
+    }
+
+    protected byte[] getSendToClient() {
+        return clientTransportHandler.getSentBytes();
+    }
+
+    protected byte[] getSendToServer() {
+        return serverTransportHandler.getSentBytes();
+    }
+
+    protected Config getConfig() {
+        return config;
     }
 
     protected void initAndExecute(
@@ -99,5 +112,21 @@ public class ActionComponentTest {
         state.getConfig().setWorkflowExecutorShouldClose(false);
 
         new DTLSWorkflowExecutor(state).executeWorkflow();
+    }
+
+    protected byte[] arrayJoin(List<byte[]> arrays) {
+
+        if (arrays.size() == 1) {
+            return arrays.getFirst();
+        }
+
+        arrays = new ArrayList<>(arrays);
+
+        byte[] lastArray = arrays.removeLast();
+        byte[] restArray = arrayJoin(arrays);
+
+        byte[] result = Arrays.copyOf(lastArray, lastArray.length + restArray.length);
+        System.arraycopy(restArray, 0, result, lastArray.length, restArray.length);
+        return result;
     }
 }
