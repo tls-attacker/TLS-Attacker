@@ -87,7 +87,7 @@ public abstract class TcpTransportHandler extends StreambasedTransportHandler {
             socket.setSoTimeout((int) timeout);
 
         } catch (SocketException ex) {
-            LOGGER.error("Could not adjust socket timeout", ex);
+            LOGGER.debug("Could not adjust socket timeout", ex);
         }
     }
 

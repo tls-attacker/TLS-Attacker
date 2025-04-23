@@ -44,6 +44,8 @@ public class ExtendedRandomExtensionHandlerTest
         message.setExtendedRandom(EXTENDED_RANDOM_SHORT);
         message.setExtendedRandomLength(EXTENDED_RANDOM_SHORT.length);
         tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setClientRandom(new byte[32]);
+        tlsContext.setServerRandom(new byte[32]);
         handler.adjustContext(message);
 
         assertArrayEquals(EXTENDED_RANDOM_SHORT, tlsContext.getClientExtendedRandom());
@@ -94,8 +96,14 @@ public class ExtendedRandomExtensionHandlerTest
 
     @Test
     public void testConcatRandoms() {
-        byte[] clientRandom = tlsContext.getClientRandom();
-        byte[] serverRandom = tlsContext.getServerRandom();
+        byte[] clientRandom =
+                ArrayConverter.hexStringToByteArray(
+                        "001122334455667788990000112233445566778899000011223344556677889900AABB");
+        byte[] serverRandom =
+                ArrayConverter.hexStringToByteArray(
+                        "FF1122334455667788990000112233445566778899000011223344556677889900AABB");
+        tlsContext.setClientRandom(clientRandom);
+        tlsContext.setServerRandom(serverRandom);
 
         ExtendedRandomExtensionMessage message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_CLIENT);

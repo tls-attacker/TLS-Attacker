@@ -35,13 +35,14 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.crypto.interfaces.DHPrivateKey;
-import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.tls.crypto.TlsCertificate;
 
 public class CertificateDelegate extends Delegate {
+
+    public static final int PREDEFINED_LEAF_CERT_INDEX = 0;
 
     @Parameter(names = "-cert", description = "PEM encoded certificate file")
     private String certificate = null;
@@ -117,7 +118,8 @@ public class CertificateDelegate extends Delegate {
         if (key != null) {
             LOGGER.debug("Loading private key");
             privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(
+                    config.getCertificateChainConfig().get(PREDEFINED_LEAF_CERT_INDEX), privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {
@@ -149,15 +151,12 @@ public class CertificateDelegate extends Delegate {
         }
         try {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
-            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
+            TlsCertificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            List<CertificateBytes> byteList = new LinkedList<>();
-            for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
-                byteList.add(new CertificateBytes(tempCert.getEncoded()));
-            }
+            List<CertificateBytes> byteList = List.of(new CertificateBytes(cert.getEncoded()));
 
             config.setDefaultExplicitCertificateChain(byteList);
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(config.getCertificateChainConfig().getFirst(), privateKey);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException

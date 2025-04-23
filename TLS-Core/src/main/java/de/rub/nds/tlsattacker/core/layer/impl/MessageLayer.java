@@ -106,7 +106,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         bufferedMessages.add(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
             boolean isFirstMessage =
-                    (message.getClass() == ClientHelloMessage.class
+                    (message instanceof CoreClientHelloMessage
                             || message.getClass() == ServerHelloMessage.class);
             flushCollectedMessages(
                     message.getProtocolMessageType(), bufferedMessages, isFirstMessage);
@@ -244,6 +244,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             do {
                 try {
                     dataStream = getLowerLayer().getDataStream();
+                    if (dataStream.available() == 0) {
+                        // the lower layer does not give us any data so we can simply return here
+                        LOGGER.warn("The lower layer did not produce any data.");
+                        return getLayerResult();
+                    }
                 } catch (IOException e) {
                     // the lower layer does not give us any data so we can simply return here
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);

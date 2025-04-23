@@ -253,6 +253,7 @@ public class Config implements Serializable {
                             new ServerNamePair(
                                     SniType.HOST_NAME.getValue(),
                                     "example.com".getBytes(US_ASCII))));
+
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
@@ -480,6 +481,7 @@ public class Config implements Serializable {
 
     /** If we generate ClientHello with the PreSharedKey extension */
     private Boolean addPreSharedKeyExtension = false;
+
     /** If we generate ClientHello with the Padding extension */
     private Boolean addPaddingExtension = false;
 
@@ -748,6 +750,8 @@ public class Config implements Serializable {
     private Boolean workflowExecutorShouldClose = true;
 
     private Boolean stopActionsAfterFatal = false;
+
+    private Boolean stopActionsAfterQuicConnectionClose = true;
 
     /**
      * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal,
@@ -1043,6 +1047,8 @@ public class Config implements Serializable {
     /** requestPath to use in https requests */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/robots.txt";
+
+    private Integer defaultMaxHttpLength = 65536; // 2^16
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1677,6 +1683,14 @@ public class Config implements Serializable {
 
     public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
         this.defaultHttpsRequestPath = defaultHttpsRequestPath;
+    }
+
+    public int getDefaultMaxHttpLength() {
+        return defaultMaxHttpLength;
+    }
+
+    public void setDefaultMaxHttpLength(int defaultMaxHttpLength) {
+        this.defaultMaxHttpLength = defaultMaxHttpLength;
     }
 
     public Boolean isUseFreshRandom() {
@@ -3215,6 +3229,14 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public Boolean isStopActionAfterQuicConnCloseFrame() {
+        return stopActionsAfterQuicConnectionClose;
+    }
+
+    public void setStopActionAfterQuicConnCloseFrame(Boolean stopActionsAfterQuicConnectionClose) {
+        this.stopActionsAfterQuicConnectionClose = stopActionsAfterQuicConnectionClose;
     }
 
     public Boolean isFinishWithCloseNotify() {

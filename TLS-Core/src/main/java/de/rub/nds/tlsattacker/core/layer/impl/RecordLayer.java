@@ -102,10 +102,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 if (record.getCleanProtocolMessageBytes() == null) {
                     record.setCleanProtocolMessageBytes(new byte[0]);
                 }
-                RecordPreparator preparator =
-                        record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
-                preparator.prepare();
-                preparator.afterPrepare();
+                if (record.shouldPrepare()) {
+                    RecordPreparator preparator =
+                            record.getRecordPreparator(
+                                    tlsContext, encryptor, compressor, contentType);
+                    preparator.prepare();
+                    preparator.afterPrepare();
+                }
                 RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
@@ -200,10 +203,12 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
                 record.setEpoch(writeEpoch);
             }
-            RecordPreparator preparator =
-                    record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
-            preparator.prepare();
-            preparator.afterPrepare();
+            if (record.shouldPrepare()) {
+                RecordPreparator preparator =
+                        record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
+                preparator.prepare();
+                preparator.afterPrepare();
+            }
             try {
                 byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);

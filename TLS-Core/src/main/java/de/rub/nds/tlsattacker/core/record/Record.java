@@ -359,13 +359,13 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
         String stringContentType = "unspecified";
         String stringProtocolVersion = "unspecified";
         String stringLength = "unspecified";
-        if (contentType != null) {
+        if (contentType != null && contentType.getValue() != null) {
             stringContentType = contentType.getValue().toString();
         }
-        if (protocolVersion != null) {
+        if (protocolVersion != null && protocolVersion.getValue() != null) {
             stringContentType = ArrayConverter.bytesToHexString(protocolVersion.getValue());
         }
-        if (length != null) {
+        if (length != null && length.getValue() != null) {
             stringLength = length.getValue().toString();
         } else if (maxRecordLengthConfig != null) {
             stringLength = maxRecordLengthConfig.toString();

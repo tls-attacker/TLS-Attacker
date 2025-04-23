@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>4.2.7</version>
+        <version>5.1.11</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>6.3.3-SNAPSHOT</version>
+    <version>7.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -87,15 +87,15 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/TLS-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/TLS-Attacker-Development.git</developerConnection>
-        <tag>v6.1.4</tag>
+        <tag>HEAD</tag>
         <url>https://github.com/tls-attacker/TLS-Attacker</url>
     </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <main.basedir>${project.basedir}</main.basedir>
         <!-- The following variables are required for Jenkins CI -->
         <skipTests>false</skipTests>
@@ -211,11 +211,11 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk18on</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
         </dependency>
         <dependency>
             <groupId>org.cryptomator</groupId>
@@ -262,12 +262,16 @@
             <plugins>
                 <!--################# default lifecycle plugins #################-->
                 <!-- Plugin to compile source files -->
+                <!-- Compile source files -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
+                        <compilerArgs>
+                            <compilerArg>-proc:full</compilerArg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
                 <!-- Plugin to execute unit tests -->
@@ -444,7 +448,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.16.0</version>
+                            <version>1.25.2</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>

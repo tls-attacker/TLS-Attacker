@@ -62,9 +62,11 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, ProtocolMessageType type) {
         List<StaticReceivingAction> actionList = trace.getStaticConfiguredReceivingActions();
         for (StaticReceivingAction action : actionList) {
-            for (ProtocolMessage message : action.getExpectedList(ProtocolMessage.class)) {
-                if (message.getProtocolMessageType() == type) {
-                    return action;
+            if (action.getExpectedList(ProtocolMessage.class) != null) {
+                for (ProtocolMessage message : action.getExpectedList(ProtocolMessage.class)) {
+                    if (message.getProtocolMessageType() == type) {
+                        return action;
+                    }
                 }
             }
         }
@@ -75,10 +77,12 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, HandshakeMessageType type) {
         List<StaticSendingAction> actionList = trace.getStaticConfiguredSendingActions();
         for (StaticSendingAction action : actionList) {
-            for (ProtocolMessage message : action.getConfiguredList(ProtocolMessage.class)) {
-                if (message instanceof HandshakeMessage
-                        && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                    return action;
+            if (action.getConfiguredList(ProtocolMessage.class) != null) {
+                for (ProtocolMessage message : action.getConfiguredList(ProtocolMessage.class)) {
+                    if (message instanceof HandshakeMessage
+                            && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
+                        return action;
+                    }
                 }
             }
         }
@@ -319,6 +323,8 @@ public class WorkflowTraceConfigurationUtil {
                 if (((HandshakeMessage) message).getHandshakeMessageType() != type) {
                     iterator.remove();
                 }
+            } else {
+                iterator.remove();
             }
         }
         return sendMessages;
@@ -334,6 +340,8 @@ public class WorkflowTraceConfigurationUtil {
                 if (((HandshakeMessage) message).getHandshakeMessageType() != type) {
                     iterator.remove();
                 }
+            } else {
+                iterator.remove();
             }
         }
         return receiveMessages;

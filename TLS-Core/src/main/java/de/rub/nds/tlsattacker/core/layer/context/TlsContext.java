@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -61,6 +62,7 @@ import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -89,8 +91,10 @@ public class TlsContext extends LayerContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
+
     /** shared key established during the handshake */
     private byte[] clientApplicationTrafficSecret;
+
     /** shared key established during the handshake */
     private byte[] serverApplicationTrafficSecret;
 
@@ -220,8 +224,10 @@ public class TlsContext extends LayerContext {
 
     /** The renegotiation info of the RenegotiationInfo extension. */
     private byte[] renegotiationInfo;
+
     /** The requestContext from the CertificateRequest message in TLS 1.3. */
     private byte[] certificateRequestContext;
+
     /** Timestamp of the SignedCertificateTimestamp extension. */
     private byte[] signedCertificateTimestamp;
 
@@ -528,8 +534,12 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
-        clientX509Context = new X509Context();
-        serverX509Context = new X509Context();
+        X509CertificateConfig certConfig =
+                context.getConfig()
+                        .getCertificateChainConfig()
+                        .get(CertificateDelegate.PREDEFINED_LEAF_CERT_INDEX);
+        clientX509Context = new X509Context(certConfig);
+        serverX509Context = new X509Context(certConfig);
         context.setTlsContext(this);
         init();
     }

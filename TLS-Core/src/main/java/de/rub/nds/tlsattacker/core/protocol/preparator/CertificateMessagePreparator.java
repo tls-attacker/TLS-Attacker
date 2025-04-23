@@ -81,7 +81,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     // We currently only support this extension only very
                     // limited. Only secp256r1 is supported.
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    ASN1OutputStream asn1OutputStream = new ASN1OutputStream(byteArrayOutputStream);
+                    ASN1OutputStream asn1OutputStream =
+                            ASN1OutputStream.create(byteArrayOutputStream);
                     Point ecPointToEncode =
                             chooser.getContext()
                                     .getTlsContext()

@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tls.attacker</groupId>
         <artifactId>tls-attacker</artifactId>
-        <version>6.3.3-SNAPSHOT</version>
+        <version>7.0.6-SNAPSHOT</version>
     </parent>
     <artifactId>utils</artifactId>
 
@@ -13,7 +13,7 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/TLS-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/TLS-Attacker-Development.git</developerConnection>
-        <tag>v6.1.4</tag>
+        <tag>v6.3.3</tag>
         <url>https://github.com/tls-attacker/TLS-Attacker</url>
     </scm>
 
