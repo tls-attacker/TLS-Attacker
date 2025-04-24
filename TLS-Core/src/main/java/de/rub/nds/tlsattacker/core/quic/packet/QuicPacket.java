@@ -42,6 +42,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     protected ModifiableByteArray destinationConnectionId;
     protected ModifiableByte destinationConnectionIdLength;
 
+    protected ModifiableByteArray configuredDestinationConnectionId;
+
     protected ModifiableInteger packetLength;
     protected int packetLengthSize;
 
@@ -287,6 +289,17 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
         this.destinationConnectionId = destinationConnectionId;
     }
 
+    public void setConfiguredDestinationConnectionId(byte[] destinationConnectionId) {
+        this.configuredDestinationConnectionId =
+                ModifiableVariableFactory.safelySetValue(
+                        this.configuredDestinationConnectionId, destinationConnectionId);
+    }
+
+    public void setConfiguredDestinationConnectionId(
+            ModifiableByteArray configuredDestinationConnectionId) {
+        this.configuredDestinationConnectionId = configuredDestinationConnectionId;
+    }
+
     public void setDestinationConnectionIdLength(byte destinationConnectionIdLength) {
         this.destinationConnectionIdLength =
                 ModifiableVariableFactory.safelySetValue(
@@ -377,6 +390,10 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
 
     public ModifiableByteArray getDestinationConnectionId() {
         return destinationConnectionId;
+    }
+
+    public ModifiableByteArray getConfiguredDestinationConnectionId() {
+        return configuredDestinationConnectionId;
     }
 
     public ModifiableByte getDestinationConnectionIdLength() {

@@ -65,7 +65,12 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
     }
 
     protected void prepareDestinationConnectionId() {
-        packet.setDestinationConnectionId(context.getDestinationConnectionId());
+        if (packet.getConfiguredDestinationConnectionId() != null
+                && packet.getConfiguredDestinationConnectionId().getValue().length > 0) {
+            packet.setDestinationConnectionId(packet.getConfiguredDestinationConnectionId());
+        } else {
+            packet.setDestinationConnectionId(context.getDestinationConnectionId());
+        }
         LOGGER.debug(
                 "Destination Connection ID: {}", packet.getDestinationConnectionId().getValue());
     }
