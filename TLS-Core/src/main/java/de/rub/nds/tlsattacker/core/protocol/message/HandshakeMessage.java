@@ -162,6 +162,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public boolean getIncludeInDigest() {
         if (includeInDigest == null) {
             return isIncludeInDigestDefault;
+        } else if (includeInDigest.getValue() == null) {
+            includeInDigest.setOriginalValue(isIncludeInDigestDefault);
         }
         return includeInDigest.getValue();
     }
@@ -169,6 +171,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public boolean isRetransmission() {
         if (retransmission == null) {
             return isRetranmissionDefault;
+        } else if (retransmission.getValue() == null) {
+            retransmission.setOriginalValue(isRetranmissionDefault);
         }
         return retransmission.getValue();
     }
