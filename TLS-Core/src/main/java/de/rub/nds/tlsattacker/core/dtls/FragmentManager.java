@@ -141,15 +141,12 @@ public class FragmentManager {
                 new Comparator<FragmentKey>() {
                     @Override
                     public int compare(FragmentKey fragmentKey1, FragmentKey fragmentKey2) {
-                        if (fragmentKey1.getEpoch() > fragmentKey2.getEpoch()) {
-                            return -1;
-                        } else if (fragmentKey1.getEpoch() < fragmentKey2.getEpoch()) {
-                            return 1;
-                        } else {
-                            return fragmentKey1
-                                    .getMessageSeq()
-                                    .compareTo(fragmentKey2.getMessageSeq());
-                        }
+                        int epochCmp = fragmentKey1.getEpoch().compareTo(fragmentKey2.getEpoch());
+                        int msgSeqCmp =
+                                fragmentKey1
+                                        .getMessageSeq()
+                                        .compareTo(fragmentKey2.getMessageSeq());
+                        return epochCmp == 0 ? msgSeqCmp : epochCmp;
                     }
                 });
         return orderedFragmentKeys;
