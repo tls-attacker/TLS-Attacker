@@ -311,13 +311,6 @@ public class DtlsFragmentLayer
         List<DtlsHandshakeMessageFragment> completeMessages =
                 fragmentManager.getOrderedCombinedCompleteMessageFragments(true);
         for (DtlsHandshakeMessageFragment fragment : completeMessages) {
-            if (fragment.getMessageSequence() == null
-                    || messageFragment.getMessageSequence() == null) {
-                throw new RuntimeException("fragment is missing message sequence");
-            }
-            if (fragment.getEpoch() == null || messageFragment.getEpoch() == null) {
-                throw new RuntimeException("fragment is missing epoch");
-            }
             if (fragment.getMessageSequence().getValue().intValue()
                             == messageFragment.getMessageSequence().getValue()
                     && fragment.getEpoch().getValue().intValue()
