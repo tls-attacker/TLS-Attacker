@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.io.InputStream;
@@ -272,8 +273,13 @@ public abstract class ProtocolLayer<
             Preparator preparator = container.getPreparator(context);
             preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
-            handler.adjustContext(container);
-            addProducedContainer((Container) container);
+            // do not adjust context, if doing so is disabled in a ProtocolMessage container (f.e.
+            // DTLS CSS retransmission)
+            if (!(container instanceof ProtocolMessage)
+                    || ((ProtocolMessage) container).getAdjustContext()) {
+                handler.adjustContext(container);
+                addProducedContainer((Container) container);
+            }
         } catch (RuntimeException ex) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Could not read data container: ", ex);

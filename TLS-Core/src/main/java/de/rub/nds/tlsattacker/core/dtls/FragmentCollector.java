@@ -26,6 +26,8 @@ public class FragmentCollector {
 
     private Integer messageSeq;
 
+    private Integer epoch;
+
     private Byte type;
 
     private boolean interpreted = false;
@@ -36,12 +38,14 @@ public class FragmentCollector {
 
     private FragmentStream fragmentStream;
 
-    public FragmentCollector(Config config, Byte type, int messageSeq, int messageLength) {
+    public FragmentCollector(
+            Config config, Byte type, int epoch, int messageSeq, int messageLength) {
         this.config = config;
         fragmentStream = new FragmentStream(messageLength);
         this.type = type;
         this.messageLength = messageLength;
         this.messageSeq = messageSeq;
+        this.epoch = epoch;
     }
 
     /**
@@ -146,6 +150,7 @@ public class FragmentCollector {
         message.setType(type);
         message.setLength(messageLength);
         message.setMessageSequence(messageSeq);
+        message.setEpoch(epoch);
         message.setFragmentOffset(0);
         message.setFragmentLength(messageLength);
         message.setFragmentContent(getCombinedContent());

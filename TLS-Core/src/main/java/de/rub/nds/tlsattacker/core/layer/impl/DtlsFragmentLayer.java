@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmissionStruct;
 import de.rub.nds.tlsattacker.core.state.Context;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -209,35 +208,50 @@ public class DtlsFragmentLayer
                 currentInputStream.extendStream(dataStream.readAllBytes());
             } else if (dataStream.getHint() instanceof RecordLayerHint) {
                 RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
+                LOGGER.debug("Received hint: {}", tempHint);
+
                 if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
                     DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
                     fragment.setEpoch(tempHint.getEpoch());
                     DtlsHandshakeMessageFragmentParser parser =
-                            fragment.getParser(
-                                    context,
-                                    new ByteArrayInputStream(
-                                            dataStream.readChunk(dataStream.available())));
+                            fragment.getParser(context, dataStream);
                     parser.parse(fragment);
                     fragment.setCompleteResultingMessage(
                             fragment.getSerializer(context).serialize());
+
+                    if (isRetransmission(fragment)) {
+                        // We have received this message before. Do not process.
+                        LOGGER.debug(
+                                "Received a retransmission (msgSeq={}, type={}, len={})",
+                                fragment.getMessageSequence().getValue(),
+                                fragment.getType().getValue(),
+                                fragment.getLength().getValue());
+                        // process more data to get something useful hopefully
+                        receiveMoreDataForHint(desiredHint);
+                        return;
+                    }
+
                     fragmentManager.addMessageFragment(fragment);
-                    List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
-                            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
-                    // run until we received a complete fragment
-                    if (!uninterpretedMessageFragments.isEmpty()) {
-                        DtlsHandshakeMessageFragment uninterpretedMessageFragment =
-                                uninterpretedMessageFragments.get(0);
-                        addProducedContainer(uninterpretedMessageFragment);
+
+                    List<DtlsHandshakeMessageFragment> completeMessages =
+                            fragmentManager.getOrderedCombinedCompleteMessageFragments(false);
+
+                    // call the fragment interpretation mechanism just because I am afraid to remove
+                    // this. This should not be needed, but who knows
+                    fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
+
+                    if (fragmentManager.areAllMessageFragmentsComplete()) {
+                        LOGGER.debug("Message is complete");
+                        // collected complete DTLS Message from the lower layer
+                        // write latest received message to the stream for the upper layer
+                        DtlsHandshakeMessageFragment completeMessage = completeMessages.getLast();
+                        addProducedContainer(completeMessage);
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(
                                         ProtocolMessageType.HANDSHAKE,
-                                        uninterpretedMessageFragment
-                                                .getMessageSequence()
-                                                .getValue());
-                        byte type = uninterpretedMessageFragment.getType().getValue();
-                        byte[] content =
-                                uninterpretedMessageFragment.getFragmentContent().getValue();
+                                        completeMessage.getMessageSequence().getValue());
+                        byte type = completeMessage.getType().getValue();
+                        byte[] content = completeMessage.getFragmentContent().getValue();
                         byte[] message =
                                 ArrayConverter.concatenate(
                                         new byte[] {type},
@@ -261,9 +275,13 @@ public class DtlsFragmentLayer
                             nextInputStream.extendStream(message);
                         }
                     } else {
+                        // run until we received a complete message
+                        LOGGER.debug("Message is incomplete, receiving more...");
                         receiveMoreDataForHint(desiredHint);
                     }
                 } else {
+                    LOGGER.debug(
+                            "Not a handshake hint, setting new stream with data from lower layer");
                     currentInputStream = new HintedLayerInputStream(tempHint, this);
                     currentInputStream.extendStream(dataStream.readChunk(dataStream.available()));
                 }
@@ -283,6 +301,25 @@ public class DtlsFragmentLayer
             LOGGER.trace(ex);
             throw ex;
         }
+    }
+
+    /**
+     * Returns whether we have a received fragment with an equal message sequence number in our
+     * collection.
+     */
+    private boolean isRetransmission(DtlsHandshakeMessageFragment messageFragment) {
+        List<DtlsHandshakeMessageFragment> completeMessages =
+                fragmentManager.getOrderedCombinedCompleteMessageFragments(true);
+        for (DtlsHandshakeMessageFragment fragment : completeMessages) {
+            if (fragment.getMessageSequence().getValue().intValue()
+                            == messageFragment.getMessageSequence().getValue()
+                    && fragment.getEpoch().getValue().intValue()
+                            == messageFragment.getEpoch().getValue().intValue()) {
+                return true;
+            }
+        }
+        // no matching fragment found
+        return false;
     }
 
     public void resetRetransmissionCounter() {

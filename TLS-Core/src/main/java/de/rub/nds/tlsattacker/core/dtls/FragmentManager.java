@@ -40,6 +40,7 @@ public class FragmentManager {
                     new FragmentCollector(
                             config,
                             fragment.getType().getValue(),
+                            fragment.getEpoch().getValue(),
                             fragment.getMessageSequence().getValue(),
                             fragment.getLength().getValue());
             fragments.put(key, collector);
@@ -68,22 +69,7 @@ public class FragmentManager {
     public List<DtlsHandshakeMessageFragment> getOrderedCombinedUninterpretedMessageFragments(
             boolean onlyIfComplete, boolean skipMessageSequences) {
         List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
-        List<FragmentKey> orderedFragmentKeys = new ArrayList<>(fragments.keySet());
-        orderedFragmentKeys.sort(
-                new Comparator<FragmentKey>() {
-                    @Override
-                    public int compare(FragmentKey fragmentKey1, FragmentKey fragmentKey2) {
-                        if (fragmentKey1.getEpoch() > fragmentKey2.getEpoch()) {
-                            return -1;
-                        } else if (fragmentKey1.getEpoch() < fragmentKey2.getEpoch()) {
-                            return 1;
-                        } else {
-                            return fragmentKey1
-                                    .getMessageSeq()
-                                    .compareTo(fragmentKey2.getMessageSeq());
-                        }
-                    }
-                });
+        List<FragmentKey> orderedFragmentKeys = getOrderedFragmentKeys();
 
         for (FragmentKey key : orderedFragmentKeys) {
             FragmentCollector fragmentCollector = fragments.get(key);
@@ -119,6 +105,51 @@ public class FragmentManager {
             }
         }
         return handshakeFragmentList;
+    }
+
+    public List<DtlsHandshakeMessageFragment> getOrderedCombinedCompleteMessageFragments(
+            boolean skipMessageSequences) {
+        List<DtlsHandshakeMessageFragment> handshakeFragmentList = new LinkedList<>();
+        List<FragmentKey> orderedFragmentKeys = getOrderedFragmentKeys();
+
+        for (FragmentKey key : orderedFragmentKeys) {
+            FragmentCollector fragmentCollector = fragments.get(key);
+            if (fragmentCollector == null) {
+                LOGGER.error(
+                        "Trying to access unreceived message fragment. Not processing: msg_sqn: "
+                                + key.getMessageSeq()
+                                + " epoch: "
+                                + key.getEpoch());
+                if (!skipMessageSequences) {
+                    break;
+                } else {
+                    continue;
+                }
+            }
+
+            if (!fragmentCollector.isMessageComplete()) {
+                continue;
+            }
+            handshakeFragmentList.add(fragmentCollector.buildCombinedFragment());
+        }
+        return handshakeFragmentList;
+    }
+
+    private List<FragmentKey> getOrderedFragmentKeys() {
+        List<FragmentKey> orderedFragmentKeys = new ArrayList<>(fragments.keySet());
+        orderedFragmentKeys.sort(
+                new Comparator<FragmentKey>() {
+                    @Override
+                    public int compare(FragmentKey fragmentKey1, FragmentKey fragmentKey2) {
+                        int epochCmp = fragmentKey1.getEpoch().compareTo(fragmentKey2.getEpoch());
+                        int msgSeqCmp =
+                                fragmentKey1
+                                        .getMessageSeq()
+                                        .compareTo(fragmentKey2.getMessageSeq());
+                        return epochCmp == 0 ? msgSeqCmp : epochCmp;
+                    }
+                });
+        return orderedFragmentKeys;
     }
 
     public boolean areAllMessageFragmentsComplete() {
