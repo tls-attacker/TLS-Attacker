@@ -117,8 +117,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                                 .getSelectedProtocolVersion()
                                 .isDTLS13()) {
                     LOGGER.debug("Clearing received ACKs");
-                    if (state.getTlsContext().getDtlsReceivedAcknowledgedRecords() != null) {
-                        state.getTlsContext().getDtlsReceivedAcknowledgedRecords().clear();
+                    if (state.getTlsContext().getDtls13ReceivedAcknowledgedRecords() != null) {
+                        state.getTlsContext().getDtls13ReceivedAcknowledgedRecords().clear();
                     }
                 }
                 index++;
@@ -133,9 +133,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     if (state.getTlsContext().getRecordLayer().getEncryptor().getRecordCipher(epoch)
                             == null) {
                         LOGGER.debug(
-                                "Not sending a Close Notify for epoch "
-                                        + epoch
-                                        + ". No cipher available.");
+                                "Not sending a Close Notify for epoch {}. No cipher available.",
+                                epoch);
                         continue;
                     }
                     sendCloseNotify(context.getTlsContext());
@@ -244,7 +243,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
-        List<RecordNumber> acks = state.getTlsContext().getDtlsAcknowledgedRecords();
+        List<RecordNumber> acks = state.getTlsContext().getDtls13AcknowledgedRecords();
         if (acks == null || acks.isEmpty()) {
             return sendRecords;
         }

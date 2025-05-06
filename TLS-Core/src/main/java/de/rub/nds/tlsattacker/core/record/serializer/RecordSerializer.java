@@ -28,8 +28,15 @@ public class RecordSerializer extends Serializer<Record> {
     @Override
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing Record");
+        // DTLS 1.3
         if (record.getUnifiedHeader() != null) {
-            writeDtls13Header(record);
+            writeUnifiedHeader(record);
+            if (record.getConnectionId() != null) {
+                writeConnectionId(record);
+            }
+            writeEncryptedSequenceNumber(record);
+            writeLength(record);
+            // Other
         } else {
             writeContentType(record);
             writeProtocolVersion(record);
@@ -46,27 +53,18 @@ public class RecordSerializer extends Serializer<Record> {
         return getAlreadySerialized();
     }
 
-    private void writeDtls13Header(Record record) {
-        writeUnifiedHeader(record);
-        if (record.getConnectionId() != null) {
-            writeConnectionId(record);
-        }
-        writeEncryptedSequenceNumber(record);
-        writeLength(record);
-    }
-
     private void writeUnifiedHeader(Record record) {
         appendByte(record.getUnifiedHeader().getValue());
         LOGGER.debug(
-                "UnifiedHeader: 00" + Integer.toBinaryString(record.getUnifiedHeader().getValue()));
+                "UnifiedHeader: 00{}",
+                Integer.toBinaryString(record.getUnifiedHeader().getValue()));
     }
 
     private void writeEncryptedSequenceNumber(Record record) {
         appendBytes(record.getEncryptedSequenceNumber().getValue());
         LOGGER.debug(
-                "Encrypted SequenceNumber: "
-                        + ArrayConverter.bytesToHexString(
-                                record.getEncryptedSequenceNumber().getValue()));
+                "Encrypted SequenceNumber: {}",
+                ArrayConverter.bytesToHexString(record.getEncryptedSequenceNumber().getValue()));
     }
 
     private void writeContentType(Record record) {

@@ -67,7 +67,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     }
                     // in case of EARLY_DATA we stick to the EARLY_TRAFFIC_SECRETS
                 } else {
-                    acknowledgeFinished(message);
+                    acknowledgeFinished();
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
@@ -94,15 +94,15 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
     }
 
-    private void acknowledgeFinished(FinishedMessage message) {
-        tlsContext.setDtlsAcknowledgedRecords(new LinkedList<>());
+    private void acknowledgeFinished() {
+        tlsContext.setDtls13AcknowledgedRecords(new LinkedList<>());
         int epoch = tlsContext.getReadEpoch();
         long readSequenceNumber = tlsContext.getReadSequenceNumber(epoch);
-        // acknowledge all records of the given epoch
+        // Acknowledge all records of the given epoch
         for (long sequenceNumber = 0; sequenceNumber <= readSequenceNumber; sequenceNumber++) {
             RecordNumber recordNumber =
                     new RecordNumber(BigInteger.valueOf(epoch), BigInteger.valueOf(sequenceNumber));
-            tlsContext.getDtlsAcknowledgedRecords().add(recordNumber);
+            tlsContext.getDtls13AcknowledgedRecords().add(recordNumber);
         }
     }
 
@@ -217,9 +217,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveClientKeySetType(keySetType);
         LOGGER.debug("Setting cipher for client to use {}", keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
-
         if (tlsContext.getRecordLayer() != null) {
-
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 tlsContext
                         .getRecordLayer()

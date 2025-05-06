@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
@@ -55,15 +54,13 @@ public class RecordEncryptor extends Encryptor {
             }
         }
         // In DTLS 1.3 record sequence numbers are also encrypted
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
-                && recordCipher instanceof RecordAEADCipher) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()) {
             try {
                 recordCipher.encryptDtls13SequenceNumber(record);
             } catch (CryptoException ex) {
-                LOGGER.error("Could not encrypt DTLS 1.3 Record Sequence Number: " + ex);
+                LOGGER.error("Could not encrypt DTLS 1.3 Record Sequence Number: {}", ex);
             }
         }
-
         recordCipher.getState().increaseWriteSequenceNumber();
         if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
             record.getComputations().setUsedTls13KeySetType(tlsContext.getActiveKeySetTypeWrite());

@@ -27,13 +27,10 @@ public class AckHandler extends ProtocolMessageHandler<AckMessage> {
     public void adjustContext(AckMessage message) {
         if (tlsContext.getChooser().getConnectionEndType()
                 != tlsContext.getTalkingConnectionEndType()) {
-            if (tlsContext.getDtlsReceivedAcknowledgedRecords() == null) {
-                tlsContext.setDtlsReceivedAcknowledgedRecords(new LinkedList<>());
+            if (tlsContext.getDtls13ReceivedAcknowledgedRecords() == null) {
+                tlsContext.setDtls13ReceivedAcknowledgedRecords(new LinkedList<>());
             }
-            tlsContext.getDtlsReceivedAcknowledgedRecords().addAll(message.getRecordNumbers());
-            LOGGER.debug(
-                    "Added received acknowledged records in Context: {}",
-                    message.getRecordNumbers());
+            tlsContext.getDtls13ReceivedAcknowledgedRecords().addAll(message.getRecordNumbers());
         }
     }
 }

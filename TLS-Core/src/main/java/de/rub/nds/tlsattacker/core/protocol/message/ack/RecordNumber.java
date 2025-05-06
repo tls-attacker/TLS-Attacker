@@ -97,6 +97,6 @@ public class RecordNumber extends ModifiableVariableHolder {
 
     @Override
     public String toString() {
-        return "(e=" + epoch + ", sqn=" + sequenceNumber + ')';
+        return "(Epoch = " + epoch + ", Sequence Number = " + sequenceNumber + ')';
     }
 }

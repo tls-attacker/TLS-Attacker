@@ -33,7 +33,7 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
     }
 
     private void writeRecordNumbersLength() {
-        LOGGER.debug("RecordNumbersLength: {}", message.getRecordNumberLength().getValue());
+        LOGGER.debug("RecordNumberLength: {}", message.getRecordNumberLength().getValue());
         appendInt(message.getRecordNumberLength().getValue(), AckByteLength.RECORD_NUMBERS_LENGTH);
     }
 
@@ -41,10 +41,10 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
         LOGGER.debug("RecordNumbers: ");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
             appendBigInteger(
-                    recordNumber.getEpoch().getValue(), RecordByteLength.DTLS_1_3_EPOCH_NUMBER);
+                    recordNumber.getEpoch().getValue(), RecordByteLength.DTLS13_EPOCH_NUMBER);
             appendBigInteger(
                     recordNumber.getSequenceNumber().getValue(), RecordByteLength.SEQUENCE_NUMBER);
-            LOGGER.debug(" - {}", recordNumber);
+            LOGGER.debug("\t - {}", recordNumber);
         }
     }
 }

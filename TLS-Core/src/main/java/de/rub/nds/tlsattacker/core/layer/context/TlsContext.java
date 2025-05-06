@@ -511,17 +511,17 @@ public class TlsContext extends LayerContext {
 
     private List<byte[]> writeConnectionIds = new ArrayList<>();
 
-    private int writeConnectionIdIndex = 0;
+    private Integer writeConnectionIdIndex;
 
     private List<byte[]> readConnectionIDs = new ArrayList<>();
 
-    private int readConnectionIdIndex = 0;
+    private Integer readConnectionIdIndex;
 
     private Integer numberOfRequestedConnectionIds;
 
-    private List<RecordNumber> dtlsAcknowledgedRecords;
+    private List<RecordNumber> dtls13AcknowledgedRecords;
 
-    private List<RecordNumber> dtlsReceivedAcknowledgedRecords;
+    private List<RecordNumber> dtls13ReceivedAcknowledgedRecords;
 
     private X509Context clientX509Context;
     private X509Context serverX509Context;
@@ -623,6 +623,8 @@ public class TlsContext extends LayerContext {
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
+        readConnectionIdIndex = 0;
+        writeConnectionIdIndex = 0;
         keylogfile = new Keylogfile(this);
     }
 
@@ -2177,6 +2179,10 @@ public class TlsContext extends LayerContext {
         this.writeConnectionIds.set(writeConnectionIdIndex, writeConnectionId);
     }
 
+    public void setWriteConnectionId(byte[] writeConnectionId, int index) {
+        this.writeConnectionIds.set(index, writeConnectionId);
+    }
+
     public byte[] getReadConnectionId() {
         if (readConnectionIdIndex < readConnectionIDs.size()) {
             return readConnectionIDs.get(readConnectionIdIndex);
@@ -2187,6 +2193,10 @@ public class TlsContext extends LayerContext {
 
     public void setReadConnectionId(byte[] readConnectionID) {
         this.readConnectionIDs.set(readConnectionIdIndex, readConnectionID);
+    }
+
+    public void setReadConnectionId(byte[] readConnectionID, int index) {
+        this.readConnectionIDs.set(index, readConnectionID);
     }
 
     public void addNewWriteConnectionId(byte[] writeConnectionId, boolean spare) {
@@ -2213,21 +2223,21 @@ public class TlsContext extends LayerContext {
         this.numberOfRequestedConnectionIds = numberOfRequestedConnectionIds;
     }
 
-    public List<RecordNumber> getDtlsAcknowledgedRecords() {
-        return dtlsAcknowledgedRecords;
+    public List<RecordNumber> getDtls13AcknowledgedRecords() {
+        return dtls13AcknowledgedRecords;
     }
 
-    public void setDtlsAcknowledgedRecords(List<RecordNumber> dtlsAcknowledgedRecords) {
-        this.dtlsAcknowledgedRecords = dtlsAcknowledgedRecords;
+    public void setDtls13AcknowledgedRecords(List<RecordNumber> dtlsAcknowledgedRecords) {
+        this.dtls13AcknowledgedRecords = dtlsAcknowledgedRecords;
     }
 
-    public List<RecordNumber> getDtlsReceivedAcknowledgedRecords() {
-        return dtlsReceivedAcknowledgedRecords;
+    public List<RecordNumber> getDtls13ReceivedAcknowledgedRecords() {
+        return dtls13ReceivedAcknowledgedRecords;
     }
 
-    public void setDtlsReceivedAcknowledgedRecords(
+    public void setDtls13ReceivedAcknowledgedRecords(
             List<RecordNumber> dtlsReceivedAcknowledgedRecords) {
-        this.dtlsReceivedAcknowledgedRecords = dtlsReceivedAcknowledgedRecords;
+        this.dtls13ReceivedAcknowledgedRecords = dtlsReceivedAcknowledgedRecords;
     }
 
     public BigInteger getServerEphemeralDhGenerator() {

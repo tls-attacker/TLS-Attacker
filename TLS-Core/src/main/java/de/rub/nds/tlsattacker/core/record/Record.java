@@ -41,6 +41,16 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Record extends ModifiableVariableHolder implements DataContainer {
 
+    public static final int DTLS13_UNIDFIED_HEADER_BASE = 0x20;
+
+    public static final int DTLS13_HEADER_FLAG_CID_PRESENT = 0x10;
+
+    public static final int DTLS13_HEADER_FLAG_SQN_LONG = 0x08;
+
+    public static final int DTLS13_HEADER_FLAG_LENGTH_PRESENT = 0x04;
+
+    public static final int DTLS13_HEADER_FLAG_EPOCH_BITS = 0x03;
+
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
     /** maximum length configuration for this record */
@@ -283,6 +293,18 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     public void setUnifiedHeader(ModifiableByte unifiedHeader) {
         this.unifiedHeader = unifiedHeader;
+    }
+
+    public boolean isUnifiedHeaderCidPresent() {
+        return (unifiedHeader.getValue() & DTLS13_HEADER_FLAG_CID_PRESENT) != 0;
+    }
+
+    public boolean isUnifiedHeaderSqnLong() {
+        return (unifiedHeader.getValue() & DTLS13_HEADER_FLAG_SQN_LONG) != 0;
+    }
+
+    public boolean isUnifiedHeaderLengthPresent() {
+        return (unifiedHeader.getValue() & DTLS13_HEADER_FLAG_LENGTH_PRESENT) != 0;
     }
 
     public ModifiableByteArray getCompleteRecordBytes() {

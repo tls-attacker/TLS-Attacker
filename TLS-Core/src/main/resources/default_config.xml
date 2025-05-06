@@ -1167,7 +1167,7 @@
     <sendHandshakeMessagesWithinSingleRecord>false</sendHandshakeMessagesWithinSingleRecord>
     <defaultConnectionId>01 02 03</defaultConnectionId>
     <defaultNumberOfRequestedConnectionIds>3</defaultNumberOfRequestedConnectionIds>
-    <defaultUsageofSentConnectionIds>CID_SPARE</defaultUsageofSentConnectionIds>
+    <defaultUsageOfSentConnectionIds>CID_SPARE</defaultUsageOfSentConnectionIds>
     <addConnectionIdExtension>false</addConnectionIdExtension>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
@@ -1833,10 +1833,10 @@
     <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
     <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
-    <skipMessageSequenceNumber>false</skipMessageSequenceNumber>
+    <canSkipMessageSequenceNumber>false</canSkipMessageSequenceNumber>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
-    <dtls13HeaderSeqNumSizeLong>true</dtls13HeaderSeqNumSizeLong>
+    <useDtls13HeaderSeqNumSizeLongEncoding>true</useDtls13HeaderSeqNumSizeLongEncoding>
     <retransmitAcknowledgedRecordsInDtls13>false</retransmitAcknowledgedRecordsInDtls13>
     <defaultRsaSsaPssSalt>AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA</defaultRsaSsaPssSalt>
 </config>

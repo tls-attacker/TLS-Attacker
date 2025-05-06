@@ -21,10 +21,11 @@ public class RecordByteLength {
 
     public static final int SEQUENCE_NUMBER = 8;
 
-    public static final int DTLS_1_3_EPOCH_NUMBER = 8;
-
     /** epoch for DTLS */
     public static final int DTLS_EPOCH = 2;
+
+    /** epoch for DTLS 1.3 in record number */
+    public static final int DTLS13_EPOCH_NUMBER = 8;
 
     /** sequence number for DTLS */
     public static final int DTLS_SEQUENCE_NUMBER = 6;

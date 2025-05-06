@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.*;
@@ -23,11 +24,12 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-@XmlRootElement(name = "ACK")
+@XmlRootElement(name = "Ack")
 public class AckMessage extends ProtocolMessage {
 
     private List<RecordNumber> recordNumbers;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger recordNumberLength;
 
     public List<RecordNumber> getRecordNumbers() {

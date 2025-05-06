@@ -46,9 +46,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         }
         parseCertificatesListLength(msg);
         parseCertificateListBytes(msg);
-        if (getVersion().is13()) {
-            parseCertificateList(msg);
-        }
+        parseCertificateList(msg);
     }
 
     /**

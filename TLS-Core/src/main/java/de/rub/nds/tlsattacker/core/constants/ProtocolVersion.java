@@ -203,7 +203,7 @@ public enum ProtocolVersion {
     }
 
     public boolean is13() {
-        return isTLS13() || this == DTLS13;
+        return isTLS13() || isDTLS13();
     }
 
     /**

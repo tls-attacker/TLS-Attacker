@@ -23,11 +23,9 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext tlsContext;
-    private final AckMessage message;
 
     public AckPreperator(Chooser chooser, AckMessage message, TlsContext tlsContext) {
         super(chooser, message);
-        this.message = message;
         this.tlsContext = tlsContext;
     }
 
@@ -41,20 +39,20 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     private void prepareRecordNumbersLength() {
         message.setRecordNumberLength(
                 message.getRecordNumbers().size() * AckByteLength.RECORD_NUMBER);
-        LOGGER.debug("RecordNumbersLength: {}", message.getRecordNumberLength().getValue());
+        LOGGER.debug("RecordNumberLength: {}", message.getRecordNumberLength().getValue());
     }
 
     private void prepareRecordNumbers() {
         if (message.getRecordNumbers() == null) {
             message.setRecordNumbers(new LinkedList<>());
         }
-        if (tlsContext.getDtlsAcknowledgedRecords() != null) {
-            message.getRecordNumbers().addAll(tlsContext.getDtlsAcknowledgedRecords());
-            tlsContext.getDtlsAcknowledgedRecords().clear();
+        if (tlsContext.getDtls13AcknowledgedRecords() != null) {
+            message.getRecordNumbers().addAll(tlsContext.getDtls13AcknowledgedRecords());
+            tlsContext.getDtls13AcknowledgedRecords().clear();
         }
         LOGGER.debug("RecordNumbers: ");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
-            LOGGER.debug(" - {}", recordNumber);
+            LOGGER.debug("\t - {}", recordNumber);
         }
     }
 }

@@ -54,7 +54,7 @@ public class RecordPreparator extends Preparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
-        // set DTLS 1.3 unified header only in to be encrypted records
+        // Set DTLS 1.3 unified header only in to be encrypted records
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                 && !(encryptor.getRecordCipher(record.getEpoch().getValue())
                         instanceof RecordNullCipher)) {
@@ -126,22 +126,27 @@ public class RecordPreparator extends Preparator<Record> {
     protected void prepareDtls13UnifiedHeader(Record record) {
         record.setUnifiedHeader(createDtls13UnifiedHeader(record, tlsContext));
         LOGGER.debug(
-                "UnifiedHeader: 00" + Integer.toBinaryString(record.getUnifiedHeader().getValue()));
+                "UnifiedHeader: 00{}",
+                Integer.toBinaryString(record.getUnifiedHeader().getValue()));
     }
 
-    private static byte createDtls13UnifiedHeader(Record record, TlsContext context) {
-        byte header = 0x24; // 00100100 (length field is always present)
+    private byte createDtls13UnifiedHeader(Record record, TlsContext context) {
+        byte header = Record.DTLS13_UNIDFIED_HEADER_BASE;
+        // Setting the flag for connection id
         if (record.getConnectionId() != null
                 && record.getConnectionId().getValue() != null
                 && record.getConnectionId().getValue().length > 0) {
-            header ^= 0x10;
+            header ^= Record.DTLS13_HEADER_FLAG_CID_PRESENT;
         }
+        // Setting the flag for sequence number
         if (context.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()) {
-            header ^= 0x08;
+            header ^= Record.DTLS13_HEADER_FLAG_SQN_LONG;
         }
+        // Setting the flag for length
+        header ^= Record.DTLS13_HEADER_FLAG_LENGTH_PRESENT;
+        // Setting the epoch bits
         byte lowerEpoch = (byte) (record.getEpoch().getValue() % 4);
         header ^= lowerEpoch;
-        record.setUnifiedHeader(header);
         return header;
     }
 }

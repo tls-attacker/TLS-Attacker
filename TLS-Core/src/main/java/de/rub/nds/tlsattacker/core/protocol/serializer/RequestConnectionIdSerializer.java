@@ -25,11 +25,11 @@ public class RequestConnectionIdSerializer
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing RequestConnectionIdMessage");
-        writeNumberOfConnectionIds(message);
+        writeNumberOfConnectionIds();
         return getAlreadySerialized();
     }
 
-    private void writeNumberOfConnectionIds(RequestConnectionIdMessage message) {
+    private void writeNumberOfConnectionIds() {
         appendInt(
                 message.getNumberOfConnectionIds().getValue(),
                 HandshakeByteLength.REQUEST_CONNECTION_ID_NUMBER_CIDS_LENGTH);

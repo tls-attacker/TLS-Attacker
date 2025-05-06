@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CookieExtensionHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -20,5 +24,6 @@ public class CookieExtensionHandler extends ExtensionHandler<CookieExtensionMess
     @Override
     public void adjustTLSExtensionContext(CookieExtensionMessage message) {
         tlsContext.setExtensionCookie(message.getCookie().getValue());
+        LOGGER.debug("Set ExtensionCookie in Context to {}", message.getCookie().getValue());
     }
 }

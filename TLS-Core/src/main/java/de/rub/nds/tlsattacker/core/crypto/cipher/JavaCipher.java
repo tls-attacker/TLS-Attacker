@@ -22,7 +22,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-class JavaCipher extends BaseCipher implements Dtls13MaskingCipher {
+class JavaCipher extends BaseCipher {
 
     private final CipherAlgorithm algorithm;
 
@@ -271,23 +271,18 @@ class JavaCipher extends BaseCipher implements Dtls13MaskingCipher {
         if (ciphertext.length < 16) {
             throw new CryptoException("Ciphertext is too short. Can not be processed.");
         }
-
         try {
             Cipher recordNumberCipher;
             recordNumberCipher = Cipher.getInstance("AES/ECB/NoPadding");
             recordNumberCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
-
             byte[] toEncrypt = new byte[16];
             System.arraycopy(ciphertext, 0, toEncrypt, 0, toEncrypt.length);
-
             return recordNumberCipher.doFinal(toEncrypt);
-        } catch (IllegalStateException
-                | IllegalBlockSizeException
+        } catch (IllegalBlockSizeException
                 | BadPaddingException
                 | NoSuchAlgorithmException
                 | InvalidKeyException
-                | NoSuchPaddingException
-                | IllegalArgumentException ex) {
+                | NoSuchPaddingException ex) {
             throw new CryptoException("Error getting record number mask using AES: ", ex);
         }
     }

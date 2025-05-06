@@ -15,11 +15,9 @@ import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
-import de.rub.nds.tlsattacker.core.crypto.cipher.Dtls13MaskingCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -323,56 +321,6 @@ public class RecordAEADCipher extends RecordCipher {
             record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
             record.getComputations().setAuthenticationTagValid(false);
         }
-    }
-
-    @Override
-    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
-        if (!(decryptCipher instanceof Dtls13MaskingCipher)) {
-            throw new CryptoException("DecryptCipher does not support record number masking");
-        }
-        byte[] mask =
-                ((Dtls13MaskingCipher) decryptCipher)
-                        .getDtls13Mask(
-                                getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
-                                record.getProtocolMessageBytes().getValue());
-        byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
-        if (mask.length < encryptedSequenceNumber.length) {
-            throw new CryptoException(
-                    "Mask does not have enough bytes for decrypting the sequence number.");
-        }
-        byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];
-        for (int i = 0; i < sequenceNumber.length; i++) {
-            sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
-        }
-        record.setSequenceNumber(new BigInteger(1, sequenceNumber));
-        LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
-    }
-
-    @Override
-    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
-        if (!(encryptCipher instanceof Dtls13MaskingCipher)) {
-            throw new CryptoException("EncryptCipher does not support record number masking");
-        }
-        byte[] mask =
-                ((Dtls13MaskingCipher) encryptCipher)
-                        .getDtls13Mask(
-                                getState().getKeySet().getWriteSnKey(getLocalConnectionEndType()),
-                                record.getProtocolMessageBytes().getValue());
-        byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
-        if (sequenceNumber.length < 2) {
-            sequenceNumber = new byte[] {0, sequenceNumber[0]};
-        }
-        int length =
-                tlsContext.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()
-                        ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
-                        : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
-        byte[] encryptedSequenceNumber = new byte[length];
-        for (int i = 0; i < length; i++) {
-            encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
-        }
-        record.setEncryptedSequenceNumber(encryptedSequenceNumber);
-        LOGGER.debug(
-                "Encrypted Sequence Number: {}", record.getEncryptedSequenceNumber().getValue());
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {

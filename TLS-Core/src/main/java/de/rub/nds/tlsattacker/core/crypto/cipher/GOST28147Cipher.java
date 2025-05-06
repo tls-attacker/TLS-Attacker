@@ -191,4 +191,10 @@ public class GOST28147Cipher extends BaseCipher {
     public void setIv(byte[] iv) {
         throw new UnsupportedOperationException("Can only be used as a stream cipher!");
     }
+
+    @Override
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+        throw new UnsupportedOperationException(
+                "Selected cipher does not support DTLS 1.3 masking");
+    }
 }

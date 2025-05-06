@@ -28,7 +28,7 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
 
     @Override
     public void parse(NewConnectionIdMessage message) {
-        LOGGER.debug("Parsing NewConnectionId");
+        LOGGER.debug("Parsing NewConnectionIdMessage");
         parseConnectionIdsLength(message);
         parseConnectionIds(message);
         parseUsage(message);
@@ -50,7 +50,7 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
             cid.setConnectionId(parseByteArrayField(cid.getLength().getValue()));
             message.getConnectionIds().add(cid);
             i += cid.getLength().getValue();
-            LOGGER.debug(" - {}", cid.getConnectionId().getValue());
+            LOGGER.debug("\t - {}", cid.getConnectionId().getValue());
         }
     }
 

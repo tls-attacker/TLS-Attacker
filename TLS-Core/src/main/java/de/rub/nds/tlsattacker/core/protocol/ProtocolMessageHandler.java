@@ -21,7 +21,6 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    /** context */
     protected final TlsContext tlsContext;
 
     public ProtocolMessageHandler(TlsContext tlsContext) {

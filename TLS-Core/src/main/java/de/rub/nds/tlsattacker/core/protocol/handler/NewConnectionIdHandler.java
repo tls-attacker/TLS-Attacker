@@ -35,9 +35,6 @@ public class NewConnectionIdHandler extends HandshakeMessageHandler<NewConnectio
                     tlsContext.addNewWriteConnectionId(
                             message.getConnectionIds().get(i).getConnectionId().getValue(), true);
                 }
-                LOGGER.debug("Adjust WriteConnectionIds in Context");
-            } else {
-                LOGGER.debug("Did not adjust WriteConnectionIds in Context");
             }
         }
     }

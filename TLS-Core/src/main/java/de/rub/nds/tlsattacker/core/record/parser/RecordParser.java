@@ -35,9 +35,11 @@ public class RecordParser extends Parser<Record> {
     public void parse(Record record) {
         LOGGER.debug("Parsing Record");
         boolean isContentType = parseContentType(record);
+        // DTLS 1.3
         if (!isContentType) {
             record.setProtocolVersion(ProtocolVersion.DTLS13.getValue());
-            parseDtls13Header(record);
+            parseDtls13UnifiedHeader(record);
+            // Other
         } else {
             ProtocolMessageType protocolMessageType =
                     ProtocolMessageType.getContentType(record.getContentType().getValue());
@@ -85,8 +87,8 @@ public class RecordParser extends Parser<Record> {
 
     private boolean parseContentType(Record record) {
         byte firstByte = parseByteField(RecordByteLength.CONTENT_TYPE);
-        // if contentType starts with 001 it is a DTLS 1.3 unified header
-        if ((firstByte & 0xE0) == 0x20) {
+        // If contentType starts with 001 it is a DTLS 1.3 unified header
+        if ((firstByte & 0xE0) == Record.DTLS13_UNIDFIED_HEADER_BASE) {
             record.setUnifiedHeader(firstByte);
             LOGGER.debug("UnifiedHeader: 00{}", Integer.toBinaryString(firstByte));
             return false;
@@ -97,24 +99,25 @@ public class RecordParser extends Parser<Record> {
         }
     }
 
-    private void parseDtls13Header(Record record) {
+    private void parseDtls13UnifiedHeader(Record record) {
         byte header = record.getUnifiedHeader().getValue();
-        int lowerEpoch = header & 0x03;
+        // Parsing the epoch bits
+        int lowerEpoch = header & Record.DTLS13_HEADER_FLAG_EPOCH_BITS;
         record.setEpoch(lowerEpoch);
-        boolean isConnectionIdPresent = (header & 0x10) == 0x10;
-        if (isConnectionIdPresent) {
+        // Parsing the connection id if present
+        if (record.isUnifiedHeaderCidPresent()) {
             parseConnectionId(record);
         }
-        boolean isSequenceNumberLengthLong = (header & 0x08) == 0x08;
-        if (isSequenceNumberLengthLong) {
+        // Parsing the sequence number
+        if (record.isUnifiedHeaderSqnLong()) {
             record.setEncryptedSequenceNumber(
                     parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG));
         } else {
             record.setEncryptedSequenceNumber(
                     parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT));
         }
-        boolean isLengthPresent = (header & 0x04) == 0x04;
-        if (isLengthPresent) {
+        // Parsing the length if present
+        if (record.isUnifiedHeaderLengthPresent()) {
             parseLength(record);
         }
     }
@@ -130,7 +133,7 @@ public class RecordParser extends Parser<Record> {
     }
 
     private void parseProtocolMessageBytes(Record record) {
-        // if length is not set, entire rest of the record is protocol message (DTLS 1.3)
+        // If length is not set in DTLS 1.3, entire rest of the record is protocol message
         if (record.getLength().getValue() != null) {
             record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
         } else {

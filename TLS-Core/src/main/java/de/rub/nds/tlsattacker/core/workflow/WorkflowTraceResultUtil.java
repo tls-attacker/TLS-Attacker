@@ -219,7 +219,7 @@ public class WorkflowTraceResultUtil {
     }
 
     public static List<HandshakeMessage> getAllReceivedHandshakeMessages(
-            HandshakeMessageType type, WorkflowTrace trace) {
+            WorkflowTrace trace, HandshakeMessageType type) {
         return filterMessageList(
                 filterHandshakeMessagesFromList(getAllReceivedMessages(trace)), type);
     }

@@ -197,9 +197,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
         if (tlsContext.getRecordLayer() != null) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
                 if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                         && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
+                    // In DTLS 1.3 epoch 1 is only used for early data, if it was not used, we add
+                    // the NullCipher for it.
                     tlsContext.getRecordLayer().updateDecryptionCipher(null);
                 }
                 tlsContext
@@ -208,9 +209,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                 RecordCipherFactory.getRecordCipher(
                                         tlsContext, serverKeySet, false));
             } else {
-                // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
                 if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                         && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
+                    // In DTLS 1.3 epoch 1 is only used for early data, if it was not used, we add
+                    // the NullCipher for it.
                     tlsContext.getRecordLayer().updateEncryptionCipher(null);
                 }
                 tlsContext
@@ -296,7 +298,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             HKDFunction.DERIVED,
                             new byte[0],
                             tlsContext.getChooser().getSelectedProtocolVersion());
-            byte[] sharedSecret = new byte[macLength];
+            byte[] sharedSecret = new byte[0];
             // if PSK_only mode is selected, the keyShare will be null, and there is no sharedSecret
             if (keyShareStoreEntry != null) {
                 BigInteger privateKey =
@@ -599,10 +601,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private KeyShareStoreEntry adjustKeyShareStoreEntry() {
         KeyShareStoreEntry selectedKeyShareStore;
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            selectedKeyShareStore = tlsContext.getServerKeyShareStoreEntry();
-            if (selectedKeyShareStore == null) {
-                return null;
-            }
+            selectedKeyShareStore = tlsContext.getChooser().getServerKeyShare();
         } else {
             Integer pos = null;
             for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {

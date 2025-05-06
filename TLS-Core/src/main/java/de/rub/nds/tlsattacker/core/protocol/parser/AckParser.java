@@ -40,15 +40,15 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
                 i < ackMessage.getRecordNumberLength().getValue();
                 i += AckByteLength.RECORD_NUMBER) {
             RecordNumber recordNumber = new RecordNumber();
-            recordNumber.setEpoch(parseBigIntField(RecordByteLength.DTLS_1_3_EPOCH_NUMBER));
+            recordNumber.setEpoch(parseBigIntField(RecordByteLength.DTLS13_EPOCH_NUMBER));
             recordNumber.setSequenceNumber(parseBigIntField(RecordByteLength.SEQUENCE_NUMBER));
             ackMessage.getRecordNumbers().add(recordNumber);
-            LOGGER.debug(" - {}", recordNumber);
+            LOGGER.debug("\t - {}", recordNumber);
         }
     }
 
     private void parseRecordNumbersLength(AckMessage ackMessage) {
         ackMessage.setRecordNumberLength(parseIntField(AckByteLength.RECORD_NUMBERS_LENGTH));
-        LOGGER.debug("RecordNumbersLength: {}", ackMessage.getRecordNumberLength().getValue());
+        LOGGER.debug("RecordNumberLength: {}", ackMessage.getRecordNumberLength().getValue());
     }
 }

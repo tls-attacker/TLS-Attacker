@@ -23,7 +23,7 @@ import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
 
-/** HKDF functions computation for TLS 1.3 */
+/** HKDF functions computation for (D)TLS 1.3 */
 public class HKDFunction {
 
     public static final String KEY = "key";
@@ -185,7 +185,7 @@ public class HKDFunction {
         }
     }
 
-    /** Computes the HKDF-Label as defined in TLS 1.3 */
+    /** Computes the HKDF-Label as defined in (D)TLS 1.3 */
     private static byte[] labelEncoder(
             byte[] hashValue, String labelIn, int outLen, ProtocolVersion protocolVersion) {
         String label;
@@ -210,7 +210,7 @@ public class HKDFunction {
     }
 
     /**
-     * Computes Derive-Secret output as defined in TLS 1.3
+     * Computes Derive-Secret output as defined in (D)TLS 1.3
      *
      * @param hkdfAlgorithm The HKDF Algorithm
      * @param hashAlgorithm The Hash Algorithm
@@ -265,7 +265,7 @@ public class HKDFunction {
     }
 
     /**
-     * Computes HKDF-Expand-Label output as defined in TLS 1.3
+     * Computes HKDF-Expand-Label output as defined in (D)TLS 1.3
      *
      * @param hkdfAlgorithm The HKDF Algorithm
      * @param prk The Prk

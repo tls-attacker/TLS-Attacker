@@ -90,8 +90,8 @@ public class RequestConnectionIdMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("RequestConnectionId:");
-        sb.append("\n  NumberOfConnectionIds: ");
+        sb.append("RequestConnectionId: \n");
+        sb.append("\t NumberOfConnectionIds: ");
         if (numberOfConnectionIds != null && numberOfConnectionIds.getValue() != null) {
             sb.append(numberOfConnectionIds.getValue());
         } else {

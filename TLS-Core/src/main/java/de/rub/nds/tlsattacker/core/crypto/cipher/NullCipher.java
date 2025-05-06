@@ -71,4 +71,9 @@ public class NullCipher extends BaseCipher {
             throws CryptoException {
         return someBytes;
     }
+
+    @Override
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+        return new byte[0];
+    }
 }

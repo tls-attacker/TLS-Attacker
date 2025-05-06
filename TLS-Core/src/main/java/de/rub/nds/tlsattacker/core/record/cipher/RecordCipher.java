@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.core.crypto.cipher.BaseCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,9 +66,48 @@ public abstract class RecordCipher {
 
     public abstract void decrypt(Record record) throws CryptoException;
 
-    public abstract void decryptDtls13SequenceNumber(Record record) throws CryptoException;
+    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
+        byte[] mask =
+                ((BaseCipher) encryptCipher)
+                        .getDtls13Mask(
+                                getState().getKeySet().getWriteSnKey(getLocalConnectionEndType()),
+                                record.getProtocolMessageBytes().getValue());
+        byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
+        if (sequenceNumber.length < 2) {
+            sequenceNumber = new byte[] {0, sequenceNumber[0]};
+        }
+        int length =
+                tlsContext.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()
+                        ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
+                        : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
+        byte[] encryptedSequenceNumber = new byte[length];
+        for (int i = 0; i < length; i++) {
+            encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
+        }
+        record.setEncryptedSequenceNumber(encryptedSequenceNumber);
+        LOGGER.debug(
+                "Encrypted Sequence Number: {}", record.getEncryptedSequenceNumber().getValue());
+    }
 
-    public abstract void encryptDtls13SequenceNumber(Record record) throws CryptoException;
+    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
+        byte[] mask =
+                ((BaseCipher) decryptCipher)
+                        .getDtls13Mask(
+                                getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
+                                record.getProtocolMessageBytes().getValue());
+        byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
+        if (mask.length < encryptedSequenceNumber.length) {
+            // TODO: Check if good solution
+            throw new CryptoException(
+                    "Mask does not have enough bytes for decrypting the sequence number.");
+        }
+        byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];
+        for (int i = 0; i < sequenceNumber.length; i++) {
+            sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
+        }
+        record.setSequenceNumber(new BigInteger(1, sequenceNumber));
+        LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
+    }
 
     /**
      * This function collects data needed for computing MACs and other authentication tags in
@@ -87,6 +128,7 @@ public abstract class RecordCipher {
             Record record, ProtocolVersion protocolVersion) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
+            // TLS 1.3
             if (protocolVersion.isTLS13()) {
                 stream.write(record.getContentType().getValue());
                 stream.write(record.getProtocolVersion().getValue());
@@ -105,18 +147,20 @@ public abstract class RecordCipher {
                                     RecordByteLength.RECORD_LENGTH));
                 }
                 return stream.toByteArray();
+                // DTLS 1.3
             } else if (protocolVersion.isDTLS13()) {
+                // Adding the first byte of the unified header
                 byte firstByte = record.getUnifiedHeader().getValue();
                 stream.write(firstByte);
-                boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
-                if (isConnectionIdPresent) {
+                // Adding the connection id if present
+                if (record.isUnifiedHeaderCidPresent()) {
                     stream.write(record.getConnectionId().getValue());
                 }
+                // Adding the sequence number
                 byte[] sequenceNumberBytes =
                         ArrayConverter.longToUint48Bytes(
                                 record.getSequenceNumber().getValue().longValue());
-                boolean isSequenceNumberLengthLong = (firstByte & 0x08) == 0x08;
-                if (isSequenceNumberLengthLong) {
+                if (record.isUnifiedHeaderSqnLong()) {
                     stream.write(
                             sequenceNumberBytes,
                             sequenceNumberBytes.length
@@ -129,8 +173,8 @@ public abstract class RecordCipher {
                                     - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT,
                             RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT);
                 }
-                boolean isLengthPresent = (firstByte & 0x04) == 0x04;
-                if (isLengthPresent) {
+                // Adding the length if present
+                if (record.isUnifiedHeaderLengthPresent()) {
                     if (record.getLength() != null && record.getLength().getValue() != null) {
                         stream.write(
                                 ArrayConverter.intToBytes(
@@ -144,6 +188,7 @@ public abstract class RecordCipher {
                     }
                 }
                 return stream.toByteArray();
+                // Other
             } else {
                 if (protocolVersion.isDTLS()) {
                     if (ProtocolMessageType.getContentType(record.getContentType().getValue())

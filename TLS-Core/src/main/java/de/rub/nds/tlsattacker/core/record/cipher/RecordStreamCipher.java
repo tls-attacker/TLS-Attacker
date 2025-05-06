@@ -175,18 +175,6 @@ public class RecordStreamCipher extends RecordCipher {
         }
     }
 
-    @Override
-    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException(
-                "DTLS 1.3 Sequence Number decryption not possible in StreamCipher.");
-    }
-
-    @Override
-    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException(
-                "DTLS 1.3 Sequence Number encryption not possible in StreamCipher.");
-    }
-
     class PlaintextParser extends Parser<Object> {
 
         public PlaintextParser(byte[] array) {

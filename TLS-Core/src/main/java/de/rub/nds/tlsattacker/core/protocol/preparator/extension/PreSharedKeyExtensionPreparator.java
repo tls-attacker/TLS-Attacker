@@ -37,7 +37,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cryptomator.siv.org.bouncycastle.util.Arrays;
 
 /** RFC draft-ietf-tls-tls13-21 */
 public class PreSharedKeyExtensionPreparator
@@ -201,7 +200,7 @@ public class PreSharedKeyExtensionPreparator
                         byte[] hashBefore = tlsContext.getDigest().getRawBytes();
                         tlsContext
                                 .getDigest()
-                                .setRawBytes(Arrays.concatenate(hashBefore, relevantBytes));
+                                .setRawBytes(ArrayConverter.concatenate(hashBefore, relevantBytes));
                         SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                         mac.init(keySpec);
                         mac.update(

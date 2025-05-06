@@ -33,7 +33,7 @@ import org.bouncycastle.util.Arrays;
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class "BcChaCha20Poly1305". See
  * RFC7905 for further information.
  */
-public abstract class ChaCha20Poly1305Cipher extends BaseCipher implements Dtls13MaskingCipher {
+public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -272,20 +272,16 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher implements Dtls1
         if (ciphertext.length < 16) {
             throw new CryptoException("Ciphertext is too short. Can not be processed.");
         }
-
         try {
             Cipher recordNumberCipher = Cipher.getInstance("ChaCha20");
-
             byte[] counter = new byte[4];
             System.arraycopy(ciphertext, 0, counter, 0, counter.length);
             byte[] nonce = new byte[12];
             System.arraycopy(ciphertext, counter.length, nonce, 0, nonce.length);
-
             ChaCha20ParameterSpec parameterSpec =
                     new ChaCha20ParameterSpec(nonce, new BigInteger(counter).intValue());
             SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
             recordNumberCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
-
             byte[] toEncrypt = new byte[64];
             return recordNumberCipher.doFinal(toEncrypt);
         } catch (NoSuchAlgorithmException

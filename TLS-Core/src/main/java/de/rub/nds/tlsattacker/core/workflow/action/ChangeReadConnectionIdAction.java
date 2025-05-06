@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "ChangeReadConnectionId")
 public class ChangeReadConnectionIdAction extends ChangeConnectionIdAction {
 
     public ChangeReadConnectionIdAction() {}
@@ -18,9 +20,17 @@ public class ChangeReadConnectionIdAction extends ChangeConnectionIdAction {
         super(connectionId);
     }
 
+    public ChangeReadConnectionIdAction(byte[] connectionId, int index) {
+        super(connectionId, index);
+    }
+
     @Override
     protected void changeConnectionId(TlsContext tlsContext) {
-        tlsContext.setReadConnectionId(connectionId);
-        LOGGER.info("Changed the read connection id");
+        if (index != null) {
+            tlsContext.setReadConnectionId(connectionId, index);
+        } else {
+            tlsContext.setReadConnectionId(connectionId);
+        }
+        LOGGER.info("Changed read connection id");
     }
 }

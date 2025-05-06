@@ -42,7 +42,6 @@ public class NewSessionTicketSerializer
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
         if (version.is13()) {
-            // TLS 1.3
             writeTicketAgeAdd(msg);
             writeTicketNonceLength(msg);
             writeTicketNonce(msg);

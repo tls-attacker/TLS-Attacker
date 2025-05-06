@@ -24,7 +24,7 @@ public class RequestConnectionIdPreperator
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        LOGGER.debug("Preparing AckMessage");
+        LOGGER.debug("Preparing RequestConnectionIdMessage");
         prepareNumberOfConnectionIds();
     }
 

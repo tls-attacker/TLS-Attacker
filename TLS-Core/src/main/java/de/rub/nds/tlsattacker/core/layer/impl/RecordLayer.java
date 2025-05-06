@@ -319,7 +319,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         if (encryptionCipher == null) {
-            LOGGER.debug("Skipping write epoch ({})", writeEpoch);
+            LOGGER.debug("Updating EncryptionCipher with null");
         } else {
             LOGGER.debug(
                     "Activating new EncryptionCipher ({})",
@@ -331,7 +331,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
         if (decryptionCipher == null) {
-            LOGGER.debug("Skipping read epoch ({})", readEpoch);
+            LOGGER.debug("Updating DecryptionCipher with null");
         } else {
             LOGGER.debug(
                     "Activating new DecryptionCipher ({})",

@@ -257,8 +257,11 @@ public class WorkflowConfigurationFactory {
 
         if (config.isAddEncryptedServerNameIndicationExtension()
                 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
             workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
         }
 
         workflowTrace.addTlsAction(
@@ -405,7 +408,7 @@ public class WorkflowConfigurationFactory {
         workflowTrace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, messages));
-        if (!(config.getHighestProtocolVersion().is13())) {
+        if (!config.getHighestProtocolVersion().is13()) {
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -1376,8 +1379,7 @@ public class WorkflowConfigurationFactory {
             return trace;
         } else {
             trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-            if (config.getHighestProtocolVersion().is13()
-                    && config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            if (config.getHighestProtocolVersion().isDTLS13()) {
                 trace.addTlsAction(new SendAction(new AckMessage()));
             } else {
                 trace.addTlsAction(

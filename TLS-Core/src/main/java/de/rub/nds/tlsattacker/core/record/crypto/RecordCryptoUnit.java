@@ -30,8 +30,10 @@ public abstract class RecordCryptoUnit {
     }
 
     /**
-     * Tries to guess the correct epoch based on the given epoch bits (DTLS 1.3). Sets the full
-     * epoch value of the record, if found.
+     * Tries to guess the correct epoch based on the given low-order two bits of the epoch (DTLS
+     * 1.3). For that, it walks backwards through the list of ciphers, comparing each index modulo 4
+     * against the provided epoch bits. On the first match, it sets the record’s full epoch and
+     * returns that cipher.
      */
     public RecordCipher getRecordCipherForEpochBits(int epochBits, Record record) {
         for (int i = recordCipherList.size() - 1; i >= 0; i--) {
@@ -44,7 +46,7 @@ public abstract class RecordCryptoUnit {
         return null;
     }
 
-    /** Return true, if we are still in epoch 0. */
+    /** Return true, if we are still in epoch 0 (DTLS). */
     public boolean isEpochZero() {
         return recordCipherList.size() == 1;
     }

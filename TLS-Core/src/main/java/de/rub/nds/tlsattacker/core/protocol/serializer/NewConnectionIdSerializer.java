@@ -18,41 +18,38 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final NewConnectionIdMessage msg;
-
     public NewConnectionIdSerializer(NewConnectionIdMessage message) {
         super(message);
-        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        LOGGER.debug("Serializing NewConnectionId");
-        serializeConnectionIdsLength(msg);
-        serializeConnectionIds(msg);
-        serializeUsage(msg);
+        LOGGER.debug("Serializing NewConnectionIdMessage");
+        serializeConnectionIdsLength();
+        serializeConnectionIds();
+        serializeUsage();
         return getAlreadySerialized();
     }
 
-    private void serializeUsage(NewConnectionIdMessage msg) {
-        appendByte(msg.getUsage().getValue());
-        LOGGER.debug("Usage: {}", msg.getUsage().getValue());
+    private void serializeUsage() {
+        appendByte(message.getUsage().getValue());
+        LOGGER.debug("Usage: {}", message.getUsage().getValue());
     }
 
-    private void serializeConnectionIds(NewConnectionIdMessage msg) {
+    private void serializeConnectionIds() {
         LOGGER.debug("ConnectionIds: ");
         for (ConnectionId connectionId : message.getConnectionIds()) {
             appendInt(
                     connectionId.getLength().getValue(), HandshakeByteLength.CONNECTION_ID_LENGTH);
             appendBytes(connectionId.getConnectionId().getValue());
-            LOGGER.debug(" - {}", connectionId.getConnectionId().getValue());
+            LOGGER.debug("\t - {}", connectionId.getConnectionId().getValue());
         }
     }
 
-    private void serializeConnectionIdsLength(NewConnectionIdMessage msg) {
+    private void serializeConnectionIdsLength() {
         appendInt(
-                msg.getConnectionIdsLength().getValue(),
+                message.getConnectionIdsLength().getValue(),
                 HandshakeByteLength.NEW_CONNECTION_ID_CIDS_LENGTH);
-        LOGGER.debug("ConnectionIdsLength: {}", msg.getConnectionIdsLength());
+        LOGGER.debug("ConnectionIdsLength: {}", message.getConnectionIdsLength());
     }
 }

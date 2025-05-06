@@ -419,18 +419,6 @@ public final class RecordBlockCipher extends RecordCipher {
         }
     }
 
-    @Override
-    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException(
-                "DTLS 1.3 Sequence Number decryption not possible in BlockCipher.");
-    }
-
-    @Override
-    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException(
-                "DTLS 1.3 Sequence Number encryption not possible in BlockCipher.");
-    }
-
     private boolean isPaddingValid(byte[] padding) {
         if (padding.length == 0) {
             LOGGER.debug("Zero Byte Padding is invalid");
