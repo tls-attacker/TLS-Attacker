@@ -14,19 +14,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.*;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordStreamCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,11 +41,6 @@ public class RecordDecryptorTest {
     private TlsContext context;
     private Record record;
     public RecordDecryptor decryptor;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @BeforeEach
     public void setUp() {

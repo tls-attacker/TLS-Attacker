@@ -24,11 +24,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
-import java.security.Security;
 import java.util.List;
 import java.util.stream.Stream;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -39,11 +36,6 @@ public class EncryptedServerNameIndicationExtensionParserTest
 
     private final Chooser chooser;
     private final TlsContext context;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public EncryptedServerNameIndicationExtensionParserTest() {
         super(

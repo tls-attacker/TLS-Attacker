@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
-import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +47,6 @@ public abstract class AbstractLayerTest {
         FakeTcpTransportHandler fakeTcpTransportHandler = new FakeTcpTransportHandler(null);
         transportHandler = fakeTcpTransportHandler;
         tlsContext.setTransportHandler(fakeTcpTransportHandler);
-        ProviderUtil.addBouncyCastleProvider();
         setUpLayerSpecific();
     }
 }

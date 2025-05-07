@@ -26,9 +26,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,11 +35,6 @@ public class RecordStreamCipherTest {
     private TlsContext context;
     private KeySet keySet;
     private byte[] data;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @BeforeEach
     public void setUp() {

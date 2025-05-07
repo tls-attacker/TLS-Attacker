@@ -16,28 +16,25 @@ import de.rub.nds.modifiablevariable.util.BadFixedRandom;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ECDHEServerKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
                 ECDHEServerKeyExchangeMessage,
                 ECDHEServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage>> {
-
-    @BeforeEach
-    public void before() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public ECDHEServerKeyExchangePreparatorTest() {
         super(ECDHEServerKeyExchangeMessage::new, ECDHEServerKeyExchangePreparator::new);

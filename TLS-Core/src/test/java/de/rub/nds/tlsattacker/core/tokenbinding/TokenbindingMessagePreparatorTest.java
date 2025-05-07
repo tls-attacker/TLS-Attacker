@@ -20,13 +20,10 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
-import java.security.Security;
 import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,11 +36,6 @@ public class TokenbindingMessagePreparatorTest {
     private TokenBindingMessage message;
 
     private TokenBindingMessagePreparator preparator;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @BeforeEach
     public void setUp() {

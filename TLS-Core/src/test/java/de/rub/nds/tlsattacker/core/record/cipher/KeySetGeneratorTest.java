@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.stream.Stream;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,11 +31,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class KeySetGeneratorTest {
 
     private TlsContext context;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @BeforeEach
     public void setUp() {

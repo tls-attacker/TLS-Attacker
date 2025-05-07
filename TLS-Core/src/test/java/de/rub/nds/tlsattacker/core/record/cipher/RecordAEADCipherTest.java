@@ -25,11 +25,8 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.math.BigInteger;
-import java.security.Security;
 import java.util.stream.Stream;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -142,11 +139,6 @@ public class RecordAEADCipherTest {
                     record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
             }
         }
-    }
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
     }
 
     @BeforeEach
