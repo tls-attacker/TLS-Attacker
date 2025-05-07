@@ -15,6 +15,7 @@ import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class TlsSignatureUtilTest {
 
     @BeforeEach
     void setUp() {
+        ProviderUtil.addBouncyCastleProvider();
         tlsSignatureUtil = new TlsSignatureUtil();
         State state = new State(new Config());
         chooser = state.getTlsContext().getChooser();
