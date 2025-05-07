@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -69,7 +68,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceResultUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
@@ -895,10 +893,10 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createHandshakeWorkflow();
         // Remove extensions that are only required in the second handshake
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            List<HandshakeMessage> clientHellos =
-                    WorkflowTraceResultUtil.getAllSentHandshakeMessages(
+            List<ProtocolMessage> clientHellos =
+                    WorkflowTraceConfigurationUtil.getStaticConfiguredSendMessages(
                             trace, HandshakeMessageType.CLIENT_HELLO);
-            for (HandshakeMessage handshakeMessage : clientHellos) {
+            for (ProtocolMessage handshakeMessage : clientHellos) {
                 ClientHelloMessage clientHello = (ClientHelloMessage) handshakeMessage;
                 if (clientHello.getExtensions() != null) {
                     EarlyDataExtensionMessage earlyDataExtension =
