@@ -99,7 +99,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         int epoch = tlsContext.getReadEpoch() - 1;
         long readSequenceNumber = tlsContext.getReadSequenceNumber(epoch);
         // Acknowledge all records of the given epoch
-        for (long sequenceNumber = 0; sequenceNumber <= readSequenceNumber; sequenceNumber++) {
+        for (long sequenceNumber = 0; sequenceNumber < readSequenceNumber; sequenceNumber++) {
             RecordNumber recordNumber =
                     new RecordNumber(BigInteger.valueOf(epoch), BigInteger.valueOf(sequenceNumber));
             tlsContext.getDtls13AcknowledgedRecords().add(recordNumber);
