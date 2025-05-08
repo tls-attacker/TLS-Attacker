@@ -396,14 +396,24 @@ public class ConfigTest {
     }
 
     @Test
-    public void generateTls13Config() {
-        setUpBasicTls13Config(config);
+    public void generateDTls13Config() {
+        setUpBasicDTls13Config(config);
 
-        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13.config"));
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
     }
 
     @Test
-    public void generateDtls13Config() {
+    public void generateDTls13ZeroRttConfig() {
+        setUpBasicDTls13Config(config);
+        config.setAddPSKKeyExchangeModesExtension(true);
+        config.setAddPreSharedKeyExtension(true);
+        config.setAddEarlyDataExtension(true);
+        config.setSessionTicketLifetimeHint(3600);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13zerortt.config"));
+    }
+
+    private void setUpBasicDTls13Config(Config config) {
         setUpBasicTls13Config(config);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS13);
         config.setSupportedVersions(ProtocolVersion.DTLS13);
@@ -421,8 +431,13 @@ public class ConfigTest {
         config.setDefaultExtensionCookie(
                 ArrayConverter.hexStringToByteArray(
                         "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100"));
+    }
 
-        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
+    @Test
+    public void generateTls13Config() {
+        setUpBasicTls13Config(config);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13.config"));
     }
 
     @Test
