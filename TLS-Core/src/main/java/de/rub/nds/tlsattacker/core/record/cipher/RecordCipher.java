@@ -67,11 +67,6 @@ public abstract class RecordCipher {
     public abstract void decrypt(Record record) throws CryptoException;
 
     public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
-        byte[] mask =
-                ((BaseCipher) encryptCipher)
-                        .getDtls13Mask(
-                                getState().getKeySet().getWriteSnKey(getLocalConnectionEndType()),
-                                record.getProtocolMessageBytes().getValue());
         byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
         if (sequenceNumber.length < 2) {
             sequenceNumber = new byte[] {0, sequenceNumber[0]};
@@ -81,6 +76,22 @@ public abstract class RecordCipher {
                         ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
                         : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
         byte[] encryptedSequenceNumber = new byte[length];
+
+        byte[] mask;
+        if (getState().getKeySet() == null) {
+            mask = new byte[length];
+            LOGGER.warn(
+                    "No keys available for DTLS 1.3 mask derivation for sequence number encryption. Using null encryption.");
+        } else {
+            mask =
+                    ((BaseCipher) encryptCipher)
+                            .getDtls13Mask(
+                                    getState()
+                                            .getKeySet()
+                                            .getWriteSnKey(getLocalConnectionEndType()),
+                                    record.getProtocolMessageBytes().getValue());
+        }
+
         for (int i = 0; i < length; i++) {
             encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
         }
