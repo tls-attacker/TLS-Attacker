@@ -67,6 +67,14 @@ public enum NamedGroup {
     BRAINPOOLP256R1(new byte[] {(byte) 0, (byte) 26}, NamedEllipticCurveParameters.BRAINPOOLP256R1),
     BRAINPOOLP384R1(new byte[] {(byte) 0, (byte) 27}, NamedEllipticCurveParameters.BRAINPOOLP384R1),
     BRAINPOOLP512R1(new byte[] {(byte) 0, (byte) 28}, NamedEllipticCurveParameters.BRAINPOOLP512R1),
+
+    BRAINPOOLP256R1TLS13(
+            new byte[] {(byte) 0, (byte) 31}, NamedEllipticCurveParameters.BRAINPOOLP256R1),
+    BRAINPOOLP384R1TLS13(
+            new byte[] {(byte) 0, (byte) 32}, NamedEllipticCurveParameters.BRAINPOOLP384R1),
+    BRAINPOOLP512R1TLS13(
+            new byte[] {(byte) 0, (byte) 33}, NamedEllipticCurveParameters.BRAINPOOLP512R1),
+
     ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, NamedEllipticCurveParameters.CURVE_X25519),
     ECDH_X448(new byte[] {(byte) 0, (byte) 30}, NamedEllipticCurveParameters.CURVE_X448),
     CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, NamedEllipticCurveParameters.CURVE_SM2),
@@ -118,7 +126,10 @@ public enum NamedGroup {
                             SECP256R1,
                             SECP384R1,
                             SECP521R1,
-                            CURVE_SM2));
+                            CURVE_SM2,
+                            BRAINPOOLP256R1TLS13,
+                            BRAINPOOLP384R1TLS13,
+                            BRAINPOOLP512R1TLS13));
 
     private NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
