@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -44,7 +43,7 @@ public class TlsSignatureUtilTest {
 
     public List<byte[]> getTestValues() {
         List<byte[]> testValues = new ArrayList<>();
-        testValues.add(new byte[] { 0x00, 0x01, 0x02, 0x03 });
+        testValues.add(new byte[] {0x00, 0x01, 0x02, 0x03});
         testValues.add(new byte[0]);
         testValues.add(new byte[1]);
         testValues.add(new byte[100]);
@@ -58,11 +57,13 @@ public class TlsSignatureUtilTest {
     void testComputeSignature(SignatureAndHashAlgorithm algorithm) {
         SignatureCalculator signatureCalculator = new SignatureCalculator();
         for (byte[] value : getTestValues()) {
-            SignatureComputations computations = signatureCalculator.createSignatureComputations(
-                    algorithm.getSignatureAlgorithm());
+            SignatureComputations computations =
+                    signatureCalculator.createSignatureComputations(
+                            algorithm.getSignatureAlgorithm());
             assertDoesNotThrow(
-                    () -> tlsSignatureUtil.computeSignature(
-                            chooser, algorithm, value, computations));
+                    () ->
+                            tlsSignatureUtil.computeSignature(
+                                    chooser, algorithm, value, computations));
         }
     }
 }

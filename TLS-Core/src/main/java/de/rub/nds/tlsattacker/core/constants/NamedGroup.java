@@ -493,6 +493,9 @@ public enum NamedGroup {
         list.add(BRAINPOOLP256R1);
         list.add(BRAINPOOLP384R1);
         list.add(BRAINPOOLP512R1);
+        list.add(BRAINPOOLP256R1TLS13);
+        list.add(BRAINPOOLP384R1TLS13);
+        list.add(BRAINPOOLP512R1TLS13);
         list.add(FFDHE2048);
         list.add(FFDHE3072);
         list.add(FFDHE4096);
