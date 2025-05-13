@@ -200,8 +200,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                         && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
                     // In DTLS 1.3 epoch 1 is only used for early data, if it was not used, we add
-                    // the NullCipher for it.
+                    // null for it.
                     tlsContext.getRecordLayer().updateDecryptionCipher(null);
+                    tlsContext.getRecordLayer().updateEncryptionCipher(null);
                 }
                 tlsContext
                         .getRecordLayer()
@@ -212,7 +213,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                         && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
                     // In DTLS 1.3 epoch 1 is only used for early data, if it was not used, we add
-                    // the NullCipher for it.
+                    // null for it.
+                    tlsContext.getRecordLayer().updateDecryptionCipher(null);
                     tlsContext.getRecordLayer().updateEncryptionCipher(null);
                 }
                 tlsContext
@@ -220,28 +222,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         .updateEncryptionCipher(
                                 RecordCipherFactory.getRecordCipher(
                                         tlsContext, serverKeySet, true));
-            }
-        }
-    }
-
-    private void setClientRecordCipher() {
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-        LOGGER.debug("Setting cipher for client to use handshake secrets");
-        KeySet clientKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveClientKeySetType());
-
-        if (tlsContext.getRecordLayer() != null) {
-            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-                tlsContext
-                        .getRecordLayer()
-                        .updateDecryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext, clientKeySet, false));
-            } else {
-                tlsContext
-                        .getRecordLayer()
-                        .updateEncryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext, clientKeySet, true));
             }
         }
     }
@@ -263,7 +243,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if ((tlsContext.getChooser().getSelectedProtocolVersion().is13())
                 && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
-            setClientRecordCipher();
         }
     }
 

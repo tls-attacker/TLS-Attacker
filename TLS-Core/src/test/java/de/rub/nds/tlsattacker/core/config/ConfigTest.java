@@ -427,7 +427,6 @@ public class ConfigTest {
         config.setMessageFactoryActionOptions(new LinkedList<>());
         config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
         config.setDtlsCookieExchange(true);
-        config.setAddCookieExtension(true);
         config.setDefaultExtensionCookie(
                 ArrayConverter.hexStringToByteArray(
                         "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100"));

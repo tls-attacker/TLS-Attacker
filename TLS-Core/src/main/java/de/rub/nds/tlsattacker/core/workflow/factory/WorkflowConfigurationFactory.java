@@ -262,17 +262,12 @@ public class WorkflowConfigurationFactory {
             workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
         }
 
-        CoreClientHelloMessage clientHello = generateClientHelloMessage(config, connection);
-        // Remove extensions that are only required in a second clienthello
-        if (config.getHighestProtocolVersion().isDTLS13()
-                && config.isDtlsCookieExchange() & clientHello.getExtensions() != null) {
-            clientHello
-                    .getExtensions()
-                    .remove(clientHello.getExtension(CookieExtensionMessage.class));
-        }
         workflowTrace.addTlsAction(
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, clientHello));
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             if (config.getHighestProtocolVersion().isDTLS13()) {
@@ -290,12 +285,16 @@ public class WorkflowConfigurationFactory {
                                 new HelloVerifyRequestMessage()));
             }
 
+            CoreClientHelloMessage clientHello = generateClientHelloMessage(config, connection);
+            // Add extension that are required
+            if (config.getHighestProtocolVersion().isDTLS13()
+                    && config.isDtlsCookieExchange()
+                    && !clientHello.getExtensions().contains(CookieExtensionMessage.class)) {
+                clientHello.addExtension(new CookieExtensionMessage());
+            }
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            generateClientHelloMessage(config, connection)));
+                            config, connection, ConnectionEndType.CLIENT, clientHello));
         }
 
         workflowTrace.addTlsAction(
@@ -1257,17 +1256,12 @@ public class WorkflowConfigurationFactory {
             trace.addTlsAction(new EchConfigDnsRequestAction());
         }
 
-        CoreClientHelloMessage clientHello = generateClientHelloMessage(config, connection);
-        // Remove extensions that are only required in a second clienthello
-        if (config.getHighestProtocolVersion().isDTLS13()
-                && config.isDtlsCookieExchange() & clientHello.getExtensions() != null) {
-            clientHello
-                    .getExtensions()
-                    .remove(clientHello.getExtension(CookieExtensionMessage.class));
-        }
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, clientHello));
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        generateClientHelloMessage(config, connection)));
 
         if ((config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange())) {
             if (config.getHighestProtocolVersion().isDTLS13()) {
@@ -1284,12 +1278,17 @@ public class WorkflowConfigurationFactory {
                                 ConnectionEndType.SERVER,
                                 new HelloVerifyRequestMessage()));
             }
+
+            CoreClientHelloMessage clientHello = generateClientHelloMessage(config, connection);
+            // Add extension that are required
+            if (config.getHighestProtocolVersion().isDTLS13()
+                    && config.isDtlsCookieExchange()
+                    && !clientHello.getExtensions().contains(CookieExtensionMessage.class)) {
+                clientHello.addExtension(new CookieExtensionMessage());
+            }
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            generateClientHelloMessage(config, connection)));
+                            config, connection, ConnectionEndType.CLIENT, clientHello));
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
