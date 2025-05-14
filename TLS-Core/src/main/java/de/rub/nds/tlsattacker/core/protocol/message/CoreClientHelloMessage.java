@@ -76,26 +76,22 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
-                ServerNameIndicationExtensionMessage extension =
-                        new ServerNameIndicationExtensionMessage();
+                ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
                 addExtension(extension);
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
-                EncryptedServerNameIndicationExtensionMessage extensionMessage =
-                        new EncryptedServerNameIndicationExtensionMessage();
+                EncryptedServerNameIndicationExtensionMessage extensionMessage = new EncryptedServerNameIndicationExtensionMessage();
                 byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
-                    serverName =
-                            tlsConfig
-                                    .getDefaultClientConnection()
-                                    .getHostname()
-                                    .getBytes(StandardCharsets.US_ASCII);
+                    serverName = tlsConfig
+                            .getDefaultClientConnection()
+                            .getHostname()
+                            .getBytes(StandardCharsets.US_ASCII);
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
                     serverName = new byte[0];
                 }
-                ServerNamePair pair =
-                        new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
+                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
                 extensionMessage.getClientEsniInner().getServerNameList().add(pair);
                 addExtension(extensionMessage);
             }
@@ -114,6 +110,11 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddEarlyDataExtension()) {
                 addExtension(new EarlyDataExtensionMessage());
             }
+
+            if (tlsConfig.isAddDebugExtension()) {
+                addExtension(new DebugExtensionMessage());
+            }
+
             if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
                 addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
             }
@@ -229,8 +230,7 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
     }
 
     public void setCompressionLength(int compressionLength) {
-        this.compressionLength =
-                ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
+        this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
 
     public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
@@ -238,8 +238,7 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-        this.cipherSuiteLength =
-                ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
+        this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public void setCipherSuites(ModifiableByteArray cipherSuites) {
@@ -275,8 +274,7 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
     }
 
     public void setCookieLength(int cookieLength) {
-        this.cookieLength =
-                ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
     public void setCookieLength(ModifiableInteger cookieLength) {

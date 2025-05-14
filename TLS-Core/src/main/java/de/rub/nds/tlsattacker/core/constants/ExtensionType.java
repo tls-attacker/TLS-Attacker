@@ -87,6 +87,7 @@ public enum ExtensionType {
     GREASE_13(new byte[] {(byte) 0xDA, (byte) 0xDA}),
     GREASE_14(new byte[] {(byte) 0xEA, (byte) 0xEA}),
     GREASE_15(new byte[] {(byte) 0xFA, (byte) 0xFA}),
+    GREASE_16(new byte[] {(byte) 0xFB, (byte) 0xFB}),
 
     UNKNOWN(new byte[0]);
 
