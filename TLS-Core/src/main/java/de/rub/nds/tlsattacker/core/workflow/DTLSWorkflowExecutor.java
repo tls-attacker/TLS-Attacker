@@ -111,16 +111,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     retransmissions++;
                 }
             } else {
-                if (action instanceof ReceivingAction
-                        && state.getTlsContext()
-                                .getChooser()
-                                .getSelectedProtocolVersion()
-                                .isDTLS13()) {
-                    LOGGER.debug("Clearing received ACKs");
-                    if (state.getTlsContext().getDtls13ReceivedAcknowledgedRecords() != null) {
-                        state.getTlsContext().getDtls13ReceivedAcknowledgedRecords().clear();
-                    }
-                }
                 index++;
             }
         }
@@ -243,7 +233,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
-        List<RecordNumber> acks = state.getTlsContext().getDtls13AcknowledgedRecords();
+        List<RecordNumber> acks = state.getTlsContext().getDtls13ReceivedAcknowledgedRecords();
         if (acks == null || acks.isEmpty()) {
             return sendRecords;
         }
