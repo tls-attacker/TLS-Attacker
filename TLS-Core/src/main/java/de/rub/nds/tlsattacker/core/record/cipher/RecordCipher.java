@@ -74,6 +74,11 @@ public abstract class RecordCipher {
                         : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
 
         byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
+        if (sequenceNumber.length < 2) {
+            // Ensure the sequence number is at least two bytes long. If it is shorter, pad with a
+            // leading zero.
+            sequenceNumber = new byte[] {0, sequenceNumber[0]};
+        }
         if (sequenceNumber.length < length) {
             sequenceNumber = Arrays.copyOf(sequenceNumber, length);
         }
