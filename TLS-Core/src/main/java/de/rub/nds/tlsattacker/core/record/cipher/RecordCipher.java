@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,8 +91,12 @@ public abstract class RecordCipher {
                                             .getKeySet()
                                             .getWriteSnKey(getLocalConnectionEndType()),
                                     record.getProtocolMessageBytes().getValue());
+            if (mask.length < length) {
+                mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
+                LOGGER.warn(
+                        "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Pad to the required length with zero bytes.");
+            }
         }
-
         for (int i = 0; i < length; i++) {
             encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
         }
@@ -108,15 +113,15 @@ public abstract class RecordCipher {
                                 record.getProtocolMessageBytes().getValue());
         byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
         if (mask.length < encryptedSequenceNumber.length) {
-            // TODO: Check if good solution
-            throw new CryptoException(
-                    "Mask does not have enough bytes for decrypting the sequence number.");
+            LOGGER.warn(
+                    "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Pad to the required length with zero bytes.");
+            mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
         }
         byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];
         for (int i = 0; i < sequenceNumber.length; i++) {
             sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
         }
-        record.setSequenceNumber(new BigInteger(1, sequenceNumber));
+        record.setSequenceNumber(new BigInteger(sequenceNumber));
         LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
     }
 
