@@ -58,7 +58,7 @@ public class RecordEncryptor extends Encryptor {
             try {
                 recordCipher.encryptDtls13SequenceNumber(record);
             } catch (CryptoException ex) {
-                LOGGER.error("Could not encrypt DTLS 1.3 Record Sequence Number: {}", ex);
+                LOGGER.warn("Could not encrypt DTLS 1.3 Record Sequence Number: {}", ex);
             }
         }
         recordCipher.getState().increaseWriteSequenceNumber();
