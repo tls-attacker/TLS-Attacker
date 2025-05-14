@@ -68,15 +68,15 @@ public abstract class RecordCipher {
     public abstract void decrypt(Record record) throws CryptoException;
 
     public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
-        byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
-        if (sequenceNumber.length < 2) {
-            sequenceNumber = new byte[] {0, sequenceNumber[0]};
-        }
         int length =
                 tlsContext.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()
                         ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
                         : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
-        byte[] encryptedSequenceNumber = new byte[length];
+
+        byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
+        if (sequenceNumber.length < length) {
+            sequenceNumber = Arrays.copyOf(sequenceNumber, length);
+        }
 
         byte[] mask;
         if (getState().getKeySet() == null) {
@@ -92,11 +92,13 @@ public abstract class RecordCipher {
                                             .getWriteSnKey(getLocalConnectionEndType()),
                                     record.getProtocolMessageBytes().getValue());
             if (mask.length < length) {
-                mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
+                mask = Arrays.copyOf(mask, length);
                 LOGGER.warn(
                         "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Pad to the required length with zero bytes.");
             }
         }
+
+        byte[] encryptedSequenceNumber = new byte[length];
         for (int i = 0; i < length; i++) {
             encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
         }
@@ -112,6 +114,7 @@ public abstract class RecordCipher {
                                 getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
                                 record.getProtocolMessageBytes().getValue());
         byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
+
         if (mask.length < encryptedSequenceNumber.length) {
             LOGGER.warn(
                     "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Pad to the required length with zero bytes.");
