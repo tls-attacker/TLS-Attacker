@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.List;
+import java.util.EnumSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,83 +22,47 @@ public class ChangeNegotiatedExtensionsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private List<ExtensionType> added = null;
-    private List<ExtensionType> removed = null;
-    private List<ExtensionType> replaced = null;
+    private EnumSet<ExtensionType> newList = null;
+    private EnumSet<ExtensionType> oldList = null;
 
-    private boolean replace;
-
-    public ChangeNegotiatedExtensionsAction(
-            List<ExtensionType> added, List<ExtensionType> removed) {
+    public ChangeNegotiatedExtensionsAction(EnumSet<ExtensionType> newList) {
         super();
-        this.added = added;
-        this.removed = removed;
-        this.replace = false;
-    }
-
-    public ChangeNegotiatedExtensionsAction(List<ExtensionType> replaced) {
-        super();
-        this.replaced = replaced;
-        this.replace = true;
+        this.newList = newList;
     }
 
     public ChangeNegotiatedExtensionsAction() {}
 
-    public List<ExtensionType> getAdded() {
-        return added;
+    public EnumSet<ExtensionType> getNewList() {
+        return newList;
     }
 
-    public void setAdded(List<ExtensionType> added) {
-        this.added = added;
+    public void setNewList(EnumSet<ExtensionType> newList) {
+        this.newList = newList;
     }
 
-    public List<ExtensionType> getRemoved() {
-        return removed;
-    }
-
-    public void setRemoved(List<ExtensionType> removed) {
-        this.removed = removed;
-    }
-
-    public List<ExtensionType> getReplaced() {
-        return replaced;
-    }
-
-    public void setReplaced(List<ExtensionType> replaced) {
-        this.replaced = replaced;
-    }
-
-    public boolean isReplace() {
-        return replace;
-    }
-
-    public void setReplace(boolean replace) {
-        this.replace = replace;
+    public EnumSet<ExtensionType> getOldList() {
+        return oldList;
     }
 
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
-        if (replace) {
-            tlsContext.getNegotiatedExtensionSet().clear();
-            tlsContext.getNegotiatedExtensionSet().addAll(replaced);
-        } else {
-            tlsContext.getNegotiatedExtensionSet().removeAll(removed);
-            tlsContext.getNegotiatedExtensionSet().addAll(added);
-        }
-
-        LOGGER.debug("Changed the negotiated extension set");
-
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
+
+        oldList = tlsContext.getNegotiatedExtensionSet();
+        tlsContext.getNegotiatedExtensionSet().clear();
+        tlsContext.getNegotiatedExtensionSet().addAll(newList);
+        LOGGER.info("Changed negotiated extension set from {} to {}", oldList, newList);
 
         setExecuted(true);
     }
 
     @Override
     public void reset() {
+        oldList = null;
         setExecuted(null);
     }
 
