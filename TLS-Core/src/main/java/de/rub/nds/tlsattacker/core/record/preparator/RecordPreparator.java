@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -131,19 +132,19 @@ public class RecordPreparator extends Preparator<Record> {
     }
 
     private byte createDtls13UnifiedHeader(Record record, TlsContext context) {
-        byte header = Record.DTLS13_UNIDFIED_HEADER_BASE;
+        byte header = Dtls13UnifiedHeaderBits.HEADER_BASE;
         // Setting the flag for connection id
         if (record.getConnectionId() != null
                 && record.getConnectionId().getValue() != null
                 && record.getConnectionId().getValue().length > 0) {
-            header ^= Record.DTLS13_HEADER_FLAG_CID_PRESENT;
+            header ^= Dtls13UnifiedHeaderBits.CID_PRESENT;
         }
         // Setting the flag for sequence number
         if (context.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()) {
-            header ^= Record.DTLS13_HEADER_FLAG_SQN_LONG;
+            header ^= Dtls13UnifiedHeaderBits.SQN_LONG;
         }
         // Setting the flag for length
-        header ^= Record.DTLS13_HEADER_FLAG_LENGTH_PRESENT;
+        header ^= Dtls13UnifiedHeaderBits.LENGTH_PRESENT;
         // Setting the epoch bits
         byte lowerEpoch = (byte) (record.getEpoch().getValue() % 4);
         header ^= lowerEpoch;

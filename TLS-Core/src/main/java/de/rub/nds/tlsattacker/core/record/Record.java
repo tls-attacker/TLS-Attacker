@@ -17,6 +17,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -40,16 +41,6 @@ import java.util.Objects;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Record extends ModifiableVariableHolder implements DataContainer {
-
-    public static final int DTLS13_UNIDFIED_HEADER_BASE = 0x20;
-
-    public static final int DTLS13_HEADER_FLAG_CID_PRESENT = 0x10;
-
-    public static final int DTLS13_HEADER_FLAG_SQN_LONG = 0x08;
-
-    public static final int DTLS13_HEADER_FLAG_LENGTH_PRESENT = 0x04;
-
-    public static final int DTLS13_HEADER_FLAG_EPOCH_BITS = 0x03;
 
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
@@ -296,15 +287,15 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     }
 
     public boolean isUnifiedHeaderCidPresent() {
-        return (unifiedHeader.getValue() & DTLS13_HEADER_FLAG_CID_PRESENT) != 0;
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.CID_PRESENT) != 0;
     }
 
     public boolean isUnifiedHeaderSqnLong() {
-        return (unifiedHeader.getValue() & DTLS13_HEADER_FLAG_SQN_LONG) != 0;
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.SQN_LONG) != 0;
     }
 
     public boolean isUnifiedHeaderLengthPresent() {
-        return (unifiedHeader.getValue() & DTLS13_HEADER_FLAG_LENGTH_PRESENT) != 0;
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.LENGTH_PRESENT) != 0;
     }
 
     public ModifiableByteArray getCompleteRecordBytes() {

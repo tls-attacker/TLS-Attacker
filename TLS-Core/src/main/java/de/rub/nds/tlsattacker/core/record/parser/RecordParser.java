@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.parser;
 
+import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
@@ -88,7 +89,7 @@ public class RecordParser extends Parser<Record> {
     private boolean parseContentType(Record record) {
         byte firstByte = parseByteField(RecordByteLength.CONTENT_TYPE);
         // If contentType starts with 001 it is a DTLS 1.3 unified header
-        if ((firstByte & 0xE0) == Record.DTLS13_UNIDFIED_HEADER_BASE) {
+        if ((firstByte & 0xE0) == Dtls13UnifiedHeaderBits.HEADER_BASE) {
             record.setUnifiedHeader(firstByte);
             LOGGER.debug("UnifiedHeader: 00{}", Integer.toBinaryString(firstByte));
             return false;
@@ -102,7 +103,7 @@ public class RecordParser extends Parser<Record> {
     private void parseDtls13UnifiedHeader(Record record) {
         byte header = record.getUnifiedHeader().getValue();
         // Parsing the epoch bits
-        int lowerEpoch = header & Record.DTLS13_HEADER_FLAG_EPOCH_BITS;
+        int lowerEpoch = header & Dtls13UnifiedHeaderBits.EPOCH_BITS;
         record.setEpoch(lowerEpoch);
         // Parsing the connection id if present
         if (record.isUnifiedHeaderCidPresent()) {
