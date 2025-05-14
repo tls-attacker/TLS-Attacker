@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -89,7 +90,7 @@ public class RecordPreparator extends Preparator<Record> {
                             .getRecordCipher(recordLayer.getWriteEpoch())
                             .getState()
                             .getConnectionId();
-            if (connectionId != null && chooser.getConfig().isAddConnectionIdExtension()) {
+            if (connectionId != null && chooser.getContext().getTlsContext().isExtensionNegotiated(ExtensionType.CONNECTION_ID)) {
                 record.setConnectionId(connectionId);
                 LOGGER.debug("ConnectionId: {}", record.getConnectionId().getValue());
             }
