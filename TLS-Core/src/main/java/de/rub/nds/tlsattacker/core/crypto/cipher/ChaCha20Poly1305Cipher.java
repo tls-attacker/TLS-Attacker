@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -269,15 +270,21 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     @Override
     public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
-        if (ciphertext.length < 16) {
-            throw new CryptoException("Ciphertext is too short. Can not be processed.");
+        if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20) {
+            LOGGER.warn("The ciphertext is too short. Pad to the required length with zero bytes.");
         }
+        byte[] tempCiphertext =
+                Arrays.copyOf(ciphertext, Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20);
         try {
             Cipher recordNumberCipher = Cipher.getInstance("ChaCha20");
-            byte[] counter = new byte[4];
-            System.arraycopy(ciphertext, 0, counter, 0, counter.length);
-            byte[] nonce = new byte[12];
-            System.arraycopy(ciphertext, counter.length, nonce, 0, nonce.length);
+            // The first 4 bytes of the ciphertext as the block counter and the next 12 bytes as the
+            // nonce
+            byte[] counter =
+                    Arrays.copyOfRange(tempCiphertext, 0, Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20);
+            byte[] nonce =
+                    Arrays.copyOfRange(tempCiphertext,
+                            Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20,
+                            Dtls13MaskConstans.REQUIRED_COUNTER_SIZE_CHACHA20);
             ChaCha20ParameterSpec parameterSpec =
                     new ChaCha20ParameterSpec(nonce, new BigInteger(counter).intValue());
             SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");

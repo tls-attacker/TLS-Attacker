@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,8 +23,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class JavaCipher extends BaseCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final CipherAlgorithm algorithm;
 
@@ -268,15 +274,14 @@ class JavaCipher extends BaseCipher {
         if (!algorithm.getJavaName().startsWith("AES")) {
             throw new CryptoException("Selected cipher does not support DTLS 1.3 masking");
         }
-        if (ciphertext.length < 16) {
-            throw new CryptoException("Ciphertext is too short. Can not be processed.");
+        if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB) {
+            LOGGER.warn("The ciphertext is too short. Pad to the required length with zero bytes.");
         }
+        byte[] toEncrypt = Arrays.copyOf(ciphertext, Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB);
         try {
             Cipher recordNumberCipher;
             recordNumberCipher = Cipher.getInstance("AES/ECB/NoPadding");
             recordNumberCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
-            byte[] toEncrypt = new byte[16];
-            System.arraycopy(ciphertext, 0, toEncrypt, 0, toEncrypt.length);
             return recordNumberCipher.doFinal(toEncrypt);
         } catch (IllegalBlockSizeException
                 | BadPaddingException
