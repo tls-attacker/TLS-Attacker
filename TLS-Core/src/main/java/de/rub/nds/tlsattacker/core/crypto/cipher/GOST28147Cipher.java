@@ -15,6 +15,8 @@ import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.util.Arrays;
 
@@ -23,6 +25,8 @@ import org.bouncycastle.util.Arrays;
  * 4357.
  */
 public class GOST28147Cipher extends BaseCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final byte[] C = {
         (byte) 0x69,
@@ -194,7 +198,7 @@ public class GOST28147Cipher extends BaseCipher {
 
     @Override
     public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
-        throw new UnsupportedOperationException(
-                "Selected cipher does not support DTLS 1.3 masking");
+        LOGGER.warn("Selected cipher does not support DTLS 1.3 masking. Returning empty mask!");
+        return new byte[0];
     }
 }
