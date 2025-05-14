@@ -943,6 +943,9 @@
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP256R1TLS13</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP384R1TLS13</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP512R1TLS13</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE2048</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE3072</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
@@ -981,6 +984,9 @@
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP256R1TLS13</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP384R1TLS13</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP512R1TLS13</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE2048</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE3072</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
@@ -1785,6 +1791,9 @@
         <clientSupportedEsniNamedGroup>BRAINPOOLP256R1</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>BRAINPOOLP384R1</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>BRAINPOOLP512R1</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP256R1TLS13</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP384R1TLS13</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP512R1TLS13</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE2048</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE3072</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE4096</clientSupportedEsniNamedGroup>
