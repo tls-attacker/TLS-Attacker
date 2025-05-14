@@ -124,7 +124,7 @@ public abstract class RecordCipher {
         for (int i = 0; i < sequenceNumber.length; i++) {
             sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
         }
-        record.setSequenceNumber(new BigInteger(sequenceNumber));
+        record.setSequenceNumber(new BigInteger(1, sequenceNumber));
         LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
     }
 
