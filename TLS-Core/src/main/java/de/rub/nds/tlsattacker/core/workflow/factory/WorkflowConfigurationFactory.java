@@ -329,15 +329,15 @@ public class WorkflowConfigurationFactory {
         CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
-        if (config.getHighestProtocolVersion().is13()) {
-            if (!config.getHighestProtocolVersion().isDTLS13()
-                    && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                            || connection.getLocalConnectionEndType()
-                                    == ConnectionEndType.CLIENT)) {
+        if (config.getHighestProtocolVersion().isTLS13()) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                    || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
             }
+        }
+        if (config.getHighestProtocolVersion().is13()) {
             messages.add(new EncryptedExtensionsMessage(config));
             if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                 messages.add(new CertificateRequestMessage(config));
@@ -383,15 +383,15 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflowTrace = createHelloWorkflow(connection);
 
         List<ProtocolMessage> messages = new LinkedList<>();
-        if (config.getHighestProtocolVersion().is13()) {
-            if (!config.getHighestProtocolVersion().isDTLS13()
-                    && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                            || connection.getLocalConnectionEndType()
-                                    == ConnectionEndType.SERVER)) {
+        if (config.getHighestProtocolVersion().isTLS13()) {
+            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                    || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
             }
+        }
+        if (config.getHighestProtocolVersion().is13()) {
             if (config.isClientAuthentication()) {
                 messages.add(new CertificateMessage());
                 messages.add(new CertificateVerifyMessage());
