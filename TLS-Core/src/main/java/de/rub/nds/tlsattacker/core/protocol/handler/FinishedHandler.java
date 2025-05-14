@@ -67,7 +67,9 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     }
                     // in case of EARLY_DATA we stick to the EARLY_TRAFFIC_SECRETS
                 } else {
-                    acknowledgeFinished();
+                    if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()) {
+                        acknowledgeFinished();
+                    }
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
