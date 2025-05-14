@@ -576,6 +576,10 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultConnectionId")
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
 
+    /**
+     * Default number of connection IDs requested when sending a RequestConnectionId message (DTLS
+     * 1.3)
+     */
     private Integer defaultNumberOfRequestedConnectionIds = 3;
 
     /** Usage in der NewConnectionId message */
@@ -1250,8 +1254,13 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
+    /**
+     * 16-bit encoding instead of 8-bit encoding for the sequence number in the DTLS 1.3 unified
+     * header
+     */
     private Boolean useDtls13HeaderSeqNumSizeLongEncoding = true;
 
+    /** In DTLS 1.3, TLS-Attacker retransmits only records that have not yet been acknowledged */
     private Boolean retransmitAcknowledgedRecordsInDtls13 = false;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
