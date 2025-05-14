@@ -280,9 +280,11 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
             // The first 4 bytes of the ciphertext as the block counter and the next 12 bytes as the
             // nonce
             byte[] counter =
-                    Arrays.copyOfRange(tempCiphertext, 0, Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20);
+                    Arrays.copyOfRange(
+                            tempCiphertext, 0, Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20);
             byte[] nonce =
-                    Arrays.copyOfRange(tempCiphertext,
+                    Arrays.copyOfRange(
+                            tempCiphertext,
                             Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20,
                             Dtls13MaskConstans.REQUIRED_COUNTER_SIZE_CHACHA20);
             ChaCha20ParameterSpec parameterSpec =
