@@ -90,7 +90,8 @@ public class RecordPreparator extends Preparator<Record> {
                             .getRecordCipher(recordLayer.getWriteEpoch())
                             .getState()
                             .getConnectionId();
-            if (connectionId != null && chooser.getContext().getTlsContext().isExtensionNegotiated(ExtensionType.CONNECTION_ID)) {
+            if (connectionId != null
+                    && tlsContext.isExtensionNegotiated(ExtensionType.CONNECTION_ID)) {
                 record.setConnectionId(connectionId);
                 LOGGER.debug("ConnectionId: {}", record.getConnectionId().getValue());
             }
