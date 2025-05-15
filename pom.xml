@@ -172,18 +172,22 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>asn1-attacker</artifactId>
+            <version>4.1.1</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>modifiable-variable</artifactId>
+            <version>5.1.2</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>protocol-attacker</artifactId>
+            <version>2.0.3</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>x509-attacker</artifactId>
+            <version>4.2.1</version>
         </dependency>
         <dependency>
             <groupId>dnsjava</groupId>
@@ -238,6 +242,7 @@
         <dependency>
             <groupId>de.rub.nds.tls.dockerlib</groupId>
             <artifactId>tls-docker-library</artifactId>
+            <version>[3.0.0,4.0.0)</version>
             <scope>test</scope>
         </dependency>
         <dependency>
