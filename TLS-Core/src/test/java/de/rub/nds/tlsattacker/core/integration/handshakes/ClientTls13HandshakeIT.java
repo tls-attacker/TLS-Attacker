@@ -41,35 +41,35 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
 
     @Override
     protected boolean[] getCryptoExtensionsValues() {
-        return new boolean[] { false };
+        return new boolean[] {false};
     }
 
     @Override
     protected WorkflowTraceType[] getWorkflowTraceTypesToTest() {
         return new WorkflowTraceType[] {
-                WorkflowTraceType.HANDSHAKE,
-                WorkflowTraceType.FULL_TLS13_PSK,
-                WorkflowTraceType.FULL_ZERO_RTT
+            WorkflowTraceType.HANDSHAKE,
+            WorkflowTraceType.FULL_TLS13_PSK,
+            WorkflowTraceType.FULL_ZERO_RTT
         };
     }
 
     @Override
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
-                CipherSuite.TLS_AES_128_GCM_SHA256,
-                CipherSuite.TLS_AES_256_GCM_SHA384,
-                CipherSuite.TLS_CHACHA20_POLY1305_SHA256
+            CipherSuite.TLS_AES_128_GCM_SHA256,
+            CipherSuite.TLS_AES_256_GCM_SHA384,
+            CipherSuite.TLS_CHACHA20_POLY1305_SHA256
         };
     }
 
     @Override
     protected ProtocolVersion[] getProtocolVersionsToTest() {
-        return new ProtocolVersion[] { ProtocolVersion.TLS13 };
+        return new ProtocolVersion[] {ProtocolVersion.TLS13};
     }
 
     @Override
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] { NamedGroup.ECDH_X25519 };
+        return new NamedGroup[] {NamedGroup.ECDH_X25519};
     }
 
     @Override
@@ -79,7 +79,8 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
             // hence, we can leverage it to detect that our finished has been accepted and
             // we do not
             // have to wait for an alert sent in response
-            ReceiveAction receiveResponse = new ReceiveAction("client", new NewSessionTicketMessage());
+            ReceiveAction receiveResponse =
+                    new ReceiveAction("client", new NewSessionTicketMessage());
             state.getWorkflowTrace().addTlsAction(receiveResponse);
         }
         return;
@@ -102,7 +103,8 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
         setCallbacks(executor);
         WorkflowTrace workflowTrace = state.getWorkflowTrace();
         ClientHelloMessage initialHello = new ClientHelloMessage(tlsConfig);
-        KeyShareExtensionMessage keyShareExtension = initialHello.getExtension(KeyShareExtensionMessage.class);
+        KeyShareExtensionMessage keyShareExtension =
+                initialHello.getExtension(KeyShareExtensionMessage.class);
         keyShareExtension.setKeyShareListBytes(Modifiable.explicit(new byte[0]));
 
         workflowTrace.addTlsAction(0, new SendAction("client", initialHello));
