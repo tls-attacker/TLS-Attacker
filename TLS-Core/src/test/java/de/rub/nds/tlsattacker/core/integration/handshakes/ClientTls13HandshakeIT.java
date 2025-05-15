@@ -47,18 +47,18 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
     @Override
     protected WorkflowTraceType[] getWorkflowTraceTypesToTest() {
         return new WorkflowTraceType[] {
-                // WorkflowTraceType.HANDSHAKE,
+                WorkflowTraceType.HANDSHAKE,
                 WorkflowTraceType.FULL_TLS13_PSK,
-                // WorkflowTraceType.FULL_ZERO_RTT
+                WorkflowTraceType.FULL_ZERO_RTT
         };
     }
 
     @Override
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
-                // CipherSuite.TLS_AES_128_GCM_SHA256,
+                CipherSuite.TLS_AES_128_GCM_SHA256,
                 CipherSuite.TLS_AES_256_GCM_SHA384,
-                // CipherSuite.TLS_CHACHA20_POLY1305_SHA256
+                CipherSuite.TLS_CHACHA20_POLY1305_SHA256
         };
     }
 
