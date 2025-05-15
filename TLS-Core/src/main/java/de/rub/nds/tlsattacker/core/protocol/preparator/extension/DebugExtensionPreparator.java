@@ -26,10 +26,7 @@ public class DebugExtensionPreparator extends ExtensionPreparator<DebugExtension
 
     @Override
     public void prepareExtensionContent() {
-        LOGGER.debug("Preparing DebugExtensionMessage");
         message.setDebugContent(chooser.getConfig().getDefaultDebugContent());
         LOGGER.debug("DebugMessage: {}", message.getDebugContent().getValue());
-        message.setDebugContentLength(message.getDebugContent().getValue().length);
-        LOGGER.debug("DebugMessage length: " + message.getDebugContentLength().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.DebugExtensionMessage;
 import java.io.InputStream;
@@ -24,19 +23,13 @@ public class DebugExtensionParser extends ExtensionParser<DebugExtensionMessage>
     }
 
     @Override
-    public void parse(DebugExtensionMessage connectionIdExtensionMessage) {
-        LOGGER.debug("Parsing ConnectionIdExtensionMessage");
-        parseDebugContentLength(connectionIdExtensionMessage);
-        parseDebugContent(connectionIdExtensionMessage);
-    }
-
-    private void parseDebugContentLength(DebugExtensionMessage msg) {
-        msg.setDebugContentLength(parseIntField(ExtensionByteLength.CONNECTION_ID_LENGTH));
-        LOGGER.debug("DebugContent length: " + msg.getDebugContentLength().getValue());
+    public void parse(DebugExtensionMessage debugExtensionMessage) {
+        LOGGER.debug("Parsing DebugExtensionMessage");
+        parseDebugContent(debugExtensionMessage);
     }
 
     private void parseDebugContent(DebugExtensionMessage msg) {
-        msg.setDebugContent(parseByteArrayField(msg.getDebugContentLength().getValue()));
-        LOGGER.debug("DebugContent: {}", msg.getDebugContent().getValue());
+        msg.setDebugContent(msg.getDebugContent().getValue());
+        LOGGER.debug("Debug Content: {}", msg.getDebugContent().getValue());
     }
 }

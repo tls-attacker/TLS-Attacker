@@ -19,11 +19,6 @@ public class DebugExtensionHandler extends ExtensionHandler<DebugExtensionMessag
 
     @Override
     public void adjustTLSExtensionContext(DebugExtensionMessage message) {
-        if (tlsContext.getTalkingConnectionEndType()
-                == tlsContext.getChooser().getConnectionEndType()) {
-            tlsContext.setReadDebugContent(message.getDebugContent().getValue());
-        } else {
-            tlsContext.setWriteDebugContent(message.getDebugContent().getValue());
-        }
+        tlsContext.setReadDebugContent(message.getDebugContent().getValue());
     }
 }

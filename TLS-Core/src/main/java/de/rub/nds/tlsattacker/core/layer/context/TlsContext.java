@@ -512,9 +512,9 @@ public class TlsContext extends LayerContext {
 
     private byte[] readConnectionID;
 
-    private byte[] writeDebugContent;
+    private String writeDebugContent;
 
-    private byte[] readDebugContent;
+    private String readDebugContent;
 
     private X509Context clientX509Context;
     private X509Context serverX509Context;
@@ -2174,19 +2174,19 @@ public class TlsContext extends LayerContext {
         this.readConnectionID = readConnectionID;
     }
 
-    public byte[] getWriteDebugContent() {
+    public String getWriteDebugContent() {
         return writeDebugContent;
     }
 
-    public void setWriteDebugContent(byte[] writeDebugContent) {
+    public void setWriteDebugContent(String writeDebugContent) {
         this.writeDebugContent = writeDebugContent;
     }
 
-    public byte[] getReadDebugContent() {
+    public String getReadDebugContent() {
         return readDebugContent;
     }
 
-    public void setReadDebugContent(byte[] readDebugContent) {
+    public void setReadDebugContent(String readDebugContent) {
         this.readDebugContent = readDebugContent;
     }
 

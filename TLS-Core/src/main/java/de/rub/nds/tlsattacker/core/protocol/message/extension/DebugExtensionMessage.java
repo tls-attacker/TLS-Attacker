@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.DebugExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
@@ -33,35 +33,21 @@ public class DebugExtensionMessage extends ExtensionMessage {
         super(ExtensionType.GREASE_16);
     }
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray debugContent;
+    private ModifiableString debugContent;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger debugContentLength;
 
-    public ModifiableByteArray getDebugContent() {
+    public ModifiableString getDebugContent() {
         return debugContent;
     }
 
-    public ModifiableInteger getDebugContentLength() {
-        return debugContentLength;
-    }
-
-    public void setDebugContent(ModifiableByteArray debugContent) {
+    public void setDebugContent(ModifiableString debugContent) {
         this.debugContent = debugContent;
     }
 
-    public void setDebugContent(byte[] array) {
-        this.debugContent = ModifiableVariableFactory.safelySetValue(debugContent, array);
-    }
-
-    public void setDebugContentLength(ModifiableInteger debugContentLength) {
-        this.debugContentLength = debugContentLength;
-    }
-
-    public void setDebugContentLength(int length) {
-        this.debugContentLength =
-                ModifiableVariableFactory.safelySetValue(debugContentLength, length);
+    public void setDebugContent(String content) {
+        this.debugContent = ModifiableVariableFactory.safelySetValue(debugContent, content);
     }
 
     @Override

@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -32,57 +31,42 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag(TestCategories.INTEGRATION_TEST)
-public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
+public class DebugHanshakeIT extends AbstractHandshakeIT {
 
-    public ClientTls13HandshakeIT() {
+    public DebugHanshakeIT() {
         // run OpenSSL with dummy HTTP server to get a reply for app data
-        super(TlsImplementationType.OPENSSL, ConnectionRole.SERVER, "1.1.1m", "-early_data");
+        super(
+                TlsImplementationType.OPENSSL,
+                ConnectionRole.SERVER,
+                "3.4.0",
+                "-early_data -tls1_3 -curves brainpoolP256r1tls13");
     }
 
     @Override
     protected boolean[] getCryptoExtensionsValues() {
-        return new boolean[] { false };
+        return new boolean[] {false};
     }
 
     @Override
     protected WorkflowTraceType[] getWorkflowTraceTypesToTest() {
         return new WorkflowTraceType[] {
-                // WorkflowTraceType.HANDSHAKE,
-                WorkflowTraceType.FULL_TLS13_PSK,
-                // WorkflowTraceType.FULL_ZERO_RTT
+            WorkflowTraceType.HANDSHAKE,
         };
     }
 
     @Override
     protected CipherSuite[] getCipherSuitesToTest() {
-        return new CipherSuite[] {
-                // CipherSuite.TLS_AES_128_GCM_SHA256,
-                CipherSuite.TLS_AES_256_GCM_SHA384,
-                // CipherSuite.TLS_CHACHA20_POLY1305_SHA256
-        };
+        return new CipherSuite[] {CipherSuite.TLS_AES_128_GCM_SHA256};
     }
 
     @Override
     protected ProtocolVersion[] getProtocolVersionsToTest() {
-        return new ProtocolVersion[] { ProtocolVersion.TLS13 };
+        return new ProtocolVersion[] {ProtocolVersion.TLS13};
     }
 
     @Override
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] { NamedGroup.ECDH_X25519 };
-    }
-
-    @Override
-    protected void modifyWorkflowTrace(State state) {
-        if (state.getConfig().getWorkflowTraceType() == WorkflowTraceType.FULL_ZERO_RTT) {
-            // this OpenSSL version always sends NST after the client's finished
-            // hence, we can leverage it to detect that our finished has been accepted and
-            // we do not
-            // have to wait for an alert sent in response
-            ReceiveAction receiveResponse = new ReceiveAction("client", new NewSessionTicketMessage());
-            state.getWorkflowTrace().addTlsAction(receiveResponse);
-        }
-        return;
+        return new NamedGroup[] {NamedGroup.BRAINPOOLP256R1TLS13};
     }
 
     @Test
@@ -90,7 +74,7 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
         Config tlsConfig = new Config();
         prepareConfig(
                 CipherSuite.TLS_AES_128_GCM_SHA256,
-                NamedGroup.ECDH_X25519,
+                NamedGroup.BRAINPOOLP256R1TLS13,
                 tlsConfig,
                 WorkflowTraceType.HANDSHAKE,
                 false,
@@ -98,11 +82,16 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
                 ProtocolVersion.TLS13);
 
         State state = new State(tlsConfig);
+        tlsConfig.setAddDebugExtension(true);
+        tlsConfig.setDefaultDebugContent("TLS-Attacker Debug Content");
+        tlsConfig.setDefaultClientNamedGroups(getNamedGroupsToTest());
+        tlsConfig.setDefaultClientKeyShareNamedGroups(getNamedGroupsToTest());
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         setCallbacks(executor);
         WorkflowTrace workflowTrace = state.getWorkflowTrace();
         ClientHelloMessage initialHello = new ClientHelloMessage(tlsConfig);
-        KeyShareExtensionMessage keyShareExtension = initialHello.getExtension(KeyShareExtensionMessage.class);
+        KeyShareExtensionMessage keyShareExtension =
+                initialHello.getExtension(KeyShareExtensionMessage.class);
         keyShareExtension.setKeyShareListBytes(Modifiable.explicit(new byte[0]));
 
         workflowTrace.addTlsAction(0, new SendAction("client", initialHello));
@@ -116,7 +105,7 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
                 executor,
                 state,
                 ProtocolVersion.TLS13,
-                NamedGroup.ECDH_X25519,
+                NamedGroup.BRAINPOOLP256R1TLS13,
                 CipherSuite.TLS_AES_128_GCM_SHA256,
                 WorkflowTraceType.HANDSHAKE,
                 false,
