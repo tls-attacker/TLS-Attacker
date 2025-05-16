@@ -512,10 +512,6 @@ public class TlsContext extends LayerContext {
 
     private byte[] readConnectionID;
 
-    private String writeDebugContent;
-
-    private String readDebugContent;
-
     private X509Context clientX509Context;
     private X509Context serverX509Context;
 
@@ -2172,22 +2168,6 @@ public class TlsContext extends LayerContext {
 
     public void setReadConnectionId(byte[] readConnectionID) {
         this.readConnectionID = readConnectionID;
-    }
-
-    public String getWriteDebugContent() {
-        return writeDebugContent;
-    }
-
-    public void setWriteDebugContent(String writeDebugContent) {
-        this.writeDebugContent = writeDebugContent;
-    }
-
-    public String getReadDebugContent() {
-        return readDebugContent;
-    }
-
-    public void setReadDebugContent(String readDebugContent) {
-        this.readDebugContent = readDebugContent;
     }
 
     public BigInteger getServerEphemeralDhGenerator() {

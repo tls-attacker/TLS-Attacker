@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.DebugExtensionHandler;
@@ -30,13 +28,10 @@ import java.io.InputStream;
 public class DebugExtensionMessage extends ExtensionMessage {
 
     public DebugExtensionMessage() {
-        super(ExtensionType.GREASE_16);
+        super(ExtensionType.DEBUG);
     }
 
     private ModifiableString debugContent;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger debugContentLength;
 
     public ModifiableString getDebugContent() {
         return debugContent;

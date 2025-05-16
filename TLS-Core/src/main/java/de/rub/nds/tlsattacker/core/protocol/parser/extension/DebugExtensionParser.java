@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.DebugExtensionMessage;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +30,10 @@ public class DebugExtensionParser extends ExtensionParser<DebugExtensionMessage>
     }
 
     private void parseDebugContent(DebugExtensionMessage msg) {
-        msg.setDebugContent(msg.getDebugContent().getValue());
+        msg.setDebugContent(
+                new String(
+                        parseByteArrayField(msg.getExtensionLength().getValue()),
+                        StandardCharsets.ISO_8859_1));
         LOGGER.debug("Debug Content: {}", msg.getDebugContent().getValue());
     }
 }

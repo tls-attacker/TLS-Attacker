@@ -34,7 +34,8 @@ public class DebugExtensionSerializer extends ExtensionSerializer<DebugExtension
     private void serializeDebugContent(DebugExtensionMessage msg) {
         appendBytes(msg.getDebugContent().getValue().getBytes(StandardCharsets.ISO_8859_1));
         LOGGER.debug(
-                "Debug Message: {}",
+                "Debug Message as bytes: {}",
                 msg.getDebugContent().getValue().getBytes(StandardCharsets.ISO_8859_1));
+        LOGGER.debug("Debug Message as string: {}", msg.getDebugContent().getValue());
     }
 }

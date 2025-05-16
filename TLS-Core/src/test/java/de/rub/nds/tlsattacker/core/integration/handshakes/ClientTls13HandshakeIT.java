@@ -76,8 +76,7 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
     protected void modifyWorkflowTrace(State state) {
         if (state.getConfig().getWorkflowTraceType() == WorkflowTraceType.FULL_ZERO_RTT) {
             // this OpenSSL version always sends NST after the client's finished
-            // hence, we can leverage it to detect that our finished has been accepted and
-            // we do not
+            // hence, we can leverage it to detect that our finished has been accepted and we do not
             // have to wait for an alert sent in response
             ReceiveAction receiveResponse =
                     new ReceiveAction("client", new NewSessionTicketMessage());

@@ -19,6 +19,6 @@ public class DebugExtensionHandler extends ExtensionHandler<DebugExtensionMessag
 
     @Override
     public void adjustTLSExtensionContext(DebugExtensionMessage message) {
-        tlsContext.setReadDebugContent(message.getDebugContent().getValue());
+        // No specific context adjustment needed for DebugExtension
     }
 }

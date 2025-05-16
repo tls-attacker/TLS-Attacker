@@ -416,8 +416,6 @@ public abstract class AbstractHandshakeIT {
             config.setAddECPointFormatExtension(Boolean.FALSE);
             config.setAddEllipticCurveExtension(Boolean.FALSE);
         }
-        config.setDefaultClientNamedGroups(getNamedGroupsToTest());
-        config.setDefaultServerNamedGroups(getNamedGroupsToTest());
         config.setDefaultClientKeyShareNamedGroups(getNamedGroupsToTest());
         config.setWorkflowTraceType(workflowTraceType);
         if (cipherSuite.isTls13()) {
