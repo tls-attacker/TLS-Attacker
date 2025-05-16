@@ -272,7 +272,8 @@ class JavaCipher extends BaseCipher {
     @Override
     public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
         if (!algorithm.getJavaName().startsWith("AES")) {
-            throw new CryptoException("Selected cipher does not support DTLS 1.3 masking");
+            LOGGER.warn("Selected cipher does not support DTLS 1.3 masking. Returning empty mask!");
+            return new byte[0];
         }
         if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB) {
             LOGGER.warn(
