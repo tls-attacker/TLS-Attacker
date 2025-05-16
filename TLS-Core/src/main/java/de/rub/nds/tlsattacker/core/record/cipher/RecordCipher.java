@@ -99,7 +99,7 @@ public abstract class RecordCipher {
             if (mask.length < length) {
                 mask = Arrays.copyOf(mask, length);
                 LOGGER.warn(
-                        "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Pad to the required length with zero bytes.");
+                        "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Padding it to the required length with zero bytes.");
             }
         }
 
@@ -122,7 +122,7 @@ public abstract class RecordCipher {
 
         if (mask.length < encryptedSequenceNumber.length) {
             LOGGER.warn(
-                    "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Pad to the required length with zero bytes.");
+                    "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Padding it to the required length with zero bytes.");
             mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
         }
         byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];

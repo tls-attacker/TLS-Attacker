@@ -271,7 +271,8 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
     @Override
     public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
         if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20) {
-            LOGGER.warn("The ciphertext is too short. Pad to the required length with zero bytes.");
+            LOGGER.warn(
+                    "The ciphertext is too short. Padding it to the required length with zero bytes.");
         }
         byte[] tempCiphertext =
                 Arrays.copyOf(ciphertext, Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20);

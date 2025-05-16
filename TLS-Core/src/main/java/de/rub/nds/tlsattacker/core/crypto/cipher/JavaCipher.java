@@ -275,7 +275,8 @@ class JavaCipher extends BaseCipher {
             throw new CryptoException("Selected cipher does not support DTLS 1.3 masking");
         }
         if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB) {
-            LOGGER.warn("The ciphertext is too short. Pad to the required length with zero bytes.");
+            LOGGER.warn(
+                    "The ciphertext is too short. Padding it to the required length with zero bytes.");
         }
         byte[] toEncrypt = Arrays.copyOf(ciphertext, Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB);
         try {
