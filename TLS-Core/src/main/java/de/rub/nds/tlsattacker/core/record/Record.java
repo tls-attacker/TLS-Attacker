@@ -75,6 +75,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
+    /** The epoch number for DTLS */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
