@@ -90,6 +90,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableByteArray encryptedSequenceNumber;
 
+    /** The connectin ID for DTLS */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray connectionId;
 
