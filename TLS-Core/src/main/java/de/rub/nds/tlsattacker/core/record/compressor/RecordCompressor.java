@@ -21,7 +21,7 @@ public class RecordCompressor extends Compressor<Record> {
 
     public RecordCompressor(TlsContext tlsContext) {
         version = tlsContext.getChooser().getSelectedProtocolVersion();
-        if (version.isTLS13()) {
+        if (version.is13()) {
             setMethod(CompressionMethod.NULL);
         } else {
             setMethod(tlsContext.getChooser().getSelectedCompressionMethod());

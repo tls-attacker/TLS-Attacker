@@ -53,8 +53,12 @@ public class RecordEncryptor extends Encryptor {
                 LOGGER.error("Could not encrypt with NullCipher", ex1);
             }
         }
+        // In DTLS 1.3 record sequence numbers are also encrypted
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()) {
+            recordCipher.encryptDtls13SequenceNumber(record);
+        }
         recordCipher.getState().increaseWriteSequenceNumber();
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
             record.getComputations().setUsedTls13KeySetType(tlsContext.getActiveKeySetTypeWrite());
         }
     }

@@ -1,6 +1,8 @@
 <?xml version="1.0" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:element name="ACK" type="ackMessage"/>
+
   <xs:element name="Alert" type="alertMessage"/>
 
   <xs:element name="AlpnExtension" type="alpnExtensionMessage"/>
@@ -91,6 +93,8 @@
 
   <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
 
+  <xs:element name="NewConnectionId" type="newConnectionIdMessage"/>
+
   <xs:element name="NewSessionTicket" type="newSessionTicketMessage"/>
 
   <xs:element name="PSKKeyExchangeModesExtension" type="pskKeyExchangeModesExtensionMessage"/>
@@ -132,6 +136,8 @@
   <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
 
   <xs:element name="RenegotiationInfoExtension" type="renegotiationInfoExtensionMessage"/>
+
+  <xs:element name="RequestConnectionId" type="requestConnectionIdMessage"/>
 
   <xs:element name="SRPExtension" type="srpExtensionMessage"/>
 
@@ -609,6 +615,8 @@
       <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="sendHandshakeMessagesWithinSingleRecord" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultConnectionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultNumberOfRequestedConnectionIds" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultUsageofSentConnectionIds" type="connectionIdUsage" minOccurs="0"/>
       <xs:element name="addConnectionIdExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
@@ -889,9 +897,12 @@
       <xs:element name="addEncryptedClientHelloExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultMaxEchAlpnPadding" type="xs:int" minOccurs="0"/>
       <xs:element name="acceptOnlyFittingDtlsFragments" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="skipMessageSequenceNumber" type="xs:boolean" minOccurs="0"/>
       <xs:element name="acceptContentRewritingDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
+      <xs:element name="dtls13HeaderSeqNumSizeLong" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="retransmitAcknowledgedRecordsInDtls13" type="xs:boolean" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
 
@@ -3217,6 +3228,7 @@
           <xs:element name="selectedCipherSuite" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="selectedCompressionMethod" type="modifiableByte" minOccurs="0"/>
           <xs:element name="autoSetHelloRetryModeInKeyShare" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="isHelloRetryRequest" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3229,6 +3241,28 @@
           <xs:element name="config" type="xs:string" minOccurs="0"/>
           <xs:element name="level" type="modifiableByte" minOccurs="0"/>
           <xs:element name="description" type="modifiableByte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ackMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="recordNumbers" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="recordNumberLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recordNumber">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="epoch" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3712,6 +3746,39 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="newConnectionIdMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="usage" type="connectionIdUsage" minOccurs="0"/>
+          <xs:element name="connectionIdsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="connectionIds" type="connectionId" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="connectionId">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="requestConnectionIdMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="numberOfConnectionIds" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="encryptedClientHelloMessage">
     <xs:complexContent>
       <xs:extension base="coreClientHelloMessage">
@@ -3979,6 +4046,7 @@
       <xs:enumeration value="DTLS10_DRAFT"/>
       <xs:enumeration value="DTLS10"/>
       <xs:enumeration value="DTLS12"/>
+      <xs:enumeration value="DTLS13"/>
       <xs:enumeration value="GREASE_00"/>
       <xs:enumeration value="GREASE_01"/>
       <xs:enumeration value="GREASE_02"/>
@@ -4714,6 +4782,13 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="connectionIdUsage">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CID_IMMEDIATE"/>
+      <xs:enumeration value="CID_SPARE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="pskKeyExchangeMode">
     <xs:restriction base="xs:string">
       <xs:enumeration value="PSK_KE"/>
@@ -4728,6 +4803,7 @@
       <xs:enumeration value="IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_APP_DATA"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_HTTPS_MESSAGES"/>
+      <xs:enumeration value="IGNORE_ACK_MESSAGES"/>
       <xs:enumeration value="MAY_FAIL"/>
       <xs:enumeration value="CHECK_ONLY_EXPECTED"/>
     </xs:restriction>
@@ -5067,6 +5143,8 @@
       <xs:enumeration value="NEW_SESSION_TICKET"/>
       <xs:enumeration value="END_OF_EARLY_DATA"/>
       <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
+      <xs:enumeration value="REQUEST_CONNECTION_ID"/>
+      <xs:enumeration value="NEW_CONNECTION_ID"/>
       <xs:enumeration value="CERTIFICATE"/>
       <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
       <xs:enumeration value="CERTIFICATE_REQUEST"/>
@@ -5098,6 +5176,7 @@
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
       <xs:enumeration value="TLS12_CID"/>
+      <xs:enumeration value="ACK"/>
     </xs:restriction>
   </xs:simpleType>
 

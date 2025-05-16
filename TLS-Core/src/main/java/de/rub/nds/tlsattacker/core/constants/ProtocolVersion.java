@@ -37,6 +37,7 @@ public enum ProtocolVersion {
     DTLS10_DRAFT(new byte[] {(byte) 0x01, (byte) 0x00}),
     DTLS10(new byte[] {(byte) 0xFE, (byte) 0xFF}),
     DTLS12(new byte[] {(byte) 0xFE, (byte) 0xFD}),
+    DTLS13(new byte[] {(byte) 0xFE, (byte) 0xFC}),
 
     // GREASE constants
     GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}),
@@ -80,7 +81,7 @@ public enum ProtocolVersion {
     }
 
     public boolean isDTLS() {
-        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT;
+        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT || this == DTLS13;
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
@@ -197,6 +198,14 @@ public enum ProtocolVersion {
         return this == TLS13 || this.getMajor() == 0x7F;
     }
 
+    public boolean isDTLS13() {
+        return this == DTLS13;
+    }
+
+    public boolean is13() {
+        return isTLS13() || isDTLS13();
+    }
+
     /**
      * @return true, if protocol version SSL 2 or 3
      */
@@ -307,6 +316,8 @@ public enum ProtocolVersion {
                 return "DTLS 1.0";
             case DTLS12:
                 return "DTLS 1.2";
+            case DTLS13:
+                return "DTLS 1.3";
             case SSL2:
                 return "SSL 2.0";
             case SSL3:

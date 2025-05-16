@@ -19,41 +19,7 @@ import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
-import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.EsniVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SniType;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
-import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -609,6 +575,15 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
+
+    /**
+     * Default number of connection IDs requested when sending a RequestConnectionId message (DTLS
+     * 1.3)
+     */
+    private Integer defaultNumberOfRequestedConnectionIds = 3;
+
+    /** Usage in der NewConnectionId message */
+    private ConnectionIdUsage defaultUsageOfSentConnectionIds = ConnectionIdUsage.CID_SPARE;
 
     /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
     private Boolean addConnectionIdExtension = false;
@@ -1270,11 +1245,23 @@ public class Config implements Serializable {
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
+    /** DTLS 1.3 */
+    private Boolean canSkipMessageSequenceNumber = false;
+
     private Boolean acceptContentRewritingDtlsFragments = true;
 
     private Boolean writeKeylogFile = false;
 
     private String keylogFilePath = null;
+
+    /**
+     * 16-bit encoding instead of 8-bit encoding for the sequence number in the DTLS 1.3 unified
+     * header
+     */
+    private Boolean useDtls13HeaderSeqNumSizeLongEncoding = true;
+
+    /** In DTLS 1.3, TLS-Attacker retransmits only records that have not yet been acknowledged */
+    private Boolean retransmitAcknowledgedRecordsInDtls13 = false;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultRsaSsaPssSalt =
@@ -1568,6 +1555,14 @@ public class Config implements Serializable {
 
     public void setAcceptOnlyFittingDtlsFragments(Boolean acceptOnlyFittingDtlsFragments) {
         this.acceptOnlyFittingDtlsFragments = acceptOnlyFittingDtlsFragments;
+    }
+
+    public Boolean isCanSkipMessageSequenceNumber() {
+        return canSkipMessageSequenceNumber;
+    }
+
+    public void setCanSkipMessageSequenceNumber(Boolean canSkipMessageSequenceNumber) {
+        this.canSkipMessageSequenceNumber = canSkipMessageSequenceNumber;
     }
 
     public Boolean isAcceptContentRewritingDtlsFragments() {
@@ -4023,6 +4018,24 @@ public class Config implements Serializable {
         this.defaultConnectionId = defaultConnectionId;
     }
 
+    public Integer getDefaultNumberOfRequestedConnectionIds() {
+        return defaultNumberOfRequestedConnectionIds;
+    }
+
+    public void setDefaultNumberOfRequestedConnectionIds(
+            Integer defaultNumberOfRequestedConnectionIds) {
+        this.defaultNumberOfRequestedConnectionIds = defaultNumberOfRequestedConnectionIds;
+    }
+
+    public ConnectionIdUsage getDefaultUsageOfSentConnectionIds() {
+        return defaultUsageOfSentConnectionIds;
+    }
+
+    public void setDefaultUsageOfSentConnectionIds(
+            ConnectionIdUsage defaultUsageofSentConnectionIds) {
+        this.defaultUsageOfSentConnectionIds = defaultUsageofSentConnectionIds;
+    }
+
     public Boolean isAddConnectionIdExtension() {
         return addConnectionIdExtension;
     }
@@ -4047,6 +4060,24 @@ public class Config implements Serializable {
     public void setSendHandshakeMessagesWithinSingleRecord(
             Boolean sendHandshakeMessagesWithinSingleRecord) {
         this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
+    }
+
+    public Boolean getUseDtls13HeaderSeqNumSizeLongEncoding() {
+        return useDtls13HeaderSeqNumSizeLongEncoding;
+    }
+
+    public void setUseDtls13HeaderSeqNumSizeLongEncoding(
+            Boolean useDtls13HeaderSeqNumSizeLongEncoding) {
+        this.useDtls13HeaderSeqNumSizeLongEncoding = useDtls13HeaderSeqNumSizeLongEncoding;
+    }
+
+    public Boolean getRetransmitAcknowledgedRecordsInDtls13() {
+        return retransmitAcknowledgedRecordsInDtls13;
+    }
+
+    public void setRetransmitAcknowledgedRecordsInDtls13(
+            Boolean retransmitAcknowledgedRecordsInDtls13) {
+        this.retransmitAcknowledgedRecordsInDtls13 = retransmitAcknowledgedRecordsInDtls13;
     }
 
     public BigInteger getDefaultServerEphemeralDhGenerator() {

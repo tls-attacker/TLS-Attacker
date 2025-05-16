@@ -85,7 +85,7 @@ public class KeyDerivator {
     public static KeySet generateKeySet(
             TlsContext tlsContext, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException, CryptoException {
-        if (protocolVersion.isTLS13()) {
+        if (protocolVersion.is13()) {
             return getTls13KeySet(tlsContext, keySetType);
         } else {
             return getTlsKeySet(tlsContext);
@@ -145,7 +145,8 @@ public class KeyDerivator {
                         clientSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Client write key: {}", keySet.getClientWriteKey());
         keySet.setServerWriteKey(
                 HKDFunction.expandLabel(
@@ -153,7 +154,8 @@ public class KeyDerivator {
                         serverSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Server write key: {}", keySet.getServerWriteKey());
         keySet.setClientWriteIv(
                 HKDFunction.expandLabel(
@@ -161,7 +163,8 @@ public class KeyDerivator {
                         clientSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH));
+                        AEAD_IV_LENGTH,
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Client write IV: {}", keySet.getClientWriteIv());
         keySet.setServerWriteIv(
                 HKDFunction.expandLabel(
@@ -169,8 +172,27 @@ public class KeyDerivator {
                         serverSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH));
+                        AEAD_IV_LENGTH,
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Server write IV: {}", keySet.getServerWriteIv());
+        keySet.setClientSnKey(
+                HKDFunction.expandLabel(
+                        hkdfAlgorithm,
+                        clientSecret,
+                        HKDFunction.SN_KEY,
+                        new byte[] {},
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
+        LOGGER.debug("Client sn key: {}", keySet.getClientSnKey());
+        keySet.setServerSnKey(
+                HKDFunction.expandLabel(
+                        hkdfAlgorithm,
+                        serverSecret,
+                        HKDFunction.SN_KEY,
+                        new byte[] {},
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
+        LOGGER.debug("Server sn key: {}", keySet.getServerSnKey());
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;

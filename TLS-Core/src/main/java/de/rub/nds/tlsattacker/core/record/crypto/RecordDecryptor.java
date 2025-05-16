@@ -38,7 +38,24 @@ public class RecordDecryptor extends Decryptor {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
                 && record.getEpoch() != null
                 && record.getEpoch().getValue() != null) {
-            recordCipher = getRecordCipher(record.getEpoch().getValue());
+            // After handshake DTLS 1.3 Epochs must be guessed based on the last 2 bits
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
+                    && tlsContext.getReadEpoch() > 3
+                    && record.getUnifiedHeader() != null) {
+                recordCipher = getRecordCipherForEpochBits(record.getEpoch().getValue(), record);
+                if (recordCipher == null) {
+                    LOGGER.warn(
+                            "Got no RecordCipher for epoch bits: {}. Using most recent cipher instead.",
+                            record.getEpoch().getValue());
+                    recordCipher = getRecordMostRecentCipher();
+                }
+            } else {
+                recordCipher = getRecordCipher(record.getEpoch().getValue());
+            }
+            // Decrypt encrypted record sequence numbers in DTLS 1.3
+            if (record.getEncryptedSequenceNumber() != null) {
+                recordCipher.decryptDtls13SequenceNumber(record);
+            }
         } else {
             recordCipher = getRecordMostRecentCipher();
         }
