@@ -54,11 +54,7 @@ public class RecordDecryptor extends Decryptor {
             }
             // Decrypt encrypted record sequence numbers in DTLS 1.3
             if (record.getEncryptedSequenceNumber() != null) {
-                try {
-                    recordCipher.decryptDtls13SequenceNumber(record);
-                } catch (CryptoException ex) {
-                    LOGGER.error("Could not decrypt DTLS 1.3 Record Sequence Number: {}", ex);
-                }
+                recordCipher.decryptDtls13SequenceNumber(record);
             }
         } else {
             recordCipher = getRecordMostRecentCipher();

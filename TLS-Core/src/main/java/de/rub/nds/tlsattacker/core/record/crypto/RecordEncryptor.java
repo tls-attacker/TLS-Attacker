@@ -55,11 +55,7 @@ public class RecordEncryptor extends Encryptor {
         }
         // In DTLS 1.3 record sequence numbers are also encrypted
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()) {
-            try {
-                recordCipher.encryptDtls13SequenceNumber(record);
-            } catch (CryptoException ex) {
-                LOGGER.warn("Could not encrypt DTLS 1.3 Record Sequence Number: {}", ex);
-            }
+            recordCipher.encryptDtls13SequenceNumber(record);
         }
         recordCipher.getState().increaseWriteSequenceNumber();
         if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {

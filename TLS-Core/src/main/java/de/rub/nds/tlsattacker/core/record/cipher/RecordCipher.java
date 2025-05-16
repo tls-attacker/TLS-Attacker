@@ -67,7 +67,7 @@ public abstract class RecordCipher {
 
     public abstract void decrypt(Record record) throws CryptoException;
 
-    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
+    public void encryptDtls13SequenceNumber(Record record) {
         int length =
                 tlsContext.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()
                         ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
@@ -89,17 +89,22 @@ public abstract class RecordCipher {
             LOGGER.warn(
                     "No keys available for DTLS 1.3 mask derivation for sequence number encryption. Using null encryption.");
         } else {
-            mask =
-                    ((BaseCipher) encryptCipher)
-                            .getDtls13Mask(
-                                    getState()
-                                            .getKeySet()
-                                            .getWriteSnKey(getLocalConnectionEndType()),
-                                    record.getProtocolMessageBytes().getValue());
-            if (mask.length < length) {
-                mask = Arrays.copyOf(mask, length);
-                LOGGER.warn(
-                        "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Padding it to the required length with zero bytes.");
+            try {
+                mask =
+                        ((BaseCipher) encryptCipher)
+                                .getDtls13Mask(
+                                        getState()
+                                                .getKeySet()
+                                                .getWriteSnKey(getLocalConnectionEndType()),
+                                        record.getProtocolMessageBytes().getValue());
+                if (mask.length < length) {
+                    mask = Arrays.copyOf(mask, length);
+                    LOGGER.warn(
+                            "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Padding it to the required length with zero bytes.");
+                }
+            } catch (CryptoException ex) {
+                LOGGER.warn("Failed to generate DTLS 1.3 mask. Generating a zero‑byte mask.");
+                mask = new byte[length];
             }
         }
 
@@ -112,23 +117,33 @@ public abstract class RecordCipher {
                 "Encrypted Sequence Number: {}", record.getEncryptedSequenceNumber().getValue());
     }
 
-    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
-        byte[] mask =
-                ((BaseCipher) decryptCipher)
-                        .getDtls13Mask(
-                                getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
-                                record.getProtocolMessageBytes().getValue());
+    public void decryptDtls13SequenceNumber(Record record) {
         byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
+        byte[] mask;
 
-        if (mask.length < encryptedSequenceNumber.length) {
-            LOGGER.warn(
-                    "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Padding it to the required length with zero bytes.");
-            mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
+        try {
+            mask =
+                    ((BaseCipher) decryptCipher)
+                            .getDtls13Mask(
+                                    getState()
+                                            .getKeySet()
+                                            .getReadSnKey(getLocalConnectionEndType()),
+                                    record.getProtocolMessageBytes().getValue());
+            if (mask.length < encryptedSequenceNumber.length) {
+                LOGGER.warn(
+                        "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Padding it to the required length with zero bytes.");
+                mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
+            }
+        } catch (CryptoException ex) {
+            LOGGER.warn("Failed to generate DTLS 1.3 mask. Generating a zero‑byte mask.");
+            mask = new byte[encryptedSequenceNumber.length];
         }
+
         byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];
         for (int i = 0; i < sequenceNumber.length; i++) {
             sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
         }
+
         record.setSequenceNumber(new BigInteger(1, sequenceNumber));
         LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
     }
