@@ -583,6 +583,7 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultDebugContent")
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultDebugContent = "TLS-Attacker Debug Content";
+
     /**
      * Default number of connection IDs requested when sending a RequestConnectionId message (DTLS
      * 1.3)
@@ -4040,7 +4041,7 @@ public class Config implements Serializable {
     public void setDefaultDebugContent(String defaultDebugContent) {
         this.defaultDebugContent = defaultDebugContent;
     }
-    
+
     public Integer getDefaultNumberOfRequestedConnectionIds() {
         return defaultNumberOfRequestedConnectionIds;
     }
