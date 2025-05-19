@@ -30,10 +30,7 @@ public class DebugExtensionParser extends ExtensionParser<DebugExtensionMessage>
     }
 
     private void parseDebugContent(DebugExtensionMessage msg) {
-        msg.setDebugContent(
-                new String(
-                        parseByteArrayField(msg.getExtensionLength().getValue()),
-                        StandardCharsets.ISO_8859_1));
+        msg.setDebugContent(new String(parseTillEnd(), StandardCharsets.ISO_8859_1));
         LOGGER.debug("Debug Content: {}", msg.getDebugContent().getValue());
     }
 }
