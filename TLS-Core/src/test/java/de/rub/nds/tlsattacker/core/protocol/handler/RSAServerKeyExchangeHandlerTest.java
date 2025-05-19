@@ -35,7 +35,6 @@ public class RSAServerKeyExchangeHandlerTest
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_EXPORT_WITH_DES40_CBC_SHA);
         message.prepareKeyExchangeComputations();
         message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
-        tlsContext.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA1);
         message.setSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA1.getByteValue());
         handler.adjustContext(message);
 
@@ -54,7 +53,6 @@ public class RSAServerKeyExchangeHandlerTest
         RSAServerKeyExchangeMessage message = new RSAServerKeyExchangeMessage();
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
-        tlsContext.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA1);
         message.setSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA1.getByteValue());
         handler.adjustContext(message);
 
