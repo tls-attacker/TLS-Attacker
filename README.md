@@ -61,7 +61,6 @@ or as a server with:
 $ java -jar TLS-Server.jar -port [port]
 ```
 
-
 Although these example applications are very powerful in itself, TLS-Attacker unleashes its full potential when used as a programming library.
 
 ## Code Structure
