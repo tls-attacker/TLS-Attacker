@@ -612,8 +612,8 @@ public class RecordDecryptorTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         record.setProtocolMessageBytes(
                 ArrayConverter.hexStringToByteArray(
-                // random 16 bytes IV + CTXT (padding is here) + MAC
-                "d7a61d26aaed357ca508d4a6d3109b914d2f2d45976c2421320b0a909e51b8cf4e9b073595caca646715a7dc09ff195e75ffe684ea10ebadd9b78996d2eec2209c8eca9697d871bee1ecc372bc2e8879ddde24364e7f35eab89e2964097963f9de066e8ae649e6dfcd218f3de0276eea622ec6fd527c835c47880a966b38d73922ff71a7a95c843ea846f5a7c4785e180c25fd759d9cbdebca14cd921c743d5eb8910f618db2dc7ce2a57f80e57d4fb8327da198bf65e25a7932a61c74015b172ff4939c2a99eefd0205f4940b77b9d07daac9c13cf3cc5f8ca6bea7b220db7cd42eb20b2fa51a816f86407033574471b38b2c2cf029deb75215d8af27b9b94899a18aa029047c50d8ebb30afebe1268e7cd349fc079a2e270221de329023ff1280abf484813cd3dae4206c32a3d3f1604f72f83"));
+                        // random 16 bytes IV + CTXT (padding is here) + MAC
+                        "d7a61d26aaed357ca508d4a6d3109b914d2f2d45976c2421320b0a909e51b8cf4e9b073595caca646715a7dc09ff195e75ffe684ea10ebadd9b78996d2eec2209c8eca9697d871bee1ecc372bc2e8879ddde24364e7f35eab89e2964097963f9de066e8ae649e6dfcd218f3de0276eea622ec6fd527c835c47880a966b38d73922ff71a7a95c843ea846f5a7c4785e180c25fd759d9cbdebca14cd921c743d5eb8910f618db2dc7ce2a57f80e57d4fb8327da198bf65e25a7932a61c74015b172ff4939c2a99eefd0205f4940b77b9d07daac9c13cf3cc5f8ca6bea7b220db7cd42eb20b2fa51a816f86407033574471b38b2c2cf029deb75215d8af27b9b94899a18aa029047c50d8ebb30afebe1268e7cd349fc079a2e270221de329023ff1280abf484813cd3dae4206c32a3d3f1604f72f83"));
 
         recordCipher =
                 new RecordBlockCipher(
@@ -629,7 +629,7 @@ public class RecordDecryptorTest {
         assertTrue(record.getComputations().getMacValid());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
-        "d7a61d26aaed357ca508d4a6d3109b914d2f2d45976c2421320b0a909e51b8cf4e9b073595caca646715a7dc09ff195e75ffe684ea10ebadd9b78996d2eec2209c8eca9697d871bee1ecc372bc2e8879ddde24364e7f35eab89e2964097963f9de066e8ae649e6dfcd218f3de0276eea622ec6fd527c835c47880a966b38d73922ff71a7a95c843ea846f5a7c4785e180c25fd759d9cbdebca14cd921c743d5eb8910f618db2dc7ce2a57f80e57d4fb8327da198bf65e25a7932a61c74015b172ff4939c2a99eefd0205f4940b77b9d07daac9c13cf3cc5f8ca6bea7b220db7cd42eb20b2fa51a816f86407033574471b38b2c2cf029deb75215d8af27b9b94899a18aa029047c50d8ebb30afebe1268e7cd349fc079a2e270221de329023ff1"),
+                        "d7a61d26aaed357ca508d4a6d3109b914d2f2d45976c2421320b0a909e51b8cf4e9b073595caca646715a7dc09ff195e75ffe684ea10ebadd9b78996d2eec2209c8eca9697d871bee1ecc372bc2e8879ddde24364e7f35eab89e2964097963f9de066e8ae649e6dfcd218f3de0276eea622ec6fd527c835c47880a966b38d73922ff71a7a95c843ea846f5a7c4785e180c25fd759d9cbdebca14cd921c743d5eb8910f618db2dc7ce2a57f80e57d4fb8327da198bf65e25a7932a61c74015b172ff4939c2a99eefd0205f4940b77b9d07daac9c13cf3cc5f8ca6bea7b220db7cd42eb20b2fa51a816f86407033574471b38b2c2cf029deb75215d8af27b9b94899a18aa029047c50d8ebb30afebe1268e7cd349fc079a2e270221de329023ff1"),
                 record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("d7a61d26aaed357ca508d4a6d3109b91"),
@@ -639,7 +639,7 @@ public class RecordDecryptorTest {
                 record.getComputations().getCipherKey().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
-                "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
+                        "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
                 record.getComputations().getPadding().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("00000000000000001603030120"),
