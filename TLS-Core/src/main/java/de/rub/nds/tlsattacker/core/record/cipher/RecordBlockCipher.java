@@ -328,8 +328,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 LOGGER.debug("Decrypted plaintext: {}", plainData);
                 parser = new PlaintextParser(plainData);
                 byte[] cleanProtocolBytes =
-                        parser.parseByteArrayField(
-                                plainData.length - (plainData[plainData.length - 1] + 1));
+                        parser.parseByteArrayField(plainData.length - ((plainData[plainData.length -1] & 0xff) +1));
+
                 if (getState().getVersion().isDTLS()
                         && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
                     parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
@@ -350,7 +350,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 computations.setAuthenticatedMetaData(
                         collectAdditionalAuthenticatedData(record, getState().getVersion()));
 
-                byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
+                byte[] padding = parser.parseByteArrayField(
+                    ((plainData[plainData.length -1] & 0xff) +1));
                 computations.setPadding(padding);
                 computations.setPaddingValid(isPaddingValid(padding));
 

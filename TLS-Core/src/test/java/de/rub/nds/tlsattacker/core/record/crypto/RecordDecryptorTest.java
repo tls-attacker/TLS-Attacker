@@ -644,11 +644,6 @@ public class RecordDecryptorTest {
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("00000000000000001603030120"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
-        // assertArrayEquals(
-        //         ArrayConverter.hexStringToByteArray(
-        //
-        // "09FF0714A189621595B6D0FB3F478E0AFD3BE7A6F40688505483433AAF6748EE634F8F837976DAFB8BAEDC2355298FC0"),
-        //         record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("280abf484813cd3dae4206c32a3d3f1604f72f83"),
                 record.getComputations().getMac().getValue());
