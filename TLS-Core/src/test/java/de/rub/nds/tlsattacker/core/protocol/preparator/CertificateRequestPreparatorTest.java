@@ -74,4 +74,45 @@ public class CertificateRequestPreparatorTest
                         .getSignatureAndHashAlgorithms()
                         .getValue());
     }
+
+    @Test
+    public void testPrepareTls13WithoutSettingDefaultCertificateRequestContext() {
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
+        createNewMessageAndPreparator(true);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
+        algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
+        algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        tlsContext.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
+
+        // Explicitly skip setDefaultCertificateRequestContext
+
+        assertDoesNotThrow(() -> preparator.prepare());
+        assertArrayEquals(new byte[0], message.getCertificateRequestContext().getValue());
+        assertEquals(0, (int) message.getCertificateRequestContextLength().getValue());
+        assertNotNull(message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class));
+        assertArrayEquals(
+                new byte[] {2, 0, 6, 3},
+                message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class)
+                        .getSignatureAndHashAlgorithms()
+                        .getValue());
+    }
+
+    @Test
+    public void testPrepareTls13WithNullDefaultCertificateRequestContext() {
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
+        createNewMessageAndPreparator(true);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
+        algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
+        algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        tlsContext.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
+
+        // Try to set DefaultCertificateRequestContext to null
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> tlsContext.getConfig().setDefaultCertificateRequestContext(null));
+    }
 }

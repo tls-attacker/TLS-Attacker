@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -130,6 +131,13 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustCertificateRequestContext(CertificateRequestMessage msg) {
-        tlsContext.setCertificateRequestContext(msg.getCertificateRequestContext().getValue());
+        ModifiableByteArray context = msg.getCertificateRequestContext();
+        if (context == null) {
+            LOGGER.warn("CertificateRequestContext is NULL");
+            throw new IllegalArgumentException(
+                    "CertificateRequestContext is NULL");
+        }
+        tlsContext.setCertificateRequestContext(context.getValue());
+
     }
 }
