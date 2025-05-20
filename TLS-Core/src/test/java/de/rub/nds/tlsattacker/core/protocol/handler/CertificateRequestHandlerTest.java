@@ -106,8 +106,6 @@ public class CertificateRequestHandlerTest
 
         // Explicitly skip setCertificateRequestContext to throw Exception
         assertNull(message.getCertificateRequestContext());
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> handler.adjustContext(message));
+        assertThrows(IllegalArgumentException.class, () -> handler.adjustContext(message));
     }
 }

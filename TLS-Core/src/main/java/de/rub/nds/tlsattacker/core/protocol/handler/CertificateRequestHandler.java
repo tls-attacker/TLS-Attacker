@@ -134,10 +134,8 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         ModifiableByteArray context = msg.getCertificateRequestContext();
         if (context == null) {
             LOGGER.warn("CertificateRequestContext is NULL");
-            throw new IllegalArgumentException(
-                    "CertificateRequestContext is NULL");
+            throw new IllegalArgumentException("CertificateRequestContext is NULL");
         }
         tlsContext.setCertificateRequestContext(context.getValue());
-
     }
 }
