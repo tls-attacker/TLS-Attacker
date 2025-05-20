@@ -290,12 +290,12 @@ public abstract class AbstractHandshakeIT {
                         + implementation
                         + " parameters: "
                         + getParameterString(
-                        protocolVersion,
-                        namedGroup,
-                        cipherSuite,
-                        workflowTraceType,
-                        addEncryptThenMac,
-                        addExtendedMasterSecret));
+                                protocolVersion,
+                                namedGroup,
+                                cipherSuite,
+                                workflowTraceType,
+                                addEncryptThenMac,
+                                addExtendedMasterSecret));
     }
 
     private void printFailedContainerLogs() {
@@ -357,28 +357,28 @@ public abstract class AbstractHandshakeIT {
 
     protected NamedGroup[] getNamedGroupsToTest() {
         return new NamedGroup[] {
-                NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
+            NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
         };
     }
 
     protected ProtocolVersion[] getProtocolVersionsToTest() {
         return new ProtocolVersion[] {
-                ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
+            ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
         };
     }
 
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
+            CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
         };
     }
 
     protected WorkflowTraceType[] getWorkflowTraceTypesToTest() {
         return new WorkflowTraceType[] {
-                WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION
+            WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION
         };
     }
 
