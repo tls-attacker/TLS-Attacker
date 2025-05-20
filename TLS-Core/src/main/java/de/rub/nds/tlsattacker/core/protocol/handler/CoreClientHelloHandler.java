@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMessage>
         extends HandshakeMessageHandler<Message> {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CoreClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);

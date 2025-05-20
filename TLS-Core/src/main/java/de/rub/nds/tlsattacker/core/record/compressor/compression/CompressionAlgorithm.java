@@ -9,12 +9,9 @@
 package de.rub.nds.tlsattacker.core.record.compressor.compression;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 public abstract class CompressionAlgorithm {
-
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     private final CompressionMethod method;
 
