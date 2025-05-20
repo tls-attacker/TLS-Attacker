@@ -137,6 +137,13 @@ public abstract class AbstractHandshakeIT {
                 instanceBuilder =
                         new TlsServerInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
+                image =
+                        DockerTlsManagerFactory.getMatchingImage(
+                                localImages,
+                                implementation,
+                                version,
+                                DockerBuilder.NO_ADDITIONAL_BUILDFLAGS,
+                                dockerConnectionRole);
                 Assertions.assertNotNull(
                         image,
                         String.format(
