@@ -31,9 +31,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag(TestCategories.INTEGRATION_TEST)
-public class ClientBrainpoolHanshakeIT extends AbstractHandshakeIT {
+public class ClientBrainpoolHandshakeIT extends AbstractHandshakeIT {
 
-    public ClientBrainpoolHanshakeIT() {
+    public ClientBrainpoolHandshakeIT() {
         // run OpenSSL with dummy HTTP server to get a reply for app data
         super(
                 TlsImplementationType.OPENSSL,
