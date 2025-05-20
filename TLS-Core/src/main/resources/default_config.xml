@@ -1145,6 +1145,7 @@
     <addPaddingExtension>false</addPaddingExtension>
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addDebugExtension>false</addDebugExtension>
     <addExtendedRandomExtension>false</addExtendedRandomExtension>
     <addQuicTransportParametersExtension>false</addQuicTransportParametersExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
@@ -1172,6 +1173,7 @@
     <addCookieExtension>false</addCookieExtension>
     <sendHandshakeMessagesWithinSingleRecord>false</sendHandshakeMessagesWithinSingleRecord>
     <defaultConnectionId>01 02 03</defaultConnectionId>
+    <defaultDebugContent>TLS-Attacker Debug Content</defaultDebugContent>
     <defaultNumberOfRequestedConnectionIds>3</defaultNumberOfRequestedConnectionIds>
     <defaultUsageOfSentConnectionIds>CID_SPARE</defaultUsageOfSentConnectionIds>
     <addConnectionIdExtension>false</addConnectionIdExtension>
