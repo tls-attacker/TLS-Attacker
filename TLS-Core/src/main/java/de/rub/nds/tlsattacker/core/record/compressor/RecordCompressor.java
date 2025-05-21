@@ -13,11 +13,14 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.compressor.compression.CompressionAlgorithm;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RecordCompressor extends Compressor<Record> {
 
     private CompressionAlgorithm algorithm;
     private final ProtocolVersion version;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RecordCompressor(TlsContext tlsContext) {
         version = tlsContext.getChooser().getSelectedProtocolVersion();

@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import java.util.Arrays;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DeflateCompression extends CompressionAlgorithm {
 
@@ -19,6 +21,7 @@ public class DeflateCompression extends CompressionAlgorithm {
     private static final int MAX_PLAIN_TEXT_LENGTH = 0x4000;
     private Boolean secondPacketFlagCompression;
     private Boolean secondPacketFlagDecompression;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DeflateCompression() {
         super(CompressionMethod.DEFLATE);
