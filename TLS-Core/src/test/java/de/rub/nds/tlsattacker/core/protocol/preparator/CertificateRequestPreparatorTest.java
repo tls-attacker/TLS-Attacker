@@ -98,21 +98,4 @@ public class CertificateRequestPreparatorTest
                         .getSignatureAndHashAlgorithms()
                         .getValue());
     }
-
-    @Test
-    public void testPrepareTls13WithNullDefaultCertificateRequestContext() {
-        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS13);
-        tlsContext.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13);
-        createNewMessageAndPreparator(true);
-        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
-        algoList.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        tlsContext.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
-
-        // Try to set DefaultCertificateRequestContext to null
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> tlsContext.getConfig().setDefaultCertificateRequestContext(null));
-    }
 }

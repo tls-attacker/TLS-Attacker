@@ -95,17 +95,4 @@ public class CertificateRequestHandlerTest
         assertTrue(tlsContext.getClientCertificateTypes().isEmpty());
         assertTrue(tlsContext.getServerSupportedSignatureAndHashAlgorithms().isEmpty());
     }
-
-    @Test
-    public void testAdjustContextTLS13withNullCertificateRequestContext() {
-        Config config = new Config();
-        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
-
-        CertificateRequestMessage message = new CertificateRequestMessage(config);
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-
-        // Explicitly skip setCertificateRequestContext to throw Exception
-        assertNull(message.getCertificateRequestContext());
-        assertThrows(IllegalArgumentException.class, () -> handler.adjustContext(message));
-    }
 }

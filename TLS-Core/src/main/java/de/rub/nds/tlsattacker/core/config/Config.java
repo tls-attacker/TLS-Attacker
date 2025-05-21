@@ -1874,19 +1874,11 @@ public class Config implements Serializable {
     }
 
     public byte[] getDefaultCertificateRequestContext() {
-        if (defaultCertificateRequestContext == null) {
-            LOGGER.warn("defaultCertificateRequestContext is NULL");
-            throw new IllegalArgumentException("defaultCertificateRequestContext cannot be NULL");
-        }
         return Arrays.copyOf(
                 defaultCertificateRequestContext, defaultCertificateRequestContext.length);
     }
 
     public void setDefaultCertificateRequestContext(byte[] defaultCertificateRequestContext) {
-        if (defaultCertificateRequestContext == null) {
-            LOGGER.warn("defaultCertificateRequestContext is NULL");
-            throw new IllegalArgumentException("defaultCertificateRequestContext cannot be NULL");
-        }
         this.defaultCertificateRequestContext = defaultCertificateRequestContext;
     }
 
