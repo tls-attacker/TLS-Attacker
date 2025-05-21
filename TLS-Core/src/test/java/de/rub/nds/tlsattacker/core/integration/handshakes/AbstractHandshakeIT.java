@@ -284,7 +284,11 @@ public abstract class AbstractHandshakeIT {
             WorkflowTraceType workflowTraceType,
             boolean addEncryptThenMac,
             boolean addExtendedMasterSecret) {
-        LOGGER.error("Failed trace: " + state.getWorkflowTrace().toString());
+        LOGGER.error(
+                "["
+                        + this.getClass().getName()
+                        + "] Failed trace: "
+                        + state.getWorkflowTrace().toString());
         try {
             LOGGER.error("Instance Feedback: " + dockerInstance.getLogs());
         } catch (InterruptedException e) {
