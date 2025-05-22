@@ -9,9 +9,13 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** */
 public class NullCipher extends BaseCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public NullCipher() {}
 
@@ -70,5 +74,11 @@ public class NullCipher extends BaseCipher {
             byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
             throws CryptoException {
         return someBytes;
+    }
+
+    @Override
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+        LOGGER.warn("Selected cipher does not support DTLS 1.3 masking. Returning empty mask!");
+        return new byte[0];
     }
 }

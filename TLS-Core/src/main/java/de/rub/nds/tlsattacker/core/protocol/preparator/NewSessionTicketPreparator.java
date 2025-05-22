@@ -109,7 +109,7 @@ public class NewSessionTicketPreparator
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             prepareTicketTls13(msg);
         } else {
             prepareTicket(msg);
@@ -140,7 +140,7 @@ public class NewSessionTicketPreparator
 
     @Override
     public void prepareAfterParse() {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             msg.setIncludeInDigest(false);
         }
     }

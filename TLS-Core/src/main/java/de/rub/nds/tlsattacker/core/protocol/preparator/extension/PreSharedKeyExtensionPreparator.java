@@ -187,16 +187,20 @@ public class PreSharedKeyExtensionPreparator
                                         digestAlgo.getJavaName(),
                                         earlySecret,
                                         HKDFunction.BINDER_KEY_RES,
-                                        ArrayConverter.hexStringToByteArray(""));
+                                        ArrayConverter.hexStringToByteArray(""),
+                                        tlsContext.getChooser().getSelectedProtocolVersion());
                         byte[] binderFinKey =
                                 HKDFunction.expandLabel(
                                         hkdfAlgorithm,
                                         binderKey,
                                         HKDFunction.FINISHED,
                                         new byte[0],
-                                        mac.getMacLength());
-
-                        tlsContext.getDigest().setRawBytes(relevantBytes);
+                                        mac.getMacLength(),
+                                        tlsContext.getChooser().getSelectedProtocolVersion());
+                        byte[] hashBefore = tlsContext.getDigest().getRawBytes();
+                        tlsContext
+                                .getDigest()
+                                .setRawBytes(ArrayConverter.concatenate(hashBefore, relevantBytes));
                         SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                         mac.init(keySpec);
                         mac.update(
@@ -206,7 +210,7 @@ public class PreSharedKeyExtensionPreparator
                                                 ProtocolVersion.TLS13,
                                                 pskSets.get(x).getCipherSuite()));
                         byte[] binderVal = mac.doFinal();
-                        tlsContext.getDigest().setRawBytes(new byte[0]);
+                        tlsContext.getDigest().setRawBytes(hashBefore);
 
                         LOGGER.debug("Using PSK: {}", psk);
                         LOGGER.debug("Calculated Binder: {}", binderVal);

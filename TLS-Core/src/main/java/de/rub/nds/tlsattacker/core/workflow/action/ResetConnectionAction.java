@@ -83,6 +83,9 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                 tlsContext.getRecordLayer().setWriteEpoch(0);
                 tlsContext.getRecordLayer().setReadEpoch(0);
             }
+            LOGGER.info("Resetting KeyShareStores");
+            tlsContext.setServerKeyShareStoreEntry(null);
+            tlsContext.setClientKeyShareStoreEntryList(null);
             LOGGER.info("Resetting SecureRenegotiation");
             tlsContext.setLastClientVerifyData(null);
             tlsContext.setLastServerVerifyData(null);
@@ -111,6 +114,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                 tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
                 tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
             }
+            LOGGER.info("Resetting QUIC settings");
             if (context.getConfig().getQuic()) {
                 QuicContext quicContext = context.getQuicContext();
                 quicContext.reset();

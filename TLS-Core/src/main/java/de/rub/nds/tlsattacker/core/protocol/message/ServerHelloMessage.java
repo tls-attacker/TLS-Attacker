@@ -119,11 +119,25 @@ public class ServerHelloMessage extends HelloMessage {
 
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 
+    private Boolean isHelloRetryRequest = false;
+
     public ServerHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.isRespectClientProposedExtensions()) {
             createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
         }
+    }
+
+    public ServerHelloMessage(Config tlsConfig, boolean isHelloRetryRequest) {
+        super(HandshakeMessageType.SERVER_HELLO);
+        this.isHelloRetryRequest = isHelloRetryRequest;
+        if (!tlsConfig.isRespectClientProposedExtensions()) {
+            createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
+        }
+    }
+
+    public ServerHelloMessage() {
+        super(HandshakeMessageType.SERVER_HELLO);
     }
 
     @Override
@@ -136,14 +150,14 @@ public class ServerHelloMessage extends HelloMessage {
                 configuredExtensions.add(new HeartbeatExtensionMessage());
             }
             if (tlsConfig.isAddECPointFormatExtension()
-                    && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+                    && !tlsConfig.getHighestProtocolVersion().is13()) {
                 configuredExtensions.add(new ECPointFormatExtensionMessage());
             }
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 configuredExtensions.add(new MaxFragmentLengthExtensionMessage());
             }
             if (tlsConfig.isAddRecordSizeLimitExtension()
-                    && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+                    && !tlsConfig.getHighestProtocolVersion().is13()) {
                 configuredExtensions.add(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()
@@ -161,7 +175,6 @@ public class ServerHelloMessage extends HelloMessage {
                 extension.getServerNameList().add(pair);
                 configuredExtensions.add(extension);
             }
-
             if (tlsConfig.isAddKeyShareExtension()) {
                 configuredExtensions.add(new KeyShareExtensionMessage(tlsConfig));
             }
@@ -253,8 +266,12 @@ public class ServerHelloMessage extends HelloMessage {
         return configuredExtensions;
     }
 
-    public ServerHelloMessage() {
-        super(HandshakeMessageType.SERVER_HELLO);
+    public Boolean isHelloRetryRequest() {
+        return isHelloRetryRequest;
+    }
+
+    public void setHelloRetryRequest(Boolean helloRetryRequest) {
+        isHelloRetryRequest = helloRetryRequest;
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {
@@ -283,7 +300,7 @@ public class ServerHelloMessage extends HelloMessage {
                 ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
     }
 
-    public Boolean isTls13HelloRetryRequest() {
+    public Boolean hasTls13HelloRetryRequestRandom() {
         if (this.getRandom() != null && this.getRandom().getValue() != null) {
             return Arrays.equals(this.getRandom().getValue(), HELLO_RETRY_REQUEST_RANDOM);
         } else {
@@ -302,13 +319,13 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (getProtocolVersion() != null
                 && getProtocolVersion().getValue() != null
-                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
             sb.append("\n  Server Unix Time: ")
                     .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
             } else {
                 sb.append("null");
@@ -324,7 +341,7 @@ public class ServerHelloMessage extends HelloMessage {
         }
         sb.append("\n  Session ID: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
             } else {
                 sb.append("null");
@@ -340,7 +357,7 @@ public class ServerHelloMessage extends HelloMessage {
         }
         sb.append("\n  Selected Compression Method: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(
                         CompressionMethod.getCompressionMethod(
                                 selectedCompressionMethod.getValue()));
@@ -390,7 +407,8 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     public boolean setRetryRequestModeInKeyShare() {
-        if (Boolean.TRUE.equals(isTls13HelloRetryRequest()) && autoSetHelloRetryModeInKeyShare) {
+        if (Boolean.TRUE.equals(hasTls13HelloRetryRequestRandom())
+                && autoSetHelloRetryModeInKeyShare) {
             return true;
         }
         return false;
@@ -398,7 +416,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toCompactString() {
-        Boolean isHrr = isTls13HelloRetryRequest();
+        Boolean isHrr = hasTls13HelloRetryRequestRandom();
         String compactString = super.toCompactString();
         if (isHrr != null && isHrr == true) {
             compactString += "(HRR)";
@@ -408,7 +426,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toShortString() {
-        if (isTls13HelloRetryRequest()) {
+        if (hasTls13HelloRetryRequestRandom()) {
             return "HRR";
         }
         return "SH";

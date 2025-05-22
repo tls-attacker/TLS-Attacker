@@ -32,7 +32,7 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
         LOGGER.debug("Serializing CertificatePair");
         writeCertificateLength(pair);
         writeCertificateBytes(pair);
-        if (version.isTLS13()) {
+        if (version.is13()) {
             writeExtensionsLength(pair);
             if (pair.getExtensionBytes() != null && pair.getExtensionBytes().getValue() != null) {
                 writeExtensionBytes(pair);

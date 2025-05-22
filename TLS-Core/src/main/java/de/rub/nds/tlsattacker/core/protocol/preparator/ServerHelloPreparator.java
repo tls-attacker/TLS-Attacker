@@ -140,7 +140,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().is13()) {
             msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
@@ -152,6 +152,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
+        } else if (chooser.getConfig().getHighestProtocolVersion().isDTLS13()) {
+            ourVersion = ProtocolVersion.DTLS12;
         }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
@@ -170,8 +172,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 } else {
                     msg.setProtocolVersion(clientVersion.getValue());
                 }
-            }
-            if (!chooser.getHighestClientProtocolVersion().isDTLS()
+            } else if (!chooser.getHighestClientProtocolVersion().isDTLS()
                     && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
@@ -230,7 +231,13 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             byte[] extract = HKDFunction.extract(hkdfAlgorithm, null, clientRandom);
             LOGGER.debug("Extract: {}", extract);
             acceptConfirmation =
-                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+                    HKDFunction.expandLabel(
+                            hkdfAlgorithm,
+                            extract,
+                            label,
+                            transcriptEchConf,
+                            8,
+                            chooser.getSelectedProtocolVersion());
             LOGGER.debug("Accept Confirmation: {}", acceptConfirmation);
         } catch (CryptoException e) {
             LOGGER.warn("Could not calculate accept confirmation");

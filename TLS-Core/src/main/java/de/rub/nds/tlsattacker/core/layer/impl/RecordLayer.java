@@ -102,10 +102,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 if (record.getCleanProtocolMessageBytes() == null) {
                     record.setCleanProtocolMessageBytes(new byte[0]);
                 }
-                RecordPreparator preparator =
-                        record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
-                preparator.prepare();
-                preparator.afterPrepare();
+                if (record.shouldPrepare()) {
+                    RecordPreparator preparator =
+                            record.getRecordPreparator(
+                                    tlsContext, encryptor, compressor, contentType);
+                    preparator.prepare();
+                    preparator.afterPrepare();
+                }
                 RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
@@ -200,10 +203,12 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
                 record.setEpoch(writeEpoch);
             }
-            RecordPreparator preparator =
-                    record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
-            preparator.prepare();
-            preparator.afterPrepare();
+            if (record.shouldPrepare()) {
+                RecordPreparator preparator =
+                        record.getRecordPreparator(tlsContext, encryptor, compressor, contentType);
+                preparator.prepare();
+                preparator.afterPrepare();
+            }
             try {
                 byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
@@ -313,17 +318,25 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
-        LOGGER.debug(
-                "Activating new EncryptionCipher ({})",
-                encryptionCipher.getClass().getSimpleName());
+        if (encryptionCipher == null) {
+            LOGGER.debug("Updating EncryptionCipher with null");
+        } else {
+            LOGGER.debug(
+                    "Activating new EncryptionCipher ({})",
+                    encryptionCipher.getClass().getSimpleName());
+        }
         encryptor.addNewRecordCipher(encryptionCipher);
         writeEpoch++;
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
-        LOGGER.debug(
-                "Activating new DecryptionCipher ({})",
-                decryptionCipher.getClass().getSimpleName());
+        if (decryptionCipher == null) {
+            LOGGER.debug("Updating DecryptionCipher with null");
+        } else {
+            LOGGER.debug(
+                    "Activating new DecryptionCipher ({})",
+                    decryptionCipher.getClass().getSimpleName());
+        }
         decryptor.addNewRecordCipher(decryptionCipher);
         readEpoch++;
     }

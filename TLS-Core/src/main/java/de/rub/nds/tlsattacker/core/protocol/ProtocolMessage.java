@@ -67,8 +67,10 @@ public abstract class ProtocolMessage extends Message {
 
     @Override
     public boolean isRequired() {
-        if (required == null || required.getValue() == null) {
+        if (required == null) {
             return requiredDefault;
+        } else if (required.getValue() == null) {
+            required.setOriginalValue(requiredDefault);
         }
         return required.getValue();
     }
@@ -78,8 +80,10 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public boolean isGoingToBeSent() {
-        if (goingToBeSent == null || goingToBeSent.getValue() == null) {
+        if (goingToBeSent == null) {
             return goingToBeSentDefault;
+        } else if (goingToBeSent.getValue() == null) {
+            goingToBeSent.setOriginalValue(goingToBeSentDefault);
         }
         return goingToBeSent.getValue();
     }
@@ -108,8 +112,10 @@ public abstract class ProtocolMessage extends Message {
     }
 
     public boolean getAdjustContext() {
-        if (adjustContext == null || adjustContext.getValue() == null) {
+        if (adjustContext == null) {
             return adjustContextDefault;
+        } else if (adjustContext.getValue() == null) {
+            adjustContext.setOriginalValue(adjustContextDefault);
         }
         return adjustContext.getValue();
     }

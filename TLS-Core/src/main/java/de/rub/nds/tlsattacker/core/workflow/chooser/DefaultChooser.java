@@ -1161,6 +1161,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public Integer getNumberOfRequestedConnectionIds() {
+        if (context.getTlsContext().getNumberOfRequestedConnectionIds() != null) {
+            return context.getTlsContext().getNumberOfRequestedConnectionIds();
+        } else {
+            return config.getDefaultNumberOfRequestedConnectionIds();
+        }
+    }
+
+    @Override
     public SrtpProtectionProfile getSelectedSrtpProtectionProfile() {
         if (context.getTlsContext().getSelectedSrtpProtectionProfile() != null) {
             return context.getTlsContext().getSelectedSrtpProtectionProfile();

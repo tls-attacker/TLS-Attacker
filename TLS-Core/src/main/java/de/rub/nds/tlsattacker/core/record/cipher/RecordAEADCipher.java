@@ -56,7 +56,7 @@ public class RecordAEADCipher extends RecordCipher {
         } else {
             aeadTagLength = AEAD_TAG_LENGTH;
         }
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().is13()) {
             aeadExplicitLength = 0;
         } else {
             aeadExplicitLength =
@@ -65,7 +65,7 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public int getAeadSizeIncrease() {
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().is13()) {
             return aeadTagLength;
         } else {
             return aeadExplicitLength + aeadTagLength;
@@ -76,7 +76,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().is13()) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
@@ -138,7 +138,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting Record");
         record.getComputations()
                 .setCipherKey(getState().getKeySet().getWriteKey(getConnectionEndType()));
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().is13()) {
             int additionalPadding = getDefaultAdditionalPadding();
             if (additionalPadding > 65536) {
                 LOGGER.warn("Additional padding is too big. setting it to max possible value");
@@ -247,7 +247,7 @@ public class RecordAEADCipher extends RecordCipher {
             byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
             // Nonce construction is different for chacha & tls1.3
-            if (getState().getVersion().isTLS13()) {
+            if (getState().getVersion().is13()) {
                 gcmNonce =
                         preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
             } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
@@ -300,7 +300,7 @@ public class RecordAEADCipher extends RecordCipher {
                 record.getComputations().setAuthenticationTagValid(true);
                 record.getComputations().setPlainRecordBytes(plainRecordBytes);
                 plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();
-                if (getState().getVersion().isTLS13()
+                if (getState().getVersion().is13()
                         || (getState().getVersion().isDTLS()
                                 && record.getContentMessageType()
                                         == ProtocolMessageType.TLS12_CID)) {
@@ -319,7 +319,6 @@ public class RecordAEADCipher extends RecordCipher {
                     "This is probably us having the wrong keys. Depending on the application this may be fine.");
             LOGGER.warn("Setting clean bytes to protocol message bytes.");
             record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
-
             record.getComputations().setAuthenticationTagValid(false);
         }
     }

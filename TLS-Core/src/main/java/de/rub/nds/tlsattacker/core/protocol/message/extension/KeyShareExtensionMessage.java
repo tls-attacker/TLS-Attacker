@@ -96,8 +96,10 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     }
 
     public boolean isRetryRequestMode() {
-        if (retryRequestMode == null || retryRequestMode.getValue() == null) {
+        if (retryRequestMode == null) {
             return false;
+        } else if (retryRequestMode.getValue() == null) {
+            retryRequestMode.setOriginalValue(false);
         }
         return retryRequestMode.getValue();
     }

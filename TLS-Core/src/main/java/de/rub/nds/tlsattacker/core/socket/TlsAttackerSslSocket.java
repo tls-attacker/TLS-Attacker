@@ -204,7 +204,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
                     (ServerHelloMessage)
                             WorkflowTraceResultUtil.getFirstReceivedMessage(
                                     trace, HandshakeMessageType.SERVER_HELLO);
-            if (msg.isTls13HelloRetryRequest()) {
+            if (msg.hasTls13HelloRetryRequestRandom()) {
 
                 config.setDefaultClientNamedGroups(state.getTlsContext().getSelectedGroup());
                 new SendAction(

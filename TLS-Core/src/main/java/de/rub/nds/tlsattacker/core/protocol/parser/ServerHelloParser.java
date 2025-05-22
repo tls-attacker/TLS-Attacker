@@ -68,7 +68,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         if (hasExtensionLengthField()) {
             LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);
-            parseExtensionBytes(msg, msg.isTls13HelloRetryRequest());
+            parseExtensionBytes(msg, msg.hasTls13HelloRetryRequestRandom());
         }
     }
 }
