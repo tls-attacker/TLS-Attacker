@@ -786,6 +786,69 @@ public class RecordDecryptorTest {
     }
 
     @Test
+    public void testDecryptTLS10WithNegativePaddingEncryptThenMac()
+                    throws CryptoException, NoSuchAlgorithmException {
+
+            context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+            context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
+            context.setMasterSecret(
+                            ArrayConverter.hexStringToByteArray(
+                                            "eeb18d0e03fcd9dcfc3432be940d26f9efe76f8340fb411f3e91b5be4f15e7cf1744d04062b43a074beecee5a01e300d"));
+            context.setClientRandom(
+                            ArrayConverter.hexStringToByteArray(
+                                            "998e5dbcd360df728cf0d92a4fd9aff782958dbd7dd1c16c9e16d3cae4e88c13"));
+            context.setServerRandom(
+                            ArrayConverter.hexStringToByteArray(
+                                            "3ff48b72d311505a8f7184920b56c09a7cda74169209e4bde55491c7ff81b7a5"));
+
+            context.setConnection(new InboundConnection());
+            record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+            record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+            record.setProtocolMessageBytes(
+                            ArrayConverter.hexStringToByteArray(
+                                // CTXT (padding is here) + MAC
+                                "bd6f8e21c51c14a86f083caf537a9bf34954db3956064ecb6d128778177ed59296722cda6d5b765cf8427b16aa474ca1eb0a64a3df08f0ec1e09cfd5329cd3b2fa06b76d7bd50a88e97f6e83280839478cb1f667e977474fd85766cc41466c4d139325682e9086aa84299adb2bab9813db67da0b9b557087141e02beddf310f666f8b1cb7a38ff0919f3ed4cdb9e064cded98ad2a1ee1ae028997821e19a01d8"
+                                + "b628598ec7ee611519ef0c9c5b179180529205bd"));
+
+            recordCipher = new RecordBlockCipher(
+                            context,
+                            new CipherState(
+                                            context.getChooser().getSelectedProtocolVersion(),
+                                            context.getChooser().getSelectedCipherSuite(),
+                                            KeyDerivator.generateKeySet(context),
+                                            context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+            decryptor = new RecordDecryptor(recordCipher, context);
+            decryptor.decrypt(record);
+
+            assertTrue(record.getComputations().getMacValid());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray(
+                                            "bd6f8e21c51c14a86f083caf537a9bf34954db3956064ecb6d128778177ed59296722cda6d5b765cf8427b16aa474ca1eb0a64a3df08f0ec1e09cfd5329cd3b2fa06b76d7bd50a88e97f6e83280839478cb1f667e977474fd85766cc41466c4d139325682e9086aa84299adb2bab9813db67da0b9b557087141e02beddf310f666f8b1cb7a38ff0919f3ed4cdb9e064cded98ad2a1ee1ae028997821e19a01d8"),
+                            record.getComputations().getAuthenticatedNonMetaData().getValue());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray("d2212014bcfcf767bb36cafeaa0dce3c"),
+                            record.getComputations().getCbcInitialisationVector().getValue());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray("fab239a4db25fb41d129439e660a8874"),
+                            record.getComputations().getCipherKey().getValue());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray(
+                                            "8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f"),
+                            record.getComputations().getPadding().getValue());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray("000000000000000016030100a0"),
+                            record.getComputations().getAuthenticatedMetaData().getValue());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray("b628598ec7ee611519ef0c9c5b179180529205bd"),
+                            record.getComputations().getMac().getValue());
+            assertArrayEquals(
+                            ArrayConverter.hexStringToByteArray(
+                                            "48656c6c6f2c20576f726c64213132338f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f"),
+                            record.getComputations().getPlainRecordBytes().getValue());
+    }
+
+    @Test
     public void testDecryptTLS12WithNegativePaddingMacThenEncrypt()
             throws CryptoException, NoSuchAlgorithmException {
 
