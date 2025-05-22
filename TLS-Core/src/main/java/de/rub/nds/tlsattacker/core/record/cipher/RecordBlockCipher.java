@@ -328,7 +328,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 LOGGER.debug("Decrypted plaintext: {}", plainData);
                 parser = new PlaintextParser(plainData);
                 byte[] cleanProtocolBytes =
-                        parser.parseByteArrayField(plainData.length - ((plainData[plainData.length -1] & 0xff) +1));
+                        parser.parseByteArrayField(
+                                plainData.length - ((plainData[plainData.length - 1] & 0xff) + 1));
 
                 if (getState().getVersion().isDTLS()
                         && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
@@ -350,8 +351,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 computations.setAuthenticatedMetaData(
                         collectAdditionalAuthenticatedData(record, getState().getVersion()));
 
-                byte[] padding = parser.parseByteArrayField(
-                    ((plainData[plainData.length -1] & 0xff) +1));
+                byte[] padding =
+                        parser.parseByteArrayField(((plainData[plainData.length - 1] & 0xff) + 1));
                 computations.setPadding(padding);
                 computations.setPaddingValid(isPaddingValid(padding));
 
@@ -379,7 +380,8 @@ public final class RecordBlockCipher extends RecordCipher {
                         parser.parseByteArrayField(
                                 plainData.length
                                         - readMac.getMacLength()
-                                        - (plainData[plainData.length - 1] + 1));
+                                        - ((plainData[plainData.length - 1] & 0xff) + 1));
+
                 if (getState().getVersion().isDTLS()
                         && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
                     parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
@@ -390,7 +392,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
                 record.getComputations().setMac(hmac);
 
-                byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
+                byte[] padding = parser.parseByteArrayField(((plainData[plainData.length - 1] & 0xff) + 1));
                 computations.setPadding(padding);
 
                 computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
