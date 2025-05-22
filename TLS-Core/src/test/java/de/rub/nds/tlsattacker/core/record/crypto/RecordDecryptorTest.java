@@ -679,8 +679,8 @@ public class RecordDecryptorTest {
                 ArrayConverter.hexStringToByteArray(
                         // random 16 bytes IV + CTXT (padding is here) + MAC
                         "d7a61d26aaed357ca508d4a6d3109b91"
-                        + "4d2f2d45976c2421320b0a909e51b8cf4e9b073595caca646715a7dc09ff195e75ffe684ea10ebadd9b78996d2eec2209c8eca9697d871bee1ecc372bc2e8879ddde24364e7f35eab89e2964097963f9de066e8ae649e6dfcd218f3de0276eea622ec6fd527c835c47880a966b38d73922ff71a7a95c843ea846f5a7c4785e180c25fd759d9cbdebca14cd921c743d5eb8910f618db2dc7ce2a57f80e57d4fb8327da198bf65e25a7932a61c74015b172ff4939c2a99eefd0205f4940b77b9d07daac9c13cf3cc5f8ca6bea7b220db7cd42eb20b2fa51a816f86407033574471b38b2c2cf029deb75215d8af27b9b94899a18aa029047c50d8ebb30afebe1268e7cd349fc079a2e270221de329023ff1"
-                        + "280abf484813cd3dae4206c32a3d3f1604f72f83"));
+                                + "4d2f2d45976c2421320b0a909e51b8cf4e9b073595caca646715a7dc09ff195e75ffe684ea10ebadd9b78996d2eec2209c8eca9697d871bee1ecc372bc2e8879ddde24364e7f35eab89e2964097963f9de066e8ae649e6dfcd218f3de0276eea622ec6fd527c835c47880a966b38d73922ff71a7a95c843ea846f5a7c4785e180c25fd759d9cbdebca14cd921c743d5eb8910f618db2dc7ce2a57f80e57d4fb8327da198bf65e25a7932a61c74015b172ff4939c2a99eefd0205f4940b77b9d07daac9c13cf3cc5f8ca6bea7b220db7cd42eb20b2fa51a816f86407033574471b38b2c2cf029deb75215d8af27b9b94899a18aa029047c50d8ebb30afebe1268e7cd349fc079a2e270221de329023ff1"
+                                + "280abf484813cd3dae4206c32a3d3f1604f72f83"));
 
         recordCipher =
                 new RecordBlockCipher(
@@ -721,6 +721,71 @@ public class RecordDecryptorTest {
     }
 
     @Test
+    public void testDecryptTLS11WithNegativePaddingEncryptThenMac()
+            throws CryptoException, NoSuchAlgorithmException {
+
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
+        context.setMasterSecret(
+                ArrayConverter.hexStringToByteArray(
+                        "eeb18d0e03fcd9dcfc3432be940d26f9efe76f8340fb411f3e91b5be4f15e7cf1744d04062b43a074beecee5a01e300d"));
+        context.setClientRandom(
+                ArrayConverter.hexStringToByteArray(
+                        "998e5dbcd360df728cf0d92a4fd9aff782958dbd7dd1c16c9e16d3cae4e88c13"));
+        context.setServerRandom(
+                ArrayConverter.hexStringToByteArray(
+                        "3ff48b72d311505a8f7184920b56c09a7cda74169209e4bde55491c7ff81b7a5"));
+
+        context.setConnection(new InboundConnection());
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        record.setProtocolMessageBytes(
+                ArrayConverter.hexStringToByteArray(
+                        // random 16 bytes IV + CTXT (padding is here) + MAC
+                        "d7a61d26aaed357ca508d4a6d3109b91"
+                                + "cd3d4d40581d068228309a9776c69b0ba5c7a6073e756a4b8346f26f831960358dbf842e63eebe28efa769b7cc88fe5865735c265919656e5fa9bd1215b8b0b8eded6eda82328c2f560f72f1d3db68cb7f95b356239c5bd8bde8aa4a1ed59fd0fe2ae9009cf8ac518b1b03bc10f09b784d4890cda1721030fff65ec08c96b9389f34b51f097129c27bc848c182ba5022691684b6fca130a8fddb04ed93624466"
+                                + "0b2f8d4310b7d5539e22f98a4b06f4bfcca210c1"));
+
+        recordCipher =
+                new RecordBlockCipher(
+                        context,
+                        new CipherState(
+                                context.getChooser().getSelectedProtocolVersion(),
+                                context.getChooser().getSelectedCipherSuite(),
+                                KeyDerivator.generateKeySet(context),
+                                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+        decryptor = new RecordDecryptor(recordCipher, context);
+        decryptor.decrypt(record);
+
+        assertTrue(record.getComputations().getMacValid());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray(
+                        "d7a61d26aaed357ca508d4a6d3109b91cd3d4d40581d068228309a9776c69b0ba5c7a6073e756a4b8346f26f831960358dbf842e63eebe28efa769b7cc88fe5865735c265919656e5fa9bd1215b8b0b8eded6eda82328c2f560f72f1d3db68cb7f95b356239c5bd8bde8aa4a1ed59fd0fe2ae9009cf8ac518b1b03bc10f09b784d4890cda1721030fff65ec08c96b9389f34b51f097129c27bc848c182ba5022691684b6fca130a8fddb04ed93624466"),
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("d7a61d26aaed357ca508d4a6d3109b91"),
+                record.getComputations().getCbcInitialisationVector().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("fab239a4db25fb41d129439e660a8874"),
+                record.getComputations().getCipherKey().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray(
+                        "8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f"),
+                record.getComputations().getPadding().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("000000000000000016030200b0"),
+                record.getComputations().getAuthenticatedMetaData().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("0b2f8d4310b7d5539e22f98a4b06f4bfcca210c1"),
+                record.getComputations().getMac().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray(
+                        "48656c6c6f2c20576f726c64213132338f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f"),
+                record.getComputations().getPlainRecordBytes().getValue());
+    }
+
+    @Test
     public void testDecryptTLS12WithNegativePaddingMacThenEncrypt()
             throws CryptoException, NoSuchAlgorithmException {
 
@@ -741,9 +806,9 @@ public class RecordDecryptorTest {
         record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         record.setProtocolMessageBytes(
                 ArrayConverter.hexStringToByteArray(
-                        // random 16 bytes IV + CTXT 
+                        // random 16 bytes IV + CTXT
                         "d7a61d26aaed357ca508d4a6d3109b91"
-                        + "4d2f2d45976c2421320b0a909e51b8cf468bf98a0eed440c06f4570c3f5abf3695913073b002403cc5a7c60b041b8419d5266d88198454a97c7d369704c2eb9e8b3bfb573e332dc953b1480348e8719eeeaea46a67d8242ee9616206cdabe0c73fe7aafa8687acdf69b54bea1d664cd9f15a62bc2a07d5cace0fa622d5e3dd4f8978fa1a593d198d66a5c053a5b3473f02f8d04dbdc2195dcf8dc7261834619ff536bbccca49f464a1f2e34fc1e0c1f3"));
+                                + "4d2f2d45976c2421320b0a909e51b8cf468bf98a0eed440c06f4570c3f5abf3695913073b002403cc5a7c60b041b8419d5266d88198454a97c7d369704c2eb9e8b3bfb573e332dc953b1480348e8719eeeaea46a67d8242ee9616206cdabe0c73fe7aafa8687acdf69b54bea1d664cd9f15a62bc2a07d5cace0fa622d5e3dd4f8978fa1a593d198d66a5c053a5b3473f02f8d04dbdc2195dcf8dc7261834619ff536bbccca49f464a1f2e34fc1e0c1f3"));
 
         recordCipher =
                 new RecordBlockCipher(
@@ -758,8 +823,7 @@ public class RecordDecryptorTest {
 
         assertTrue(record.getComputations().getMacValid());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
-                        "48656c6c6f2c20576f726c6421313233"),
+                ArrayConverter.hexStringToByteArray("48656c6c6f2c20576f726c6421313233"),
                 record.getComputations().getAuthenticatedNonMetaData().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("d7a61d26aaed357ca508d4a6d3109b91"),
@@ -784,69 +848,66 @@ public class RecordDecryptorTest {
                 record.getComputations().getPlainRecordBytes().getValue());
     }
 
-
     @Test
     public void testDecryptTLS11WithNegativePaddingMacThenEncrypt()
-                    throws CryptoException, NoSuchAlgorithmException {
+            throws CryptoException, NoSuchAlgorithmException {
 
-            context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
-            context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-            context.setMasterSecret(
-                            ArrayConverter.hexStringToByteArray(
-                                            "eeb18d0e03fcd9dcfc3432be940d26f9efe76f8340fb411f3e91b5be4f15e7cf1744d04062b43a074beecee5a01e300d"));
-            context.setClientRandom(
-                            ArrayConverter.hexStringToByteArray(
-                                            "998e5dbcd360df728cf0d92a4fd9aff782958dbd7dd1c16c9e16d3cae4e88c13"));
-            context.setServerRandom(
-                            ArrayConverter.hexStringToByteArray(
-                                            "3ff48b72d311505a8f7184920b56c09a7cda74169209e4bde55491c7ff81b7a5"));
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS11);
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        context.setMasterSecret(
+                ArrayConverter.hexStringToByteArray(
+                        "eeb18d0e03fcd9dcfc3432be940d26f9efe76f8340fb411f3e91b5be4f15e7cf1744d04062b43a074beecee5a01e300d"));
+        context.setClientRandom(
+                ArrayConverter.hexStringToByteArray(
+                        "998e5dbcd360df728cf0d92a4fd9aff782958dbd7dd1c16c9e16d3cae4e88c13"));
+        context.setServerRandom(
+                ArrayConverter.hexStringToByteArray(
+                        "3ff48b72d311505a8f7184920b56c09a7cda74169209e4bde55491c7ff81b7a5"));
 
-            context.setConnection(new InboundConnection());
-            record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
-            record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-            record.setProtocolMessageBytes(
-                            ArrayConverter.hexStringToByteArray(
-                                // random 16 bytes IV + CTXT
-                                "d7a61d26aaed357ca508d4a6d3109b91"
+        context.setConnection(new InboundConnection());
+        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
+        record.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        record.setProtocolMessageBytes(
+                ArrayConverter.hexStringToByteArray(
+                        // random 16 bytes IV + CTXT
+                        "d7a61d26aaed357ca508d4a6d3109b91"
                                 + "cd3d4d40581d068228309a9776c69b0b53102970f187d015b5cdacb60e622c68a311390e8e4c5b9f68c0228afe59c646256ca576b21f10a00fb7a89b8b868f5f7324efe601420eed4168ef2f52fa296ea9c54c64e33d91120261a5e92a4eee6a738b3c2db7e1eb654967f365766780d2d828d2346cd2e0ed813e19ee1d7462d913e7e3589f8375fbe495bf62ce35acdbbf28f1b7ab3faa14ed0683f03835964e3a1c9c0c00b4bc2281542b81acc2e6d1"));
 
-            recordCipher = new RecordBlockCipher(
-                            context,
-                            new CipherState(
-                                            context.getChooser().getSelectedProtocolVersion(),
-                                            context.getChooser().getSelectedCipherSuite(),
-                                            KeyDerivator.generateKeySet(context),
-                                            context.isExtensionNegotiated(null)));
-            decryptor = new RecordDecryptor(recordCipher, context);
-            decryptor.decrypt(record);
+        recordCipher =
+                new RecordBlockCipher(
+                        context,
+                        new CipherState(
+                                context.getChooser().getSelectedProtocolVersion(),
+                                context.getChooser().getSelectedCipherSuite(),
+                                KeyDerivator.generateKeySet(context),
+                                context.isExtensionNegotiated(null)));
+        decryptor = new RecordDecryptor(recordCipher, context);
+        decryptor.decrypt(record);
 
-            assertTrue(record.getComputations().getMacValid());
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray(
-                                            "48656c6c6f2c20576f726c6421313233"),
-                            record.getComputations().getAuthenticatedNonMetaData().getValue());
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray("d7a61d26aaed357ca508d4a6d3109b91"),
-                            record.getComputations().getCbcInitialisationVector().getValue());
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray("fab239a4db25fb41d129439e660a8874"),
-                            record.getComputations().getCipherKey().getValue());
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray(
-                                            "8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b"),
-                            record.getComputations().getPadding().getValue());
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
-                            record.getComputations().getAuthenticatedMetaData().getValue());
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray("fbdf5aec0fd29c001a7013bce7302ba6ec0fec37"),
-                            record.getComputations().getMac().getValue());
+        assertTrue(record.getComputations().getMacValid());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("48656c6c6f2c20576f726c6421313233"),
+                record.getComputations().getAuthenticatedNonMetaData().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("d7a61d26aaed357ca508d4a6d3109b91"),
+                record.getComputations().getCbcInitialisationVector().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("fab239a4db25fb41d129439e660a8874"),
+                record.getComputations().getCipherKey().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray(
+                        "8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b"),
+                record.getComputations().getPadding().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
+                record.getComputations().getAuthenticatedMetaData().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("fbdf5aec0fd29c001a7013bce7302ba6ec0fec37"),
+                record.getComputations().getMac().getValue());
 
-            assertArrayEquals(
-                            ArrayConverter.hexStringToByteArray(
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray(
                         "48656c6c6f2c20576f726c6421313233fbdf5aec0fd29c001a7013bce7302ba6ec0fec378b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b"),
-                            record.getComputations().getPlainRecordBytes().getValue());
+                record.getComputations().getPlainRecordBytes().getValue());
     }
-
-
 }

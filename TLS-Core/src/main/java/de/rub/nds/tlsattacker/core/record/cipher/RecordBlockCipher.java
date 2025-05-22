@@ -392,7 +392,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
                 record.getComputations().setMac(hmac);
 
-                byte[] padding = parser.parseByteArrayField(((plainData[plainData.length - 1] & 0xff) + 1));
+                byte[] padding =
+                        parser.parseByteArrayField(((plainData[plainData.length - 1] & 0xff) + 1));
                 computations.setPadding(padding);
 
                 computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
