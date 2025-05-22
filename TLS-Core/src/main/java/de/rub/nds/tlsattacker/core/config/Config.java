@@ -491,6 +491,9 @@ public class Config implements Serializable {
     /** If we generate ClientHello with the SessionTicketTLS extension */
     private Boolean addSessionTicketTLSExtension = false;
 
+    /** If we generate ClientHello with the SessionTicketTLS extension */
+    private Boolean addDebugExtension = false;
+
     /** If we generate ClientHello with extended Random Extension */
     private Boolean addExtendedRandomExtension = false;
 
@@ -575,6 +578,11 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
+
+    /** Default DebugContent to use, if addDebugExtension is true */
+    @XmlElement(name = "defaultDebugContent")
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultDebugContent = "TLS-Attacker Debug Content";
 
     /**
      * Default number of connection IDs requested when sending a RequestConnectionId message (DTLS
@@ -2724,8 +2732,16 @@ public class Config implements Serializable {
         return addEarlyDataExtension;
     }
 
+    public Boolean isAddDebugExtension() {
+        return addDebugExtension;
+    }
+
     public void setAddEarlyDataExtension(Boolean addEarlyDataExtension) {
         this.addEarlyDataExtension = addEarlyDataExtension;
+    }
+
+    public void setAddDebugExtension(Boolean addDebugExtension) {
+        this.addDebugExtension = addDebugExtension;
     }
 
     public Boolean isAddEncryptedServerNameIndicationExtension() {
@@ -4016,6 +4032,14 @@ public class Config implements Serializable {
 
     public void setDefaultConnectionId(byte[] defaultConnectionId) {
         this.defaultConnectionId = defaultConnectionId;
+    }
+
+    public String getDefaultDebugContent() {
+        return defaultDebugContent;
+    }
+
+    public void setDefaultDebugContent(String defaultDebugContent) {
+        this.defaultDebugContent = defaultDebugContent;
     }
 
     public Integer getDefaultNumberOfRequestedConnectionIds() {

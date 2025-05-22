@@ -114,6 +114,11 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddEarlyDataExtension()) {
                 addExtension(new EarlyDataExtensionMessage());
             }
+
+            if (tlsConfig.isAddDebugExtension()) {
+                addExtension(new DebugExtensionMessage());
+            }
+
             if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
                 addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
             }
