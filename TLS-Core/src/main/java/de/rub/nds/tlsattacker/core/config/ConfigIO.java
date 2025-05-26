@@ -149,9 +149,9 @@ public class ConfigIO {
     }
 
     public static Config copy(Config config) {
-        SilentByteArrayOutputStream SilentByteArrayOutputStream = new SilentByteArrayOutputStream();
-        ConfigIO.write(config, SilentByteArrayOutputStream);
-        return ConfigIO.read(new ByteArrayInputStream(SilentByteArrayOutputStream.toByteArray()));
+        SilentByteArrayOutputStream byteArrayOutputStream = new SilentByteArrayOutputStream();
+        ConfigIO.write(config, byteArrayOutputStream);
+        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
     private ConfigIO() {}

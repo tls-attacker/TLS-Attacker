@@ -78,10 +78,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 try {
                     // We currently only support this extension only very
                     // limited. Only secp256r1 is supported.
-                    SilentByteArrayOutputStream SilentByteArrayOutputStream =
+                    SilentByteArrayOutputStream byteArrayOutputStream =
                             new SilentByteArrayOutputStream();
                     ASN1OutputStream asn1OutputStream =
-                            ASN1OutputStream.create(SilentByteArrayOutputStream);
+                            ASN1OutputStream.create(byteArrayOutputStream);
                     Point ecPointToEncode =
                             chooser.getContext()
                                     .getTlsContext()
@@ -103,7 +103,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                                                         PointFormat.UNCOMPRESSED))
                                     }));
                     asn1OutputStream.flush();
-                    msg.setCertificatesListBytes(SilentByteArrayOutputStream.toByteArray());
+                    msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
                 } catch (Exception e) {
                     LOGGER.warn("Could write RAW PublicKey. Not writing anything", e);
