@@ -3795,8 +3795,8 @@
           <xs:element name="protectedPayload" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="completeUnprotectedHeader" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="offsetToPacketNumber" type="xs:int"/>
-          <xs:element name="protectedHeaderHelper" type="SilentByteArrayOutputStream" minOccurs="0"/>
-          <xs:element name="unprotectedHeaderHelper" type="SilentByteArrayOutputStream" minOccurs="0"/>
+          <xs:element name="protectedHeaderHelper" type="silentByteArrayOutputStream" minOccurs="0"/>
+          <xs:element name="unprotectedHeaderHelper" type="silentByteArrayOutputStream" minOccurs="0"/>
           <xs:element name="packetSecret" type="quicCryptoSecrets" minOccurs="0"/>
           <xs:element name="padding" type="xs:int"/>
         </xs:sequence>
@@ -3804,7 +3804,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="SilentByteArrayOutputStream">
+  <xs:complexType name="silentByteArrayOutputStream">
     <xs:complexContent>
       <xs:extension base="outputStream">
         <xs:sequence/>

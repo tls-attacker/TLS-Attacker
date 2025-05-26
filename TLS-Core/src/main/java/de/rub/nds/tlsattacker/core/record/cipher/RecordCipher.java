@@ -164,6 +164,7 @@ public abstract class RecordCipher {
     protected final byte[] collectAdditionalAuthenticatedData(
             Record record, ProtocolVersion protocolVersion) {
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
+        // TLS 1.3
         if (protocolVersion.isTLS13()) {
             stream.write(record.getContentType().getValue());
             stream.write(record.getProtocolVersion().getValue());
