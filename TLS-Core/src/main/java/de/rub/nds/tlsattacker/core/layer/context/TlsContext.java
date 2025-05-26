@@ -43,6 +43,7 @@ import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -508,9 +509,19 @@ public class TlsContext extends LayerContext {
 
     private Integer peerReceiveLimit;
 
-    private byte[] writeConnectionId;
+    private List<byte[]> writeConnectionIds = new ArrayList<>();
 
-    private byte[] readConnectionID;
+    private Integer writeConnectionIdIndex;
+
+    private List<byte[]> readConnectionIDs = new ArrayList<>();
+
+    private Integer readConnectionIdIndex;
+
+    private Integer numberOfRequestedConnectionIds;
+
+    private List<RecordNumber> dtls13AcknowledgedRecords;
+
+    private List<RecordNumber> dtls13ReceivedAcknowledgedRecords;
 
     private X509Context clientX509Context;
     private X509Context serverX509Context;
@@ -612,6 +623,8 @@ public class TlsContext extends LayerContext {
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
+        readConnectionIdIndex = 0;
+        writeConnectionIdIndex = 0;
         keylogfile = new Keylogfile(this);
     }
 
@@ -2155,19 +2168,76 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getWriteConnectionId() {
-        return writeConnectionId;
+        if (writeConnectionIdIndex < writeConnectionIds.size()) {
+            return writeConnectionIds.get(writeConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setWriteConnectionId(byte[] writeConnectionId) {
-        this.writeConnectionId = writeConnectionId;
+        this.writeConnectionIds.set(writeConnectionIdIndex, writeConnectionId);
+    }
+
+    public void setWriteConnectionId(byte[] writeConnectionId, int index) {
+        this.writeConnectionIds.set(index, writeConnectionId);
     }
 
     public byte[] getReadConnectionId() {
-        return readConnectionID;
+        if (readConnectionIdIndex < readConnectionIDs.size()) {
+            return readConnectionIDs.get(readConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setReadConnectionId(byte[] readConnectionID) {
-        this.readConnectionID = readConnectionID;
+        this.readConnectionIDs.set(readConnectionIdIndex, readConnectionID);
+    }
+
+    public void setReadConnectionId(byte[] readConnectionID, int index) {
+        this.readConnectionIDs.set(index, readConnectionID);
+    }
+
+    public void addNewWriteConnectionId(byte[] writeConnectionId, boolean spare) {
+        this.writeConnectionIds.add(writeConnectionId);
+        if (!spare) {
+            writeConnectionIdIndex++;
+            getRecordLayer().getEncryptorCipher().getState().setConnectionId(writeConnectionId);
+        }
+    }
+
+    public void addNewReadConnectionId(byte[] readConnectionId, boolean spare) {
+        this.readConnectionIDs.add(readConnectionId);
+        if (!spare) {
+            readConnectionIdIndex++;
+            getRecordLayer().getDecryptorCipher().getState().setConnectionId(readConnectionId);
+        }
+    }
+
+    public Integer getNumberOfRequestedConnectionIds() {
+        return numberOfRequestedConnectionIds;
+    }
+
+    public void setNumberOfRequestedConnectionIds(Integer numberOfRequestedConnectionIds) {
+        this.numberOfRequestedConnectionIds = numberOfRequestedConnectionIds;
+    }
+
+    public List<RecordNumber> getDtls13AcknowledgedRecords() {
+        return dtls13AcknowledgedRecords;
+    }
+
+    public void setDtls13AcknowledgedRecords(List<RecordNumber> dtlsAcknowledgedRecords) {
+        this.dtls13AcknowledgedRecords = dtlsAcknowledgedRecords;
+    }
+
+    public List<RecordNumber> getDtls13ReceivedAcknowledgedRecords() {
+        return dtls13ReceivedAcknowledgedRecords;
+    }
+
+    public void setDtls13ReceivedAcknowledgedRecords(
+            List<RecordNumber> dtlsReceivedAcknowledgedRecords) {
+        this.dtls13ReceivedAcknowledgedRecords = dtlsReceivedAcknowledgedRecords;
     }
 
     public BigInteger getServerEphemeralDhGenerator() {

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MaxFragmentLengthDelegate extends Delegate {
 
@@ -20,6 +22,8 @@ public class MaxFragmentLengthDelegate extends Delegate {
             description =
                     "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
     private Integer maxFragmentLength = null;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public MaxFragmentLengthDelegate() {}
 

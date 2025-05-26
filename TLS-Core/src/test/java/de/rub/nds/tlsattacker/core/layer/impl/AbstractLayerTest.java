@@ -31,7 +31,7 @@ public abstract class AbstractLayerTest {
 
     protected State state;
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public void setUpLayerSpecific() {}
 

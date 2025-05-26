@@ -79,7 +79,7 @@ public class PWDComputations extends KeyExchangeComputations {
         int counter = 0;
         int n = (curve.getModulus().bitLength() + 64) / Bits.IN_A_BYTE;
         byte[] context;
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             context = chooser.getClientRandom();
         } else {
             context =
@@ -157,7 +157,7 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen)
             throws CryptoException {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             HKDFAlgorithm hkdfAlgorithm =
                     AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
             DigestAlgorithm digestAlgo =
@@ -173,7 +173,12 @@ public class PWDComputations extends KeyExchangeComputations {
             byte[] hashValue = hashFunction.digest();
 
             return HKDFunction.expandLabel(
-                    hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
+                    hkdfAlgorithm,
+                    seed,
+                    "TLS-PWD Hunting And Pecking",
+                    hashValue,
+                    outlen,
+                    chooser.getSelectedProtocolVersion());
         } else {
             PRFAlgorithm prf =
                     AlgorithmResolver.getPRFAlgorithm(

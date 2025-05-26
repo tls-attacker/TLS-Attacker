@@ -22,9 +22,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 
 public class SSL2LayerTest extends AbstractLayerTest {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] clientHello =
             ArrayConverter.hexStringToByteArray(

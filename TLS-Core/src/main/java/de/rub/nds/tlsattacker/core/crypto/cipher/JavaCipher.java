@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,8 +23,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class JavaCipher extends BaseCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final CipherAlgorithm algorithm;
 
@@ -260,6 +266,31 @@ class JavaCipher extends BaseCipher {
                 | NoSuchPaddingException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not decrypt data", ex);
+        }
+    }
+
+    @Override
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+        if (!algorithm.getJavaName().startsWith("AES")) {
+            LOGGER.warn("Selected cipher does not support DTLS 1.3 masking. Returning empty mask!");
+            return new byte[0];
+        }
+        if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB) {
+            LOGGER.warn(
+                    "The ciphertext is too short. Padding it to the required length with zero bytes.");
+        }
+        byte[] toEncrypt = Arrays.copyOf(ciphertext, Dtls13MaskConstans.REQUIRED_BYTES_AES_ECB);
+        try {
+            Cipher recordNumberCipher;
+            recordNumberCipher = Cipher.getInstance("AES/ECB/NoPadding");
+            recordNumberCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
+            return recordNumberCipher.doFinal(toEncrypt);
+        } catch (IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidKeyException
+                | NoSuchPaddingException ex) {
+            throw new CryptoException("Error getting record number mask using AES: ", ex);
         }
     }
 }

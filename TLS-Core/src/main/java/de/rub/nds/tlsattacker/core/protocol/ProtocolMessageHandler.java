@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
@@ -18,9 +19,8 @@ import org.apache.logging.log4j.Logger;
 public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         extends Handler<MessageT> {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    /** context */
     protected final TlsContext tlsContext;
 
     public ProtocolMessageHandler(TlsContext tlsContext) {
@@ -37,7 +37,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
             return;
         }
 
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
+        ProtocolVersion version = tlsContext.getChooser().getSelectedProtocolVersion();
+        if (version == ProtocolVersion.DTLS10 || version == ProtocolVersion.DTLS12) {
             DtlsHandshakeMessageFragment fragment =
                     tlsContext
                             .getDtlsFragmentLayer()
