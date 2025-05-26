@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -26,8 +26,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -128,7 +126,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
     protected abstract void prepareHandshakeMessageContents();
 
     protected void prepareExtensions() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
                 if (extensionMessage instanceof KeyShareExtensionMessage
@@ -140,11 +138,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                     }
                 }
                 extensionMessage.getPreparator(chooser.getContext()).prepare();
-                try {
-                    stream.write(extensionMessage.getExtensionBytes().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
-                }
+                stream.write(extensionMessage.getExtensionBytes().getValue());
             }
         }
         message.setExtensionBytes(stream.toByteArray());
@@ -152,7 +146,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
     }
 
     protected void afterPrepareExtensions() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
                 Preparator preparator = extensionMessage.getPreparator(chooser.getContext());
@@ -172,12 +166,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                 }
                 if (extensionMessage.getExtensionBytes() != null
                         && extensionMessage.getExtensionBytes().getValue() != null) {
-                    try {
-                        stream.write(extensionMessage.getExtensionBytes().getValue());
-                    } catch (IOException ex) {
-                        throw new PreparationException(
-                                "Could not write ExtensionBytes to byte[]", ex);
-                    }
+                    stream.write(extensionMessage.getExtensionBytes().getValue());
                 } else {
                     LOGGER.debug(
                             "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");

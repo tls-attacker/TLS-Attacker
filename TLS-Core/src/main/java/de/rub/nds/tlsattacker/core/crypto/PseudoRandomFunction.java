@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -69,7 +69,7 @@ public class PseudoRandomFunction {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
 
-        ByteArrayOutputStream pseudoRandomBitStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream pseudoRandomBitStream = new SilentByteArrayOutputStream();
         /*
          * RFC 6101: 6.1. Converting the Master Secret into Keys and MAC Secrets To generate the key material, compute
          * pseudoRandomBitStream = MD5(master_secret + SHA(`A' + master_secret + ServerHello.random +
@@ -78,9 +78,9 @@ public class PseudoRandomFunction {
          * ClientHello.random)) + [...]; until enough output has been generated.
          */
         for (int i = 0; pseudoRandomBitStream.size() <= size; i++) {
-            ByteArrayOutputStream outputMd5 = new ByteArrayOutputStream();
-            ByteArrayOutputStream outputSha = new ByteArrayOutputStream();
-            ByteArrayOutputStream salt = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream outputMd5 = new SilentByteArrayOutputStream();
+            SilentByteArrayOutputStream outputSha = new SilentByteArrayOutputStream();
+            SilentByteArrayOutputStream salt = new SilentByteArrayOutputStream();
             for (int j = 0; j <= i; j++) {
                 salt.write(sByte + i);
             }
@@ -248,7 +248,7 @@ public class PseudoRandomFunction {
      */
     private static byte[] p_hash(HMAC hmac, byte[] data, int size)
             throws NoSuchAlgorithmException, IOException {
-        ByteArrayOutputStream extendedSecret = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream extendedSecret = new SilentByteArrayOutputStream();
 
         /*
          * hmacIteration will be used as an input for the next hmac, which will generate the actual bytes for the

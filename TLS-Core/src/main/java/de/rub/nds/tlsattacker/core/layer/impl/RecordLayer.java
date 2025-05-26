@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
@@ -37,7 +37,6 @@ import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -192,7 +191,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                             + hintedType
                             + ". Not enough records specified and disabled dynamic record creation in config.");
         }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
 
         // prepare, serialize, and send records
         for (Record record : records) {
@@ -209,14 +208,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 preparator.prepare();
                 preparator.afterPrepare();
             }
-            try {
-                byte[] recordBytes = record.getRecordSerializer().serialize();
-                record.setCompleteRecordBytes(recordBytes);
-                stream.write(record.getCompleteRecordBytes().getValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not write Record bytes to ByteArrayStream", ex);
-            }
+            byte[] recordBytes = record.getRecordSerializer().serialize();
+            record.setCompleteRecordBytes(recordBytes);
+            stream.write(record.getCompleteRecordBytes().getValue());
             addProducedContainer(record);
         }
         getLowerLayer().sendData(null, stream.toByteArray());
@@ -348,7 +342,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
      * @return byte array of the encrypted records.
      */
     public byte[] reencrypt(List<Record> records) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (Record record : records) {
             RecordPreparator preparator =
                     record.getRecordPreparator(
@@ -357,14 +351,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                             getCompressor(),
                             record.getContentMessageType());
             preparator.encrypt();
-            try {
-                byte[] recordBytes = record.getRecordSerializer().serialize();
-                record.setCompleteRecordBytes(recordBytes);
-                stream.write(record.getCompleteRecordBytes().getValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not write Record bytes to ByteArrayStream", ex);
-            }
+            byte[] recordBytes = record.getRecordSerializer().serialize();
+            record.setCompleteRecordBytes(recordBytes);
+            stream.write(record.getCompleteRecordBytes().getValue());
         }
         return stream.toByteArray();
     }

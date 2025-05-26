@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,29 +111,17 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CompressionMethod compression : compressionList) {
-            try {
-                stream.write(compression.getArrayValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
-                        ex);
-            }
+            stream.write(compression.getArrayValue());
         }
         return stream.toByteArray();
     }
 
     private byte[] convertCipherSuites(List<CipherSuite> suiteList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CipherSuite suite : suiteList) {
-            try {
-                stream.write(suite.getByteValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
-                        ex);
-            }
+            stream.write(suite.getByteValue());
         }
         return stream.toByteArray();
     }

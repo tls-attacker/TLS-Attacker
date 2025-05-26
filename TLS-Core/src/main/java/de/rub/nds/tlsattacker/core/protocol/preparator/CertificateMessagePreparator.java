@@ -12,7 +12,7 @@ import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.constants.PointFormat;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -30,8 +30,6 @@ import de.rub.nds.x509attacker.x509.X509CertificateChainBuilder;
 import de.rub.nds.x509attacker.x509.X509ChainCreationResult;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import de.rub.nds.x509attacker.x509.preparator.X509CertificatePreparator;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -80,9 +78,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 try {
                     // We currently only support this extension only very
                     // limited. Only secp256r1 is supported.
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    SilentByteArrayOutputStream SilentByteArrayOutputStream =
+                            new SilentByteArrayOutputStream();
                     ASN1OutputStream asn1OutputStream =
-                            ASN1OutputStream.create(byteArrayOutputStream);
+                            ASN1OutputStream.create(SilentByteArrayOutputStream);
                     Point ecPointToEncode =
                             chooser.getContext()
                                     .getTlsContext()
@@ -104,7 +103,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                                                         PointFormat.UNCOMPRESSED))
                                     }));
                     asn1OutputStream.flush();
-                    msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
+                    msg.setCertificatesListBytes(SilentByteArrayOutputStream.toByteArray());
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
                 } catch (Exception e) {
                     LOGGER.warn("Could write RAW PublicKey. Not writing anything", e);
@@ -239,17 +238,13 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private void prepareFromEntryList(CertificateMessage msg) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CertificateEntry pair : msg.getCertificateEntryList()) {
             CertificateEntryPreparator preparator = new CertificateEntryPreparator(chooser, pair);
             preparator.prepare();
             CertificatePairSerializer serializer =
                     new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from CertificatePair", ex);
-            }
+            stream.write(serializer.serialize());
         }
         msg.setCertificatesListBytes(stream.toByteArray());
         msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);

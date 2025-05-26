@@ -12,6 +12,7 @@ import de.rub.nds.asn1.model.Asn1Encodable;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
@@ -22,7 +23,6 @@ import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEvent;
 import jakarta.xml.bind.ValidationEventHandler;
 import jakarta.xml.bind.util.JAXBSource;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -126,7 +126,7 @@ public class WorkflowTraceSerializer {
      * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream bos = new SilentByteArrayOutputStream();
         WorkflowTraceSerializer.write(bos, trace);
         return bos.toString(StandardCharsets.UTF_8);
     }
@@ -140,7 +140,7 @@ public class WorkflowTraceSerializer {
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace)
             throws JAXBException, IOException {
         context = getJAXBContext();
-        try (ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream()) {
+        try (SilentByteArrayOutputStream xmlOutputStream = new SilentByteArrayOutputStream()) {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");

@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.PacketbasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -70,7 +70,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     @Override
     public byte[] fetchData(int amountOfData) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         outputStream.write(dataBufferInputStream.readAllBytes());
         setTimeout(timeout);
         // Read packets till we got atleast amountOfData bytes

@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +24,7 @@ public class PskEcDhClientKeyExchangePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ByteArrayOutputStream outputStream;
+    private SilentByteArrayOutputStream outputStream;
     private final PskEcDhClientKeyExchangeMessage msg;
 
     public PskEcDhClientKeyExchangePreparator(
@@ -45,23 +44,17 @@ public class PskEcDhClientKeyExchangePreparator
     protected byte[] computePremasterSecret(
             EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         byte[] premasterSecret = super.computePremasterSecret(curve, publicKey, privateKey);
-        outputStream = new ByteArrayOutputStream();
-        try {
-            outputStream.write(
-                    ArrayConverter.intToBytes(
-                            premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
-            LOGGER.debug("PremasterSecret: dhValue Length: {}", premasterSecret.length);
-            outputStream.write(premasterSecret);
-            LOGGER.debug("PremasterSecret: dhValue {}", premasterSecret);
-            outputStream.write(
-                    ArrayConverter.intToBytes(
-                            chooser.getConfig().getDefaultPSKKey().length,
-                            HandshakeByteLength.PSK_LENGTH));
-            outputStream.write(chooser.getConfig().getDefaultPSKKey());
-        } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream");
-            LOGGER.debug(ex);
-        }
+        outputStream = new SilentByteArrayOutputStream();
+        outputStream.write(
+                ArrayConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
+        LOGGER.debug("PremasterSecret: dhValue Length: {}", premasterSecret.length);
+        outputStream.write(premasterSecret);
+        LOGGER.debug("PremasterSecret: dhValue {}", premasterSecret);
+        outputStream.write(
+                ArrayConverter.intToBytes(
+                        chooser.getConfig().getDefaultPSKKey().length,
+                        HandshakeByteLength.PSK_LENGTH));
+        outputStream.write(chooser.getConfig().getDefaultPSKKey());
         byte[] tempPremasterSecret = outputStream.toByteArray();
         LOGGER.debug("PSK PremasterSecret: {}", tempPremasterSecret);
         return tempPremasterSecret;

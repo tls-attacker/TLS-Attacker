@@ -9,11 +9,10 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
@@ -125,7 +124,7 @@ public class HKDFunction {
         try {
             SecretKeySpec keySpec =
                     new SecretKeySpec(prk, hkdfAlgorithm.getMacAlgorithm().getJavaName());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             int i = 1;
             if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
                 HMac hmac = new HMac(new SM3Digest());
@@ -177,10 +176,7 @@ public class HKDFunction {
                 }
             }
             return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
-        } catch (NoSuchAlgorithmException
-                | IOException
-                | InvalidKeyException
-                | IllegalArgumentException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             throw new CryptoException(ex);
         }
     }

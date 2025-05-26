@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.quic.preparator.packet.OneRTTPacketPreparator
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.OneRTTPacketSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,22 +46,18 @@ public class OneRTTPacket extends QuicPacket {
 
     @Override
     public void buildUnprotectedPacketHeader() {
-        try {
-            unprotectedHeaderHelper.write(unprotectedFlags.getValue());
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write(unprotectedFlags.getValue());
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(destinationConnectionId.getValue());
-            offsetToPacketNumber += destinationConnectionIdLength.getValue();
+        unprotectedHeaderHelper.write(destinationConnectionId.getValue());
+        offsetToPacketNumber += destinationConnectionIdLength.getValue();
 
-            unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
-            offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
+        unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
+        offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
 
-            completeUnprotectedHeader =
-                    ModifiableVariableFactory.safelySetValue(
-                            completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        completeUnprotectedHeader =
+                ModifiableVariableFactory.safelySetValue(
+                        completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
     }
 
     @Override

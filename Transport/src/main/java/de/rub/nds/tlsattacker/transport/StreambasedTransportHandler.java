@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +40,7 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
      * @return
      */
     public byte[] fetchData(int amountOfData) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         for (int i = 0; i < amountOfData; i++) {
             try {
                 final int byteRead = inStream.read();

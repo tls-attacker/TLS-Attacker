@@ -12,6 +12,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -27,7 +28,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.After;
@@ -141,7 +141,7 @@ public class TightReceiveActionTest {
     public void testJAXB() throws JAXBException, IOException, XMLStreamException {
         action = new TightReceiveAction(getAlertMessage());
         prepareTrace();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         action.filter();
         ActionIO.write(outputStream, action);
         TlsAction action2 = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));

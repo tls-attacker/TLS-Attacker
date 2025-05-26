@@ -20,11 +20,11 @@ import de.rub.nds.protocol.crypto.signature.RsaSsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -91,7 +91,7 @@ public class TlsSignatureUtil {
                         || selectedProtocolVersion == ProtocolVersion.TLS10
                         || selectedProtocolVersion == ProtocolVersion.TLS11) {
                     hashAlgorithm = HashAlgorithm.NONE;
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
                     outputStream.writeBytes(
                             HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.MD5));
                     outputStream.writeBytes(

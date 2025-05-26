@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X500AttributeType;
@@ -18,7 +19,6 @@ import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEvent;
 import jakarta.xml.bind.ValidationEventHandler;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -53,7 +53,7 @@ public class ConfigIO {
     }
 
     public static void write(Config config, OutputStream os) {
-        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream tempStream = new SilentByteArrayOutputStream();
         JAXB.marshal(config, tempStream);
         try {
             os.write(
@@ -149,9 +149,9 @@ public class ConfigIO {
     }
 
     public static Config copy(Config config) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ConfigIO.write(config, byteArrayOutputStream);
-        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        SilentByteArrayOutputStream SilentByteArrayOutputStream = new SilentByteArrayOutputStream();
+        ConfigIO.write(config, SilentByteArrayOutputStream);
+        return ConfigIO.read(new ByteArrayInputStream(SilentByteArrayOutputStream.toByteArray()));
     }
 
     private ConfigIO() {}
