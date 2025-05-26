@@ -189,16 +189,15 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
         }
 
         public byte[] serialize() throws IOException {
-            SilentByteArrayOutputStream SilentByteArrayOutputStream =
-                    new SilentByteArrayOutputStream();
-            SilentByteArrayOutputStream.write(this.ipv4Address.getAddress());
-            SilentByteArrayOutputStream.write(this.ipv4Port);
-            SilentByteArrayOutputStream.write(this.ipv6Address.getAddress());
-            SilentByteArrayOutputStream.write(this.ipv6Port);
-            SilentByteArrayOutputStream.write(this.connectionId.length);
-            SilentByteArrayOutputStream.write(this.connectionId);
-            SilentByteArrayOutputStream.write(this.statelessResetToken);
-            return SilentByteArrayOutputStream.toByteArray();
+            SilentByteArrayOutputStream byteArrayOutputStream = new SilentByteArrayOutputStream();
+            byteArrayOutputStream.write(this.ipv4Address.getAddress());
+            byteArrayOutputStream.write(this.ipv4Port);
+            byteArrayOutputStream.write(this.ipv6Address.getAddress());
+            byteArrayOutputStream.write(this.ipv6Port);
+            byteArrayOutputStream.write(this.connectionId.length);
+            byteArrayOutputStream.write(this.connectionId);
+            byteArrayOutputStream.write(this.statelessResetToken);
+            return byteArrayOutputStream.toByteArray();
         }
 
         public InetAddress getIpv4Address() {
