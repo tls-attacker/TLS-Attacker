@@ -38,11 +38,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.crypto.interfaces.DHPrivateKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.tls.crypto.TlsCertificate;
 
 public class CertificateDelegate extends Delegate {
 
     public static final int PREDEFINED_LEAF_CERT_INDEX = 0;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(names = "-cert", description = "PEM encoded certificate file")
     private String certificate = null;
