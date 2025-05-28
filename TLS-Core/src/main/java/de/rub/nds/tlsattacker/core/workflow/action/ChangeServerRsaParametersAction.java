@@ -42,7 +42,7 @@ public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
 
         state.getTlsContext().getServerX509Context().setSubjectRsaModulus(modulus);
         state.getTlsContext().getServerX509Context().setSubjectRsaPublicExponent(publicExponent);
-        state.getTlsContext().getServerX509Context().setSubjectRsaPrivateKey(privateExponent);
+        state.getTlsContext().getServerX509Context().setSubjectRsaPrivateExponent(privateExponent);
 
         setExecuted(true);
         LOGGER.info("Changed server RSA parameters");
