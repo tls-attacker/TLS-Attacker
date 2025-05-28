@@ -90,13 +90,32 @@ public class QuicFrameLayer
     @Override
     public LayerProcessingResult<QuicFrame> sendConfiguration() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
+
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
+        QuicPacketLayerHint prevHint = null;
+
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicFrame frame : configuration.getContainerList()) {
                 byte[] bytes = writeFrame(frame);
                 QuicPacketLayerHint hint = getHintForFrame();
+                if (hint != null) {
+                    hint = hint.asNewPacket(false);
+                }
                 addProducedContainer(frame);
-                getLowerLayer().sendData(hint, bytes);
+
+                if (prevHint != null
+                        && hint != null
+                        && !hint.isNewPacket()
+                        && prevHint.getQuicPacketType() == hint.getQuicPacketType()
+                        && stream.size() != 0) {
+                    // Flush packets before the current packet
+                    getLowerLayer().sendData(hint, stream.toByteArray());
+                    stream.reset();
+                }
+                stream.writeBytes(bytes);
+                prevHint = hint;
             }
+            getLowerLayer().sendData(prevHint, stream.toByteArray());
         }
         return getLayerResult();
     }
