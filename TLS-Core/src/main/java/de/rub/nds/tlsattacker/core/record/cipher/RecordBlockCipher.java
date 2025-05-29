@@ -309,12 +309,9 @@ public final class RecordBlockCipher extends RecordCipher {
             LOGGER.debug("Using IV: {}", iv);
             record.getComputations().setCbcInitialisationVector(iv);
 
-            // Pre-compute common values
             int macLength = readMac.getMacLength();
             byte[] ciphertext;
             byte[] hmac = null;
-
-            // check which mode is being used 
             if (getState().isEncryptThenMac()) {
                 int toParseCiphertextLength = parser.getBytesLeft() - macLength;
                 if (toParseCiphertextLength < 0) {
@@ -326,23 +323,18 @@ public final class RecordBlockCipher extends RecordCipher {
                 ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
             }
 
-            // Common decryption
             computations.setCiphertext(ciphertext);
             byte[] plainData = decryptCipher.decrypt(iv, computations.getCiphertext().getValue());
             computations.setPlainRecordBytes(plainData);
             plainData = computations.getPlainRecordBytes().getValue();
 
             LOGGER.debug("Decrypted plaintext: {}", plainData);
-            
-            // Extract the padding from the plain data by using Arrays.copyOfRange
             int paddingLength = (plainData[plainData.length - 1] & 0xff) + 1;
             byte[] padding =
                     Arrays.copyOfRange(
                             plainData, plainData.length - paddingLength, plainData.length);
             computations.setPadding(padding);
             computations.setPaddingValid(isPaddingValid(padding));
-
-            // Extract clean protocol bytes - headers||plaintext
             int cleanProtocolBytesLength;
             if (getState().isEncryptThenMac()) {
                 cleanProtocolBytesLength = plainData.length - paddingLength;
@@ -354,7 +346,6 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] cleanProtocolBytes =
                     plaintextParser.parseByteArrayField(cleanProtocolBytesLength);
 
-
             if (getState().getVersion().isDTLS()
                     && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
                 parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
@@ -362,13 +353,11 @@ public final class RecordBlockCipher extends RecordCipher {
                 record.setCleanProtocolMessageBytes(cleanProtocolBytes);
             }
 
-            // Extract the mac for MAC-then-Encrypt mode
             if (!getState().isEncryptThenMac()) {
                 hmac = plaintextParser.parseByteArrayField(macLength);
             }
             computations.setMac(hmac);
 
-            // Set MAC based on Encryption Mode
             if (getState().isEncryptThenMac()) {
                 if (useExplicitIv) {
                     computations.setAuthenticatedNonMetaData(
@@ -385,12 +374,9 @@ public final class RecordBlockCipher extends RecordCipher {
                 computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
             }
 
-            // Calculate the authenticated meta data
             computations.setAuthenticatedMetaData(
                     collectAdditionalAuthenticatedData(record, getState().getVersion()));
 
-
-            // Calculate the MAC and validate it
             byte[] calculatedHMAC =
                     calculateMac(
                             ArrayConverter.concatenate(
