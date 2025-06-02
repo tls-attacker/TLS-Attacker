@@ -111,7 +111,8 @@ public class FinishedHandlerTest
 
         handler.adjustContext(message);
 
-        assertEquals(Tls13KeySetType.NONE, tlsContext.getActiveClientKeySetType());
+        assertEquals(
+                Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, tlsContext.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, tlsContext.getActiveServerKeySetType());
         assertArrayEquals(new byte[] {0, 1, 2, 3, 4}, tlsContext.getLastServerVerifyData());
         assertArrayEquals(null, tlsContext.getLastClientVerifyData());
@@ -286,7 +287,8 @@ public class FinishedHandlerTest
 
         handler.adjustContext(message);
 
-        assertEquals(Tls13KeySetType.NONE, tlsContext.getActiveClientKeySetType());
+        assertEquals(
+                Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, tlsContext.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, tlsContext.getActiveServerKeySetType());
         assertArrayEquals(new byte[] {0, 1, 2, 3, 4}, tlsContext.getLastServerVerifyData());
         assertArrayEquals(null, tlsContext.getLastClientVerifyData());

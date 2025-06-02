@@ -10,12 +10,8 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class KeySet {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private byte[] clientWriteMacSecret;
     private byte[] serverWriteMacSecret;
@@ -23,6 +19,8 @@ public class KeySet {
     private byte[] serverWriteKey;
     private byte[] clientWriteIv;
     private byte[] serverWriteIv;
+    private byte[] clientSnKey;
+    private byte[] serverSnKey;
 
     private Tls13KeySetType keySetType = Tls13KeySetType.NONE;
 
@@ -80,6 +78,22 @@ public class KeySet {
         this.serverWriteIv = serverWriteIv;
     }
 
+    public byte[] getClientSnKey() {
+        return clientSnKey;
+    }
+
+    public void setClientSnKey(byte[] clientSnKey) {
+        this.clientSnKey = clientSnKey;
+    }
+
+    public byte[] getServerSnKey() {
+        return serverSnKey;
+    }
+
+    public void setServerSnKey(byte[] serverSnKey) {
+        this.serverSnKey = serverSnKey;
+    }
+
     public byte[] getWriteKey(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
             return clientWriteKey;
@@ -90,12 +104,8 @@ public class KeySet {
 
     public byte[] getReadKey(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.SERVER) {
-            LOGGER.debug(
-                    "getReadKey: Using clientWriteKey for connectionEndType {}", connectionEndType);
             return clientWriteKey;
         } else {
-            LOGGER.debug(
-                    "getReadKey: Using serverWriteKey for connectionEndType {}", connectionEndType);
             return serverWriteKey;
         }
     }
@@ -132,16 +142,26 @@ public class KeySet {
         }
     }
 
-    /**
-     * @return the keySetType
-     */
+    public byte[] getReadSnKey(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.SERVER) {
+            return clientSnKey;
+        } else {
+            return serverSnKey;
+        }
+    }
+
+    public byte[] getWriteSnKey(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.CLIENT) {
+            return clientSnKey;
+        } else {
+            return serverSnKey;
+        }
+    }
+
     public Tls13KeySetType getKeySetType() {
         return keySetType;
     }
 
-    /**
-     * @param keySetType the keySetType to set
-     */
     public void setKeySetType(Tls13KeySetType keySetType) {
         this.keySetType = keySetType;
     }

@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientHelloHandler extends CoreClientHelloHandler<ClientHelloMessage> {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -45,7 +45,7 @@ import org.bouncycastle.util.Arrays;
 public class DtlsFragmentLayer
         extends ProtocolLayer<RecordLayerHint, DtlsHandshakeMessageFragment> {
 
-    private static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Context context;
 
@@ -210,7 +210,7 @@ public class DtlsFragmentLayer
                     fragmentManager.addMessageFragment(fragment);
                     List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
                             fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
+                                    true, context.getConfig().isCanSkipMessageSequenceNumber());
                     // run until we received a complete fragment
                     if (!uninterpretedMessageFragments.isEmpty()) {
                         DtlsHandshakeMessageFragment uninterpretedMessageFragment =

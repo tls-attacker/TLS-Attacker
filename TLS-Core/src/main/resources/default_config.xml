@@ -943,6 +943,9 @@
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP256R1TLS13</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP384R1TLS13</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP512R1TLS13</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE2048</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE3072</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
@@ -981,6 +984,9 @@
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP256R1TLS13</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP384R1TLS13</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP512R1TLS13</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE2048</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE3072</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
@@ -1139,6 +1145,7 @@
     <addPaddingExtension>false</addPaddingExtension>
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addDebugExtension>false</addDebugExtension>
     <addExtendedRandomExtension>false</addExtendedRandomExtension>
     <addQuicTransportParametersExtension>false</addQuicTransportParametersExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
@@ -1166,6 +1173,9 @@
     <addCookieExtension>false</addCookieExtension>
     <sendHandshakeMessagesWithinSingleRecord>false</sendHandshakeMessagesWithinSingleRecord>
     <defaultConnectionId>01 02 03</defaultConnectionId>
+    <defaultDebugContent>TLS-Attacker Debug Content</defaultDebugContent>
+    <defaultNumberOfRequestedConnectionIds>3</defaultNumberOfRequestedConnectionIds>
+    <defaultUsageOfSentConnectionIds>CID_SPARE</defaultUsageOfSentConnectionIds>
     <addConnectionIdExtension>false</addConnectionIdExtension>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
@@ -1785,6 +1795,9 @@
         <clientSupportedEsniNamedGroup>BRAINPOOLP256R1</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>BRAINPOOLP384R1</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>BRAINPOOLP512R1</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP256R1TLS13</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP384R1TLS13</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP512R1TLS13</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE2048</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE3072</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE4096</clientSupportedEsniNamedGroup>
@@ -1833,7 +1846,10 @@
     <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
     <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
+    <canSkipMessageSequenceNumber>false</canSkipMessageSequenceNumber>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
+    <useDtls13HeaderSeqNumSizeLongEncoding>true</useDtls13HeaderSeqNumSizeLongEncoding>
+    <retransmitAcknowledgedRecordsInDtls13>false</retransmitAcknowledgedRecordsInDtls13>
     <defaultRsaSsaPssSalt>AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA</defaultRsaSsaPssSalt>
 </config>

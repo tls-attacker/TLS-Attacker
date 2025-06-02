@@ -358,5 +358,7 @@ public abstract class Chooser {
 
     public abstract KeyShareEntry getEchServerKeyShareEntry();
 
+    public abstract Integer getNumberOfRequestedConnectionIds();
+
     public abstract SrtpProtectionProfile getSelectedSrtpProtectionProfile();
 }

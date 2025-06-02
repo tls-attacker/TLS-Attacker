@@ -40,7 +40,7 @@ public class CertificateVerifySerializer
         LOGGER.debug("Serializing CertificateVerifyMessage");
         if (version == ProtocolVersion.TLS12
                 || version == ProtocolVersion.DTLS12
-                || version.isTLS13()) {
+                || version.is13()) {
             writeSignatureHashAlgorithm(msg);
         }
         writeSignatureLength(msg);

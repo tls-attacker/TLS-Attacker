@@ -143,6 +143,8 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     private void prepareProtocolVersion(T msg) {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else if (chooser.getConfig().getHighestProtocolVersion().isDTLS13()) {
+            msg.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
         } else {
             msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         }
@@ -150,7 +152,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private void prepareCompressions(T msg) {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().is13()) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
             msg.setCompressions(
@@ -181,7 +183,11 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private void prepareCookie(T msg) {
-        msg.setCookie(chooser.getDtlsCookie());
+        if (chooser.getSelectedProtocolVersion().isDTLS13()) {
+            msg.setCookie(new byte[0]);
+        } else {
+            msg.setCookie(chooser.getDtlsCookie());
+        }
         LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 

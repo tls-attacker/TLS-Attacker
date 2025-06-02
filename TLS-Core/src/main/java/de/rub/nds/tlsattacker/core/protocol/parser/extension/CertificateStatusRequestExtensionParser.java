@@ -34,14 +34,14 @@ public class CertificateStatusRequestExtensionParser
 
     @Override
     public void parse(CertificateStatusRequestExtensionMessage msg) {
-        if (!selectedVersion.isTLS13()
+        if (!selectedVersion.is13()
                 && getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             // During TLS1.2, the server responds an empty certificate-status extension to the
             // client to indicate it will send certificate status later
             // no parsing necessary right now
             return;
         }
-        if (!selectedVersion.isTLS13()
+        if (!selectedVersion.is13()
                 || this.getTlsContext()
                         .getTalkingConnectionEndType()
                         .equals(ConnectionEndType.CLIENT)) {

@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 public class EncryptedClientHelloPreparator
         extends CoreClientHelloPreparator<EncryptedClientHelloMessage> {
 
-    private final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int PADDED_LENGTH = 32;
 

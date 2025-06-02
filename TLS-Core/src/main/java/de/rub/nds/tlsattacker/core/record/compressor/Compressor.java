@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Compressor<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public abstract void compress(T object);
 }

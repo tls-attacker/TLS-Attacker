@@ -24,7 +24,6 @@ public class RecordNullCipher extends RecordCipher {
 
     @Override
     public void encrypt(Record record) throws CryptoException {
-
         LOGGER.debug("Encrypting Record: (null cipher)");
         record.prepareComputations();
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();

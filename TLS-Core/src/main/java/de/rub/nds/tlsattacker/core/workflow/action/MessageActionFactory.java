@@ -166,6 +166,14 @@ public class MessageActionFactory {
                 .contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             globalOptions.add(ActionOption.IGNORE_UNEXPECTED_WARNINGS);
         }
+        if (tlsConfig.getMessageFactoryActionOptions().contains(ActionOption.IGNORE_ACK_MESSAGES)) {
+            globalOptions.add(ActionOption.IGNORE_ACK_MESSAGES);
+        }
+        if (tlsConfig
+                .getMessageFactoryActionOptions()
+                .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
+            globalOptions.add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        }
 
         return globalOptions;
     }

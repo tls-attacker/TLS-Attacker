@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FragmentCollector {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Integer messageLength;
 
