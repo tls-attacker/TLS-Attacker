@@ -1,5 +1,6 @@
 resources/*.pem
 test.sh
+.vscode/
 
 # (build) artifacts
 apps/

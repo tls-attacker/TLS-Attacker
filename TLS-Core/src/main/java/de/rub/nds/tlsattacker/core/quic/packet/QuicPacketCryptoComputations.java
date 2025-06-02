@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.packet;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
@@ -168,7 +169,8 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         context.getInitialSecret(),
                         HKDFunction.CLIENT_IN,
                         new byte[0],
-                        mac.getMacLength()));
+                        mac.getMacLength(),
+                        ProtocolVersion.TLS13));
         context.setInitialClientKey(
                 deriveKeyFromSecret(
                         version,
@@ -191,7 +193,8 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         context.getInitialSecret(),
                         HKDFunction.SERVER_IN,
                         new byte[0],
-                        mac.getMacLength()));
+                        mac.getMacLength(),
+                        ProtocolVersion.TLS13));
         context.setInitialServerKey(
                 deriveKeyFromSecret(
                         version,
@@ -427,20 +430,35 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             QuicVersion version, HKDFAlgorithm hkdfAlgorithm, byte[] secret, int keyLength)
             throws CryptoException {
         return HKDFunction.expandLabel(
-                hkdfAlgorithm, secret, version.getKeyLabel(), new byte[0], keyLength);
+                hkdfAlgorithm,
+                secret,
+                version.getKeyLabel(),
+                new byte[0],
+                keyLength,
+                ProtocolVersion.TLS13);
     }
 
     private static byte[] deriveIvFromSecret(
             QuicVersion version, HKDFAlgorithm hkdfAlgorithm, byte[] secret)
             throws CryptoException {
         return HKDFunction.expandLabel(
-                hkdfAlgorithm, secret, version.getIvLabel(), new byte[0], IV_LENGTH);
+                hkdfAlgorithm,
+                secret,
+                version.getIvLabel(),
+                new byte[0],
+                IV_LENGTH,
+                ProtocolVersion.TLS13);
     }
 
     private static byte[] deriveHeaderProtectionKeyFromSecret(
             QuicVersion version, HKDFAlgorithm hkdfAlgorithm, byte[] secret, int keyLength)
             throws CryptoException {
         return HKDFunction.expandLabel(
-                hkdfAlgorithm, secret, version.getHeaderProtectionLabel(), new byte[0], keyLength);
+                hkdfAlgorithm,
+                secret,
+                version.getHeaderProtectionLabel(),
+                new byte[0],
+                keyLength,
+                ProtocolVersion.TLS13);
     }
 }

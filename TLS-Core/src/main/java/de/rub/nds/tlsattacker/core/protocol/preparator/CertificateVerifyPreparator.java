@@ -55,7 +55,7 @@ public class CertificateVerifyPreparator
 
     private byte[] createSignature() throws CryptoException {
         byte[] toBeSigned = chooser.getContext().getTlsContext().getDigest().getRawBytes();
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned =
                         ArrayConverter.concatenate(

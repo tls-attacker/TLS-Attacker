@@ -192,5 +192,17 @@ public class HandshakeByteLength {
     /** KeyUpdate Message Length */
     public static final int KEY_UPDATE_LENGTH = 1;
 
+    /** RequestConnectionId number of CIDs length */
+    public static final int REQUEST_CONNECTION_ID_NUMBER_CIDS_LENGTH = 1;
+
+    /** NewConnectionId length of the number of CIDs */
+    public static final int NEW_CONNECTION_ID_CIDS_LENGTH = 2;
+
+    /** NewConnectionId usage length */
+    public static final int NEW_CONNECTION_ID_USAGE_LENGTH = 1;
+
+    /** ConnectionId length field length */
+    public static final int CONNECTION_ID_LENGTH = 1;
+
     private HandshakeByteLength() {}
 }

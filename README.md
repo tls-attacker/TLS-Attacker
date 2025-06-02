@@ -237,13 +237,13 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         </expectedMessages>
     </Receive>
     <Send>
-        <expectedMessages>
+        <configuredMessages>
             <RSAClientKeyExchange>
                 <computations/>
             </RSAClientKeyExchange>
             <ChangeCipherSpec/>
             <Finished/>
-        </expectedMessages>
+        </configuredMessages>
     </Send>
     <Receive>
         <expectedMessages>
@@ -252,7 +252,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         </expectedMessages>
     </Receive>
     <Send>
-        <expectedMessages>
+        <configuredMessages>
             <Heartbeat>
                 <payloadLength>
                     <IntegerExplicitValueModification>
@@ -260,7 +260,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
                     </IntegerExplicitValueModification>
                 </payloadLength>
             </Heartbeat>
-        </expectedMessages>
+        </configuredMessages>
     </Send>
     <Receive>
         <expectedMessages>

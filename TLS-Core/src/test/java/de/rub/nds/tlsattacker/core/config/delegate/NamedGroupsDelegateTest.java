@@ -103,7 +103,8 @@ public class NamedGroupsDelegateTest extends AbstractDelegateTest<NamedGroupsDel
     public void testApplyDelegate() {
         args = new String[4];
         args[0] = "-named_group";
-        args[1] = "SECP192R1,SECP256R1";
+        args[1] =
+                "SECP192R1,SECP256R1,BRAINPOOLP256R1TLS13,BRAINPOOLP384R1TLS13,BRAINPOOLP512R1TLS13";
         args[2] = "-point_formats";
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         Config config = new Config();
@@ -116,8 +117,17 @@ public class NamedGroupsDelegateTest extends AbstractDelegateTest<NamedGroupsDel
                 config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1),
                 "SECP192R1 should get parsed correctly");
         assertTrue(
-                config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1),
+                config.getDefaultClientNamedGroups().contains(NamedGroup.SECP256R1),
                 "SECP256R1 should get parsed correctly");
+        assertTrue(
+                config.getDefaultClientNamedGroups().contains(NamedGroup.BRAINPOOLP256R1TLS13),
+                "BRAINPOOLP256R1TLS13 should get parsed correctly");
+        assertTrue(
+                config.getDefaultClientNamedGroups().contains(NamedGroup.BRAINPOOLP384R1TLS13),
+                "BRAINPOOLP384R1TLS13 should get parsed correctly");
+        assertTrue(
+                config.getDefaultClientNamedGroups().contains(NamedGroup.BRAINPOOLP512R1TLS13),
+                "BRAINPOOLP512R1TLS13 should get parsed correctly");
         assertTrue(
                 config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED),
                 "UNCOMPRESSED should get parsed correctly");

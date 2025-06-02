@@ -10,7 +10,18 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.ChaCha20ParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.Salsa20Engine;
@@ -255,5 +266,41 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     public void setDraftStructure(boolean draftStructure) {
         this.draftStructure = draftStructure;
+    }
+
+    @Override
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+        if (ciphertext.length < Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20) {
+            LOGGER.warn(
+                    "The ciphertext is too short. Padding it to the required length with zero bytes.");
+        }
+        byte[] tempCiphertext =
+                Arrays.copyOf(ciphertext, Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20);
+        try {
+            Cipher recordNumberCipher = Cipher.getInstance("ChaCha20");
+            // The first 4 bytes of the ciphertext as the block counter and the next 12 bytes as the
+            // nonce
+            byte[] counter =
+                    Arrays.copyOfRange(
+                            tempCiphertext, 0, Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20);
+            byte[] nonce =
+                    Arrays.copyOfRange(
+                            tempCiphertext,
+                            Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20,
+                            Dtls13MaskConstans.REQUIRED_COUNTER_SIZE_CHACHA20);
+            ChaCha20ParameterSpec parameterSpec =
+                    new ChaCha20ParameterSpec(nonce, new BigInteger(counter).intValue());
+            SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
+            recordNumberCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
+            byte[] toEncrypt = new byte[64];
+            return recordNumberCipher.doFinal(toEncrypt);
+        } catch (NoSuchAlgorithmException
+                | NoSuchPaddingException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | IllegalBlockSizeException
+                | BadPaddingException ex) {
+            throw new CryptoException("Error getting record number mask using ChaCha20: ", ex);
+        }
     }
 }

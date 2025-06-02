@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.asn1.model.Asn1Encodable;
+import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -76,6 +77,7 @@ public class WorkflowTraceSerializer {
             classes.addAll(getSerializableSubTypes(reflections, DataContainer.class));
             classes.addAll(getSerializableSubTypes(reflections, Asn1Encodable.class));
             classes.addAll(getSerializableSubTypes(reflections, PublicKeyContent.class));
+            classes.addAll(getSerializableSubTypes(reflections, VariableModification.class));
             classes.addAll(getSerializableSubTypes(reflections, SignatureComputations.class));
 
             LOGGER.trace("Registering Classes in JAXBContext of WorkflowTraceSerializer:");

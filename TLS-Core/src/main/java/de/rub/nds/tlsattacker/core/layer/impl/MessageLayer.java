@@ -175,7 +175,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             HandshakeMessage handshakeMessage = (HandshakeMessage) message;
             if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO) {
                 // we must flush to avoid encrypting the SH later on
-                return !((ServerHelloMessage) message).isTls13HelloRetryRequest();
+                return !((ServerHelloMessage) message).hasTls13HelloRetryRequestRandom();
             } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED
                     || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.KEY_UPDATE
                     || handshakeMessage.getHandshakeMessageType()
@@ -293,6 +293,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             case HEARTBEAT:
                 readHeartbeatProtocolData();
                 break;
+            case ACK:
+                readAckProtocolData();
+                break;
             case UNKNOWN:
                 readUnknownProtocolData();
                 break;
@@ -406,6 +409,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readHeartbeatProtocolData() {
         HeartbeatMessage message = new HeartbeatMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readAckProtocolData() {
+        AckMessage message = new AckMessage();
         readDataContainer(message, context);
     }
 
