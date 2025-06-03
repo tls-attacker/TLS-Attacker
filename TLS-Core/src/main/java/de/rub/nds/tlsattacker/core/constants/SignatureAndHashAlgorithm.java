@@ -116,6 +116,9 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(RSA_PSS_RSAE_SHA256);
         algoList.add(RSA_PSS_RSAE_SHA384);
         algoList.add(RSA_PSS_RSAE_SHA512);
+        algoList.add(RSA_PSS_PSS_SHA256);
+        algoList.add(RSA_PSS_PSS_SHA384);
+        algoList.add(RSA_PSS_PSS_SHA512);
         /**
          * Deactivated since the Protocol-Attacker rework, as Protocol-Attacker does not support
          * them.
