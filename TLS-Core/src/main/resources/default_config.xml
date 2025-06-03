@@ -217,6 +217,9 @@
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA384</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA512</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA384</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA512</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultClientSupportedSignatureAndHashAlgorithm>
     </defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCertificateSignAlgorithms>
@@ -226,6 +229,9 @@
         <defaultClientSupportedCertificateSignAlgorithms>ECDSA_SHA256</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>ECDSA_SHA384</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>ECDSA_SHA512</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA256</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA384</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA512</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultClientSupportedCertificateSignAlgorithms>
@@ -1270,6 +1276,9 @@
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA384</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA512</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA384</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA512</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultServerSupportedSignatureAndHashAlgorithm>
     </defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedCertificateSignAlgorithms>
@@ -1279,6 +1288,9 @@
         <defaultServerSupportedCertificateSignAlgorithms>ECDSA_SHA256</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>ECDSA_SHA384</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>ECDSA_SHA512</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA256</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA384</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA512</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultServerSupportedCertificateSignAlgorithms>
