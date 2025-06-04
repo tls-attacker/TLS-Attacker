@@ -27,11 +27,9 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Disabled("Disabled temporarily, as this test is passing locallly and failing on CI.")
 @Tag(TestCategories.INTEGRATION_TEST)
 public class ClientBrainpoolHandshakeIT extends AbstractHandshakeIT {
 
