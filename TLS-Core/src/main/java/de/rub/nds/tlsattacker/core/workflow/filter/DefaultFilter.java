@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DefaultFilter extends Filter {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DefaultFilter(Config config) {
         super(config);

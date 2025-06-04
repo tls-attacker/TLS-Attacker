@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         extends Handler<MessageT> {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final TlsContext tlsContext;
 
