@@ -19,9 +19,9 @@ import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.junit.jupiter.api.Tag;
 
 @Tag(TestCategories.INTEGRATION_TEST)
-public class DebugHanshakeIT extends AbstractHandshakeIT {
+public class DebugHandshakeIT extends AbstractHandshakeIT {
 
-    public DebugHanshakeIT() {
+    public DebugHandshakeIT() {
         // run OpenSSL with dummy HTTP server to get a reply for app data
         super(
                 TlsImplementationType.OPENSSL,
