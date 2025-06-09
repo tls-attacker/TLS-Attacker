@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.spec.AlgorithmParameterSpec;
@@ -131,13 +130,9 @@ public class QuicDecryptor {
         for (int i = 0; i < packet.getPacketNumberLength().getValue(); i++) {
             result[i] = (byte) (headerProtectionMask[i + 1] ^ protectedPacketNumber[i]);
         }
-        try {
-            packet.protectedHeaderHelper.write(result);
-            packet.setUnprotectedPacketNumber(result);
-            restorePacketNumber(packet);
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        packet.protectedHeaderHelper.write(result);
+        packet.setUnprotectedPacketNumber(result);
+        restorePacketNumber(packet);
     }
 
     private void restorePacketNumber(QuicPacket packet) {

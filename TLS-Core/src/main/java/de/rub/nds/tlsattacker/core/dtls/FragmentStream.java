@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,7 +73,7 @@ public class FragmentStream {
      * @return the stream
      */
     public byte[] getCompleteFilledStream(byte fillingByte) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         int fillingCounter = 0;
         for (int i = 0; i < intendedSize; i++) {
             Byte b = fragmentByteMap.get(i);
@@ -103,7 +103,7 @@ public class FragmentStream {
     }
 
     public byte[] getCompleteTruncatedStream() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         int skipCounter = 0;
         for (int i = 0; i < intendedSize; i++) {
             Byte b = fragmentByteMap.get(i);

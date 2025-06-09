@@ -8,18 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 
 public class MessageBytesCollector {
 
-    private ByteArrayOutputStream recordBytesStream;
+    private SilentByteArrayOutputStream recordBytesStream;
 
-    private ByteArrayOutputStream protocolMessageBytesStream;
+    private SilentByteArrayOutputStream protocolMessageBytesStream;
 
     public MessageBytesCollector() {
-        recordBytesStream = new ByteArrayOutputStream();
-        protocolMessageBytesStream = new ByteArrayOutputStream();
+        recordBytesStream = new SilentByteArrayOutputStream();
+        protocolMessageBytesStream = new SilentByteArrayOutputStream();
     }
 
     public byte[] getRecordBytes() {
@@ -31,26 +30,18 @@ public class MessageBytesCollector {
     }
 
     public void appendRecordBytes(byte[] recordBytes) {
-        try {
-            this.recordBytesStream.write(recordBytes);
-        } catch (IOException ex) {
-            // TODO
-        }
+        this.recordBytesStream.write(recordBytes);
     }
 
     public void appendProtocolMessageBytes(byte[] protocolMessageBytes) {
-        try {
-            protocolMessageBytesStream.write(protocolMessageBytes);
-        } catch (IOException ex) {
-            // TODO Logger
-        }
+        protocolMessageBytesStream.write(protocolMessageBytes);
     }
 
     public void flushRecordBytes() {
-        recordBytesStream = new ByteArrayOutputStream();
+        recordBytesStream = new SilentByteArrayOutputStream();
     }
 
     public void flushProtocolMessageBytes() {
-        protocolMessageBytesStream = new ByteArrayOutputStream();
+        protocolMessageBytesStream = new SilentByteArrayOutputStream();
     }
 }

@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.core.integration.handshakes;
 import static org.junit.Assume.assumeNotNull;
 
 import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.InspectContainerCmd;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Image;
+import com.github.dockerjava.api.model.Ports;
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.constants.TransportType;
@@ -23,14 +26,9 @@ import de.rub.nds.tls.subject.docker.DockerTlsInstance;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsClientInstanceBuilder;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsServerInstanceBuilder;
-import de.rub.nds.tls.subject.docker.DockerTlsServerInstance;
 import de.rub.nds.tls.subject.docker.build.DockerBuilder;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -48,6 +46,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -59,6 +58,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public abstract class AbstractHandshakeIT {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final int PORT_MAX_TRIES = 10;
+    private static final int PORT_WAIT_TIME_MS = 500;
 
     private static final Integer PORT = FreePortFinder.getPossiblyFreePort();
     private static List<Image> localImages;
@@ -70,6 +71,7 @@ public abstract class AbstractHandshakeIT {
     private final String additionalParameters;
 
     private DockerTlsInstance dockerInstance;
+    private int serverPort = -1;
 
     public AbstractHandshakeIT(
             TlsImplementationType implementation,
@@ -131,7 +133,14 @@ public abstract class AbstractHandshakeIT {
                 instanceBuilder =
                         new TlsServerInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
-                assumeNotNull(
+                image =
+                        DockerTlsManagerFactory.getMatchingImage(
+                                localImages,
+                                implementation,
+                                version,
+                                DockerBuilder.NO_ADDITIONAL_BUILDFLAGS,
+                                dockerConnectionRole);
+                Assertions.assertNotNull(
                         image,
                         String.format(
                                 "TLS implementation %s %s not available",
@@ -156,7 +165,10 @@ public abstract class AbstractHandshakeIT {
             }
             clientInstanceBuilder
                     .containerName("server-handshake-test-client-" + UUID.randomUUID())
-                    .ip("172.17.0.1")
+                    .hostConfigHook(
+                            (hostConfig ->
+                                    hostConfig.withExtraHosts("host.docker.internal:host-gateway")))
+                    .ip("host.docker.internal")
                     .port(PORT)
                     .connectOnStartup(false)
                     .additionalParameters(additionalParameters);
@@ -268,7 +280,11 @@ public abstract class AbstractHandshakeIT {
             WorkflowTraceType workflowTraceType,
             boolean addEncryptThenMac,
             boolean addExtendedMasterSecret) {
-        LOGGER.error("Failed trace: " + state.getWorkflowTrace().toString());
+        LOGGER.error(
+                "["
+                        + this.getClass().getName()
+                        + "] Failed trace: "
+                        + state.getWorkflowTrace().toString());
         try {
             LOGGER.error("Instance Feedback: " + dockerInstance.getLogs());
         } catch (InterruptedException e) {
@@ -445,11 +461,46 @@ public abstract class AbstractHandshakeIT {
         setConnectionTargetFields(config);
     }
 
+    private void determinePort() {
+        InspectContainerCmd cmd =
+                DockerClientManager.getDockerClient()
+                        .inspectContainerCmd(this.dockerInstance.getId());
+        InspectContainerResponse response;
+        Ports.Binding serverPortBinding = null;
+        for (int currentTry = 0; currentTry < PORT_MAX_TRIES; currentTry++) {
+            response = cmd.exec();
+            Ports.Binding[] serverPortBindings =
+                    response.getNetworkSettings().getPorts().getBindings().values().stream()
+                            .findFirst()
+                            .orElse(new Ports.Binding[] {});
+            if (serverPortBindings.length >= 1) {
+                serverPortBinding = serverPortBindings[0];
+                break;
+            } else {
+                LOGGER.info(
+                        "Could not determine container port binding. Retrying in {} ms...",
+                        PORT_WAIT_TIME_MS);
+                try {
+                    Thread.sleep(PORT_WAIT_TIME_MS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Interrupted while waiting for port bindings", e);
+                }
+            }
+        }
+
+        if (serverPortBinding == null) {
+            Assertions.fail("Could not load assigned port for docker container.");
+        }
+
+        serverPort = Integer.parseInt(serverPortBinding.getHostPortSpec());
+    }
+
     private void setConnectionTargetFields(Config config) {
         if (dockerConnectionRole == ConnectionRole.SERVER) {
             config.getDefaultClientConnection().setHostname("localhost");
-            config.getDefaultClientConnection()
-                    .setPort(((DockerTlsServerInstance) dockerInstance).getPort());
+            determinePort();
+            config.getDefaultClientConnection().setPort(serverPort);
             config.getDefaultClientConnection().setTimeout(3000);
         } else {
             config.setDefaultRunningMode(RunningModeType.SERVER);

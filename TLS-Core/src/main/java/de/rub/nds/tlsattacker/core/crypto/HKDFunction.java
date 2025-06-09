@@ -9,22 +9,25 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 /** HKDF functions computation for (D)TLS 1.3 */
 public class HKDFunction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String KEY = "key";
 
@@ -125,7 +128,7 @@ public class HKDFunction {
         try {
             SecretKeySpec keySpec =
                     new SecretKeySpec(prk, hkdfAlgorithm.getMacAlgorithm().getJavaName());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             int i = 1;
             if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
                 HMac hmac = new HMac(new SM3Digest());
@@ -177,10 +180,7 @@ public class HKDFunction {
                 }
             }
             return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
-        } catch (NoSuchAlgorithmException
-                | IOException
-                | InvalidKeyException
-                | IllegalArgumentException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             throw new CryptoException(ex);
         }
     }
@@ -194,8 +194,9 @@ public class HKDFunction {
         } else if (protocolVersion.isDTLS13()) {
             label = "dtls13" + labelIn;
         } else {
-            throw new UnsupportedOperationException(
-                    "The given protocol version does not have a label for expansion implemented.");
+            LOGGER.warn(
+                    "The given protocol version does not have a label for expansion implemented. Using 'tls13'");
+            label = "tls13 " + labelIn;
         }
         int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
         int hashValueLength = hashValue.length;

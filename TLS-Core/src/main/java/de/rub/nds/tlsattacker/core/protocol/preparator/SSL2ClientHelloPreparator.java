@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,16 +70,10 @@ public class SSL2ClientHelloPreparator extends SSL2MessagePreparator<SSL2ClientH
     }
 
     private void prepareCipherSuites(SSL2ClientHelloMessage message) {
-        ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream cipherStream = new SilentByteArrayOutputStream();
         for (SSL2CipherSuite suite : SSL2CipherSuite.values()) {
-            try {
-                if (suite != SSL2CipherSuite.SSL_UNKNOWN_CIPHER) {
-                    cipherStream.write(suite.getByteValue());
-                }
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message",
-                        ex);
+            if (suite != SSL2CipherSuite.SSL_UNKNOWN_CIPHER) {
+                cipherStream.write(suite.getByteValue());
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());

@@ -19,9 +19,9 @@ import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group3072;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group6144;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group8192;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -377,7 +377,7 @@ public enum NamedGroup {
             return new byte[0];
         }
 
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream();
         for (NamedGroup i : groups) {
             bytes.write(i.getValue());
         }
