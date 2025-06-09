@@ -119,7 +119,7 @@ public abstract class ProtocolLayer<
                 currentInputStream = null;
             }
         } catch (IOException ex) {
-            LOGGER.error("Could not evaluate Stream availability. Removing Stream anyways");
+            LOGGER.error("Could not evaluate Stream availability. Removing Stream anyways", ex);
             currentInputStream = null;
         }
     }
@@ -200,7 +200,7 @@ public abstract class ProtocolLayer<
      * @return true if more data is available in any receive buffer
      */
     public boolean isDataBuffered() {
-        LOGGER.debug("Checking if data is buffered: " + getLayerType());
+        LOGGER.debug("Checking if data is buffered: {}", getLayerType());
         try {
             if ((currentInputStream != null && currentInputStream.available() > 0)
                     || nextInputStream != null && nextInputStream.available() > 0) {
@@ -214,14 +214,14 @@ public abstract class ProtocolLayer<
             return false;
         } catch (IOException e) {
             // with exceptions on reading our inputStreams we can not read more data
-            LOGGER.error("No more data can be read from the inputStreams with Exception: ", e);
+            LOGGER.error("No more data can be read from the inputStreams", e);
             return false;
         }
     }
 
     public boolean shouldContinueProcessing() {
         LOGGER.debug(
-                "Deciding if we should continue...: " + layerConfiguration + " type: " + layerType);
+                "Deciding if we should continue...: {} type: {}", layerConfiguration, layerType);
         if (layerConfiguration != null) {
             return layerConfiguration.shouldContinueProcessing(
                     getLayerResult().getUsedContainers(), reachedTimeout, isDataBuffered());
@@ -247,7 +247,7 @@ public abstract class ProtocolLayer<
         try {
             inputStream = getLowerLayer().getDataStream();
         } catch (IOException e) {
-            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            LOGGER.warn("The lower layer did not produce a data stream", e);
             return;
         }
 
