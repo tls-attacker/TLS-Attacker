@@ -10,36 +10,35 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 
 /** A LayerConfiguration that keeps receiving until reaching the timeout */
-public class GenericReceiveLayerConfiguration<Context>
+public class GenericReceiveLayerConfiguration
         extends ReceiveLayerConfiguration<DataContainer<Context>> {
 
     public GenericReceiveLayerConfiguration(LayerType layerType) {
         super(layerType, new LinkedList<>());
     }
 
-    @Override
     public boolean isProcessTrailingContainers() {
         return true;
     }
 
     @Override
-    public boolean executedAsPlanned(List<DataContainer<?>> list) {
+    public boolean executedAsPlanned(List<DataContainer<Context>> list) {
         return true;
     }
 
     @Override
     public boolean shouldContinueProcessing(
-            List<DataContainer<?>> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+            List<DataContainer<Context>> list, boolean receivedTimeout, boolean dataLeftToProcess) {
         return !receivedTimeout || dataLeftToProcess;
     }
 
-    @Override
-    public boolean failedEarly(List<DataContainer> list) {
+    public boolean failedEarly(List<DataContainer<Context>> list) {
         return false;
     }
 

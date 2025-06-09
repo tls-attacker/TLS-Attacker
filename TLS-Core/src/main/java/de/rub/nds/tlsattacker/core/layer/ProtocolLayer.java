@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ProtocolLayer<
         ContextType extends Context,
         Hint extends LayerProcessingHint,
-        Container extends DataContainer<ContextType>> {
+        Container extends DataContainer<Context>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -91,8 +91,9 @@ public abstract class ProtocolLayer<
         return layerConfiguration;
     }
 
-    public void setLayerConfiguration(LayerConfiguration<Container> layerConfiguration) {
-        this.layerConfiguration = layerConfiguration;
+    @SuppressWarnings("unchecked")
+    public void setLayerConfiguration(LayerConfiguration<?> layerConfiguration) {
+        this.layerConfiguration = (LayerConfiguration<Container>) layerConfiguration;
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
@@ -287,7 +288,7 @@ public abstract class ProtocolLayer<
 
     public boolean prepareDataContainer(DataContainer dataContainer, Context context) {
         if (dataContainer.shouldPrepare()) {
-            Preparator<LayerContext> preparator = dataContainer.getPreparator(context);
+            Preparator preparator = dataContainer.getPreparator(context);
             try {
                 preparator.prepare();
                 preparator.afterPrepare();

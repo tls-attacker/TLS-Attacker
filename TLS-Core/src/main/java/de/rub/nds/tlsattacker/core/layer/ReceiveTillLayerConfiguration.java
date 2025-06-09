@@ -10,12 +10,13 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer<Context>>
         extends ReceiveLayerConfiguration<Container> {
 
     private boolean processTrailingContainers = true;
@@ -78,9 +79,12 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     @Override
     public boolean executedAsPlanned(List<Container> list) {
         // holds containers we expect
-        List<Class<? extends DataContainer<?>>> missingExpectedContainers =
+        List<Class<? extends DataContainer<Context>>> missingExpectedContainers =
                 getContainerList().stream()
-                        .map(container -> (Class<? extends DataContainer<?>>) container.getClass())
+                        .map(
+                                container ->
+                                        (Class<? extends DataContainer<Context>>)
+                                                container.getClass())
                         .collect(Collectors.toList());
         // for each container we received remove it from the expected ones to be left with any
         // additional containers

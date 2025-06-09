@@ -10,11 +10,12 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 
-public class IgnoreLayerConfiguration<Container extends DataContainer>
+public class IgnoreLayerConfiguration<Container extends DataContainer<Context>>
         extends LayerConfiguration<Container> {
 
     public IgnoreLayerConfiguration(LayerType layerType) {

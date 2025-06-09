@@ -43,7 +43,7 @@ import org.bouncycastle.util.Arrays;
 
 /** The DtlsFragmentLayer handles DTLS fragmentation between the message and record layer. */
 public class DtlsFragmentLayer
-        extends ProtocolLayer<TlsContext, RecordLayerHint, DtlsHandshakeMessageFragment> {
+        extends ProtocolLayer<Context, RecordLayerHint, DtlsHandshakeMessageFragment> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
@@ -20,7 +21,7 @@ import org.apache.logging.log4j.Level;
  *
  * @param <Container>
  */
-public class TightReceiveLayerConfiguration<Container extends DataContainer>
+public class TightReceiveLayerConfiguration<Container extends DataContainer<Context>>
         extends SpecificReceiveLayerConfiguration<Container> {
 
     public TightReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
