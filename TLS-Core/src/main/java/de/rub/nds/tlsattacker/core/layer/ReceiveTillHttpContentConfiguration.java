@@ -44,8 +44,13 @@ public class ReceiveTillHttpContentConfiguration
     @Override
     public boolean shouldContinueProcessing(
             List<HttpResponseMessage> list, boolean receivedTimeout, boolean dataLeftToProcess) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'shouldContinueProcessing'");
+        // Continue processing if we haven't found the desired content yet
+        // and there's either more data to process or we haven't reached a timeout
+        if (!executedAsPlanned(list)) {
+            return !receivedTimeout || dataLeftToProcess;
+        }
+        // If we found the desired content, stop processing
+        return false;
     }
 
     @Override

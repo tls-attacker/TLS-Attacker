@@ -210,7 +210,7 @@ public abstract class ProtocolLayer<
                 LOGGER.debug("Checking if lower layer has data buffered");
                 return getLowerLayer().isDataBuffered();
             }
-            LOGGER.debug("apparently not?");
+            LOGGER.debug("No data is buffered in this layer or lower layers");
             return false;
         } catch (IOException e) {
             // with exceptions on reading our inputStreams we can not read more data
@@ -227,7 +227,7 @@ public abstract class ProtocolLayer<
                     getLayerResult().getUsedContainers(), reachedTimeout, isDataBuffered());
 
         } else {
-            LOGGER.debug("Lets check if data is buffered");
+            LOGGER.debug("Checking if data is buffered since no layer configuration exists");
             return isDataBuffered();
         }
     }
