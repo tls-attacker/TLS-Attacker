@@ -144,37 +144,52 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
+    <!-- Send ClientHello -->
     <Send>
         <configuredMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
-                    <HeartbeatExtension/>
                     <EllipticCurves/>
+                    <SignatureAndHashAlgorithmsExtension/>
+                    <RenegotiationInfoExtension/>
                 </extensions>
             </ClientHello>
         </configuredMessages>
+        <configuredRecords>
+            <Record/>
+        </configuredRecords>
     </Send>
+    
+    <!-- Receive server response -->
     <Receive>
         <expectedMessages>
             <ServerHello>
                 <extensions>
                     <ECPointFormat/>
+                    <RenegotiationInfoExtension/>
                 </extensions>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
     </Receive>
+    
+    <!-- Send client key exchange and finish -->
     <Send>
         <configuredMessages>
-            <RSAClientKeyExchange>
-                <computations/>
-            </RSAClientKeyExchange>
+            <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </configuredMessages>
+        <configuredRecords>
+            <Record/>
+            <Record/>
+            <Record/>
+        </configuredRecords>
     </Send>
+    
+    <!-- Receive server finish -->
     <Receive>
         <expectedMessages>
             <ChangeCipherSpec/>
