@@ -42,7 +42,7 @@ public class HintedInputStreamAdapterStream extends HintedInputStream {
 
     @Override
     public int available() throws IOException {
-        LOGGER.debug("Checking");
+        LOGGER.trace("Checking available bytes in stream");
         return stream.available();
     }
 
