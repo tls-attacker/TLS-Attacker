@@ -25,6 +25,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     protected String hostname;
     protected long connectionTimeout;
     private boolean retryFailedSocketInitialization = false;
+    private boolean clientInitializationFailed = false;
 
     public ClientTcpTransportHandler(Connection connection) {
         super(connection);
@@ -84,7 +85,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 // client port has been manually set and the resetClientSourcePort setting is
                 // disabled
                 if (srcPort != null
-                        && (retryFailedSocketInitialization || !resetClientSourcePort)) {
+                        && ((clientInitializationFailed && retryFailedSocketInitialization)
+                                || !resetClientSourcePort)) {
                     socket.bind(new InetSocketAddress(srcPort));
                 }
                 socket.connect(new InetSocketAddress(hostname, dstPort), (int) connectionTimeout);
@@ -93,6 +95,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 }
                 break;
             } catch (Exception e) {
+                clientInitializationFailed = true;
                 if (!retryFailedSocketInitialization) {
                     LOGGER.warn("Socket initialization to {}:{} failed", hostname, dstPort, e);
                     break;
