@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tls.attacker</groupId>
         <artifactId>tls-attacker</artifactId>
-        <version>7.2.2-SNAPSHOT</version>
+        <version>7.2.2-json</version>
     </parent>
     <artifactId>tls-proxy</artifactId>
 
