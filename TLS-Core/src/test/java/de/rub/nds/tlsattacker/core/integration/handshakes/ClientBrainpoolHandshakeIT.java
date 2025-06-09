@@ -27,15 +27,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Disabled("Disabled temporarily, as this test is passing locallly and failing on CI.")
 @Tag(TestCategories.INTEGRATION_TEST)
-public class ClientBrainpoolHanshakeIT extends AbstractHandshakeIT {
+public class ClientBrainpoolHandshakeIT extends AbstractHandshakeIT {
 
-    public ClientBrainpoolHanshakeIT() {
+    public ClientBrainpoolHandshakeIT() {
         // run OpenSSL with dummy HTTP server to get a reply for app data
         super(
                 TlsImplementationType.OPENSSL,

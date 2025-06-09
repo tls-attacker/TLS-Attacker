@@ -102,8 +102,10 @@ pipeline {
                 timeout(activity: true, time: 1800, unit: 'SECONDS')
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -P coverage -Dskip.surefire.tests=true verify'
+                withCredentials([usernamePassword(credentialsId: 'Jenkins-User-Nexus-Repository', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
+                        sh 'mvn -P coverage -Dskip.surefire.tests=true verify'
+                    }
                 }
             }
             post {

@@ -19,12 +19,16 @@ import java.security.*;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 /** HKDF functions computation for (D)TLS 1.3 */
 public class HKDFunction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String KEY = "key";
 
@@ -194,8 +198,9 @@ public class HKDFunction {
         } else if (protocolVersion.isDTLS13()) {
             label = "dtls13" + labelIn;
         } else {
-            throw new UnsupportedOperationException(
-                    "The given protocol version does not have a label for expansion implemented.");
+            LOGGER.warn(
+                    "The given protocol version does not have a label for expansion implemented. Using 'tls13'");
+            label = "tls13 " + labelIn;
         }
         int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
         int hashValueLength = hashValue.length;
