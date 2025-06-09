@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -46,7 +47,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -152,13 +152,9 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     }
 
     private byte[] collectBufferedBytes(List<byte[]> bufferedMessages) {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream byteStream = new SilentByteArrayOutputStream();
         for (byte[] message : bufferedMessages) {
-            try {
-                byteStream.write(message);
-            } catch (IOException e) {
-                LOGGER.error("Could not write buffered messages to byte stream: ", e);
-            }
+            byteStream.write(message);
         }
         return byteStream.toByteArray();
     }
@@ -351,7 +347,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
      * @throws IOException
      */
     private void readHandshakeProtocolData() {
-        ByteArrayOutputStream readBytesStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream readBytesStream = new SilentByteArrayOutputStream();
         byte type;
         int length;
         byte[] payload;

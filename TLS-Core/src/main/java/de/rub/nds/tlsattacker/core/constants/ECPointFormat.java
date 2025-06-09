@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.protocol.constants.PointFormat;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,7 @@ public enum ECPointFormat {
             return new byte[0];
         }
 
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bytes);
         os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
 

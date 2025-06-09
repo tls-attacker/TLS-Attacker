@@ -49,11 +49,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         byte[] destinationConnectionIdLengthBytes =
                 parseByteArrayField(packet.getDestinationConnectionIdLength().getValue() & 0xFF);
         packet.setDestinationConnectionId(destinationConnectionIdLengthBytes);
-        try {
-            packet.protectedHeaderHelper.write(destinationConnectionIdLengthBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packet.protectedHeaderHelper.write(destinationConnectionIdLengthBytes);
         LOGGER.debug(
                 "Destination Connection ID: {}", packet.getDestinationConnectionId().getValue());
     }

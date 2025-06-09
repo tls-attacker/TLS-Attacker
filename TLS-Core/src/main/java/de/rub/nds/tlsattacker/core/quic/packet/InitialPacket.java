@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.quic.serializer.packet.InitialPacketSerialize
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,61 +59,51 @@ public class InitialPacket extends LongHeaderPacket {
         protectedHeaderHelper.write(flags);
         this.packetSecret = QuicCryptoSecrets.INITIAL_SECRET;
         setQuicVersion(versionBytes);
-        try {
-            protectedHeaderHelper.write(versionBytes);
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        protectedHeaderHelper.write(versionBytes);
     }
 
     /** In comparison to the {@link LongHeaderPacket}, we add the token here. */
     @Override
     public void buildUnprotectedPacketHeader() {
-        try {
-            unprotectedHeaderHelper.write(unprotectedFlags.getValue());
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write(unprotectedFlags.getValue());
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(quicVersion.getValue());
-            offsetToPacketNumber += quicVersion.getValue().length;
+        unprotectedHeaderHelper.write(quicVersion.getValue());
+        offsetToPacketNumber += quicVersion.getValue().length;
 
-            unprotectedHeaderHelper.write((byte) destinationConnectionId.getValue().length);
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write((byte) destinationConnectionId.getValue().length);
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(destinationConnectionId.getValue());
-            offsetToPacketNumber += destinationConnectionIdLength.getValue();
+        unprotectedHeaderHelper.write(destinationConnectionId.getValue());
+        offsetToPacketNumber += destinationConnectionIdLength.getValue();
 
-            unprotectedHeaderHelper.write((byte) sourceConnectionId.getValue().length);
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write((byte) sourceConnectionId.getValue().length);
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(sourceConnectionId.getValue());
-            offsetToPacketNumber += sourceConnectionIdLength.getValue();
+        unprotectedHeaderHelper.write(sourceConnectionId.getValue());
+        offsetToPacketNumber += sourceConnectionIdLength.getValue();
 
-            byte[] tokenLengthBytes =
-                    VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                            tokenLength.getValue());
-            unprotectedHeaderHelper.write(tokenLengthBytes);
-            offsetToPacketNumber += tokenLengthBytes.length;
+        byte[] tokenLengthBytes =
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(tokenLength.getValue());
+        unprotectedHeaderHelper.write(tokenLengthBytes);
+        offsetToPacketNumber += tokenLengthBytes.length;
 
-            if (tokenLength.getValue() > 0) {
-                unprotectedHeaderHelper.write(token.getValue());
-                offsetToPacketNumber += token.getValue().length;
-            }
-
-            byte[] packetLengthBytes =
-                    VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                            packetLength.getValue());
-            unprotectedHeaderHelper.write(packetLengthBytes);
-            offsetToPacketNumber += packetLengthBytes.length;
-
-            unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
-            offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
-
-            completeUnprotectedHeader =
-                    ModifiableVariableFactory.safelySetValue(
-                            completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
-        } catch (IOException e) {
-            LOGGER.error(e);
+        if (tokenLength.getValue() > 0) {
+            unprotectedHeaderHelper.write(token.getValue());
+            offsetToPacketNumber += token.getValue().length;
         }
+
+        byte[] packetLengthBytes =
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(packetLength.getValue());
+        unprotectedHeaderHelper.write(packetLengthBytes);
+        offsetToPacketNumber += packetLengthBytes.length;
+
+        unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
+        offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
+
+        completeUnprotectedHeader =
+                ModifiableVariableFactory.safelySetValue(
+                        completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
     }
 
     /** In comparison to the {@link LongHeaderPacket}, we add the token here. */

@@ -53,11 +53,7 @@ public class InitialPacketParser extends LongHeaderPacketParser<InitialPacket> {
     protected void parseToken(InitialPacket packet) {
         byte[] tokenBytes = parseByteArrayField(packet.getTokenLength().getValue());
         packet.setToken(tokenBytes);
-        try {
-            packet.protectedHeaderHelper.write(tokenBytes);
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        packet.protectedHeaderHelper.write(tokenBytes);
         LOGGER.debug("Token: {}", packet.getToken().getValue());
     }
 }

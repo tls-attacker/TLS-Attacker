@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -38,8 +39,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -441,7 +440,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         int keyShareListBytesLength = 0;
         byte[] keyShareListBytesLengthField = null;
         byte[] keyShareListBytes = null;
-        ByteArrayOutputStream clientHelloKeyShareStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream clientHelloKeyShareStream = new SilentByteArrayOutputStream();
         boolean isClientHelloExtensionsFound = false;
         if (clientHelloMessage != null) {
             List<ExtensionMessage> clientHelloExtensions = clientHelloMessage.getExtensions();
@@ -458,18 +457,14 @@ public class EncryptedServerNameIndicationExtensionPreparator
             }
         }
         if (!isClientHelloExtensionsFound) {
-            ByteArrayOutputStream keyShareListStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream keyShareListStream = new SilentByteArrayOutputStream();
             for (KeyShareStoreEntry pair : chooser.getClientKeyShares()) {
                 KeyShareEntry entry = new KeyShareEntry();
                 KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
                 entry.setGroup(pair.getGroup().getValue());
                 entry.setPublicKeyLength(pair.getPublicKey().length);
                 entry.setPublicKey(pair.getPublicKey());
-                try {
-                    keyShareListStream.write(serializer.serialize());
-                } catch (IOException e) {
-                    throw new PreparationException("Failed to write esniContents", e);
-                }
+                keyShareListStream.write(serializer.serialize());
             }
             keyShareListBytes = keyShareListStream.toByteArray();
             keyShareListBytesLength = keyShareListBytes.length;
@@ -478,12 +473,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
         keyShareListBytesLengthField =
                 ArrayConverter.intToBytes(
                         keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        try {
-            clientHelloKeyShareStream.write(keyShareListBytesLengthField);
-            clientHelloKeyShareStream.write(keyShareListBytes);
-        } catch (IOException e) {
-            throw new PreparationException("Failed to write ClientHelloKeyShare", e);
-        }
+        clientHelloKeyShareStream.write(keyShareListBytesLengthField);
+        clientHelloKeyShareStream.write(keyShareListBytes);
         byte[] clientHelloKeyShareBytes = clientHelloKeyShareStream.toByteArray();
         msg.getEncryptedSniComputation().setClientHelloKeyShare(clientHelloKeyShareBytes);
         LOGGER.debug("clientHelloKeyShare: {}", clientHelloKeyShareBytes);
@@ -558,7 +549,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private byte[] generateEsniContents(EncryptedServerNameIndicationExtensionMessage msg) {
-        ByteArrayOutputStream contentsStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream contentsStream = new SilentByteArrayOutputStream();
         try {
             contentsStream.write(
                     msg.getRecordDigestLength()

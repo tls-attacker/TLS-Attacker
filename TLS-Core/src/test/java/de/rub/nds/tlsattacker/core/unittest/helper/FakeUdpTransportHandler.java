@@ -8,17 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class FakeUdpTransportHandler extends UdpTransportHandler implements FakeTransportHandler {
 
-    private ByteArrayOutputStream outputStream;
+    private SilentByteArrayOutputStream outputStream;
 
     private ByteArrayInputStream inputStream;
 
@@ -27,7 +27,7 @@ public class FakeUdpTransportHandler extends UdpTransportHandler implements Fake
     public FakeUdpTransportHandler(ConnectionEndType type) {
         super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     public byte[] getSentBytes() {
@@ -84,6 +84,6 @@ public class FakeUdpTransportHandler extends UdpTransportHandler implements Fake
     }
 
     public void resetOutputStream() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 }

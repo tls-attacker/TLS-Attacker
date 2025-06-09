@@ -9,11 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +22,7 @@ public class PskRsaClientKeyExchangePreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final PskRsaClientKeyExchangeMessage msg;
-    private ByteArrayOutputStream outputStream;
+    private SilentByteArrayOutputStream outputStream;
 
     public PskRsaClientKeyExchangePreparator(
             Chooser chooser, PskRsaClientKeyExchangeMessage message) {
@@ -40,22 +39,17 @@ public class PskRsaClientKeyExchangePreparator
 
     @Override
     protected byte[] manipulatePremasterSecret(byte[] premasterSecret) {
-        outputStream = new ByteArrayOutputStream();
-        try {
-            outputStream.write(
-                    ArrayConverter.intToBytes(
-                            HandshakeByteLength.PREMASTER_SECRET,
-                            HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
-            outputStream.write(premasterSecret);
-            outputStream.write(
-                    ArrayConverter.intToBytes(
-                            chooser.getConfig().getDefaultPSKKey().length,
-                            HandshakeByteLength.PSK_LENGTH));
-            outputStream.write(chooser.getConfig().getDefaultPSKKey());
-        } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
-            LOGGER.debug(ex);
-        }
+        outputStream = new SilentByteArrayOutputStream();
+        outputStream.write(
+                ArrayConverter.intToBytes(
+                        HandshakeByteLength.PREMASTER_SECRET,
+                        HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        outputStream.write(premasterSecret);
+        outputStream.write(
+                ArrayConverter.intToBytes(
+                        chooser.getConfig().getDefaultPSKKey().length,
+                        HandshakeByteLength.PSK_LENGTH));
+        outputStream.write(chooser.getConfig().getDefaultPSKKey());
         byte[] tempPremasterSecret = outputStream.toByteArray();
         return tempPremasterSecret;
     }
