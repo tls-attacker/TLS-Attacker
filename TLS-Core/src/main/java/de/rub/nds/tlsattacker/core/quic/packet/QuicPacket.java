@@ -30,7 +30,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class QuicPacket extends ModifiableVariableHolder implements DataContainer {
+public abstract class QuicPacket extends ModifiableVariableHolder
+        implements DataContainer<Context> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

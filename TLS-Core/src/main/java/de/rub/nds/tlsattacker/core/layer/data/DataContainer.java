@@ -15,8 +15,10 @@ import java.io.InputStream;
  * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work
  * with data it only needs to know how to parse, prepare, serialize and handle the message. All
  * messages must therefore provide this functionality.
+ *
+ * @param <Context> The context type
  */
-public interface DataContainer {
+public interface DataContainer<Context> {
 
     public Parser<? extends DataContainer> getParser(Context context, InputStream stream);
 

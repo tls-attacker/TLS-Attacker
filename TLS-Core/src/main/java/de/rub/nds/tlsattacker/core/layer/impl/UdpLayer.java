@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -25,7 +24,7 @@ import java.io.IOException;
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
  * for reading and sends any data over the UDP layer without modifications.
  */
-public class UdpLayer extends ProtocolLayer<LayerContext, LayerProcessingHint, UdpDataPacket> {
+public class UdpLayer extends ProtocolLayer<Context, LayerProcessingHint, UdpDataPacket> {
 
     private final Context context;
 

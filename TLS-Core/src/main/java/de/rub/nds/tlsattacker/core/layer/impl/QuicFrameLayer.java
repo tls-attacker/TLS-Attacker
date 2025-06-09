@@ -55,7 +55,8 @@ import org.apache.logging.log4j.Logger;
  * QuicPacketLayer}.
  */
 public class QuicFrameLayer
-        extends AcknowledgingProtocolLayer<QuicContext, QuicFrameLayerHint, QuicFrame> {
+        extends AcknowledgingProtocolLayer<
+                de.rub.nds.tlsattacker.core.state.Context, QuicFrameLayerHint, QuicFrame> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

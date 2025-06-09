@@ -36,15 +36,15 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Context extends LayerContext,
+        ContextType extends Context,
         Hint extends LayerProcessingHint,
-        Container extends DataContainer<Context>> {
+        Container extends DataContainer<ContextType>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<Hint, Container> higherLayer = null;
+    private ProtocolLayer<ContextType, Hint, Container> higherLayer = null;
 
-    private ProtocolLayer<Hint, Container> lowerLayer = null;
+    private ProtocolLayer<ContextType, Hint, Container> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -66,19 +66,19 @@ public abstract class ProtocolLayer<
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer<Hint, Container> getHigherLayer() {
+    public ProtocolLayer<ContextType, Hint, Container> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer<Hint, Container> getLowerLayer() {
+    public ProtocolLayer<ContextType, Hint, Container> getLowerLayer() {
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer<Hint, Container> higherLayer) {
+    public void setHigherLayer(ProtocolLayer<ContextType, Hint, Container> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer<Hint, Container> lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<ContextType, Hint, Container> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 

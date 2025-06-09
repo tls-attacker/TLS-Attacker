@@ -22,8 +22,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransport
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
@@ -79,7 +79,8 @@ import java.io.InputStream;
     QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
-public abstract class ExtensionMessage extends ModifiableVariableHolder implements DataContainer {
+public abstract class ExtensionMessage extends ModifiableVariableHolder
+        implements DataContainer<Context> {
 
     protected ExtensionType extensionTypeConstant;
 

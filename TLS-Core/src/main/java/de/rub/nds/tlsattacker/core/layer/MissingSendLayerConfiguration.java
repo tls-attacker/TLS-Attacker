@@ -40,7 +40,7 @@ public class MissingSendLayerConfiguration<Container extends DataContainer>
             List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
         return false;
     }
-        
+
     @Override
     public boolean shouldBeLogged(Level level) {
         return level.isMoreSpecificThan(Level.INFO); // DEBUG, TRACE etc should log it.

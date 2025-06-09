@@ -53,7 +53,8 @@ import org.apache.logging.log4j.Logger;
  * using the lower layer.
  */
 public class QuicPacketLayer
-        extends AcknowledgingProtocolLayer<QuicContext, QuicPacketLayerHint, QuicPacket> {
+        extends AcknowledgingProtocolLayer<
+                de.rub.nds.tlsattacker.core.state.Context, QuicPacketLayerHint, QuicPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

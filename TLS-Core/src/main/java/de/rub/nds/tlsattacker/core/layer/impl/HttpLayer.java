@@ -27,7 +27,9 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpLayer extends ProtocolLayer<HttpContext, HttpLayerHint, HttpMessage> {
+public class HttpLayer
+        extends ProtocolLayer<
+                de.rub.nds.tlsattacker.core.state.Context, HttpLayerHint, HttpMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

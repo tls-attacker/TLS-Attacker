@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -21,7 +22,7 @@ import java.util.Objects;
  * to TLS-Messages.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Message extends ModifiableVariableHolder implements DataContainer {
+public abstract class Message extends ModifiableVariableHolder implements DataContainer<Context> {
 
     @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
     private Boolean shouldPrepare = null;

@@ -15,7 +15,8 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 
 /** A LayerConfiguration that keeps receiving until reaching the timeout */
-public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<DataContainer> {
+public class GenericReceiveLayerConfiguration<Context>
+        extends ReceiveLayerConfiguration<DataContainer<Context>> {
 
     public GenericReceiveLayerConfiguration(LayerType layerType) {
         super(layerType, new LinkedList<>());
@@ -36,7 +37,7 @@ public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<
             List<DataContainer<?>> list, boolean receivedTimeout, boolean dataLeftToProcess) {
         return !receivedTimeout || dataLeftToProcess;
     }
-    
+
     @Override
     public boolean failedEarly(List<DataContainer> list) {
         return false;
