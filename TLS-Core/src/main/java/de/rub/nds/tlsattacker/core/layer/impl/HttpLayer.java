@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
@@ -23,13 +28,8 @@ import de.rub.nds.tlsattacker.core.layer.hints.HttpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class HttpLayer
-        extends ProtocolLayer<
-                de.rub.nds.tlsattacker.core.state.Context, HttpLayerHint, HttpMessage> {
+public class HttpLayer extends ProtocolLayer<Context, HttpLayerHint, HttpMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
