@@ -157,7 +157,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
             </ClientHello>
         </configuredMessages>
         <configuredRecords>
-            <Record/>
+            <record/>
         </configuredRecords>
     </Send>
     
@@ -183,9 +183,9 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
             <Finished/>
         </configuredMessages>
         <configuredRecords>
-            <Record/>
-            <Record/>
-            <Record/>
+            <record/>
+            <record/>
+            <record/>
         </configuredRecords>
     </Send>
     
