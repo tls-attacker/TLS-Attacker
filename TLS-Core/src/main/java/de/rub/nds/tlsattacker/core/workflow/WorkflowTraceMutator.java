@@ -412,16 +412,4 @@ public class WorkflowTraceMutator {
             WorkflowTrace trace, ProtocolMessageType type, boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
     }
-
-    private static int getIndexOfIdenticalMessage(
-            List<ProtocolMessage> collection, ProtocolMessage message) {
-        if (collection != null) {
-            for (int i = 0; i < collection.size(); i++) {
-                if (collection.get(i) == message) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
 }
