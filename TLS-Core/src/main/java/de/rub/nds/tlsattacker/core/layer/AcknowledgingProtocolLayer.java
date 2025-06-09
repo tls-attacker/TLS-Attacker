@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 public abstract class AcknowledgingProtocolLayer<
                 ContextType extends Context,
                 Hint extends LayerProcessingHint,
-                Container extends DataContainer<Context>>
+                Container extends DataContainer>
         extends ProtocolLayer<ContextType, Hint, Container> {
 
     public AcknowledgingProtocolLayer(LayerType layerType) {

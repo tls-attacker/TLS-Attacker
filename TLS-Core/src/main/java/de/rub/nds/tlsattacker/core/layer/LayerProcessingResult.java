@@ -26,7 +26,7 @@ import java.util.StringJoiner;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LayerProcessingResult<Container extends DataContainer<?>> {
+public class LayerProcessingResult<Container extends DataContainer> {
 
     /** List of containers that were sent or received */
     @XmlAnyElement(lax = true)

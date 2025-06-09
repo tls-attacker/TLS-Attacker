@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
-public class UdpDataPacket implements DataContainer<Context> {
+public class UdpDataPacket implements DataContainer {
 
     private String sourceIp;
 

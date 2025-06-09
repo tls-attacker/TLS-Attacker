@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TcpStreamContainer implements DataContainer<Context> {
+public class TcpStreamContainer implements DataContainer {
 
     private transient byte[] configData;
 

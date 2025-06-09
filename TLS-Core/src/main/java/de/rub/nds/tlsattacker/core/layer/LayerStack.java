@@ -84,7 +84,7 @@ public class LayerStack {
      * @throws IOException If any layer fails to send its data.
      */
     public LayerStackProcessingResult sendData(
-            List<LayerConfiguration<? extends DataContainer<Context>>> layerConfigurationList)
+            List<LayerConfiguration<? extends DataContainer>> layerConfigurationList)
             throws IOException {
         LOGGER.debug("Sending Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
@@ -124,7 +124,7 @@ public class LayerStack {
      *     data.
      */
     public LayerStackProcessingResult receiveData(
-            List<LayerConfiguration<? extends DataContainer<Context>>> layerConfigurationList) {
+            List<LayerConfiguration<? extends DataContainer>> layerConfigurationList) {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(

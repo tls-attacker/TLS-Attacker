@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
-import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -21,7 +20,7 @@ import org.apache.logging.log4j.Level;
  *
  * @param <Container>
  */
-public abstract class LayerConfiguration<Container extends DataContainer<Context>> {
+public abstract class LayerConfiguration<Container extends DataContainer> {
 
     private List<DataContainerFilter> containerFilterList;
 

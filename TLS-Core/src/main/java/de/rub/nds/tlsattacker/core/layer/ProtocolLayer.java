@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ProtocolLayer<
         ContextType extends Context,
         Hint extends LayerProcessingHint,
-        Container extends DataContainer<Context>> {
+        Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -79,8 +79,7 @@ import java.io.InputStream;
     QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
-public abstract class ExtensionMessage extends ModifiableVariableHolder
-        implements DataContainer<Context> {
+public abstract class ExtensionMessage extends ModifiableVariableHolder implements DataContainer {
 
     protected ExtensionType extensionTypeConstant;
 
@@ -103,7 +102,6 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder
         this.extensionTypeConstant = type;
     }
 
-    @Override
     public boolean shouldPrepare() {
         return shouldPrepare;
     }

@@ -29,7 +29,7 @@ import java.util.Objects;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
-        implements DataContainer<Context> {
+        implements DataContainer {
 
     @ModifiableVariableProperty private ModifiableInteger fragmentOffset = null;
 

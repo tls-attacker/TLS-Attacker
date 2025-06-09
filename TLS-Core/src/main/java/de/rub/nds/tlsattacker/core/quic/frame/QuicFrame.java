@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public abstract class QuicFrame extends ModifiableVariableHolder implements DataContainer<Context> {
+public abstract class QuicFrame extends ModifiableVariableHolder implements DataContainer {
 
     protected boolean ackEliciting = true;
 

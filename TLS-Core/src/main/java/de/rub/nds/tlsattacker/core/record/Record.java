@@ -42,7 +42,7 @@ import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Record extends ModifiableVariableHolder implements DataContainer<Context> {
+public class Record extends ModifiableVariableHolder implements DataContainer {
 
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
