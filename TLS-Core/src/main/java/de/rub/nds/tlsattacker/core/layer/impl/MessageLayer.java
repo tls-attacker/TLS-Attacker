@@ -8,6 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -32,25 +41,25 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the
  * {@link RecordLayer}.
  */
-public class MessageLayer
-        extends ProtocolLayer<
-                de.rub.nds.tlsattacker.core.state.Context, LayerProcessingHint, ProtocolMessage> {
+public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -96,8 +105,7 @@ public class MessageLayer
 
     private void processMessage(ProtocolMessage message, List<byte[]> bufferedMessages)
             throws IOException {
-        ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
-                message.getSerializer(context);
+        ProtocolMessageSerializer<? extends ProtocolMessage> serializer = message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
         ProtocolMessageHandler handler = message.getHandler(context);
@@ -107,9 +115,8 @@ public class MessageLayer
         }
         bufferedMessages.add(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
-            boolean isFirstMessage =
-                    (message instanceof CoreClientHelloMessage
-                            || message.getClass() == ServerHelloMessage.class);
+            boolean isFirstMessage = (message instanceof CoreClientHelloMessage
+                    || message.getClass() == ServerHelloMessage.class);
             flushCollectedMessages(
                     message.getProtocolMessageType(), bufferedMessages, isFirstMessage);
         }
@@ -180,11 +187,9 @@ public class MessageLayer
                 return !((ServerHelloMessage) message).hasTls13HelloRetryRequestRandom();
             } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED
                     || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.KEY_UPDATE
-                    || handshakeMessage.getHandshakeMessageType()
-                            == HandshakeMessageType.END_OF_EARLY_DATA) {
+                    || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.END_OF_EARLY_DATA) {
                 return true;
-            } else if (handshakeMessage.getHandshakeMessageType()
-                            == HandshakeMessageType.CLIENT_HELLO
+            } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.CLIENT_HELLO
                     && context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                     && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
                 return true;
@@ -225,8 +230,7 @@ public class MessageLayer
             LayerConfiguration<ProtocolMessage> configuration) {
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage configuredMessage : getUnprocessedConfiguredContainers()) {
-                if (configuredMessage.getProtocolMessageType()
-                        == ProtocolMessageType.APPLICATION_DATA) {
+                if (configuredMessage.getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA) {
                     return (ApplicationMessage) configuredMessage;
                 }
             }
@@ -353,13 +357,11 @@ public class MessageLayer
         try {
             handshakeStream = getLowerLayer().getDataStream();
             type = handshakeStream.readByte();
-            readBytesStream.write(new byte[] {type});
-            handshakeMessage =
-                    MessageFactory.generateHandshakeMessage(
-                            HandshakeMessageType.getMessageType(type), tlsContext);
+            readBytesStream.write(new byte[] { type });
+            handshakeMessage = MessageFactory.generateHandshakeMessage(
+                    HandshakeMessageType.getMessageType(type), tlsContext);
             handshakeMessage.setType(type);
-            byte[] lengthBytes =
-                    handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+            byte[] lengthBytes = handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
             length = ArrayConverter.bytesToInt(lengthBytes);
             readBytesStream.write(lengthBytes);
             handshakeMessage.setLength(length);
@@ -381,12 +383,11 @@ public class MessageLayer
         try {
             handshakeMessage.setCompleteResultingMessage(
                     ArrayConverter.concatenate(
-                            new byte[] {type},
+                            new byte[] { type },
                             ArrayConverter.intToBytes(
                                     length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                             payload));
-            HandshakeMessageParser parser =
-                    handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
+            HandshakeMessageParser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
             parser.parse(handshakeMessage);
             Preparator preparator = handshakeMessage.getPreparator(context);
             preparator.prepareAfterParse();
