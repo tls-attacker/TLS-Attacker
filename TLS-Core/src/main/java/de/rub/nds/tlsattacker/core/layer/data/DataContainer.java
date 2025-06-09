@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import java.io.InputStream;
-
 import de.rub.nds.tlsattacker.core.state.Context;
+import java.io.InputStream;
 
 /**
  * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work

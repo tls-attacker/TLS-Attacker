@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
+import de.rub.nds.modifiablevariable.util.SuppressingTrueBooleanAdapter;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
-import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

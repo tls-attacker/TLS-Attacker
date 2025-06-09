@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2TotalHeaderLengths;
@@ -35,9 +30,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2MessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class SSL2Layer
-        extends ProtocolLayer<Context, LayerProcessingHint, SSL2Message> {
+public class SSL2Layer extends ProtocolLayer<Context, LayerProcessingHint, SSL2Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private Context context;
