@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.state.parser;
 
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import java.io.ByteArrayInputStream;
@@ -71,7 +71,7 @@ public class SessionTicketParser extends Parser<SessionTicket> {
     }
 
     private void parseMAC(SessionTicket sessionTicket) {
-        sessionTicket.setMAC(parseByteArrayField(configMacAlgorithm.getSize()));
+        sessionTicket.setMAC(parseByteArrayField(configMacAlgorithm.getMacLength()));
         LOGGER.debug("Parsed session ticket MAC {}", () -> sessionTicket.getMAC().getValue());
     }
 

@@ -15,7 +15,10 @@ import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
+import org.bouncycastle.util.Arrays;
 
 /**
  * GOST 28147-89 counter mode as defined in RFC 5830 with CryptoPro key meshing as defined in RFC
@@ -23,7 +26,9 @@ import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
  */
 public class GOST28147Cipher extends BaseCipher {
 
-    public static final byte[] C = {
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final byte[] C = {
         (byte) 0x69,
         (byte) 0x00,
         (byte) 0x72,
@@ -58,7 +63,11 @@ public class GOST28147Cipher extends BaseCipher {
         (byte) 0x2B
     };
 
-    private final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT;
+    private static final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT_IMIT;
+
+    public static byte[] getC() {
+        return Arrays.copyOf(C, C.length);
+    }
 
     private int keyCount;
 
@@ -185,5 +194,11 @@ public class GOST28147Cipher extends BaseCipher {
     @Override
     public void setIv(byte[] iv) {
         throw new UnsupportedOperationException("Can only be used as a stream cipher!");
+    }
+
+    @Override
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+        LOGGER.warn("Selected cipher does not support DTLS 1.3 masking. Returning empty mask!");
+        return new byte[0];
     }
 }

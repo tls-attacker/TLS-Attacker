@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -36,12 +37,13 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -60,6 +62,7 @@ import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -88,8 +91,10 @@ public class TlsContext extends LayerContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
+
     /** shared key established during the handshake */
     private byte[] clientApplicationTrafficSecret;
+
     /** shared key established during the handshake */
     private byte[] serverApplicationTrafficSecret;
 
@@ -219,8 +224,10 @@ public class TlsContext extends LayerContext {
 
     /** The renegotiation info of the RenegotiationInfo extension. */
     private byte[] renegotiationInfo;
+
     /** The requestContext from the CertificateRequest message in TLS 1.3. */
     private byte[] certificateRequestContext;
+
     /** Timestamp of the SignedCertificateTimestamp extension. */
     private byte[] signedCertificateTimestamp;
 
@@ -502,9 +509,19 @@ public class TlsContext extends LayerContext {
 
     private Integer peerReceiveLimit;
 
-    private byte[] writeConnectionId;
+    private List<byte[]> writeConnectionIds = new ArrayList<>();
 
-    private byte[] readConnectionID;
+    private Integer writeConnectionIdIndex;
+
+    private List<byte[]> readConnectionIDs = new ArrayList<>();
+
+    private Integer readConnectionIdIndex;
+
+    private Integer numberOfRequestedConnectionIds;
+
+    private List<RecordNumber> dtls13AcknowledgedRecords;
+
+    private List<RecordNumber> dtls13ReceivedAcknowledgedRecords;
 
     private X509Context clientX509Context;
     private X509Context serverX509Context;
@@ -517,8 +534,12 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
-        clientX509Context = new X509Context();
-        serverX509Context = new X509Context();
+        X509CertificateConfig certConfig =
+                context.getConfig()
+                        .getCertificateChainConfig()
+                        .get(CertificateDelegate.PREDEFINED_LEAF_CERT_INDEX);
+        clientX509Context = new X509Context(certConfig);
+        serverX509Context = new X509Context(certConfig);
         context.setTlsContext(this);
         init();
     }
@@ -602,6 +623,8 @@ public class TlsContext extends LayerContext {
         fragmentBuffer = new LinkedList<>();
         dtlsReceivedHandshakeMessageSequences = new HashSet<>();
         dtlsReceivedChangeCipherSpecEpochs = new HashSet<>();
+        readConnectionIdIndex = 0;
+        writeConnectionIdIndex = 0;
         keylogfile = new Keylogfile(this);
     }
 
@@ -737,7 +760,7 @@ public class TlsContext extends LayerContext {
     public void setClientSupportedProtocolVersions(
             ProtocolVersion... clientSupportedProtocolVersions) {
         this.clientSupportedProtocolVersions =
-                new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
+                new ArrayList<>(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public NamedGroup getSelectedGroup() {
@@ -870,7 +893,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientNamedGroupsList(NamedGroup... clientNamedGroupsList) {
-        this.clientNamedGroupsList = new ArrayList(Arrays.asList(clientNamedGroupsList));
+        this.clientNamedGroupsList = new ArrayList<>(Arrays.asList(clientNamedGroupsList));
     }
 
     public List<NamedGroup> getServerNamedGroupsList() {
@@ -882,7 +905,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setServerNamedGroupsList(NamedGroup... serverNamedGroupsList) {
-        this.serverNamedGroupsList = new ArrayList(Arrays.asList(serverNamedGroupsList));
+        this.serverNamedGroupsList = new ArrayList<>(Arrays.asList(serverNamedGroupsList));
     }
 
     public List<ECPointFormat> getServerPointFormatsList() {
@@ -894,7 +917,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setServerPointFormatsList(ECPointFormat... serverPointFormatsList) {
-        this.serverPointFormatsList = new ArrayList(Arrays.asList(serverPointFormatsList));
+        this.serverPointFormatsList = new ArrayList<>(Arrays.asList(serverPointFormatsList));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
@@ -909,7 +932,7 @@ public class TlsContext extends LayerContext {
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
@@ -924,7 +947,7 @@ public class TlsContext extends LayerContext {
     public void setClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
         this.clientSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(clientSupportedCertificateSignAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -936,7 +959,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSNIEntryList(SNIEntry... clientSNIEntryList) {
-        this.clientSNIEntryList = new ArrayList(Arrays.asList(clientSNIEntryList));
+        this.clientSNIEntryList = new ArrayList<>(Arrays.asList(clientSNIEntryList));
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -964,7 +987,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
-        this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
+        this.clientCertificateTypes = new ArrayList<>(Arrays.asList(clientCertificateTypes));
     }
 
     public boolean isReceivedFatalAlert() {
@@ -984,7 +1007,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
-        this.clientPointFormatsList = new ArrayList(Arrays.asList(clientPointFormatsList));
+        this.clientPointFormatsList = new ArrayList<>(Arrays.asList(clientPointFormatsList));
     }
 
     public MaxFragmentLength getMaxFragmentLength() {
@@ -1022,7 +1045,7 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
         this.clientSupportedCompressions =
-                new ArrayList(Arrays.asList(clientSupportedCompressions));
+                new ArrayList<>(Arrays.asList(clientSupportedCompressions));
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
@@ -1051,7 +1074,7 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedCipherSuites(CipherSuite... clientSupportedCipherSuites) {
         this.clientSupportedCipherSuites =
-                new ArrayList(Arrays.asList(clientSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(clientSupportedCipherSuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -1066,7 +1089,7 @@ public class TlsContext extends LayerContext {
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
@@ -1081,7 +1104,7 @@ public class TlsContext extends LayerContext {
     public void setServerSupportedSignatureAlgorithmsCert(
             SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
         this.serverSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1319,8 +1342,8 @@ public class TlsContext extends LayerContext {
         this.clientKeyShareStoreEntryList = clientKeyShareStoreEntryList;
     }
 
-    public void setClientKSEntryList(KeyShareEntry... clientKSEntryList) {
-        this.clientKeyShareStoreEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
+    public void setClientKSEntryList(KeyShareStoreEntry... clientKSEntryList) {
+        this.clientKeyShareStoreEntryList = new ArrayList<>(Arrays.asList(clientKSEntryList));
     }
 
     public KeyShareStoreEntry getServerKeyShareStoreEntry() {
@@ -1357,7 +1380,7 @@ public class TlsContext extends LayerContext {
 
     public void setTokenBindingKeyParameters(
             TokenBindingKeyParameters... tokenBindingKeyParameters) {
-        this.tokenBindingKeyParameters = new ArrayList(Arrays.asList(tokenBindingKeyParameters));
+        this.tokenBindingKeyParameters = new ArrayList<>(Arrays.asList(tokenBindingKeyParameters));
     }
 
     public void setTokenBindingKeyParameters(
@@ -2145,19 +2168,76 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getWriteConnectionId() {
-        return writeConnectionId;
+        if (writeConnectionIdIndex < writeConnectionIds.size()) {
+            return writeConnectionIds.get(writeConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setWriteConnectionId(byte[] writeConnectionId) {
-        this.writeConnectionId = writeConnectionId;
+        this.writeConnectionIds.set(writeConnectionIdIndex, writeConnectionId);
+    }
+
+    public void setWriteConnectionId(byte[] writeConnectionId, int index) {
+        this.writeConnectionIds.set(index, writeConnectionId);
     }
 
     public byte[] getReadConnectionId() {
-        return readConnectionID;
+        if (readConnectionIdIndex < readConnectionIDs.size()) {
+            return readConnectionIDs.get(readConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setReadConnectionId(byte[] readConnectionID) {
-        this.readConnectionID = readConnectionID;
+        this.readConnectionIDs.set(readConnectionIdIndex, readConnectionID);
+    }
+
+    public void setReadConnectionId(byte[] readConnectionID, int index) {
+        this.readConnectionIDs.set(index, readConnectionID);
+    }
+
+    public void addNewWriteConnectionId(byte[] writeConnectionId, boolean spare) {
+        this.writeConnectionIds.add(writeConnectionId);
+        if (!spare) {
+            writeConnectionIdIndex++;
+            getRecordLayer().getEncryptorCipher().getState().setConnectionId(writeConnectionId);
+        }
+    }
+
+    public void addNewReadConnectionId(byte[] readConnectionId, boolean spare) {
+        this.readConnectionIDs.add(readConnectionId);
+        if (!spare) {
+            readConnectionIdIndex++;
+            getRecordLayer().getDecryptorCipher().getState().setConnectionId(readConnectionId);
+        }
+    }
+
+    public Integer getNumberOfRequestedConnectionIds() {
+        return numberOfRequestedConnectionIds;
+    }
+
+    public void setNumberOfRequestedConnectionIds(Integer numberOfRequestedConnectionIds) {
+        this.numberOfRequestedConnectionIds = numberOfRequestedConnectionIds;
+    }
+
+    public List<RecordNumber> getDtls13AcknowledgedRecords() {
+        return dtls13AcknowledgedRecords;
+    }
+
+    public void setDtls13AcknowledgedRecords(List<RecordNumber> dtlsAcknowledgedRecords) {
+        this.dtls13AcknowledgedRecords = dtlsAcknowledgedRecords;
+    }
+
+    public List<RecordNumber> getDtls13ReceivedAcknowledgedRecords() {
+        return dtls13ReceivedAcknowledgedRecords;
+    }
+
+    public void setDtls13ReceivedAcknowledgedRecords(
+            List<RecordNumber> dtlsReceivedAcknowledgedRecords) {
+        this.dtls13ReceivedAcknowledgedRecords = dtlsReceivedAcknowledgedRecords;
     }
 
     public BigInteger getServerEphemeralDhGenerator() {

@@ -8,14 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.HANDSHAKE_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.INITIAL_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ONE_RTT_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.RETRY_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.UNKNOWN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.VERSION_NEGOTIATION;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ZERO_RTT_PACKET;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
@@ -39,10 +31,13 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.PortUnreachableException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -62,18 +57,20 @@ public class QuicPacketLayer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final QuicContext context;
+    private final Context context;
+    private final QuicContext quicContext;
 
     private final QuicDecryptor decryptor;
     private final QuicEncryptor encryptor;
 
     private final Map<QuicPacketType, ArrayList<QuicPacket>> receivedPacketBuffer = new HashMap<>();
 
-    public QuicPacketLayer(QuicContext context) {
+    public QuicPacketLayer(Context context) {
         super(ImplementedLayers.QUICPACKET);
         this.context = context;
-        decryptor = new QuicDecryptor(context);
-        encryptor = new QuicEncryptor(context);
+        this.quicContext = context.getQuicContext();
+        decryptor = new QuicDecryptor(context.getQuicContext());
+        encryptor = new QuicEncryptor(context.getQuicContext());
         Arrays.stream(QuicPacketType.values())
                 .forEach(
                         quicPacketType ->
@@ -87,7 +84,7 @@ public class QuicPacketLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<QuicPacket> sendConfiguration() throws IOException {
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
@@ -116,11 +113,11 @@ public class QuicPacketLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendData(QuicPacketLayerHint hint, byte[] data)
+    public LayerProcessingResult<QuicPacket> sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
-        QuicPacketType type = QuicPacketType.UNKNOWN;
-        if (hint != null && hint.getQuicPacketType() != null) {
-            type = hint.getQuicPacketType();
+        QuicPacketType hintedType = QuicPacketType.UNKNOWN;
+        if (hint != null && hint instanceof QuicPacketLayerHint) {
+            hintedType = ((QuicPacketLayerHint) hint).getQuicPacketType();
         } else {
             LOGGER.warn(
                     "Sending packet without a LayerProcessing hint. Using UNKNOWN as the type.");
@@ -135,7 +132,7 @@ public class QuicPacketLayer
                 addProducedContainer(packet);
                 getLowerLayer().sendData(null, bytes);
             } else {
-                switch (type) {
+                switch (hintedType) {
                     case INITIAL_PACKET:
                         InitialPacket initialPacket = new InitialPacket();
                         byte[] initialPacketBytes = writePacket(data, initialPacket);
@@ -185,24 +182,25 @@ public class QuicPacketLayer
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<QuicPacket> receiveData() {
         try {
             InputStream dataStream;
             do {
-                try {
-                    dataStream = getLowerLayer().getDataStream();
-                    readPackets(dataStream);
-                } catch (IOException ex) {
-                    LOGGER.warn("The lower layer did not produce a data stream: ", ex);
-                    return getLayerResult();
-                }
+                dataStream = getLowerLayer().getDataStream();
+                readPackets(dataStream);
+
             } while (shouldContinueProcessing());
-        } catch (TimeoutException ex) {
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
+        } catch (PortUnreachableException ex) {
+            LOGGER.debug("Destination port undreachable");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
+        } catch (IOException ex) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", ex);
         }
         return getLayerResult();
     }
@@ -216,15 +214,13 @@ public class QuicPacketLayer
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         try {
-            InputStream dataStream;
-            try {
-                dataStream = getLowerLayer().getDataStream();
-                // For now, we ignore the hint.
-                readPackets(dataStream);
-            } catch (IOException ex) {
-                LOGGER.warn("The lower layer did not produce a data stream: ", ex);
-            }
-        } catch (TimeoutException ex) {
+            InputStream dataStream = getLowerLayer().getDataStream();
+            // For now, we ignore the hint.
+            readPackets(dataStream);
+        } catch (PortUnreachableException ex) {
+            LOGGER.debug("Received a ICMP Port Unreachable");
+            LOGGER.trace(ex);
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
@@ -237,6 +233,9 @@ public class QuicPacketLayer
     private void readPackets(InputStream dataStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        if (dataStream.available() == 0) {
+            throw new EndOfStreamException();
+        }
         int firstByte = dataStream.read();
         if (firstByte == 0x00) {
             // If the first byte is 0, it indicates UDP padding. In this case, read all available
@@ -254,7 +253,7 @@ public class QuicPacketLayer
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
                 } else {
                     packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
-                    if (quicVersion != context.getQuicVersion()
+                    if (quicVersion != quicContext.getQuicVersion()
                             && packetType != QuicPacketType.VERSION_NEGOTIATION) {
                         LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
                         packetType = QuicPacketType.UNKNOWN;
@@ -263,7 +262,7 @@ public class QuicPacketLayer
             } else {
                 packetType =
                         QuicPacketType.getPacketTypeFromFirstByte(
-                                context.getQuicVersion(), firstByte);
+                                quicContext.getQuicVersion(), firstByte);
             }
 
             // Store the packet in the buffer for further processing.
@@ -287,7 +286,9 @@ public class QuicPacketLayer
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
 
                 case RETRY_PACKET:
-                    receivedPacketBuffer.get(packetType).add(readRetryPacket(dataStream));
+                    receivedPacketBuffer
+                            .get(packetType)
+                            .add(readRetryPacket(firstByte, dataStream));
                     break;
                 case VERSION_NEGOTIATION:
                     receivedPacketBuffer
@@ -319,7 +320,7 @@ public class QuicPacketLayer
             receivedPacketBuffer.put(packetTypeToProcess, packets);
 
             outputStream.write(packet.getUnprotectedPayload().getValue());
-            context.getReceivedPackets().add(packet.getPacketType());
+            quicContext.getReceivedPackets().add(packet.getPacketType());
         }
 
         if (currentInputStream == null) {
@@ -402,7 +403,7 @@ public class QuicPacketLayer
         decryptor.removeHeaderProtectionInitial(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptInitialPacket(packet);
-        context.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
+        quicContext.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
@@ -419,7 +420,7 @@ public class QuicPacketLayer
         decryptor.removeHeaderProtectionHandshake(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptHandshakePacket(packet);
-        context.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
+        quicContext.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
@@ -435,14 +436,14 @@ public class QuicPacketLayer
         decryptor.removeHeaderProtectionOneRTT(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptOneRTTPacket(packet);
-        context.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
+        quicContext.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
     }
 
-    private RetryPacket readRetryPacket(InputStream dataStream) {
-        RetryPacket packet = new RetryPacket();
+    private RetryPacket readRetryPacket(int flags, InputStream dataStream) {
+        RetryPacket packet = new RetryPacket((byte) flags);
         packet.getParser(context, dataStream).parse(packet);
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
@@ -459,7 +460,7 @@ public class QuicPacketLayer
 
     private void decryptInitialPacketsInBuffer() {
         if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
-                && context.isInitialSecretsInitialized()) {
+                && quicContext.isInitialSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.INITIAL_PACKET,
                     (packetType, packets) ->
@@ -487,7 +488,7 @@ public class QuicPacketLayer
 
     private void decryptHandshakePacketsInBuffer() {
         if (!receivedPacketBuffer.get(QuicPacketType.HANDSHAKE_PACKET).isEmpty()
-                && context.isHandshakeSecretsInitialized()) {
+                && quicContext.isHandshakeSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.HANDSHAKE_PACKET,
                     (packetType, packets) ->
@@ -516,7 +517,7 @@ public class QuicPacketLayer
 
     private void decryptOneRRTPacketsInBuffer() {
         if (!receivedPacketBuffer.get(QuicPacketType.ONE_RTT_PACKET).isEmpty()
-                && context.isApplicationSecretsInitialized()) {
+                && quicContext.isApplicationSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.ONE_RTT_PACKET,
                     (packetType, packets) ->
@@ -544,15 +545,15 @@ public class QuicPacketLayer
 
     private QuicPacketType getPacketTypeToProcessNext() {
         if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
-                && context.isInitialSecretsInitialized()
-                && !context.isHandshakeSecretsInitialized()) {
+                && quicContext.isInitialSecretsInitialized()
+                && !quicContext.isHandshakeSecretsInitialized()) {
             return QuicPacketType.INITIAL_PACKET;
         } else if (!receivedPacketBuffer.get(QuicPacketType.HANDSHAKE_PACKET).isEmpty()
-                && context.isHandshakeSecretsInitialized()
-                && !context.isApplicationSecretsInitialized()) {
+                && quicContext.isHandshakeSecretsInitialized()
+                && !quicContext.isApplicationSecretsInitialized()) {
             return QuicPacketType.HANDSHAKE_PACKET;
         } else if (!receivedPacketBuffer.get(QuicPacketType.ONE_RTT_PACKET).isEmpty()
-                && context.isApplicationSecretsInitialized()) {
+                && quicContext.isApplicationSecretsInitialized()) {
             return QuicPacketType.ONE_RTT_PACKET;
         }
         return null;
@@ -569,11 +570,13 @@ public class QuicPacketLayer
     public void sendAck(byte[] data) {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         try {
-            if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
+            if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
                 getLowerLayer().sendData(null, writePacket(data, new InitialPacket()));
-            } else if (context.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
+            } else if (quicContext.getReceivedPackets().getLast()
+                    == QuicPacketType.HANDSHAKE_PACKET) {
                 getLowerLayer().sendData(null, writePacket(data, new HandshakePacket()));
-            } else if (context.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
+            } else if (quicContext.getReceivedPackets().getLast()
+                    == QuicPacketType.ONE_RTT_PACKET) {
                 getLowerLayer().sendData(null, writePacket(data, new OneRTTPacket()));
             }
         } catch (IOException | CryptoException e) {

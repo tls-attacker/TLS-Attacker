@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * Contains a list of {@link DataContainer} with additional information about how to send and
@@ -32,6 +33,7 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
         this.layerType = layerType;
     }
 
+    @SafeVarargs
     public LayerConfiguration(LayerType layerType, Container... containers) {
         this.containerList = Arrays.asList(containers);
         this.layerType = layerType;
@@ -65,4 +67,6 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
     public void setContainerFilterList(List<DataContainerFilter> containerFilterList) {
         this.containerFilterList = containerFilterList;
     }
+
+    public abstract boolean shouldBeLogged(Level level);
 }

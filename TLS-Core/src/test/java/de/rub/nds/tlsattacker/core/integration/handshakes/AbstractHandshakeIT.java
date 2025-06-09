@@ -17,9 +17,13 @@ import com.github.dockerjava.api.model.Image;
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.constants.TransportType;
-import de.rub.nds.tls.subject.docker.*;
+import de.rub.nds.tls.subject.docker.DockerClientManager;
+import de.rub.nds.tls.subject.docker.DockerTlsClientInstance;
+import de.rub.nds.tls.subject.docker.DockerTlsInstance;
+import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsClientInstanceBuilder;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsServerInstanceBuilder;
+import de.rub.nds.tls.subject.docker.DockerTlsServerInstance;
 import de.rub.nds.tls.subject.docker.build.DockerBuilder;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -44,7 +48,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -402,7 +408,7 @@ public abstract class AbstractHandshakeIT {
             config.setIgnoreRetransmittedCssInDtls(true);
             config.setAddRetransmissionsToWorkflowTraceInDtls(false);
         }
-        if (cipherSuite.isTLS13()
+        if (cipherSuite.isTls13()
                 || AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite).isEC()) {
             config.setAddECPointFormatExtension(Boolean.TRUE);
             config.setAddEllipticCurveExtension(Boolean.TRUE);
@@ -410,8 +416,9 @@ public abstract class AbstractHandshakeIT {
             config.setAddECPointFormatExtension(Boolean.FALSE);
             config.setAddEllipticCurveExtension(Boolean.FALSE);
         }
+        config.setDefaultClientKeyShareNamedGroups(getNamedGroupsToTest());
         config.setWorkflowTraceType(workflowTraceType);
-        if (cipherSuite.isTLS13()) {
+        if (cipherSuite.isTls13()) {
             config.setAddExtendedMasterSecretExtension(false);
             config.setAddEncryptThenMacExtension(false);
             config.setAddSupportedVersionsExtension(true);

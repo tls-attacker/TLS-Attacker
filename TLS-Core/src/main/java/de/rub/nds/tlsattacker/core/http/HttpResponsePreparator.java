@@ -32,15 +32,22 @@ public class HttpResponsePreparator extends HttpMessagePreparator<HttpResponseMe
         message.setResponseContent(chooser.getConfig().getDefaultApplicationMessageData());
 
         for (HttpHeader header : message.getHeader()) {
-            if (header instanceof ContentLengthHeader) {
-                ((ContentLengthHeader) header)
-                        .setConfigLength(
-                                message.getResponseContent()
-                                        .getValue()
-                                        .getBytes(StandardCharsets.ISO_8859_1)
-                                        .length);
-            }
-            header.getPreparator(httpContext).prepare();
+            prepareSingleHeader(header);
         }
+        for (HttpHeader header : message.getTrailer()) {
+            prepareSingleHeader(header);
+        }
+    }
+
+    private void prepareSingleHeader(HttpHeader header) {
+        if (header instanceof ContentLengthHeader) {
+            ((ContentLengthHeader) header)
+                    .setConfigLength(
+                            message.getResponseContent()
+                                    .getValue()
+                                    .getBytes(StandardCharsets.ISO_8859_1)
+                                    .length);
+        }
+        header.getPreparator(httpContext.getContext()).prepare();
     }
 }

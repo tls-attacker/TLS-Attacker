@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
 import java.io.InputStream;
@@ -31,7 +31,7 @@ public class ConnectionIdExtensionParser extends ExtensionParser<ConnectionIdExt
     }
 
     private void parseConnectionIdLength(ConnectionIdExtensionMessage msg) {
-        msg.setConnectionIdLength(parseIntField(ExtensionByteLength.CONNECTION_ID_LENGTH));
+        msg.setConnectionIdLength(parseIntField(HandshakeByteLength.CONNECTION_ID_LENGTH));
         LOGGER.debug("ConnectionId length: " + msg.getConnectionIdLength().getValue());
     }
 

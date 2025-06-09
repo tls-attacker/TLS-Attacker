@@ -108,11 +108,7 @@ public class LayerStack {
 
         // Gather results
         List<LayerProcessingResult<?>> resultList = new LinkedList<>();
-        getLayerList()
-                .forEach(
-                        layer -> {
-                            resultList.add(layer.getLayerResult());
-                        });
+        getLayerList().forEach(layer -> resultList.add(layer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }
 
@@ -131,7 +127,7 @@ public class LayerStack {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
-                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
+                    "Illegal LayerConfiguration list provided. Each layer needs a configuration entry. Expected "
                             + getLayerList().size()
                             + " but found "
                             + layerConfigurationList.size());
@@ -169,7 +165,10 @@ public class LayerStack {
                     remainingTries--;
                 }
             } else {
-                while (quicFrameLayer.get().shouldContinueProcessing()) {
+                // TODO: If we eventually decide to drop this part of the code, the
+                // hasExperienceTimeout can be removed as well in the QuicFrameLayer
+                while (quicFrameLayer.get().shouldContinueProcessing()
+                        && !((QuicFrameLayer) quicFrameLayer.get()).hasExperiencedTimeout()) {
                     quicFrameLayer.get().receiveData();
                 }
             }
@@ -186,9 +185,8 @@ public class LayerStack {
                 } catch (UnsupportedOperationException e) {
                     // most layers dont know how to receive data themselves
                     LOGGER.debug(
-                            "Skipping layer "
-                                    + layer.getLayerType()
-                                    + ". Does not support direct data read.");
+                            "Skipping layer {}. Does not support direct data read.",
+                            layer.getLayerType());
                 }
             }
         }
@@ -210,7 +208,16 @@ public class LayerStack {
                 return layer;
             }
         }
-        throw new RuntimeException("No configured layer found. All layers are ignored.");
+        StringBuilder debugInformation = new StringBuilder();
+        for (ProtocolLayer layer : getLayerList()) {
+            debugInformation.append(layer.getLayerType());
+            debugInformation.append(" ");
+            debugInformation.append(layer.getLayerConfiguration());
+            debugInformation.append("\n");
+        }
+        throw new RuntimeException(
+                "No configured layer found. All layers are ignored. "
+                        + debugInformation.toString());
     }
 
     /**

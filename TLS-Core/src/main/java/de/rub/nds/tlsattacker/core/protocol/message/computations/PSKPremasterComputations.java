@@ -23,6 +23,14 @@ public class PSKPremasterComputations extends KeyExchangeComputations {
         this.psk = psk;
     }
 
+    public ModifiableByteArray getPsk() {
+        return psk;
+    }
+
+    public void setPsk(ModifiableByteArray psk) {
+        this.psk = psk;
+    }
+
     @Override
     public ModifiableByteArray getPremasterSecret() {
         return premasterSecret;

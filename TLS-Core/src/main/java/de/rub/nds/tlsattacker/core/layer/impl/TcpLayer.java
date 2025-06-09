@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,15 +27,15 @@ import java.io.IOException;
  */
 public class TcpLayer extends ProtocolLayer<LayerContext, LayerProcessingHint, TcpStreamContainer> {
 
-    private final TcpContext context;
+    private final Context context;
 
-    public TcpLayer(TcpContext context) {
+    public TcpLayer(Context context) {
         super(ImplementedLayers.TCP);
         this.context = context;
     }
 
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<TcpStreamContainer> sendConfiguration() throws IOException {
         LayerConfiguration<TcpStreamContainer> configuration = getLayerConfiguration();
         if (configuration != null) {
             for (TcpStreamContainer container : getUnprocessedConfiguredContainers()) {
@@ -50,7 +50,7 @@ public class TcpLayer extends ProtocolLayer<LayerContext, LayerProcessingHint, T
 
     /** Sends data over the TCP socket. */
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
+    public LayerProcessingResult<TcpStreamContainer> sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
         TcpStreamContainer container;
         if (getUnprocessedConfiguredContainers().isEmpty()) {
@@ -87,8 +87,8 @@ public class TcpLayer extends ProtocolLayer<LayerContext, LayerProcessingHint, T
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
-        return new LayerProcessingResult(null, getLayerType(), true);
+    public LayerProcessingResult<TcpStreamContainer> receiveData() {
+        return new LayerProcessingResult<TcpStreamContainer>(null, getLayerType(), true);
     }
 
     private TcpTransportHandler getTransportHandler() {

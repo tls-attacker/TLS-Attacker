@@ -10,16 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.x509attacker.constants.X509PublicKeyType;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +39,9 @@ public class CertificateVerifyPreparator
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateVerifyMessage");
-        algorithm = chooseSignatureAndHashAlgorithm();
+        algorithm =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(
+                        chooser, chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS13);
         signature = new byte[0];
         try {
             signature = createSignature();
@@ -54,7 +55,7 @@ public class CertificateVerifyPreparator
 
     private byte[] createSignature() throws CryptoException {
         byte[] toBeSigned = chooser.getContext().getTlsContext().getDigest().getRawBytes();
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned =
                         ArrayConverter.concatenate(
@@ -91,7 +92,6 @@ public class CertificateVerifyPreparator
             return SSLUtils.calculateSSLCertificateVerifySignature(
                     handshakeMessageContent, masterSecret);
         }
-        algorithm = chooser.getSelectedSigHashAlgorithm();
         TlsSignatureUtil signatureUtil = new TlsSignatureUtil();
         signatureUtil.computeSignature(
                 chooser,
@@ -101,52 +101,6 @@ public class CertificateVerifyPreparator
         return msg.getSignatureComputations(algorithm.getSignatureAlgorithm())
                 .getSignatureBytes()
                 .getValue();
-    }
-
-    protected SignatureAndHashAlgorithm chooseSignatureAndHashAlgorithm() {
-        SignatureAndHashAlgorithm signHashAlgo;
-        if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            X509PublicKeyType publicKeyType;
-            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
-                publicKeyType =
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getServerX509Context()
-                                .getChooser()
-                                .getSubjectPublicKeyType();
-            } else {
-                publicKeyType =
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getClientX509Context()
-                                .getChooser()
-                                .getSubjectPublicKeyType();
-            }
-            List<SignatureAndHashAlgorithm> candidateList = new LinkedList<>();
-            for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm :
-                    SignatureAndHashAlgorithm.getImplemented()) {
-                if (publicKeyType.canBeUsedWithSignatureAlgorithm(
-                        tempSignatureAndHashAlgorithm.getSignatureAlgorithm())) {
-                    candidateList.add(tempSignatureAndHashAlgorithm);
-                }
-            }
-
-            List<SignatureAndHashAlgorithm> peerSupported;
-            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
-                peerSupported = chooser.getClientSupportedSignatureAndHashAlgorithms();
-            } else {
-                peerSupported = chooser.getServerSupportedSignatureAndHashAlgorithms();
-            }
-            candidateList.retainAll(peerSupported);
-            if (candidateList.isEmpty()) {
-                signHashAlgo = chooser.getSelectedSigHashAlgorithm();
-            } else {
-                signHashAlgo = candidateList.get(0);
-            }
-        } else {
-            signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
-        }
-        return signHashAlgo;
     }
 
     private void prepareSignature(CertificateVerifyMessage msg) {

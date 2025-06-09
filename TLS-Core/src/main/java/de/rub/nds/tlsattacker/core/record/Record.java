@@ -17,6 +17,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -40,7 +42,7 @@ import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+public class Record extends ModifiableVariableHolder implements DataContainer {
 
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
@@ -75,6 +77,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
+    /** The epoch number for DTLS */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
@@ -86,8 +89,17 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
 
+    /** The encrypted sequence number for DTLS 1.3 */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableByteArray encryptedSequenceNumber;
+
+    /** The connectin ID for DTLS */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray connectionId;
+
+    /** DTLS 1.3 unified header */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    private ModifiableByte unifiedHeader;
 
     private RecordCryptoComputations computations;
 
@@ -175,6 +187,20 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
+    public ModifiableByteArray getEncryptedSequenceNumber() {
+        return encryptedSequenceNumber;
+    }
+
+    public void setEncryptedSequenceNumber(ModifiableByteArray encryptedSequenceNumber) {
+        this.encryptedSequenceNumber = encryptedSequenceNumber;
+    }
+
+    public void setEncryptedSequenceNumber(byte[] encryptedSequenceNumber) {
+        this.encryptedSequenceNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedSequenceNumber, encryptedSequenceNumber);
+    }
+
     public ModifiableByteArray getConnectionId() {
         return connectionId;
     }
@@ -254,6 +280,31 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
+    public ModifiableByte getUnifiedHeader() {
+        return unifiedHeader;
+    }
+
+    public void setUnifiedHeader(byte unifiedHeader) {
+        this.unifiedHeader =
+                ModifiableVariableFactory.safelySetValue(this.unifiedHeader, unifiedHeader);
+    }
+
+    public void setUnifiedHeader(ModifiableByte unifiedHeader) {
+        this.unifiedHeader = unifiedHeader;
+    }
+
+    public boolean isUnifiedHeaderCidPresent() {
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.CID_PRESENT) != 0;
+    }
+
+    public boolean isUnifiedHeaderSqnLong() {
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.SQN_LONG) != 0;
+    }
+
+    public boolean isUnifiedHeaderLengthPresent() {
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.LENGTH_PRESENT) != 0;
+    }
+
     public ModifiableByteArray getCompleteRecordBytes() {
         return completeRecordBytes;
     }
@@ -284,14 +335,43 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     @Override
     public String toString() {
-        return "Record{"
-                + "contentType="
-                + contentType
-                + ", protocolVersion="
-                + protocolVersion
-                + ", length="
-                + length
-                + '}';
+
+        String contentTypeString;
+        if (contentType == null || contentType.getOriginalValue() == null) {
+            contentTypeString = "null";
+        } else {
+            ProtocolMessageType type = ProtocolMessageType.getContentType(contentType.getValue());
+            if (type == null) {
+                contentTypeString = "UNKNOWN";
+            } else {
+                contentTypeString = type.name();
+            }
+        }
+        String protocolVersionString;
+        if (protocolVersion == null || protocolVersion.getOriginalValue() == null) {
+            protocolVersionString = "null";
+        } else {
+            ProtocolVersion version =
+                    ProtocolVersion.getProtocolVersion(protocolVersion.getValue());
+            if (version == null) {
+                protocolVersionString = "UNKNOWN";
+            } else {
+                protocolVersionString = version.name();
+            }
+        }
+        String lengthString;
+        if (length == null || length.getOriginalValue() == null) {
+            lengthString = "null";
+        } else {
+            lengthString = length.getValue().toString();
+        }
+        return "Record["
+                + contentTypeString
+                + ", "
+                + protocolVersionString
+                + ", "
+                + lengthString
+                + ']';
     }
 
     @Override
@@ -299,13 +379,13 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         String stringContentType = "unspecified";
         String stringProtocolVersion = "unspecified";
         String stringLength = "unspecified";
-        if (contentType != null) {
+        if (contentType != null && contentType.getValue() != null) {
             stringContentType = contentType.getValue().toString();
         }
-        if (protocolVersion != null) {
+        if (protocolVersion != null && protocolVersion.getValue() != null) {
             stringContentType = ArrayConverter.bytesToHexString(protocolVersion.getValue());
         }
-        if (length != null) {
+        if (length != null && length.getValue() != null) {
             stringLength = length.getValue().toString();
         } else if (maxRecordLengthConfig != null) {
             stringLength = maxRecordLengthConfig.toString();
@@ -328,8 +408,10 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         hash = 29 * hash + Objects.hashCode(this.length);
         hash = 29 * hash + Objects.hashCode(this.epoch);
         hash = 29 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 29 * hash + Objects.hashCode(this.encryptedSequenceNumber);
         hash = 29 * hash + Objects.hashCode(this.connectionId);
         hash = 29 * hash + Objects.hashCode(this.computations);
+        hash = 29 * hash + Objects.hashCode(this.unifiedHeader);
         return hash;
     }
 
@@ -360,10 +442,16 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         if (!Objects.equals(this.sequenceNumber, other.sequenceNumber)) {
             return false;
         }
+        if (!Objects.equals(this.encryptedSequenceNumber, other.encryptedSequenceNumber)) {
+            return false;
+        }
         if (!Objects.equals(this.connectionId, other.connectionId)) {
             return false;
         }
         if (!Objects.equals(this.computations, other.computations)) {
+            return false;
+        }
+        if (!Objects.equals(this.unifiedHeader, other.unifiedHeader)) {
             return false;
         }
         return true;
@@ -386,22 +474,23 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     // TODO Fix this mess for records
     @Override
-    public RecordParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RecordParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    public RecordParser getParser(Context context, InputStream stream) {
+        return new RecordParser(
+                stream, context.getTlsContext().getLastRecordVersion(), context.getTlsContext());
     }
 
     @Override
-    public RecordPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordPreparator(tlsContext, this, null, contentMessageType, null);
+    public RecordPreparator getPreparator(Context context) {
+        return new RecordPreparator(context.getTlsContext(), this, null, contentMessageType, null);
     }
 
     @Override
-    public RecordSerializer getSerializer(TlsContext context) {
+    public RecordSerializer getSerializer(Context context) {
         return new RecordSerializer(this);
     }
 
     @Override
-    public Handler<Record> getHandler(TlsContext tlsContext) {
+    public Handler<Record> getHandler(Context context) {
         return null; // TODO
     }
 }

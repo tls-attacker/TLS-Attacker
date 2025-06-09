@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -63,12 +63,12 @@ public class RecordBlockCipherTest {
         context.setServerRandom(new byte[] {0});
         context.setMasterSecret(new byte[] {0});
         for (CipherSuite suite : CipherSuite.getImplemented()) {
-            if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
+            if (!suite.isSCSV() && suite.getCipherType() == CipherType.BLOCK) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
-                        if (version == ProtocolVersion.SSL2 || version.isTLS13()) {
+                        if (version == ProtocolVersion.SSL2 || version.is13()) {
                             continue;
                         }
                         if (!suite.isSupportedInProtocol(version)) {
@@ -81,7 +81,7 @@ public class RecordBlockCipherTest {
                                         new CipherState(
                                                 context.getChooser().getSelectedProtocolVersion(),
                                                 context.getChooser().getSelectedCipherSuite(),
-                                                KeySetGenerator.generateKeySet(context),
+                                                KeyDerivator.generateKeySet(context),
                                                 context.isExtensionNegotiated(
                                                         ExtensionType.ENCRYPT_THEN_MAC)));
                     }

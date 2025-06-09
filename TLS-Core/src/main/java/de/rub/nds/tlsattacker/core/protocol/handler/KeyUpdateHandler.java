@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
@@ -65,7 +65,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                 tlsContext.getChooser().getClientApplicationTrafficSecret(),
                                 HKDFunction.TRAFFICUPD,
                                 new byte[0],
-                                mac.getMacLength());
+                                mac.getMacLength(),
+                                tlsContext.getChooser().getSelectedProtocolVersion());
 
                 tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
                 LOGGER.debug(
@@ -80,7 +81,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                 tlsContext.getChooser().getServerApplicationTrafficSecret(),
                                 HKDFunction.TRAFFICUPD,
                                 new byte[0],
-                                mac.getMacLength());
+                                mac.getMacLength(),
+                                tlsContext.getChooser().getSelectedProtocolVersion());
 
                 tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
                 LOGGER.debug(
@@ -97,7 +99,7 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
         try {
             LOGGER.debug("Generating new KeySet");
             KeySet keySet =
-                    KeySetGenerator.generateKeySet(
+                    KeyDerivator.generateKeySet(
                             tlsContext,
                             tlsContext.getChooser().getSelectedProtocolVersion(),
                             keySetType);
@@ -139,7 +141,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getClientApplicationTrafficSecret(),
                                     HKDFunction.IV,
                                     new byte[0],
-                                    AEAD_IV_LENGTH));
+                                    AEAD_IV_LENGTH,
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
 
                     keySet.setClientWriteKey(
                             HKDFunction.expandLabel(
@@ -147,11 +150,12 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getClientApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
-                                            .getKeySize()));
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
                 } else {
 
                     keySet.setServerWriteIv(
@@ -160,7 +164,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getServerApplicationTrafficSecret(),
                                     HKDFunction.IV,
                                     new byte[0],
-                                    AEAD_IV_LENGTH));
+                                    AEAD_IV_LENGTH,
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
 
                     keySet.setServerWriteKey(
                             HKDFunction.expandLabel(
@@ -168,11 +173,12 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getServerApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
-                                            .getKeySize()));
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
                 }
 
                 RecordCipher recordCipherClient =
@@ -190,7 +196,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getServerApplicationTrafficSecret(),
                                     HKDFunction.IV,
                                     new byte[0],
-                                    AEAD_IV_LENGTH));
+                                    AEAD_IV_LENGTH,
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
 
                     keySet.setServerWriteKey(
                             HKDFunction.expandLabel(
@@ -198,11 +205,12 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getServerApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
-                                            .getKeySize()));
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
 
                 } else {
 
@@ -212,7 +220,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getClientApplicationTrafficSecret(),
                                     HKDFunction.IV,
                                     new byte[0],
-                                    AEAD_IV_LENGTH));
+                                    AEAD_IV_LENGTH,
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
 
                     keySet.setClientWriteKey(
                             HKDFunction.expandLabel(
@@ -220,11 +229,12 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
                                     tlsContext.getClientApplicationTrafficSecret(),
                                     HKDFunction.KEY,
                                     new byte[0],
-                                    AlgorithmResolver.getCipher(
-                                                    tlsContext
-                                                            .getChooser()
-                                                            .getSelectedCipherSuite())
-                                            .getKeySize()));
+                                    tlsContext
+                                            .getChooser()
+                                            .getSelectedCipherSuite()
+                                            .getCipherAlgorithm()
+                                            .getKeySize(),
+                                    tlsContext.getChooser().getSelectedProtocolVersion()));
                 }
 
                 RecordCipher recordCipherClient =

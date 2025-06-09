@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.http.header;
 
 import de.rub.nds.tlsattacker.core.http.header.preparator.HostHeaderPreparator;
 import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class HostHeader extends HttpHeader {
@@ -21,22 +21,22 @@ public class HostHeader extends HttpHeader {
     public HostHeader() {}
 
     @Override
-    public HostHeaderPreparator getPreparator(HttpContext httpContext) {
-        return new HostHeaderPreparator(httpContext.getChooser(), this);
+    public Preparator<HostHeader> getPreparator(Context context) {
+        return new HostHeaderPreparator(context.getChooser(), this);
     }
 
     @Override
-    public Parser<?> getParser(HttpContext context, InputStream stream) {
+    public Parser<HostHeader> getParser(Context context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public Serializer<?> getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(Context context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<?> getHandler(HttpContext context) {
+    public Handler<HostHeader> getHandler(Context context) {
         return null;
     }
 }

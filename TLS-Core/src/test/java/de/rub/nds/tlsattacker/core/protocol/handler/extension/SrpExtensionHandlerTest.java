@@ -30,6 +30,6 @@ public class SrpExtensionHandlerTest
         msg.setSrpIdentifier(SRP_IDENTIFIER);
         msg.setSrpIdentifierLength(SRP_IDENTIFIER_LENGTH);
         handler.adjustTLSExtensionContext(msg);
-        assertArrayEquals(SRP_IDENTIFIER, context.getSecureRemotePasswordExtensionIdentifier());
+        assertArrayEquals(SRP_IDENTIFIER, tlsContext.getSecureRemotePasswordExtensionIdentifier());
     }
 }

@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDataMessage> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EndOfEarlyDataHandler(TlsContext tlsContext) {

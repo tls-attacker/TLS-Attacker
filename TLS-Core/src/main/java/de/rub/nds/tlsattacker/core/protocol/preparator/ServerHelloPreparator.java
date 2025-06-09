@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -75,12 +74,12 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         CipherSuite selectedCipherSuite =
                 CipherSuite.getCipherSuite(msg.getSelectedCipherSuite().getValue());
         if (selectedCipherSuite != null
-                && AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite) != null
-                && !AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite).isEC()) {
+                && selectedCipherSuite.getKeyExchangeAlgorithm() != null
+                && selectedCipherSuite.getKeyExchangeAlgorithm().isEC()) {
             forbiddenExtensionTypes.add(ExtensionType.EC_POINT_FORMATS);
         }
 
-        if (selectedCipherSuite != null && selectedCipherSuite.isTLS13()) {
+        if (selectedCipherSuite != null && selectedCipherSuite.isTls13()) {
             forbiddenExtensionTypes.addAll(ExtensionType.getNonTls13Extensions());
         } else {
             forbiddenExtensionTypes.addAll(ExtensionType.getTls13OnlyExtensions());
@@ -141,7 +140,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().is13()) {
             msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
@@ -153,6 +152,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
+        } else if (chooser.getConfig().getHighestProtocolVersion().isDTLS13()) {
+            ourVersion = ProtocolVersion.DTLS12;
         }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
@@ -171,8 +172,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 } else {
                     msg.setProtocolVersion(clientVersion.getValue());
                 }
-            }
-            if (!chooser.getHighestClientProtocolVersion().isDTLS()
+            } else if (!chooser.getHighestClientProtocolVersion().isDTLS()
                     && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
@@ -191,7 +191,6 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         // ECH mandates to replace the last 8 bytes of the client random with deterministic values
         // Section 7.2 esni_draft_14
 
-        TlsContext tlsContext = chooser.getContext().getTlsContext();
         ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
         byte[] clientRandom = innerClientHello.getRandom().getValue();
         byte[] serverRandom = chooser.getServerRandom();
@@ -201,7 +200,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         byte[] acceptConfirmation = new byte[] {0, 0, 0, 0, 0, 0, 0, 0};
 
         // serialize server hello and replace last 8 bytes of server random with null bytes
-        byte[] serverHello = msg.getSerializer(tlsContext).serializeHandshakeMessageContent();
+        byte[] serverHello =
+                msg.getSerializer(chooser.getContext()).serializeHandshakeMessageContent();
         byte[] type = new byte[] {HandshakeMessageType.SERVER_HELLO.getValue()};
         byte[] length = ArrayConverter.intToBytes(serverHello.length, 3);
         serverHello = ArrayConverter.concatenate(type, length, serverHello);
@@ -231,7 +231,13 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             byte[] extract = HKDFunction.extract(hkdfAlgorithm, null, clientRandom);
             LOGGER.debug("Extract: {}", extract);
             acceptConfirmation =
-                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+                    HKDFunction.expandLabel(
+                            hkdfAlgorithm,
+                            extract,
+                            label,
+                            transcriptEchConf,
+                            8,
+                            chooser.getSelectedProtocolVersion());
             LOGGER.debug("Accept Confirmation: {}", acceptConfirmation);
         } catch (CryptoException e) {
             LOGGER.warn("Could not calculate accept confirmation");

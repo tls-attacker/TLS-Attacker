@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.StopSendingFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.StopSendingFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.StopSendingFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.StopSendingFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -41,22 +41,22 @@ public class StopSendingFrame extends QuicFrame {
     }
 
     @Override
-    public StopSendingFrameHandler getHandler(QuicContext context) {
-        return new StopSendingFrameHandler(context);
+    public StopSendingFrameHandler getHandler(Context context) {
+        return new StopSendingFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public StopSendingFrameSerializer getSerializer(QuicContext context) {
+    public StopSendingFrameSerializer getSerializer(Context context) {
         return new StopSendingFrameSerializer(this);
     }
 
     @Override
-    public StopSendingFramePreparator getPreparator(QuicContext context) {
+    public StopSendingFramePreparator getPreparator(Context context) {
         return new StopSendingFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public StopSendingFrameParser getParser(QuicContext context, InputStream stream) {
+    public StopSendingFrameParser getParser(Context context, InputStream stream) {
         return new StopSendingFrameParser(stream);
     }
 

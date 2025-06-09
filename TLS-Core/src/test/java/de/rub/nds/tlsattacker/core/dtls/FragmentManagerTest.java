@@ -12,7 +12,6 @@ import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.fragment;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ public class FragmentManagerTest {
 
     @BeforeEach
     public void setUp() {
-        manager = new FragmentManager(Config.createConfig());
+        manager = new FragmentManager(new Config());
     }
 
     @Test

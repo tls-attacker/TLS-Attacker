@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -999,9 +998,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangePeerPublicKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
-        if (algorithm.isKeyExchangeStaticDh()) {
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
                     .getChooser()
@@ -1017,9 +1015,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangeModulus() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
-        if (algorithm.isKeyExchangeStaticDh()) {
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext().getPeerX509Context().getChooser().getSubjectDhModulus();
         } else {
             return getServerEphemeralDhModulus();
@@ -1028,9 +1025,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangeGenerator() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
-        if (algorithm.isKeyExchangeStaticDh()) {
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
                     .getChooser()
@@ -1042,9 +1038,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangePrivateKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
-        if (algorithm.isKeyExchangeStaticDh()) {
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        if (algorithm != null && algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getTalkingX509Context()
                     .getChooser()
@@ -1060,9 +1055,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Point getEcKeyExchangePeerPublicKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
-        if (algorithm.isKeyExchangeStaticEcdh()) {
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        if (algorithm != null && algorithm.isKeyExchangeStaticEcdh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
                     .getChooser()
@@ -1078,9 +1072,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getEcKeyExchangePrivateKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
-        if (algorithm.isKeyExchangeStaticEcdh()) {
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        if (algorithm != null && algorithm.isKeyExchangeStaticEcdh()) {
             return context.getTlsContext()
                     .getTalkingX509Context()
                     .getChooser()
@@ -1164,6 +1157,15 @@ public class DefaultChooser extends Chooser {
                 context.getTlsContext().setEchServerKeyShareEntry(keyShareEntry);
             }
             return keyShareEntry;
+        }
+    }
+
+    @Override
+    public Integer getNumberOfRequestedConnectionIds() {
+        if (context.getTlsContext().getNumberOfRequestedConnectionIds() != null) {
+            return context.getTlsContext().getNumberOfRequestedConnectionIds();
+        } else {
+            return config.getDefaultNumberOfRequestedConnectionIds();
         }
     }
 

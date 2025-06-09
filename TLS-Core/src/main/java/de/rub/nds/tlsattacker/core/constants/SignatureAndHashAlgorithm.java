@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ public enum SignatureAndHashAlgorithm {
     ECDSA_SHA384(0x0503, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384),
     ECDSA_SHA512(0x0603, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512),
     SM2_SM3(0x0708, SignatureAlgorithm.ECDSA, HashAlgorithm.SM3),
-    ED25519(0x080, SignatureAlgorithm.ED25519, HashAlgorithm.SHA256),
+    ED25519(0x0807, SignatureAlgorithm.ED25519, HashAlgorithm.SHA256),
     ED448(0x0808, SignatureAlgorithm.ED448, HashAlgorithm.SHA3_256),
     /* RSASSA-PSS algorithms with public key OID rsaEncryption */
     RSA_PSS_RSAE_SHA256(0x0804, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA256),
@@ -115,6 +116,9 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(RSA_PSS_RSAE_SHA256);
         algoList.add(RSA_PSS_RSAE_SHA384);
         algoList.add(RSA_PSS_RSAE_SHA512);
+        algoList.add(RSA_PSS_PSS_SHA256);
+        algoList.add(RSA_PSS_PSS_SHA384);
+        algoList.add(RSA_PSS_PSS_SHA512);
         /**
          * Deactivated since the Protocol-Attacker rework, as Protocol-Attacker does not support
          * them.
@@ -286,5 +290,25 @@ public enum SignatureAndHashAlgorithm {
 
     public boolean isGrease() {
         return this.name().startsWith("GREASE");
+    }
+
+    public boolean isRsaPssRsae() {
+        return this == RSA_PSS_RSAE_SHA256
+                || this == RSA_PSS_RSAE_SHA384
+                || this == RSA_PSS_RSAE_SHA512;
+    }
+
+    public boolean suitableForSignatureKeyType(X509PublicKeyType publicKeyType) {
+        if (isRsaPssRsae()) {
+            return publicKeyType == X509PublicKeyType.RSA;
+        } else {
+            try {
+                boolean usable =
+                        publicKeyType.canBeUsedWithSignatureAlgorithm(this.getSignatureAlgorithm());
+                return usable;
+            } catch (UnsupportedOperationException ex) {
+                return false;
+            }
+        }
     }
 }

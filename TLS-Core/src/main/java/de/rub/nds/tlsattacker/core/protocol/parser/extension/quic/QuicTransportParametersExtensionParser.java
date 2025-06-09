@@ -32,10 +32,10 @@ public class QuicTransportParametersExtensionParser
 
             if (types == QuicTransportParameterEntryTypes.GOOGLE
                     || types == QuicTransportParameterEntryTypes.PROVISIONAL_PARAMETERS) {
-                byte typeExtraByte = parseByteField(1);
+                parseByteField(1);
             } else if (types == QuicTransportParameterEntryTypes.UNKNOWN) {
                 // upon finding unknown type, parse all bytes
-                byte[] junk = parseTillEnd();
+                parseTillEnd();
                 break;
             }
             byte length = parseByteField(1);

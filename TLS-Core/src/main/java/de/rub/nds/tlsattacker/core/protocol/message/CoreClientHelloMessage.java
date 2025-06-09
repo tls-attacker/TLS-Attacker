@@ -28,15 +28,19 @@ import org.apache.logging.log4j.Logger;
 public abstract class CoreClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
     /** compression length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger compressionLength;
+
     /** cipher suite byte length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger cipherSuiteLength;
+
     /** array of supported CipherSuites */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherSuites;
+
     /** array of supported compressions */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
@@ -110,6 +114,11 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddEarlyDataExtension()) {
                 addExtension(new EarlyDataExtensionMessage());
             }
+
+            if (tlsConfig.isAddDebugExtension()) {
+                addExtension(new DebugExtensionMessage());
+            }
+
             if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
                 addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
             }

@@ -18,13 +18,47 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -74,7 +108,7 @@ public class ServerHelloMessage extends HelloMessage {
             };
 
     public static byte[] getHelloRetryRequestRandom() {
-        return HELLO_RETRY_REQUEST_RANDOM;
+        return Arrays.copyOf(HELLO_RETRY_REQUEST_RANDOM, HELLO_RETRY_REQUEST_RANDOM.length);
     }
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -85,11 +119,25 @@ public class ServerHelloMessage extends HelloMessage {
 
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 
+    private Boolean isHelloRetryRequest = false;
+
     public ServerHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.isRespectClientProposedExtensions()) {
             createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
         }
+    }
+
+    public ServerHelloMessage(Config tlsConfig, boolean isHelloRetryRequest) {
+        super(HandshakeMessageType.SERVER_HELLO);
+        this.isHelloRetryRequest = isHelloRetryRequest;
+        if (!tlsConfig.isRespectClientProposedExtensions()) {
+            createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
+        }
+    }
+
+    public ServerHelloMessage() {
+        super(HandshakeMessageType.SERVER_HELLO);
     }
 
     @Override
@@ -102,14 +150,14 @@ public class ServerHelloMessage extends HelloMessage {
                 configuredExtensions.add(new HeartbeatExtensionMessage());
             }
             if (tlsConfig.isAddECPointFormatExtension()
-                    && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+                    && !tlsConfig.getHighestProtocolVersion().is13()) {
                 configuredExtensions.add(new ECPointFormatExtensionMessage());
             }
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 configuredExtensions.add(new MaxFragmentLengthExtensionMessage());
             }
             if (tlsConfig.isAddRecordSizeLimitExtension()
-                    && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+                    && !tlsConfig.getHighestProtocolVersion().is13()) {
                 configuredExtensions.add(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()
@@ -127,7 +175,6 @@ public class ServerHelloMessage extends HelloMessage {
                 extension.getServerNameList().add(pair);
                 configuredExtensions.add(extension);
             }
-
             if (tlsConfig.isAddKeyShareExtension()) {
                 configuredExtensions.add(new KeyShareExtensionMessage(tlsConfig));
             }
@@ -219,8 +266,12 @@ public class ServerHelloMessage extends HelloMessage {
         return configuredExtensions;
     }
 
-    public ServerHelloMessage() {
-        super(HandshakeMessageType.SERVER_HELLO);
+    public Boolean isHelloRetryRequest() {
+        return isHelloRetryRequest;
+    }
+
+    public void setHelloRetryRequest(Boolean helloRetryRequest) {
+        isHelloRetryRequest = helloRetryRequest;
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {
@@ -249,11 +300,11 @@ public class ServerHelloMessage extends HelloMessage {
                 ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
     }
 
-    public Boolean isTls13HelloRetryRequest() {
+    public Boolean hasTls13HelloRetryRequestRandom() {
         if (this.getRandom() != null && this.getRandom().getValue() != null) {
             return Arrays.equals(this.getRandom().getValue(), HELLO_RETRY_REQUEST_RANDOM);
         } else {
-            return null;
+            return false;
         }
     }
 
@@ -268,13 +319,13 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (getProtocolVersion() != null
                 && getProtocolVersion().getValue() != null
-                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
             sb.append("\n  Server Unix Time: ")
                     .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
             } else {
                 sb.append("null");
@@ -290,7 +341,7 @@ public class ServerHelloMessage extends HelloMessage {
         }
         sb.append("\n  Session ID: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
             } else {
                 sb.append("null");
@@ -306,7 +357,7 @@ public class ServerHelloMessage extends HelloMessage {
         }
         sb.append("\n  Selected Compression Method: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(
                         CompressionMethod.getCompressionMethod(
                                 selectedCompressionMethod.getValue()));
@@ -328,23 +379,23 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ServerHelloHandler getHandler(TlsContext tlsContext) {
-        return new ServerHelloHandler(tlsContext);
+    public ServerHelloHandler getHandler(Context context) {
+        return new ServerHelloHandler(context.getTlsContext());
     }
 
     @Override
-    public ServerHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new ServerHelloPreparator(tlsContext.getChooser(), this);
+    public ServerHelloPreparator getPreparator(Context context) {
+        return new ServerHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ServerHelloSerializer getSerializer(TlsContext tlsContext) {
+    public ServerHelloSerializer getSerializer(Context context) {
         return new ServerHelloSerializer(this);
     }
 
     @Override
-    public ServerHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ServerHelloParser(stream, tlsContext);
+    public ServerHelloParser getParser(Context context, InputStream stream) {
+        return new ServerHelloParser(stream, context.getTlsContext());
     }
 
     public Boolean isAutoSetHelloRetryModeInKeyShare() {
@@ -356,7 +407,8 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     public boolean setRetryRequestModeInKeyShare() {
-        if (Boolean.TRUE.equals(isTls13HelloRetryRequest()) && autoSetHelloRetryModeInKeyShare) {
+        if (Boolean.TRUE.equals(hasTls13HelloRetryRequestRandom())
+                && autoSetHelloRetryModeInKeyShare) {
             return true;
         }
         return false;
@@ -364,7 +416,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toCompactString() {
-        Boolean isHrr = isTls13HelloRetryRequest();
+        Boolean isHrr = hasTls13HelloRetryRequestRandom();
         String compactString = super.toCompactString();
         if (isHrr != null && isHrr == true) {
             compactString += "(HRR)";
@@ -374,7 +426,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toShortString() {
-        if (isTls13HelloRetryRequest()) {
+        if (hasTls13HelloRetryRequestRandom()) {
             return "HRR";
         }
         return "SH";

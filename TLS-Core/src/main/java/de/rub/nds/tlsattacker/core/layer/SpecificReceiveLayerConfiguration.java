@@ -13,18 +13,20 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
 
 /**
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
  */
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public SpecificReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }
@@ -118,5 +120,10 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

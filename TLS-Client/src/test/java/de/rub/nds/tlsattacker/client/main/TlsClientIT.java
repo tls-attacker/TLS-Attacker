@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -210,7 +209,7 @@ public class TlsClientIT {
         if (cs.name().toUpperCase().contains("NULL") || cs.name().toUpperCase().contains("ANON")) {
             return false;
         }
-        KeyExchangeAlgorithm kex = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        KeyExchangeAlgorithm kex = cs.getKeyExchangeAlgorithm();
 
         final boolean serverSupportsCipherSuite =
                 serverSupportedCipherSuites.contains(cs.toString());

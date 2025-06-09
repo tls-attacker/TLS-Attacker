@@ -65,7 +65,7 @@ public class SignatureAndHashAlgorithmDelegateTest
     /** Test of applyDelegate method, of class SignatureAndHashAlgorithmDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-signature_hash_algo";
         args[1] = "RSA_SHA512,DSA_SHA512";
@@ -85,8 +85,8 @@ public class SignatureAndHashAlgorithmDelegateTest
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(

@@ -24,7 +24,7 @@ public abstract class LongHeaderPacketSerializer<T extends LongHeaderPacket>
     protected void writeSourceConnectionIdLength(T packet) {
         appendByte(packet.getSourceConnectionIdLength().getValue());
         LOGGER.debug(
-                "Source Connection ID Length", packet.getSourceConnectionIdLength().getValue());
+                "Source Connection ID Length: {}", packet.getSourceConnectionIdLength().getValue());
     }
 
     protected void writeSourceConnectionId(T packet) {

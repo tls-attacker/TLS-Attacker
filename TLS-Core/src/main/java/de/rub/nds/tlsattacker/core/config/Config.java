@@ -13,47 +13,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
-import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.EsniVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SniType;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
-import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -104,6 +70,9 @@ public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     * @deprecated Just use the constructor instead
+     */
     @Deprecated
     public static Config createConfig() {
         return new Config();
@@ -284,6 +253,7 @@ public class Config implements Serializable {
                             new ServerNamePair(
                                     SniType.HOST_NAME.getValue(),
                                     "example.com".getBytes(US_ASCII))));
+
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
@@ -511,6 +481,7 @@ public class Config implements Serializable {
 
     /** If we generate ClientHello with the PreSharedKey extension */
     private Boolean addPreSharedKeyExtension = false;
+
     /** If we generate ClientHello with the Padding extension */
     private Boolean addPaddingExtension = false;
 
@@ -519,6 +490,9 @@ public class Config implements Serializable {
 
     /** If we generate ClientHello with the SessionTicketTLS extension */
     private Boolean addSessionTicketTLSExtension = false;
+
+    /** If we generate ClientHello with the SessionTicketTLS extension */
+    private Boolean addDebugExtension = false;
 
     /** If we generate ClientHello with extended Random Extension */
     private Boolean addExtendedRandomExtension = false;
@@ -604,6 +578,20 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
+
+    /** Default DebugContent to use, if addDebugExtension is true */
+    @XmlElement(name = "defaultDebugContent")
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultDebugContent = "TLS-Attacker Debug Content";
+
+    /**
+     * Default number of connection IDs requested when sending a RequestConnectionId message (DTLS
+     * 1.3)
+     */
+    private Integer defaultNumberOfRequestedConnectionIds = 3;
+
+    /** Usage in der NewConnectionId message */
+    private ConnectionIdUsage defaultUsageOfSentConnectionIds = ConnectionIdUsage.CID_SPARE;
 
     /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
     private Boolean addConnectionIdExtension = false;
@@ -774,6 +762,8 @@ public class Config implements Serializable {
     private Boolean workflowExecutorShouldClose = true;
 
     private Boolean stopActionsAfterFatal = false;
+
+    private Boolean stopActionsAfterQuicConnectionClose = true;
 
     /**
      * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal,
@@ -1070,6 +1060,8 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/robots.txt";
 
+    private Integer defaultMaxHttpLength = 65536; // 2^16
+
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
@@ -1151,9 +1143,6 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultPWDPassword = "barney";
 
-    /** Min iterations for finding the PWD password element */
-    private Integer defaultPWDIterations = 40;
-
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDPrivate =
             ArrayConverter.hexStringToByteArray(
@@ -1193,7 +1182,7 @@ public class Config implements Serializable {
     /** Supported Cipher suites for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniCipherSuite")
     @XmlElementWrapper
-    private List<CipherSuite> clientSupportedEsniCipherSuites = new LinkedList();
+    private List<CipherSuite> clientSupportedEsniCipherSuites = new LinkedList<>();
 
     /** Supported Groups for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniNamedGroup")
@@ -1203,7 +1192,7 @@ public class Config implements Serializable {
     /** KeyPairs for Server with EncryptedServerNameIndication extension. */
     @XmlElement(name = "esniServerKeyPair")
     @XmlElementWrapper
-    private List<KeyShareEntry> esniServerKeyPairs = new LinkedList();
+    private List<KeyShareEntry> esniServerKeyPairs = new LinkedList<>();
 
     /** Default values for EncryptedServerNameIndication extension. */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1231,7 +1220,7 @@ public class Config implements Serializable {
 
     @XmlElement(name = "defaultEsniServerCipherSuite")
     @XmlElementWrapper
-    private List<CipherSuite> defaultEsniServerCipherSuites = new LinkedList();
+    private List<CipherSuite> defaultEsniServerCipherSuites = new LinkedList<>();
 
     private Integer defaultEsniPaddedLength = 260;
 
@@ -1241,7 +1230,7 @@ public class Config implements Serializable {
 
     @XmlElement(name = "defaultEsniExtension")
     @XmlElementWrapper
-    private List<ExtensionType> defaultEsniExtensions = new LinkedList();
+    private List<ExtensionType> defaultEsniExtensions = new LinkedList<>();
 
     /** Private Key of the Client for the EncryptedClientHello extension. */
     private BigInteger defaultEchClientPrivateKey =
@@ -1264,11 +1253,23 @@ public class Config implements Serializable {
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
+    /** DTLS 1.3 */
+    private Boolean canSkipMessageSequenceNumber = false;
+
     private Boolean acceptContentRewritingDtlsFragments = true;
 
     private Boolean writeKeylogFile = false;
 
     private String keylogFilePath = null;
+
+    /**
+     * 16-bit encoding instead of 8-bit encoding for the sequence number in the DTLS 1.3 unified
+     * header
+     */
+    private Boolean useDtls13HeaderSeqNumSizeLongEncoding = true;
+
+    /** In DTLS 1.3, TLS-Attacker retransmits only records that have not yet been acknowledged */
+    private Boolean retransmitAcknowledgedRecordsInDtls13 = false;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultRsaSsaPssSalt =
@@ -1448,7 +1449,6 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
-        defaultQuicTransportParameters = new QuicTransportParameters();
         defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
     }
 
@@ -1563,6 +1563,14 @@ public class Config implements Serializable {
 
     public void setAcceptOnlyFittingDtlsFragments(Boolean acceptOnlyFittingDtlsFragments) {
         this.acceptOnlyFittingDtlsFragments = acceptOnlyFittingDtlsFragments;
+    }
+
+    public Boolean isCanSkipMessageSequenceNumber() {
+        return canSkipMessageSequenceNumber;
+    }
+
+    public void setCanSkipMessageSequenceNumber(Boolean canSkipMessageSequenceNumber) {
+        this.canSkipMessageSequenceNumber = canSkipMessageSequenceNumber;
     }
 
     public Boolean isAcceptContentRewritingDtlsFragments() {
@@ -1692,6 +1700,14 @@ public class Config implements Serializable {
 
     public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
         this.defaultHttpsRequestPath = defaultHttpsRequestPath;
+    }
+
+    public int getDefaultMaxHttpLength() {
+        return defaultMaxHttpLength;
+    }
+
+    public void setDefaultMaxHttpLength(int defaultMaxHttpLength) {
+        this.defaultMaxHttpLength = defaultMaxHttpLength;
     }
 
     public Boolean isUseFreshRandom() {
@@ -2161,7 +2177,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
         this.defaultServerSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultServerSupportedCertificateSignAlgorithms() {
@@ -2177,7 +2193,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedCertificateSignAlgorithms) {
         this.defaultServerSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
     }
 
     public List<CipherSuite> getDefaultServerSupportedCipherSuites() {
@@ -2192,7 +2208,7 @@ public class Config implements Serializable {
     public final void setDefaultServerSupportedCipherSuites(
             CipherSuite... defaultServerSupportedCipherSuites) {
         this.defaultServerSupportedCipherSuites =
-                new ArrayList(Arrays.asList(defaultServerSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCipherSuites));
     }
 
     public List<CompressionMethod> getDefaultClientSupportedCompressionMethods() {
@@ -2207,7 +2223,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCompressionMethods(
             CompressionMethod... defaultClientSupportedCompressionMethods) {
         this.defaultClientSupportedCompressionMethods =
-                new ArrayList(Arrays.asList(defaultClientSupportedCompressionMethods));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCompressionMethods));
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -2264,7 +2280,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedPointFormats(
             ECPointFormat... defaultClientSupportedPointFormats) {
         this.defaultClientSupportedPointFormats =
-                new ArrayList(Arrays.asList(defaultClientSupportedPointFormats));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedPointFormats));
     }
 
     public ProtocolVersion getDefaultLastRecordProtocolVersion() {
@@ -2288,7 +2304,7 @@ public class Config implements Serializable {
     public final void setDefaultServerSupportedPointFormats(
             ECPointFormat... defaultServerSupportedPointFormats) {
         this.defaultServerSupportedPointFormats =
-                new ArrayList(Arrays.asList(defaultServerSupportedPointFormats));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedPointFormats));
     }
 
     public List<NamedGroup> getDefaultClientNamedGroups() {
@@ -2300,7 +2316,7 @@ public class Config implements Serializable {
     }
 
     public final void setDefaultClientNamedGroups(NamedGroup... defaultClientNamedGroups) {
-        this.defaultClientNamedGroups = new ArrayList(Arrays.asList(defaultClientNamedGroups));
+        this.defaultClientNamedGroups = new ArrayList<>(Arrays.asList(defaultClientNamedGroups));
     }
 
     public List<NamedGroup> getDefaultServerNamedGroups() {
@@ -2312,7 +2328,7 @@ public class Config implements Serializable {
     }
 
     public final void setDefaultServerNamedGroups(NamedGroup... defaultServerNamedGroups) {
-        this.defaultServerNamedGroups = new ArrayList(Arrays.asList(defaultServerNamedGroups));
+        this.defaultServerNamedGroups = new ArrayList<>(Arrays.asList(defaultServerNamedGroups));
     }
 
     public CipherSuite getDefaultSelectedCipherSuite() {
@@ -2472,7 +2488,7 @@ public class Config implements Serializable {
     }
 
     public final void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
-        this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
+        this.clientCertificateTypes = new ArrayList<>(Arrays.asList(clientCertificateTypes));
     }
 
     public String getDefaultApplicationMessageData() {
@@ -2551,7 +2567,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCipherSuites(
             CipherSuite... defaultClientSupportedCipherSuites) {
         this.defaultClientSupportedCipherSuites =
-                new ArrayList(Arrays.asList(defaultClientSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCipherSuites));
     }
 
     public Boolean isDtlsCookieExchange() {
@@ -2583,7 +2599,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultClientSupportedCertificateSignAlgorithms() {
@@ -2599,7 +2615,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
@@ -2611,7 +2627,7 @@ public class Config implements Serializable {
     }
 
     public final void setSupportedVersions(ProtocolVersion... supportedVersions) {
-        this.supportedVersions = new ArrayList(Arrays.asList(supportedVersions));
+        this.supportedVersions = new ArrayList<>(Arrays.asList(supportedVersions));
     }
 
     public HeartbeatMode getHeartbeatMode() {
@@ -2716,8 +2732,16 @@ public class Config implements Serializable {
         return addEarlyDataExtension;
     }
 
+    public Boolean isAddDebugExtension() {
+        return addDebugExtension;
+    }
+
     public void setAddEarlyDataExtension(Boolean addEarlyDataExtension) {
         this.addEarlyDataExtension = addEarlyDataExtension;
+    }
+
+    public void setAddDebugExtension(Boolean addDebugExtension) {
+        this.addDebugExtension = addDebugExtension;
     }
 
     public Boolean isAddEncryptedServerNameIndicationExtension() {
@@ -2839,7 +2863,7 @@ public class Config implements Serializable {
     public final void setDefaultTokenBindingKeyParameters(
             TokenBindingKeyParameters... defaultTokenBindingKeyParameters) {
         this.defaultTokenBindingKeyParameters =
-                new ArrayList(Arrays.asList(defaultTokenBindingKeyParameters));
+                new ArrayList<>(Arrays.asList(defaultTokenBindingKeyParameters));
     }
 
     public Boolean isAddTokenBindingExtension() {
@@ -3188,7 +3212,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods =
-                new ArrayList(Arrays.asList(defaultServerSupportedCompressionMethods));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCompressionMethods));
     }
 
     public OutboundConnection getDefaultClientConnection() {
@@ -3230,6 +3254,14 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public Boolean isStopActionAfterQuicConnCloseFrame() {
+        return stopActionsAfterQuicConnectionClose;
+    }
+
+    public void setStopActionAfterQuicConnCloseFrame(Boolean stopActionsAfterQuicConnectionClose) {
+        this.stopActionsAfterQuicConnectionClose = stopActionsAfterQuicConnectionClose;
     }
 
     public Boolean isFinishWithCloseNotify() {
@@ -3474,7 +3506,7 @@ public class Config implements Serializable {
     }
 
     public void setDefaultProposedAlpnProtocols(String... alpnAnnouncedProtocols) {
-        this.defaultProposedAlpnProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
+        this.defaultProposedAlpnProtocols = new ArrayList<>(Arrays.asList(alpnAnnouncedProtocols));
     }
 
     public QuicTransportParameters getDefaultQuicTransportParameters() {
@@ -3548,14 +3580,6 @@ public class Config implements Serializable {
 
     public void setDefaultPWDPassword(String password) {
         this.defaultPWDPassword = password;
-    }
-
-    public Integer getDefaultPWDIterations() {
-        return defaultPWDIterations;
-    }
-
-    public void setDefaultPWDIterations(Integer defaultPWDIterations) {
-        this.defaultPWDIterations = defaultPWDIterations;
     }
 
     public byte[] getDefaultServerPWDPrivate() {
@@ -3650,7 +3674,7 @@ public class Config implements Serializable {
 
     public void setClientSupportedEsniCipherSuites(CipherSuite... clientSupportedEsniCipherSuites) {
         this.clientSupportedEsniCipherSuites =
-                new ArrayList(Arrays.asList(clientSupportedEsniCipherSuites));
+                new ArrayList<>(Arrays.asList(clientSupportedEsniCipherSuites));
     }
 
     public List<NamedGroup> getClientSupportedEsniNamedGroups() {
@@ -3664,7 +3688,7 @@ public class Config implements Serializable {
     public final void setClientSupportedEsniNamedGroups(
             NamedGroup... clientSupportedEsniNamedGroups) {
         this.clientSupportedEsniNamedGroups =
-                new ArrayList(Arrays.asList(clientSupportedEsniNamedGroups));
+                new ArrayList<>(Arrays.asList(clientSupportedEsniNamedGroups));
     }
 
     public List<KeyShareEntry> getEsniServerKeyPairs() {
@@ -3676,7 +3700,7 @@ public class Config implements Serializable {
     }
 
     public final void setEsniServerKeyPairs(KeyShareEntry... esniServerKeyPairs) {
-        this.esniServerKeyPairs = new ArrayList(Arrays.asList(esniServerKeyPairs));
+        this.esniServerKeyPairs = new ArrayList<>(Arrays.asList(esniServerKeyPairs));
     }
 
     public byte[] getDefaultEsniClientNonce() {
@@ -4010,6 +4034,32 @@ public class Config implements Serializable {
         this.defaultConnectionId = defaultConnectionId;
     }
 
+    public String getDefaultDebugContent() {
+        return defaultDebugContent;
+    }
+
+    public void setDefaultDebugContent(String defaultDebugContent) {
+        this.defaultDebugContent = defaultDebugContent;
+    }
+
+    public Integer getDefaultNumberOfRequestedConnectionIds() {
+        return defaultNumberOfRequestedConnectionIds;
+    }
+
+    public void setDefaultNumberOfRequestedConnectionIds(
+            Integer defaultNumberOfRequestedConnectionIds) {
+        this.defaultNumberOfRequestedConnectionIds = defaultNumberOfRequestedConnectionIds;
+    }
+
+    public ConnectionIdUsage getDefaultUsageOfSentConnectionIds() {
+        return defaultUsageOfSentConnectionIds;
+    }
+
+    public void setDefaultUsageOfSentConnectionIds(
+            ConnectionIdUsage defaultUsageofSentConnectionIds) {
+        this.defaultUsageOfSentConnectionIds = defaultUsageofSentConnectionIds;
+    }
+
     public Boolean isAddConnectionIdExtension() {
         return addConnectionIdExtension;
     }
@@ -4034,6 +4084,24 @@ public class Config implements Serializable {
     public void setSendHandshakeMessagesWithinSingleRecord(
             Boolean sendHandshakeMessagesWithinSingleRecord) {
         this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
+    }
+
+    public Boolean getUseDtls13HeaderSeqNumSizeLongEncoding() {
+        return useDtls13HeaderSeqNumSizeLongEncoding;
+    }
+
+    public void setUseDtls13HeaderSeqNumSizeLongEncoding(
+            Boolean useDtls13HeaderSeqNumSizeLongEncoding) {
+        this.useDtls13HeaderSeqNumSizeLongEncoding = useDtls13HeaderSeqNumSizeLongEncoding;
+    }
+
+    public Boolean getRetransmitAcknowledgedRecordsInDtls13() {
+        return retransmitAcknowledgedRecordsInDtls13;
+    }
+
+    public void setRetransmitAcknowledgedRecordsInDtls13(
+            Boolean retransmitAcknowledgedRecordsInDtls13) {
+        this.retransmitAcknowledgedRecordsInDtls13 = retransmitAcknowledgedRecordsInDtls13;
     }
 
     public BigInteger getDefaultServerEphemeralDhGenerator() {

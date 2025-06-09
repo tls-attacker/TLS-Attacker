@@ -114,7 +114,8 @@ public class ReceiveTillAction extends CommonReceiveAction {
         configurationList.add(
                 new ReceiveTillLayerConfiguration(ImplementedLayers.SSL2, waitTillMessage));
         configurationList.add(
-                new ReceiveTillLayerConfiguration(ImplementedLayers.MESSAGE, waitTillMessage));
+                new ReceiveTillLayerConfiguration<ProtocolMessage>(
+                        ImplementedLayers.MESSAGE, waitTillMessage));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }

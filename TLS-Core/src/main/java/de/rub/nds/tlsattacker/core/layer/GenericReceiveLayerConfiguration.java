@@ -12,12 +12,18 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /** A LayerConfiguration that keeps receiving until reaching the timeout */
-public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<DataContainer<?>> {
+public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<DataContainer> {
 
     public GenericReceiveLayerConfiguration(LayerType layerType) {
         super(layerType, new LinkedList<>());
+    }
+
+    @Override
+    public boolean isProcessTrailingContainers() {
+        return true;
     }
 
     @Override
@@ -30,9 +36,19 @@ public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<
             List<DataContainer<?>> list, boolean receivedTimeout, boolean dataLeftToProcess) {
         return !receivedTimeout || dataLeftToProcess;
     }
+    
+    @Override
+    public boolean failedEarly(List<DataContainer> list) {
+        return false;
+    }
 
     @Override
     public String toCompactString() {
         return "(" + getLayerType().getName() + ") GenericReceive";
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

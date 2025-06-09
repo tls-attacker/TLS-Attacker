@@ -13,12 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -86,24 +85,24 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     }
 
     @Override
-    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new PskDheServerKeyExchangeHandler(tlsContext);
+    public PskDheServerKeyExchangeHandler getHandler(Context context) {
+        return new PskDheServerKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PskDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDheServerKeyExchangeParser(stream, tlsContext);
+    public PskDheServerKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PskDheServerKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PskDheServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskDheServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskDheServerKeyExchangePreparator getPreparator(Context context) {
+        return new PskDheServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskDheServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PskDheServerKeyExchangeSerializer getSerializer(Context context) {
         return new PskDheServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

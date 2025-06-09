@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
@@ -44,10 +46,10 @@ public class ClientHelloPreparatorTest
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
-        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
-        context.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
+        tlsContext.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
+        tlsContext.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
+        tlsContext.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
         preparator.prepare();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("009AC02B"),
@@ -77,15 +79,18 @@ public class ClientHelloPreparatorTest
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
-        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
-        context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS10);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
-        context.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
-        context.setDtlsCookie(new byte[] {7, 6, 5});
-        context.getContext()
+        tlsContext.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
+        tlsContext.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
+        tlsContext.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS10);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS10);
+        tlsContext.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
+        tlsContext.setDtlsCookie(new byte[] {7, 6, 5});
+        tlsContext
+                .getContext()
                 .setLayerStack(
-                        new LayerStack(context.getContext(), new DtlsFragmentLayer(context)));
+                        new LayerStack(
+                                tlsContext.getContext(),
+                                new DtlsFragmentLayer(tlsContext.getContext())));
         preparator.prepare();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("009AC02B"),
@@ -115,12 +120,12 @@ public class ClientHelloPreparatorTest
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
-        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
-        context.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        context.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
-        context.setDtlsCookie(new byte[] {7, 6, 5});
+        tlsContext.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
+        tlsContext.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
+        tlsContext.getConfig().setDefaultSelectedProtocolVersion(ProtocolVersion.DTLS12);
+        tlsContext.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
+        tlsContext.setDtlsCookie(new byte[] {7, 6, 5});
         preparator.prepare();
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("009AC02B"),
@@ -150,10 +155,10 @@ public class ClientHelloPreparatorTest
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
-        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
-        context.setClientSessionId(new byte[] {0, 1, 2, 3});
+        tlsContext.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
+        tlsContext.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
+        tlsContext.setClientSessionId(new byte[] {0, 1, 2, 3});
         preparator.prepare();
         assertArrayEquals(message.getSessionId().getValue(), new byte[] {0, 1, 2, 3});
         assertEquals(4, (int) message.getSessionIdLength().getValue());
@@ -168,20 +173,60 @@ public class ClientHelloPreparatorTest
         List<CompressionMethod> methodList = new LinkedList<>();
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
-        context.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
-        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
-        context.setClientSessionId(new byte[0]);
+        tlsContext.getConfig().setDefaultClientSupportedCipherSuites(cipherSuiteList);
+        tlsContext.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
+        tlsContext.setClientSessionId(new byte[0]);
         TicketSession session = new TicketSession(new byte[] {1, 1, 1, 1}, new byte[] {2, 2, 2, 2});
-        context.addNewSession(session);
+        tlsContext.addNewSession(session);
         SessionTicketTLSExtensionMessage extensionMessage = new SessionTicketTLSExtensionMessage();
         message.addExtension(extensionMessage);
         preparator.prepare();
         assertArrayEquals(
                 message.getSessionId().getValue(),
-                context.getConfig().getDefaultClientTicketResumptionSessionId());
+                tlsContext.getConfig().getDefaultClientTicketResumptionSessionId());
         assertEquals(
-                context.getConfig().getDefaultClientTicketResumptionSessionId().length,
+                tlsContext.getConfig().getDefaultClientTicketResumptionSessionId().length,
                 (int) message.getSessionIdLength().getValue());
+    }
+
+    @Test
+    public void testPrepareRetainedClientRandomHrr() {
+        tlsContext.getConfig().setUseFreshRandom(true);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext
+                .getDigest()
+                .setRawBytes(new byte[] {HandshakeMessageType.MESSAGE_HASH.getValue(), 1, 2, 3});
+        byte[] firstRandom =
+                new byte[] {
+                    1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
+                    4, 1, 2, 3, 4
+                };
+        tlsContext.setClientRandom(firstRandom);
+        preparator.prepare();
+        assertArrayEquals(firstRandom, message.getRandom().getValue());
+    }
+
+    @Test
+    public void testPrepareRetainedClientRandomDtls() {
+        tlsContext.getConfig().setUseFreshRandom(false);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+        byte[] firstRandom =
+                new byte[] {
+                    1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
+                    4, 1, 2, 3, 4
+                };
+        tlsContext.setClientRandom(firstRandom);
+        preparator.prepare();
+        assertArrayEquals(firstRandom, message.getRandom().getValue());
+    }
+
+    @Test
+    public void testPrepareWithModifiedContent() {
+        byte[] expectedContent = new byte[] {0x01, 0x02, 0x03};
+        message.setMessageContent(Modifiable.explicit(expectedContent));
+        preparator.prepare();
+        assertEquals(3, message.getLength().getValue());
+        assertArrayEquals(expectedContent, message.getMessageContent().getValue());
     }
 }

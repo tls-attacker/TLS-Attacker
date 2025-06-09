@@ -36,7 +36,9 @@ import java.util.Objects;
 public class QuicTransportParameters {
 
     private byte[] originalDestinationConnectionId;
+
     private byte[] initialSourceConnectionId;
+
     private byte[] retrySourceConnectionId;
 
     private Long maxIdleTimeout;

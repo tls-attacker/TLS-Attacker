@@ -43,19 +43,23 @@ public class ECDHEServerKeyExchangePreparatorTest
         super(ECDHEServerKeyExchangeMessage::new, ECDHEServerKeyExchangePreparator::new);
         BadFixedRandom rnd = new BadFixedRandom((byte) 0x23);
         BadRandom random = new BadRandom(rnd, null);
-        context.getConfig()
+        tlsContext
+                .getConfig()
                 .setDefaultServerEphemeralEcPrivateKey(
                         new BigInteger(
                                 "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761"));
         loadTestVectorsToContext();
-        context.setRandom(random);
-        context.setClientSupportedSignatureAndHashAlgorithms(SignatureAndHashAlgorithm.RSA_SHA512);
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        context.getServerX509Context()
+        tlsContext.setRandom(random);
+        tlsContext.setClientSupportedSignatureAndHashAlgorithms(
+                SignatureAndHashAlgorithm.RSA_SHA512);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext
+                .getServerX509Context()
                 .setSubjectRsaModulus(
                         new BigInteger(
                                 "138176188281796802921728019830883835791466819775862616369528695291051113778191409365728255919237920070170415489798919694047238160141762618463534095589006064306561457254708835463402335256295540403269922932223802187003458396441731541262280889819064536522708759209693618435045828861540756050456047286072194938393"));
-        context.getServerX509Context()
+        tlsContext
+                .getServerX509Context()
                 .setSubjectRsaPrivateKey(
                         new BigInteger(
                                 "14412811436201885114865385104046903298449229900480596388331753986444686418171665996675440704699794339070829612101033233570455163689657586703949205448013264184348068987367675661812419501134437771698938168350748107551389943071416238444845593800428715108981594372030316329952869373604711395976776700362569716737"));
@@ -66,7 +70,8 @@ public class ECDHEServerKeyExchangePreparatorTest
     public void testPrepare() throws IOException {
         preparator.prepareHandshakeMessageContents();
         assertArrayEquals(
-                ArrayConverter.concatenate(context.getClientRandom(), context.getServerRandom()),
+                ArrayConverter.concatenate(
+                        tlsContext.getClientRandom(), tlsContext.getServerRandom()),
                 message.getKeyExchangeComputations().getClientServerRandom().getValue());
         assertEquals(
                 EllipticCurveType.NAMED_CURVE,
@@ -89,14 +94,16 @@ public class ECDHEServerKeyExchangePreparatorTest
 
     private void loadTestVectorsToContext() {
         Config config = new Config();
-        context.setConnection(new InboundConnection());
+        tlsContext.setConnection(new InboundConnection());
 
-        context.getServerX509Context()
+        tlsContext
+                .getServerX509Context()
                 .setSubjectRsaModulus(
                         new BigInteger(
                                 "138176188281796802921728019830883835791466819775862616369528695291051113778191409365728255919237920070170415489798919694047238160141762618463534095589006064306561457254708835463402335256295540403269922932223802187003458396441731541262280889819064536522708759209693618435045828861540756050456047286072194938393"));
-        context.getServerX509Context().setSubjectRsaPublicExponent(new BigInteger("65537"));
-        context.getClientX509Context()
+        tlsContext.getServerX509Context().setSubjectRsaPublicExponent(new BigInteger("65537"));
+        tlsContext
+                .getClientX509Context()
                 .setSubjectRsaPrivateKey(
                         new BigInteger(
                                 "14412811436201885114865385104046903298449229900480596388331753986444686418171665996675440704699794339070829612101033233570455163689657586703949205448013264184348068987367675661812419501134437771698938168350748107551389943071416238444845593800428715108981594372030316329952869373604711395976776700362569716737"));
@@ -104,11 +111,11 @@ public class ECDHEServerKeyExchangePreparatorTest
         String clientRandom = "F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2F2";
         String serverRandom = "2323232323232323232323232323232323232323232323232323232323232323";
 
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setClientRandom(ArrayConverter.hexStringToByteArray(clientRandom));
-        context.setServerRandom(ArrayConverter.hexStringToByteArray(serverRandom));
-        context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP384R1);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(clientRandom));
+        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(serverRandom));
+        tlsContext.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP384R1);
 
         List<NamedGroup> clientCurves = new ArrayList<>();
         clientCurves.add(NamedGroup.SECP384R1);
@@ -116,7 +123,7 @@ public class ECDHEServerKeyExchangePreparatorTest
         serverCurves.add(NamedGroup.BRAINPOOLP256R1);
         serverCurves.add(NamedGroup.SECP384R1);
         serverCurves.add(NamedGroup.SECP256R1);
-        context.setClientNamedGroupsList(clientCurves);
+        tlsContext.setClientNamedGroupsList(clientCurves);
         config.setDefaultServerNamedGroups(serverCurves);
         config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA512);
         List<ECPointFormat> clientFormats = new ArrayList<>();
@@ -125,7 +132,7 @@ public class ECDHEServerKeyExchangePreparatorTest
         clientFormats.add(ECPointFormat.UNCOMPRESSED);
         List<ECPointFormat> serverFormats = new ArrayList<>();
         serverFormats.add(ECPointFormat.UNCOMPRESSED);
-        context.setClientPointFormatsList(clientFormats);
+        tlsContext.setClientPointFormatsList(clientFormats);
         config.setDefaultServerSupportedPointFormats(serverFormats);
 
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();

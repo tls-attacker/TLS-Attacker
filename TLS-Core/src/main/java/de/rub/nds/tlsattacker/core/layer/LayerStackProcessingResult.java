@@ -8,7 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +25,9 @@ import org.apache.logging.log4j.Logger;
  * Wrapper class for {@link LayerProcessingResult}. Makes results of multiple layers available for a
  * {@link LayerStack}.
  */
+@XmlRootElement(name = "LayerStackProcessingResult")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({ImplementedLayers.class})
 public class LayerStackProcessingResult {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -27,6 +37,8 @@ public class LayerStackProcessingResult {
     // whether any layer has unreadBytes
     private boolean hasUnreadBytes;
 
+    @XmlAnyElement(lax = true)
+    @XmlElementWrapper
     private final List<LayerType> layersWithUnreadBytes = new LinkedList<>();
 
     /** Private no-arg constructor to please JAXB */

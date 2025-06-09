@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
@@ -24,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -71,7 +71,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public CertificateRequestMessage(Config tlsConfig) {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
-        if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
+        if (tlsConfig.getHighestProtocolVersion().is13()) {
             this.setExtensions(new LinkedList<ExtensionMessage>());
             this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
@@ -257,24 +257,24 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateRequestHandler getHandler(TlsContext tlsContext) {
-        return new CertificateRequestHandler(tlsContext);
+    public CertificateRequestHandler getHandler(Context context) {
+        return new CertificateRequestHandler(context.getTlsContext());
     }
 
     @Override
-    public CertificateRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateRequestParser(stream, tlsContext);
+    public CertificateRequestParser getParser(Context context, InputStream stream) {
+        return new CertificateRequestParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CertificateRequestPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateRequestPreparator(tlsContext.getChooser(), this);
+    public CertificateRequestPreparator getPreparator(Context context) {
+        return new CertificateRequestPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateRequestSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateRequestSerializer getSerializer(Context context) {
         return new CertificateRequestSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -29,7 +29,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public void adjustContext(CertificateRequestMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
             adjustCertificateRequestContext(message);
             adjustServerSupportedSignatureAndHashAlgorithms(message);
         } else {
@@ -46,7 +46,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     private void adjustServerSupportedSignatureAndHashAlgorithms(
             CertificateRequestMessage message) {
         List<SignatureAndHashAlgorithm> algoList;
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
             SignatureAndHashAlgorithmsExtensionMessage extension =
                     message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
             if (extension != null) {
@@ -120,7 +120,11 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             copied[1] = bytesToConvert[i + 1];
             SignatureAndHashAlgorithm algo =
                     SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(copied);
-            list.add(algo);
+            if (algo != null) {
+                list.add(algo);
+            } else {
+                LOGGER.warn("Cannot convert: {} to a SignatureAndHashAlgorithm", copied);
+            }
         }
         return list;
     }

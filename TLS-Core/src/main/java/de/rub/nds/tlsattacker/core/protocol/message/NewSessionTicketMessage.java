@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -37,6 +37,12 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     public NewSessionTicketMessage() {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
         ticket = new SessionTicket();
+    }
+
+    public NewSessionTicketMessage(boolean required) {
+        super(HandshakeMessageType.NEW_SESSION_TICKET);
+        ticket = new SessionTicket();
+        this.setRequired(required);
     }
 
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
@@ -112,24 +118,24 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     @Override
-    public NewSessionTicketHandler getHandler(TlsContext tlsContext) {
-        return new NewSessionTicketHandler(tlsContext);
+    public NewSessionTicketHandler getHandler(Context context) {
+        return new NewSessionTicketHandler(context.getTlsContext());
     }
 
     @Override
-    public NewSessionTicketParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new NewSessionTicketParser(stream, tlsContext);
+    public NewSessionTicketParser getParser(Context context, InputStream stream) {
+        return new NewSessionTicketParser(stream, context.getTlsContext());
     }
 
     @Override
-    public NewSessionTicketPreparator getPreparator(TlsContext tlsContext) {
-        return new NewSessionTicketPreparator(tlsContext.getChooser(), this);
+    public NewSessionTicketPreparator getPreparator(Context context) {
+        return new NewSessionTicketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public NewSessionTicketSerializer getSerializer(TlsContext tlsContext) {
+    public NewSessionTicketSerializer getSerializer(Context context) {
         return new NewSessionTicketSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

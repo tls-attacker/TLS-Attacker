@@ -50,8 +50,8 @@ public class WorkflowTraceSerializerTest {
 
     @BeforeEach
     public void setUp() throws JAXBException {
-        config = Config.createConfig();
-        action = new SendAction(new ClientHelloMessage(Config.createConfig()));
+        config = new Config();
+        action = new SendAction(new ClientHelloMessage(new Config()));
     }
 
     /**
@@ -70,7 +70,7 @@ public class WorkflowTraceSerializerTest {
         List<Record> records = new LinkedList<>();
         Record record = new Record();
         record.setContentType(new ModifiableByte());
-        record.getContentType().setModification(new ByteExplicitValueModification(Byte.MIN_VALUE));
+        record.getContentType().addModification(new ByteExplicitValueModification(Byte.MIN_VALUE));
         record.setMaxRecordLengthConfig(5);
         records.add(record);
         action = new SendAction(new ClientHelloMessage());

@@ -12,6 +12,8 @@ import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -19,9 +21,11 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +39,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
+        LOGGER.debug("Starting execution of WorkflowTrace");
         if (config.isWorkflowExecutorShouldOpen()) {
             try {
                 initAllLayer();
@@ -115,6 +120,13 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 int currentEpoch = context.getTlsContext().getRecordLayer().getWriteEpoch();
                 for (int epoch = currentEpoch; epoch >= 0; epoch--) {
                     context.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
+                    if (state.getTlsContext().getRecordLayer().getEncryptor().getRecordCipher(epoch)
+                            == null) {
+                        LOGGER.debug(
+                                "Not sending a Close Notify for epoch {}. No cipher available.",
+                                epoch);
+                        continue;
+                    }
                     sendCloseNotify(context.getTlsContext());
                 }
                 context.getTlsContext().getRecordLayer().setWriteEpoch(currentEpoch);
@@ -189,30 +201,50 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             if (action instanceof ReceivingAction) {
                 for (String alias : action.getAllAliases()) {
                     if (aliases.contains(alias)) {
-                        return i + 1;
+                        return i;
                     }
                 }
-                return i + 1;
+                return i;
             }
         }
         return 0; // We need to restart from the beginning
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
-        LOGGER.info("Executing retransmission of last sent flight");
+        LOGGER.debug("Executing retransmission for {}", action.getClass().getSimpleName());
         for (String alias : action.getAllSendingAliases()) {
             LOGGER.debug("Retransmitting records for alias {}", alias);
-            state.getTlsContext()
+            List<Record> recordsToRetransmit =
+                    config.getRetransmitAcknowledgedRecordsInDtls13()
+                            ? action.getSentRecords()
+                            : filterRecordsBasedOnAcks(action.getSentRecords());
+            state.getTlsContext(alias)
                     .getRecordLayer()
                     .setLayerConfiguration(
                             new SpecificSendLayerConfiguration(
-                                    ImplementedLayers.RECORD, action.getSentRecords()));
+                                    ImplementedLayers.RECORD, recordsToRetransmit));
             try {
-                state.getTlsContext().getRecordLayer().sendConfiguration();
+                state.getTlsContext(alias).getRecordLayer().sendConfiguration();
             } catch (IOException ex) {
-                state.getTlsContext().setReceivedTransportHandlerException(true);
+                state.getTlsContext(alias).setReceivedTransportHandlerException(true);
                 LOGGER.warn("Received IOException during retransmission", ex);
             }
         }
+    }
+
+    private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
+        List<RecordNumber> acks = state.getTlsContext().getDtls13ReceivedAcknowledgedRecords();
+        if (acks == null || acks.isEmpty()) {
+            return sendRecords;
+        }
+        return sendRecords.stream()
+                .filter(
+                        (record) ->
+                                !acks.contains(
+                                        new RecordNumber(
+                                                BigInteger.valueOf(
+                                                        sendRecords.get(0).getEpoch().getValue()),
+                                                record.getSequenceNumber().getValue())))
+                .collect(Collectors.toList());
     }
 }

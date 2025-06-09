@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
-import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -42,9 +42,9 @@ public abstract class ProtocolLayer<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer higherLayer = null;
+    private ProtocolLayer<Hint, Container> higherLayer = null;
 
-    private ProtocolLayer lowerLayer = null;
+    private ProtocolLayer<Hint, Container> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -60,38 +60,38 @@ public abstract class ProtocolLayer<
 
     private byte[] unreadBytes;
 
-    public ProtocolLayer(LayerType layerType) {
+    protected ProtocolLayer(LayerType layerType) {
         producedDataContainers = new LinkedList<>();
         this.layerType = layerType;
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer getHigherLayer() {
+    public ProtocolLayer<Hint, Container> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer getLowerLayer() {
+    public ProtocolLayer<Hint, Container> getLowerLayer() {
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer higherLayer) {
+    public void setHigherLayer(ProtocolLayer<Hint, Container> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<Hint, Container> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
     public abstract LayerProcessingResult<Container> sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult<Container> sendData(Hint hint, byte[] additionalData)
-            throws IOException;
+    public abstract LayerProcessingResult<Container> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException;
 
     public LayerConfiguration<Container> getLayerConfiguration() {
         return layerConfiguration;
     }
 
-    public void setLayerConfiguration(LayerConfiguration layerConfiguration) {
+    public void setLayerConfiguration(LayerConfiguration<Container> layerConfiguration) {
         this.layerConfiguration = layerConfiguration;
     }
 
@@ -271,7 +271,7 @@ public abstract class ProtocolLayer<
             }
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
-            addProducedContainer(container);
+            addProducedContainer((Container) container);
         } catch (RuntimeException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
         }
@@ -285,7 +285,7 @@ public abstract class ProtocolLayer<
         this.unreadBytes = unreadBytes;
     }
 
-    public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
+    public boolean prepareDataContainer(DataContainer dataContainer, Context context) {
         if (dataContainer.shouldPrepare()) {
             Preparator<LayerContext> preparator = dataContainer.getPreparator(context);
             try {
@@ -293,10 +293,7 @@ public abstract class ProtocolLayer<
                 preparator.afterPrepare();
             } catch (PreparationException ex) {
                 LOGGER.error(
-                        "Could not prepare message "
-                                + dataContainer.toString()
-                                + ". Therefore, we skip it: ",
-                        ex);
+                        "Could not prepare message {}. Therefore, we skip it.", dataContainer, ex);
                 return false;
             }
         }

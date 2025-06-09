@@ -40,7 +40,7 @@ public class EsniKeyRecordParserTest {
 
     @BeforeEach
     public void setUp() {
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }

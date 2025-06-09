@@ -13,12 +13,16 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <HandshakeMessageT> The ProtocolMessage that should be handled
  */
 public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
         extends ProtocolMessageHandler<HandshakeMessageT> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -28,7 +32,7 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
         LOGGER.debug("Adjusting context for extensions");
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                Handler handler = extension.getHandler(tlsContext);
+                Handler handler = extension.getHandler(tlsContext.getContext());
                 handler.adjustContext(extension);
             }
         }

@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.ConnectionCloseFrameHandle
 import de.rub.nds.tlsattacker.core.quic.parser.frame.ConnectionCloseFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.ConnectionCloseFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.ConnectionCloseFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +44,7 @@ public class ConnectionCloseFrame extends QuicFrame {
     private long reasonPhraseLengthConfig;
     private byte[] reasonPhraseConfig;
 
+    @SuppressWarnings("unused") // JAXB
     private ConnectionCloseFrame() {}
 
     public ConnectionCloseFrame(boolean isQuicLayer) {
@@ -75,22 +76,22 @@ public class ConnectionCloseFrame extends QuicFrame {
     }
 
     @Override
-    public ConnectionCloseFrameHandler getHandler(QuicContext context) {
-        return new ConnectionCloseFrameHandler(context);
+    public ConnectionCloseFrameHandler getHandler(Context context) {
+        return new ConnectionCloseFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public ConnectionCloseFrameSerializer getSerializer(QuicContext context) {
+    public ConnectionCloseFrameSerializer getSerializer(Context context) {
         return new ConnectionCloseFrameSerializer(this);
     }
 
     @Override
-    public ConnectionCloseFramePreparator getPreparator(QuicContext context) {
+    public ConnectionCloseFramePreparator getPreparator(Context context) {
         return new ConnectionCloseFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public ConnectionCloseFrameParser getParser(QuicContext context, InputStream stream) {
+    public ConnectionCloseFrameParser getParser(Context context, InputStream stream) {
         return new ConnectionCloseFrameParser(stream);
     }
 

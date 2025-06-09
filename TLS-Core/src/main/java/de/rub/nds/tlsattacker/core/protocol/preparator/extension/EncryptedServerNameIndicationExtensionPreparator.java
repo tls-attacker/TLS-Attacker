@@ -398,11 +398,16 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-        int keyLen = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keyLen = cipherSuite.getCipherAlgorithm().getKeySize();
         try {
             key =
                     HKDFunction.expandLabel(
-                            hkdfAlgorithm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen);
+                            hkdfAlgorithm,
+                            esniMasterSecret,
+                            HKDFunction.ESNI_KEY,
+                            hashIn,
+                            keyLen,
+                            chooser.getSelectedProtocolVersion());
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniKey", e);
         }
@@ -423,7 +428,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
                             esniMasterSecret,
                             HKDFunction.ESNI_IV,
                             hashIn,
-                            IV_LENGTH);
+                            IV_LENGTH,
+                            chooser.getSelectedProtocolVersion());
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniIv", e);
         }

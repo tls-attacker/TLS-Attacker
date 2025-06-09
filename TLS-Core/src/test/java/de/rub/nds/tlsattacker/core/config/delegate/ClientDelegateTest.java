@@ -51,7 +51,7 @@ public class ClientDelegateTest extends AbstractDelegateTest<ClientDelegate> {
 
     @Test
     public void testApplyDelegateNullHost() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         ParameterException exception =
                 assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertEquals("Could not parse provided host: null", exception.getMessage());
@@ -59,7 +59,7 @@ public class ClientDelegateTest extends AbstractDelegateTest<ClientDelegate> {
 
     @Test
     public void testApplyDelegateWithEmptyConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultClientConnection(null);
         String expectedHostname = "testHostname.de";
         delegate.setHost(expectedHostname);
@@ -139,7 +139,7 @@ public class ClientDelegateTest extends AbstractDelegateTest<ClientDelegate> {
 
     private void assertHostIsAsExpected(String providedUrl, String expectedHost, int expectedPort) {
         delegate.setHost(providedUrl);
-        Config config = Config.createConfig();
+        Config config = new Config();
         delegate.applyDelegate(config);
         OutboundConnection defaultClientConnection = config.getDefaultClientConnection();
         assertEquals(expectedHost, defaultClientConnection.getHostname());

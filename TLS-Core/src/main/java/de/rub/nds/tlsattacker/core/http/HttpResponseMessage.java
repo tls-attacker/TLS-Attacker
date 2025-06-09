@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -45,8 +45,11 @@ public class HttpResponseMessage extends HttpMessage {
     @HoldsModifiableVariable
     private List<HttpHeader> header;
 
+    @HoldsModifiableVariable private List<HttpHeader> trailer;
+
     public HttpResponseMessage() {
         header = new LinkedList<>();
+        trailer = new LinkedList<>();
     }
 
     public HttpResponseMessage(Config config) {
@@ -58,6 +61,7 @@ public class HttpResponseMessage extends HttpMessage {
         header.add(new ExpiresHeader());
         header.add(new GenericHttpHeader("Cache-Control", "private, max-age=0"));
         header.add(new GenericHttpHeader("Server", "GSE"));
+        trailer = new LinkedList<>();
     }
 
     public ModifiableString getResponseProtocol() {
@@ -108,6 +112,14 @@ public class HttpResponseMessage extends HttpMessage {
         this.header = header;
     }
 
+    public List<HttpHeader> getTrailer() {
+        return trailer;
+    }
+
+    public void setTrailer(List<HttpHeader> trailer) {
+        this.trailer = trailer;
+    }
+
     public String toCompactString() {
         return "HttpResponseMessage";
     }
@@ -117,19 +129,19 @@ public class HttpResponseMessage extends HttpMessage {
     }
 
     @Override
-    public HttpResponseHandler getHandler(HttpContext httpContext) {
+    public HttpResponseHandler getHandler(Context httpContext) {
         return new HttpResponseHandler();
     }
 
-    public HttpResponseParser getParser(HttpContext context, InputStream stream) {
-        return new HttpResponseParser(stream);
+    public HttpResponseParser getParser(Context context, InputStream stream) {
+        return new HttpResponseParser(stream, context.getConfig().getDefaultMaxHttpLength());
     }
 
-    public HttpResponsePreparator getPreparator(HttpContext context) {
-        return new HttpResponsePreparator(context.getContext().getHttpContext(), this);
+    public HttpResponsePreparator getPreparator(Context context) {
+        return new HttpResponsePreparator(context.getHttpContext(), this);
     }
 
-    public HttpResponseSerializer getSerializer(HttpContext context) {
+    public HttpResponseSerializer getSerializer(Context context) {
         return new HttpResponseSerializer(this);
     }
 }

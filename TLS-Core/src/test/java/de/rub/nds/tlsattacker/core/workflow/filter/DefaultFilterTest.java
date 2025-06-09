@@ -23,7 +23,7 @@ public class DefaultFilterTest {
 
     @BeforeEach
     public void setUp() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         filter = new DefaultFilter(config);
     }
 

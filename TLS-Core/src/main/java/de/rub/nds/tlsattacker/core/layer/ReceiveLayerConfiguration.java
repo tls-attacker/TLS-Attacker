@@ -18,13 +18,14 @@ import java.util.List;
  *
  * @param <Container>
  */
-public abstract class ReceiveLayerConfiguration<Container extends DataContainer<?>>
+public abstract class ReceiveLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {
 
     public ReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public ReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }

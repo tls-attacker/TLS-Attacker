@@ -10,9 +10,13 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ChangeReadEpoch")
 public class ChangeReadEpochAction extends ChangeEpochAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChangeReadEpochAction() {}
 

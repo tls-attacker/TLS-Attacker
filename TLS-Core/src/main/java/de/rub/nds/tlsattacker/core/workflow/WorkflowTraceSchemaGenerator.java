@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,7 +52,7 @@ public class WorkflowTraceSchemaGenerator {
                 schemaOutputResolver.getSchemaWriters().entrySet()) {
             String systemId = schemaOutputResolver.getSystemIds().get(entry.getKey());
             File file = new File(outputDirectory, systemId);
-            try (FileWriter fileWriter = new FileWriter(file)) {
+            try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
                 LOGGER.debug("Writing %s to %s%n", entry.getKey(), file.getAbsolutePath());
                 fileWriter.write(
                         entry.getValue().toString().replaceAll("\r?\n", System.lineSeparator()));

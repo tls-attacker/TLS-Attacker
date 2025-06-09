@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
@@ -214,7 +215,7 @@ public class SrpClientKeyExchangePreparator
         try {
             dig = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException ex) {
-            LOGGER.warn(ex);
+            throw new CryptoException("SHA1 is not availble");
         }
         dig.update(toHash);
         return dig.digest();

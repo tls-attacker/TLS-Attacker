@@ -36,10 +36,10 @@
             </subject>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
-            <defaultNotBeforeEncoding>GENERALIZED_TIME_UTC</defaultNotBeforeEncoding>
+            <defaultNotBeforeEncoding>UTC</defaultNotBeforeEncoding>
             <notAfter/>
             <notAfterAccurracy>SECONDS</notAfterAccurracy>
-            <defaultNotAfterEncoding>GENERALIZED_TIME_UTC</defaultNotAfterEncoding>
+            <defaultNotAfterEncoding>UTC</defaultNotAfterEncoding>
             <timezoneOffsetInMinutes>0</timezoneOffsetInMinutes>
             <defaultIssuerUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultIssuerUniqueId>
             <subjectUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</subjectUniqueId>
@@ -56,6 +56,7 @@
             <dsaPublicKeyY>42553464042247793068930071527484980130794495214758946688668024290422185699407930945904571461007031545127331540486979291016680591616252108646703714448223463865675197683700068032264296017370872694736732971808338959404018240514898508365580410950235550325761828867284268037043263195872046799615197605073948002086</dsaPublicKeyY>
             <defaultIssuerDsaPublicKeyY>42553464042247793068930071527484980130794495214758946688668024290422185699407930945904571461007031545127331540486979291016680591616252108646703714448223463865675197683700068032264296017370872694736732971808338959404018240514898508365580410950235550325761828867284268037043263195872046799615197605073948002086</defaultIssuerDsaPublicKeyY>
             <dsaPrivateKey>65535</dsaPrivateKey>
+            <defaultIssuerDsaNonce>65535</defaultIssuerDsaNonce>
             <ecPrivateKey>3</ecPrivateKey>
             <ecPublicKey>
                 <xFieldElementFp>
@@ -78,8 +79,10 @@
             <defaultIssuerRsaPrivateKey>15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321</defaultIssuerRsaPrivateKey>
             <defaultIssuerDsaPrivateKey>1192739878427882606584730666978299790520536457529</defaultIssuerDsaPrivateKey>
             <defaultIssuerEcPrivateKey>3</defaultIssuerEcPrivateKey>
+            <defaultIssuerNonce>11259375</defaultIssuerNonce>
             <includeDhValidationParameters>false</includeDhValidationParameters>
             <defaultSubjectNamedCurve>SECP256R1</defaultSubjectNamedCurve>
+            <defaultIssuerNamedCurve>SECP256R1</defaultIssuerNamedCurve>
             <dhValidationParameterPgenCounter>1</dhValidationParameterPgenCounter>
             <dhValidationParameterSeed>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</dhValidationParameterSeed>
             <defaultEcPointFormat>UNCOMPRESSED</defaultEcPointFormat>
@@ -118,10 +121,10 @@
             </subject>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
-            <defaultNotBeforeEncoding>GENERALIZED_TIME_UTC</defaultNotBeforeEncoding>
+            <defaultNotBeforeEncoding>UTC</defaultNotBeforeEncoding>
             <notAfter/>
             <notAfterAccurracy>SECONDS</notAfterAccurracy>
-            <defaultNotAfterEncoding>GENERALIZED_TIME_UTC</defaultNotAfterEncoding>
+            <defaultNotAfterEncoding>UTC</defaultNotAfterEncoding>
             <timezoneOffsetInMinutes>0</timezoneOffsetInMinutes>
             <defaultIssuerUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultIssuerUniqueId>
             <subjectUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</subjectUniqueId>
@@ -138,6 +141,7 @@
             <dsaPublicKeyY>42553464042247793068930071527484980130794495214758946688668024290422185699407930945904571461007031545127331540486979291016680591616252108646703714448223463865675197683700068032264296017370872694736732971808338959404018240514898508365580410950235550325761828867284268037043263195872046799615197605073948002086</dsaPublicKeyY>
             <defaultIssuerDsaPublicKeyY>42553464042247793068930071527484980130794495214758946688668024290422185699407930945904571461007031545127331540486979291016680591616252108646703714448223463865675197683700068032264296017370872694736732971808338959404018240514898508365580410950235550325761828867284268037043263195872046799615197605073948002086</defaultIssuerDsaPublicKeyY>
             <dsaPrivateKey>65535</dsaPrivateKey>
+            <defaultIssuerDsaNonce>65535</defaultIssuerDsaNonce>
             <ecPrivateKey>3</ecPrivateKey>
             <ecPublicKey>
                 <xFieldElementFp>
@@ -160,8 +164,10 @@
             <defaultIssuerRsaPrivateKey>15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321</defaultIssuerRsaPrivateKey>
             <defaultIssuerDsaPrivateKey>1192739878427882606584730666978299790520536457529</defaultIssuerDsaPrivateKey>
             <defaultIssuerEcPrivateKey>3</defaultIssuerEcPrivateKey>
+            <defaultIssuerNonce>11259375</defaultIssuerNonce>
             <includeDhValidationParameters>false</includeDhValidationParameters>
             <defaultSubjectNamedCurve>SECP256R1</defaultSubjectNamedCurve>
+            <defaultIssuerNamedCurve>SECP256R1</defaultIssuerNamedCurve>
             <dhValidationParameterPgenCounter>1</dhValidationParameterPgenCounter>
             <dhValidationParameterSeed>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</dhValidationParameterSeed>
             <defaultEcPointFormat>UNCOMPRESSED</defaultEcPointFormat>
@@ -211,6 +217,9 @@
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA384</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA512</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA384</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA512</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultClientSupportedSignatureAndHashAlgorithm>
     </defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCertificateSignAlgorithms>
@@ -220,6 +229,9 @@
         <defaultClientSupportedCertificateSignAlgorithms>ECDSA_SHA256</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>ECDSA_SHA384</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>ECDSA_SHA512</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA256</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA384</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA512</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultClientSupportedCertificateSignAlgorithms>
@@ -937,6 +949,9 @@
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP256R1TLS13</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP384R1TLS13</defaultClientNamedGroup>
+        <defaultClientNamedGroup>BRAINPOOLP512R1TLS13</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE2048</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE3072</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
@@ -975,6 +990,9 @@
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP256R1TLS13</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP384R1TLS13</defaultServerNamedGroup>
+        <defaultServerNamedGroup>BRAINPOOLP512R1TLS13</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE2048</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE3072</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
@@ -1133,6 +1151,7 @@
     <addPaddingExtension>false</addPaddingExtension>
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addDebugExtension>false</addDebugExtension>
     <addExtendedRandomExtension>false</addExtendedRandomExtension>
     <addQuicTransportParametersExtension>false</addQuicTransportParametersExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
@@ -1160,6 +1179,9 @@
     <addCookieExtension>false</addCookieExtension>
     <sendHandshakeMessagesWithinSingleRecord>false</sendHandshakeMessagesWithinSingleRecord>
     <defaultConnectionId>01 02 03</defaultConnectionId>
+    <defaultDebugContent>TLS-Attacker Debug Content</defaultDebugContent>
+    <defaultNumberOfRequestedConnectionIds>3</defaultNumberOfRequestedConnectionIds>
+    <defaultUsageOfSentConnectionIds>CID_SPARE</defaultUsageOfSentConnectionIds>
     <addConnectionIdExtension>false</addConnectionIdExtension>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
@@ -1212,6 +1234,7 @@
     <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
+    <stopActionsAfterQuicConnectionClose>true</stopActionsAfterQuicConnectionClose>
     <finishWithCloseNotify>false</finishWithCloseNotify>
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
@@ -1253,6 +1276,9 @@
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA384</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA512</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA384</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_PSS_SHA512</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultServerSupportedSignatureAndHashAlgorithm>
     </defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedCertificateSignAlgorithms>
@@ -1262,6 +1288,9 @@
         <defaultServerSupportedCertificateSignAlgorithms>ECDSA_SHA256</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>ECDSA_SHA384</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>ECDSA_SHA512</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA256</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA384</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_PSS_SHA512</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultServerSupportedCertificateSignAlgorithms>
@@ -1370,6 +1399,7 @@
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
+    <defaultMaxHttpLength>65536</defaultMaxHttpLength>
     <starttlsType>NONE</starttlsType>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>
@@ -1400,7 +1430,6 @@
     </defaultServerPWDProtectPublicKey>
     <defaultServerPWDProtectRandomSecret>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</defaultServerPWDProtectRandomSecret>
     <defaultPWDPassword>barney</defaultPWDPassword>
-    <defaultPWDIterations>40</defaultPWDIterations>
     <defaultServerPWDPrivate>21 D9 9D 34 1C 97 97 B3 AE 72 DF D2 89 97 1F 1B 74 CE 9D E6 8A D4 B9 AB F5 48 88 D8 F6 C5 04 3C</defaultServerPWDPrivate>
     <defaultServerPWDMask>0D 96 AB 62 4D 08 2C 71 25 5B E3 64 8D CD 30 3F 6A B0 CA 61 A9 50 34 A5 53 E3 30 8D 1D 37 44 E5</defaultServerPWDMask>
     <defaultClientPWDPrivate>17 1D E8 CA A5 35 2D 36 EE 96 A3 99 79 B5 B7 2F A1 89 AE 7A 6A 09 C7 7F 7B 43 8A F1 6D F4 A8 8B</defaultClientPWDPrivate>
@@ -1776,6 +1805,9 @@
         <clientSupportedEsniNamedGroup>BRAINPOOLP256R1</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>BRAINPOOLP384R1</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>BRAINPOOLP512R1</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP256R1TLS13</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP384R1TLS13</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>BRAINPOOLP512R1TLS13</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE2048</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE3072</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE4096</clientSupportedEsniNamedGroup>
@@ -1824,7 +1856,10 @@
     <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
     <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
+    <canSkipMessageSequenceNumber>false</canSkipMessageSequenceNumber>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
+    <useDtls13HeaderSeqNumSizeLongEncoding>true</useDtls13HeaderSeqNumSizeLongEncoding>
+    <retransmitAcknowledgedRecordsInDtls13>false</retransmitAcknowledgedRecordsInDtls13>
     <defaultRsaSsaPssSalt>AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA</defaultRsaSsaPssSalt>
 </config>

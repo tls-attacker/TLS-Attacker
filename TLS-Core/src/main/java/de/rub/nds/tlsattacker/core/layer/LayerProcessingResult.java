@@ -8,32 +8,47 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 import java.util.StringJoiner;
 
 /**
  * Contains information about a layers actions, both after sending and receiving data.
  *
- * @param <T>
+ * @param <Container>
  */
-public class LayerProcessingResult<T extends DataContainer<?>> {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class LayerProcessingResult<Container extends DataContainer<?>> {
 
     /** List of containers that were sent or received */
-    private List<T> usedContainers;
+    @XmlAnyElement(lax = true)
+    private List<Container> usedContainers;
 
     /** Type of layer that produced this result. */
+    @XmlAnyElement(lax = true)
     private LayerType layerType;
 
     /** Whether the layer could send or receive bytes as planned. */
     private boolean executedAsPlanned;
 
     // holds any bytes which are unread in the layer after parsing
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] unreadBytes;
 
+    private LayerProcessingResult() {
+        // JAXB needs this
+    }
+
     public LayerProcessingResult(
-            List<T> usedContainers,
+            List<Container> usedContainers,
             LayerType layerType,
             boolean executedAsPlanned,
             byte[] unreadBytes) {
@@ -44,18 +59,18 @@ public class LayerProcessingResult<T extends DataContainer<?>> {
     }
 
     public LayerProcessingResult(
-            List<T> usedContainers, LayerType layerType, boolean executedAsPlanned) {
+            List<Container> usedContainers, LayerType layerType, boolean executedAsPlanned) {
         this.usedContainers = usedContainers;
         this.layerType = layerType;
         this.executedAsPlanned = executedAsPlanned;
         this.unreadBytes = new byte[0];
     }
 
-    public List<T> getUsedContainers() {
+    public List<Container> getUsedContainers() {
         return usedContainers;
     }
 
-    public void setUsedContainers(List<T> usedContainers) {
+    public void setUsedContainers(List<Container> usedContainers) {
         this.usedContainers = usedContainers;
     }
 
@@ -91,7 +106,7 @@ public class LayerProcessingResult<T extends DataContainer<?>> {
         sb.append(executedAsPlanned);
         sb.append(" Containers: ");
         StringJoiner joiner = new StringJoiner(", ");
-        for (DataContainer container : usedContainers) {
+        for (Container container : usedContainers) {
             joiner.add(container.toCompactString());
         }
         sb.append(joiner.toString());

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.File;
@@ -23,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -272,7 +274,6 @@ public class ConfigTest {
                         "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
-        config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
                 ArrayConverter.hexStringToByteArray(
                         "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
@@ -333,7 +334,6 @@ public class ConfigTest {
                         "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
-        config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
                 ArrayConverter.hexStringToByteArray(
                         "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
@@ -396,6 +396,43 @@ public class ConfigTest {
     }
 
     @Test
+    public void generateDTls13Config() {
+        setUpBasicDTls13Config(config);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
+    }
+
+    @Test
+    public void generateDTls13ZeroRttConfig() {
+        setUpBasicDTls13Config(config);
+        config.setAddPSKKeyExchangeModesExtension(true);
+        config.setAddPreSharedKeyExtension(true);
+        config.setAddEarlyDataExtension(true);
+        config.setSessionTicketLifetimeHint(3600);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13zerortt.config"));
+    }
+
+    private void setUpBasicDTls13Config(Config config) {
+        setUpBasicTls13Config(config);
+        config.setHighestProtocolVersion(ProtocolVersion.DTLS13);
+        config.setSupportedVersions(ProtocolVersion.DTLS13);
+        config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
+        config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
+        config.setFinishWithCloseNotify(true);
+        config.setIgnoreRetransmittedCssInDtls(true);
+        config.getDefaultClientKeyShareNamedGroups().add(NamedGroup.SECP256R1);
+        config.getDefaultClientNamedGroups().add(NamedGroup.SECP256R1);
+        config.getDefaultServerNamedGroups().add(NamedGroup.SECP256R1);
+        config.setMessageFactoryActionOptions(new LinkedList<>());
+        config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
+        config.setDtlsCookieExchange(true);
+        config.setDefaultExtensionCookie(
+                ArrayConverter.hexStringToByteArray(
+                        "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100"));
+    }
+
+    @Test
     public void generateTls13Config() {
         setUpBasicTls13Config(config);
 
@@ -416,7 +453,6 @@ public class ConfigTest {
     private void setUpBasicTls13Config(Config config) {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
-
         ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);

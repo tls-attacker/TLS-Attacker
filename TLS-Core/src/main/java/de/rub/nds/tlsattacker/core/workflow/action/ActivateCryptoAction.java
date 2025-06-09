@@ -13,21 +13,26 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class ActivateCryptoAction extends ConnectionBoundAction {
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ActivateCryptoAction() {}
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ActivateEncryptionAction;
+        return o instanceof ActivateEncryptionAction && super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return 13 + super.hashCode();
     }
 
     protected abstract void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher);
@@ -42,7 +47,7 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
 
         KeySet keySet;
         try {
-            keySet = KeySetGenerator.generateKeySet(tlsContext);
+            keySet = KeyDerivator.generateKeySet(tlsContext);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
