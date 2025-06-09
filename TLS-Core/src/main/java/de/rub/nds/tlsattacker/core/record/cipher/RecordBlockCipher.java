@@ -330,6 +330,11 @@ public final class RecordBlockCipher extends RecordCipher {
 
             LOGGER.debug("Decrypted plaintext: {}", plainData);
             int paddingLength = (plainData[plainData.length - 1] & 0xff) + 1;
+            if (plainData.length - paddingLength < 0) {
+                LOGGER.warn("Error while decrypting record. Padding length is wrong.");
+                record.setCleanProtocolMessageBytes(plainData);
+                return;
+            }
             byte[] padding =
                     Arrays.copyOfRange(
                             plainData, plainData.length - paddingLength, plainData.length);
