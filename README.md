@@ -270,9 +270,11 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         <configuredMessages>
             <Heartbeat>
                 <payloadLength>
-                    <IntegerExplicitValueModification>
-                        <explicitValue>20000</explicitValue>
-                    </IntegerExplicitValueModification>
+                    <modifications>
+                        <IntegerExplicitValueModification>
+                            <explicitValue>20000</explicitValue>
+                        </IntegerExplicitValueModification>
+                    </modifications>
                 </payloadLength>
             </Heartbeat>
         </configuredMessages>
