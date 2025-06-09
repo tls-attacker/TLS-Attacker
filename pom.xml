@@ -253,7 +253,6 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.12.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -271,8 +270,7 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!--#################
-                default lifecycle plugins #################-->
+                <!--################# default lifecycle plugins #################-->
                 <!-- Plugin to compile source files -->
                 <!-- Compile source files -->
                 <plugin>
@@ -411,8 +409,7 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!--##################
-            clean lifecycle plugins ##################-->
+            <!--################## clean lifecycle plugins ##################-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -449,8 +446,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--#################
-            default lifecycle plugins #################-->
+            <!--################# default lifecycle plugins #################-->
             <!-- Formatting -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
@@ -500,8 +496,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--############
-            plugins without lifecycle bindings #############-->
+            <!--############ plugins without lifecycle bindings #############-->
             <!-- Static code analysis -->
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
