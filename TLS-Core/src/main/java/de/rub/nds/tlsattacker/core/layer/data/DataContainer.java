@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.layer.data;
 
 import java.io.InputStream;
 
+import de.rub.nds.tlsattacker.core.state.Context;
+
 /**
  * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work
  * with data it only needs to know how to parse, prepare, serialize and handle the message. All
@@ -17,17 +19,13 @@ import java.io.InputStream;
  */
 public interface DataContainer {
 
-    public Parser<? extends DataContainer> getParser(
-            de.rub.nds.tlsattacker.core.state.Context context, InputStream stream);
+    public Parser<? extends DataContainer> getParser(Context context, InputStream stream);
 
-    public Preparator<? extends DataContainer> getPreparator(
-            de.rub.nds.tlsattacker.core.state.Context context);
+    public Preparator<? extends DataContainer> getPreparator(Context context);
 
-    public Serializer<? extends DataContainer> getSerializer(
-            de.rub.nds.tlsattacker.core.state.Context context);
+    public Serializer<? extends DataContainer> getSerializer(Context context);
 
-    public Handler<? extends DataContainer> getHandler(
-            de.rub.nds.tlsattacker.core.state.Context context);
+    public Handler<? extends DataContainer> getHandler(Context context);
 
     public default boolean isRequired() {
         return true;
