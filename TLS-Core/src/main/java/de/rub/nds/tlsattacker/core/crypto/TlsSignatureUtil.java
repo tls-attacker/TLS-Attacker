@@ -184,9 +184,9 @@ public class TlsSignatureUtil {
         X509Chooser x509chooser =
                 chooser.getContext().getTlsContext().getTalkingX509Context().getChooser();
         BigInteger privateKey = x509chooser.getSubjectDsaPrivateKeyX();
-        BigInteger primeModulusP = x509chooser.getIssuerDsaPrimeP();
-        BigInteger primeQ = x509chooser.getIssuerDsaPrimeQ();
-        BigInteger generator = x509chooser.getIssuerDsaGenerator();
+        BigInteger primeModulusP = x509chooser.getSubjectDsaPrimeP();
+        BigInteger primeQ = x509chooser.getSubjectDsaPrimeQ();
+        BigInteger generator = x509chooser.getSubjectDsaGenerator();
         BigInteger nonce = chooser.getConfig().getDefaultDsaNonce();
         calculator.computeDsaSignature(
                 computations,
