@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -19,7 +20,6 @@ import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
 
     @Test
     public void testJAXB() throws JAXBException, IOException, XMLStreamException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         action.filter();
         ActionIO.write(outputStream, action);
         TlsAction action2 = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));

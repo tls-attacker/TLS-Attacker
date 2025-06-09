@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
 
 public class TokenBindingExtensionPreparator
         extends ExtensionPreparator<TokenBindingExtensionMessage> {
@@ -28,7 +28,7 @@ public class TokenBindingExtensionPreparator
 
         message.setTokenBindingVersion(
                 chooser.getConfig().getDefaultTokenBindingVersion().getByteValue());
-        ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream tokenbindingKeyParameters = new SilentByteArrayOutputStream();
         for (TokenBindingKeyParameters kp :
                 chooser.getConfig().getDefaultTokenBindingKeyParameters()) {
             tokenbindingKeyParameters.write(kp.getValue());

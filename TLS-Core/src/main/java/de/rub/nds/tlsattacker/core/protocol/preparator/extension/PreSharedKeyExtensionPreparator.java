@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -28,8 +29,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -84,15 +83,11 @@ public class PreSharedKeyExtensionPreparator
     }
 
     private void prepareIdentityListBytes() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (msg.getIdentities() != null) {
             for (PSKIdentity pskIdentity : msg.getIdentities()) {
                 PSKIdentitySerializer serializer = new PSKIdentitySerializer(pskIdentity);
-                try {
-                    outputStream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
-                }
+                outputStream.write(serializer.serialize());
             }
         } else {
             LOGGER.debug("No PSK available, setting empty identity list");
@@ -102,15 +97,11 @@ public class PreSharedKeyExtensionPreparator
     }
 
     private void prepareBinderListBytes() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (msg.getBinders() != null) {
             for (PSKBinder pskBinder : msg.getBinders()) {
                 PSKBinderSerializer serializer = new PSKBinderSerializer(pskBinder);
-                try {
-                    outputStream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
-                }
+                outputStream.write(serializer.serialize());
             }
         } else {
             LOGGER.debug("No PSK available, setting empty binder list");

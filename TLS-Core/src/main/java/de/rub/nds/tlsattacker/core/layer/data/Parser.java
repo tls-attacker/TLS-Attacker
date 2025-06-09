@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.layer.data;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -34,10 +34,10 @@ public abstract class Parser<T> {
      * quicBuffer is used as a helper to construct the original QuicHeader for PacketDecryption.
      * there might be a nicer solution.
      */
-    protected ByteArrayOutputStream quicBuffer = new ByteArrayOutputStream();
+    protected SilentByteArrayOutputStream quicBuffer = new SilentByteArrayOutputStream();
 
     /** Not so nice... */
-    private final ByteArrayOutputStream outputStream;
+    private final SilentByteArrayOutputStream outputStream;
 
     /**
      * Constructor for the Parser
@@ -46,7 +46,7 @@ public abstract class Parser<T> {
      */
     protected Parser(InputStream stream) {
         this.stream = stream;
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     public byte[] getAlreadyParsed() {
@@ -135,7 +135,7 @@ public abstract class Parser<T> {
      * @return
      */
     protected String parseStringTill(byte endSequence) {
-        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream tempStream = new SilentByteArrayOutputStream();
         while (true) {
             byte b = parseByteField(1);
             tempStream.write(b);

@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.transport.stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +21,13 @@ public class StreamTransportHandlerTest {
 
     private StreamTransportHandler handler;
 
-    private ByteArrayOutputStream outputStream;
+    private SilentByteArrayOutputStream outputStream;
 
     private ByteArrayInputStream inputStream;
 
     @BeforeEach
     public void setUp() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
         inputStream = new ByteArrayInputStream(new byte[] {4, 3, 2, 1});
         handler =
                 new StreamTransportHandler(

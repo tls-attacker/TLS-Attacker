@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.alpn.AlpnEntryPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.alpn.AlpnEntrySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -82,16 +81,12 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
     }
 
     private void setEntryListBytes(List<AlpnEntry> alpnEntryList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (AlpnEntry entry : alpnEntryList) {
             AlpnEntryPreparator preparator = new AlpnEntryPreparator(chooser, entry);
             preparator.prepare();
             AlpnEntrySerializer serializer = new AlpnEntrySerializer(entry);
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                LOGGER.warn("Could not serialize AlpnEntry", ex);
-            }
+            stream.write(serializer.serialize());
         }
         msg.setProposedAlpnProtocols(stream.toByteArray());
     }

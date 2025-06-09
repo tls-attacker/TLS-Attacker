@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +44,7 @@ public class SignatureAlgorithmsCertExtensionPreparator
     }
 
     private byte[] createSignatureAndHashAlgorithmsArray() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmList;
         if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             signatureAndHashAlgorithmList =
@@ -57,12 +55,7 @@ public class SignatureAlgorithmsCertExtensionPreparator
         }
 
         for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithmList) {
-            try {
-                stream.write(algo.getByteValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not write byte[] of SignatureAndHashAlgorithms to Stream", ex);
-            }
+            stream.write(algo.getByteValue());
         }
         return stream.toByteArray();
     }

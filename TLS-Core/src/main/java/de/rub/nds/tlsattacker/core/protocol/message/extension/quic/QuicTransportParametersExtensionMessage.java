@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
@@ -27,7 +28,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic.QuicTransportParametersExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -189,7 +189,7 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
         }
 
         public byte[] serialize() throws IOException {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream byteArrayOutputStream = new SilentByteArrayOutputStream();
             byteArrayOutputStream.write(this.ipv4Address.getAddress());
             byteArrayOutputStream.write(this.ipv4Port);
             byteArrayOutputStream.write(this.ipv6Address.getAddress());

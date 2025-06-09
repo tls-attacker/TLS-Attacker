@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscCustomConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,14 +50,10 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
     }
 
     private void prepareUnprotectedPayload() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            outputStream.write(packet.getUnprotectedPayload().getValue());
-            if (packet.getPadding() > 0) {
-                outputStream.write(new byte[packet.getPadding()]);
-            }
-        } catch (IOException e) {
-            LOGGER.error(e);
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
+        outputStream.write(packet.getUnprotectedPayload().getValue());
+        if (packet.getPadding() > 0) {
+            outputStream.write(new byte[packet.getPadding()]);
         }
         packet.setUnprotectedPayload(outputStream.toByteArray());
         LOGGER.debug("Unprotected Payload: {}", packet.getUnprotectedPayload().getValue());

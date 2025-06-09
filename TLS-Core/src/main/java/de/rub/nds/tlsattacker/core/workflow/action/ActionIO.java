@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import jakarta.xml.bind.JAXBContext;
@@ -88,7 +89,7 @@ public class ActionIO {
 
     public static TlsAction copyTlsAction(TlsAction tlsAction)
             throws JAXBException, IOException, XMLStreamException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         ActionIO.write(stream, tlsAction);
         stream.flush();
         return ActionIO.read(new ByteArrayInputStream(stream.toByteArray()));
