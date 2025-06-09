@@ -293,15 +293,12 @@
                         <includes>
                             <include>**/*.java</include>
                         </includes>
-                        <!-- Allow parallel execution of unit tests (execution in series within test
-                        classes) -->
+                        <!-- Allow parallel execution of unit tests (execution in series within test classes) -->
                         <parallel>classes</parallel>
-                        <!-- Can be adjusted depending on the local system, 3 should be a fair
-                        default value -->
+                        <!-- Can be adjusted depending on the local system, 3 should be a fair default value -->
                         <forkCount>3</forkCount>
                         <reuseForks>true</reuseForks>
-                        <!-- By default we include all but integration tests during surefire
-                        execution -->
+                        <!-- By default we include all but integration tests during surefire execution -->
                         <excludedGroups>IntegrationTest</excludedGroups>
                         <skipTests>${skip.surefire.tests}</skipTests>
                     </configuration>
@@ -368,8 +365,7 @@
                             <phase>package</phase>
                             <configuration>
                                 <outputDirectory>${main.basedir}/apps/lib</outputDirectory>
-                                <!--Ensures
-                                only runnable dependencies are included-->
+                                <!--Ensures only runnable dependencies are included-->
                                 <includeScope>compile</includeScope>
                             </configuration>
                         </execution>
@@ -380,8 +376,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <configuration>
-                        <!-- By default, the Failsafe plugin excludes various files. We have to
-                        override that. -->
+                        <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
                         <includes>
                             <include>**/*.java</include>
                         </includes>
@@ -546,8 +541,7 @@
             <build>
                 <pluginManagement>
                     <plugins>
-                        <!-- Configure Surefire to run SlowTests during integration-test phase to
-                        speed up the build process -->
+                        <!-- Configure Surefire to run SlowTests during integration-test phase to speed up the build process -->
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-surefire-plugin</artifactId>
