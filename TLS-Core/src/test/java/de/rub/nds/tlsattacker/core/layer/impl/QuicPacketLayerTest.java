@@ -24,12 +24,9 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuicPacketLayerTest extends AbstractLayerTest {
@@ -47,11 +44,6 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
     private final byte[] clientHelloInStreamFrame =
             ArrayConverter.hexStringToByteArray(
                     "060041720100016e030360b420bb3851d9d47acb933dbe70399bf6c92da33af01d4fb770e98c0325f41d00000e1301130213031304130500c600c701000137000a0004000200170000000e000c0000093132372e302e302e31000d002a002802020302040205020602010102010301040105010601020303030403050306030804080508060708002b00030203040033004700450017004104f249104d0e6f8f29e6016277780cda84dc84b83bc3d899dfb736ca0831fbe8cfb57e12fcdb031f59cab81b1c6b1e1c07e4512e52ce832f1a0cedefff8b4340e9002d00030200010010002d002b0268330568332d32370568332d32380568332d32390568712d3239046563686f0a68712d696e7465726f700039006101048000ea6003048000fff70408c0000000802625a00508c0000000802625a00608c0000000802625a00708c0000000802625a00808c0000000800400000908c0000000800400000a01000b0247d00f101d541e5371a5e1c6c481b6d7b07f0961");
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public void applyDelegate() {
         QuicDelegate delegate = new QuicDelegate(true);

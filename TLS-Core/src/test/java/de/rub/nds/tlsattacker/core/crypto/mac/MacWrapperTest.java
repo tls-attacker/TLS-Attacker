@@ -16,17 +16,9 @@ import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class MacWrapperTest {
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @Test
     public void testSha1() throws NoSuchAlgorithmException {
