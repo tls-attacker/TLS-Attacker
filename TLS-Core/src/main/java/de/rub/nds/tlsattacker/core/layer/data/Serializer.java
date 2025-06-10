@@ -9,8 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +24,12 @@ public abstract class Serializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** The ByteArrayOutputStream with which the byte[] is constructed. */
-    private ByteArrayOutputStream outputStream;
+    /** The SilentByteArrayOutputStream with which the byte[] is constructed. */
+    private SilentByteArrayOutputStream outputStream;
 
     /** Constructor for the Serializer */
     public Serializer() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     /**
@@ -98,12 +97,7 @@ public abstract class Serializer<T> {
      * @param bytes bytes that should be added
      */
     public final void appendBytes(byte[] bytes) {
-        try {
-            outputStream.write(bytes);
-        } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
-            LOGGER.debug(ex);
-        }
+        outputStream.write(bytes);
     }
 
     public final byte[] getAlreadySerialized() {
@@ -116,12 +110,12 @@ public abstract class Serializer<T> {
      * @return The final byte[]
      */
     public final byte[] serialize() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
         serializeBytes();
         return getAlreadySerialized();
     }
 
-    public ByteArrayOutputStream getOutputStream() {
+    public SilentByteArrayOutputStream getOutputStream() {
         return outputStream;
     }
 }

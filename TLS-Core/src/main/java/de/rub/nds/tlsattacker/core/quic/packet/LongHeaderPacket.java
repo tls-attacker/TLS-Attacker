@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,40 +48,35 @@ public abstract class LongHeaderPacket extends QuicPacket {
 
     @Override
     public void buildUnprotectedPacketHeader() {
-        try {
-            unprotectedHeaderHelper.write(unprotectedFlags.getValue());
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write(unprotectedFlags.getValue());
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(quicVersion.getValue());
-            offsetToPacketNumber += quicVersion.getValue().length;
+        unprotectedHeaderHelper.write(quicVersion.getValue());
+        offsetToPacketNumber += quicVersion.getValue().length;
 
-            unprotectedHeaderHelper.write((byte) destinationConnectionId.getValue().length);
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write((byte) destinationConnectionId.getValue().length);
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(destinationConnectionId.getValue());
-            offsetToPacketNumber += destinationConnectionIdLength.getValue();
+        unprotectedHeaderHelper.write(destinationConnectionId.getValue());
+        offsetToPacketNumber += destinationConnectionIdLength.getValue();
 
-            unprotectedHeaderHelper.write((byte) sourceConnectionId.getValue().length);
-            offsetToPacketNumber++;
+        unprotectedHeaderHelper.write((byte) sourceConnectionId.getValue().length);
+        offsetToPacketNumber++;
 
-            unprotectedHeaderHelper.write(sourceConnectionId.getValue());
-            offsetToPacketNumber += sourceConnectionIdLength.getValue();
+        unprotectedHeaderHelper.write(sourceConnectionId.getValue());
+        offsetToPacketNumber += sourceConnectionIdLength.getValue();
 
-            byte[] packetLengthBytes =
-                    VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                            packetLength.getValue());
-            unprotectedHeaderHelper.write(packetLengthBytes);
-            offsetToPacketNumber += packetLengthBytes.length;
+        byte[] packetLengthBytes =
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(packetLength.getValue());
+        unprotectedHeaderHelper.write(packetLengthBytes);
+        offsetToPacketNumber += packetLengthBytes.length;
 
-            unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
-            offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
+        unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
+        offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
 
-            completeUnprotectedHeader =
-                    ModifiableVariableFactory.safelySetValue(
-                            completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        completeUnprotectedHeader =
+                ModifiableVariableFactory.safelySetValue(
+                        completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
     }
 
     @Override

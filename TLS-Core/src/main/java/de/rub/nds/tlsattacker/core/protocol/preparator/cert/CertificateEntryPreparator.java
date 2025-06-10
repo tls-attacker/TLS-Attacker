@@ -9,13 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,15 +62,11 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
     }
 
     private void prepareExtensions(CertificateEntry entry) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         if (entry.getExtensionList() != null) {
             for (ExtensionMessage extensionMessage : entry.getExtensionList()) {
                 extensionMessage.getPreparator(chooser.getContext()).prepare();
-                try {
-                    stream.write(extensionMessage.getExtensionBytes().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
-                }
+                stream.write(extensionMessage.getExtensionBytes().getValue());
             }
             entry.setExtensionBytes(stream.toByteArray());
         }

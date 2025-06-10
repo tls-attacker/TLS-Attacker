@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
@@ -36,7 +37,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
@@ -122,7 +122,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             hintedFirstMessage = true;
         }
         if (hint != null && hintedType != null) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             QuicPacketLayerHint packetLayerHint;
             switch (hintedType) {
                 case HANDSHAKE:
@@ -153,7 +153,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                             ((CryptoFrame) frame).setCryptoDataConfig(payload);
                             ((CryptoFrame) frame).setOffsetConfig(offset);
                             ((CryptoFrame) frame).setLengthConfig(payload.length);
-                            stream = new ByteArrayOutputStream();
+                            stream = new SilentByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
                             addProducedContainer(frame);
                             // TODO: Add option to pass everything together to the next layer
@@ -172,7 +172,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                                             offset,
                                             Math.min(offset + MAX_FRAME_SIZE, data.length));
                             CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
-                            stream = new ByteArrayOutputStream();
+                            stream = new SilentByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
                             addProducedContainer(frame);
                             // TODO: Add option to pass everything together to the next layer
@@ -187,7 +187,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                                             offset,
                                             Math.min(offset + MAX_FRAME_SIZE, data.length));
                             CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
-                            stream = new ByteArrayOutputStream();
+                            stream = new SilentByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
                             addProducedContainer(frame);
                             // TODO: Add option to pass everything together to the next layer
@@ -361,7 +361,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
         // reorder cryptoFrames according to offset and check if they are consecutive and can be
         // passed to the upper layer without gaps
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (!cryptoFrameBuffer.isEmpty()) {
             cryptoFrameBuffer.sort(Comparator.comparingLong(frame -> frame.getOffset().getValue()));
             cryptoFrameBuffer = cryptoFrameBuffer.stream().distinct().collect(Collectors.toList());

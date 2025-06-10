@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.quic.preparator.packet.HandshakePacketPrepara
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.HandshakePacketSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,11 +36,7 @@ public class HandshakePacket extends LongHeaderPacket {
         protectedHeaderHelper.write(flags);
         this.packetSecret = QuicCryptoSecrets.HANDSHAKE_SECRET;
         setQuicVersion(versionBytes);
-        try {
-            protectedHeaderHelper.write(versionBytes);
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        protectedHeaderHelper.write(versionBytes);
     }
 
     @Override

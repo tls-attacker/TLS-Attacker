@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.socket;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -17,7 +18,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -113,7 +113,7 @@ public class TlsAttackerSocket {
                 receivedAppMessages.add((ApplicationMessage) message);
             }
         }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (ApplicationMessage message : receivedAppMessages) {
             stream.write(message.getData().getValue());
         }

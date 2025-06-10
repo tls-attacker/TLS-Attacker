@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -45,7 +45,7 @@ public class ClientTcpTransportHandlerIT {
 
                 s.getOutputStream().write(data);
 
-                var res = new ByteArrayOutputStream();
+                var res = new SilentByteArrayOutputStream();
                 while (res.size() < data.length) {
                     var dataRead = handler.fetchData();
                     LOGGER.debug("Read {} bytes", dataRead.length);

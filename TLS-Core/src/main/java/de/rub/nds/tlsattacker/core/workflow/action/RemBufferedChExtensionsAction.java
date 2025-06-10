@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.exception.WorkflowExecutionException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -19,8 +19,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,7 +92,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
 
         List<ExtensionMessage> extensions = ch.getExtensions();
         List<ExtensionMessage> markedForRemoval = new ArrayList<>();
-        ByteArrayOutputStream newExtensionBytes = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream newExtensionBytes = new SilentByteArrayOutputStream();
         String msgName = ch.toCompactString();
 
         int msgLength = ch.getLength().getValue();
@@ -106,17 +104,12 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
 
         ExtensionType type;
         for (ExtensionMessage ext : extensions) {
-            try {
-                type = ext.getExtensionTypeConstant();
-                if (removeExtensions.contains(type)) {
-                    LOGGER.debug("Removing {} extensions from {}", type, msgName);
-                    markedForRemoval.add(ext);
-                } else {
-                    newExtensionBytes.write(ext.getExtensionBytes().getValue());
-                }
-            } catch (IOException ex) {
-                throw new WorkflowExecutionException(
-                        "Could not write ExtensionBytes to byte[]", ex);
+            type = ext.getExtensionTypeConstant();
+            if (removeExtensions.contains(type)) {
+                LOGGER.debug("Removing {} extensions from {}", type, msgName);
+                markedForRemoval.add(ext);
+            } else {
+                newExtensionBytes.write(ext.getExtensionBytes().getValue());
             }
         }
         ch.setExtensionBytes(newExtensionBytes.toByteArray());
