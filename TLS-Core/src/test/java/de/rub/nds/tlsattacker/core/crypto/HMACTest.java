@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
 public class HMACTest {
@@ -76,7 +74,6 @@ public class HMACTest {
 
     @Test
     public void testComputeGOSTR3411() throws NoSuchAlgorithmException {
-        Security.addProvider(new BouncyCastleProvider());
         byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
         byte[] secret =
                 ArrayConverter.hexStringToByteArray(
@@ -91,7 +88,6 @@ public class HMACTest {
 
     @Test
     public void testComputeGOSTR3411_2012_256() throws NoSuchAlgorithmException {
-        Security.addProvider(new BouncyCastleProvider());
         byte[] data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
         byte[] secret =
                 ArrayConverter.hexStringToByteArray(

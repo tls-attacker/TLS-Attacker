@@ -11,18 +11,10 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 public class JavaCipherTest {
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @ParameterizedTest
     @EnumSource(

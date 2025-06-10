@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
@@ -73,7 +72,6 @@ public class GeneralDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        ProviderUtil.addBouncyCastleProvider();
         if (isDebug()) {
             Configurator.setAllLevels("de.rub.nds", Level.DEBUG);
         } else if (quiet) {

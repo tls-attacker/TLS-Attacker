@@ -13,17 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class DefaultWorkflowExecutorTest {
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     /** Fallback to WorkflowConfigurationFactory with default context should work. */
     @Test
