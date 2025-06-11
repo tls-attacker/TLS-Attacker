@@ -32,9 +32,7 @@ import java.security.cert.CertificateException;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -45,11 +43,6 @@ public class FindReceivedProtocolMessageActionTest {
     private static final int SERVER_PORT = 48385;
 
     private final BadRandom random = new BadRandom(new Random(0), null);
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     /** Test of execute method, of class FindReceivedProtocolMessageAction. */
     @Test

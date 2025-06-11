@@ -11,17 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class TlsConfigTest {
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @Test
     public void testReadFromResource() {

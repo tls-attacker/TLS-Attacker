@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +33,7 @@ public class BouncyCastleProviderCheckerTest {
     @Test
     public void testIsLoaded() {
         assertFalse(BouncyCastleProviderChecker.isLoaded());
-        Security.addProvider(new BouncyCastleProvider());
+        ProviderUtil.addBouncyCastleProvider();
         assertTrue(BouncyCastleProviderChecker.isLoaded());
     }
 }
