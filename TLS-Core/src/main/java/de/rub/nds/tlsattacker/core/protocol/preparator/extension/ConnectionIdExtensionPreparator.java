@@ -13,14 +13,14 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ConnectionIdExtensionPreperator
+public class ConnectionIdExtensionPreparator
         extends ExtensionPreparator<ConnectionIdExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ConnectionIdExtensionMessage message;
 
-    public ConnectionIdExtensionPreperator(Chooser chooser, ConnectionIdExtensionMessage message) {
+    public ConnectionIdExtensionPreparator(Chooser chooser, ConnectionIdExtensionMessage message) {
         super(chooser, message);
         this.message = message;
     }
