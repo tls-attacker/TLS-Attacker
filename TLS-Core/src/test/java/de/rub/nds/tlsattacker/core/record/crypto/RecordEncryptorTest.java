@@ -32,11 +32,8 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.Random;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,11 +43,6 @@ public class RecordEncryptorTest {
     private TlsContext context;
     private Record record;
     public RecordEncryptor encryptor;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @BeforeEach
     public void setUp() {

@@ -19,26 +19,18 @@ import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.Security;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.tls.crypto.impl.bc.BcTlsCertificate;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class GOSTClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
                 GOSTClientKeyExchangeMessage, GOSTClientKeyExchangePreparator> {
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public GOSTClientKeyExchangePreparatorTest() {
         super(GOSTClientKeyExchangeMessage::new, GOST12ClientKeyExchangePreparator::new);

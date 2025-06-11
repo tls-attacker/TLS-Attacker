@@ -18,10 +18,8 @@ import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.math.BigInteger;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -33,7 +31,6 @@ public class TokenBindingHeaderPreparatorTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        Security.addProvider(new BouncyCastleProvider());
         Config config = new Config();
         config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
         Context outerContext = new State(config).getContext();

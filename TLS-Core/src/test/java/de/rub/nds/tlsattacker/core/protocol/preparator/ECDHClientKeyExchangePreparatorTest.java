@@ -22,9 +22,6 @@ import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ECDHClientKeyExchangePreparatorTest
@@ -35,11 +32,6 @@ public class ECDHClientKeyExchangePreparatorTest
     private static final String RANDOM = "CAFEBABECAFE";
     private static final byte[] PREMASTER_SECRET =
             ArrayConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public ECDHClientKeyExchangePreparatorTest() {
         super(ECDHClientKeyExchangeMessage::new, ECDHClientKeyExchangePreparator::new);
