@@ -12,7 +12,6 @@ import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -234,10 +233,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             while (!receivedHintRecord) {
                 Record record = new Record();
                 parser.parse(record);
-                // TODO it would be good to have a record handler here
-                ProtocolVersion protocolVersion =
-                        ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
-                tlsContext.setLastRecordVersion(protocolVersion);
+                record.getHandler(context).adjustContext(record);
                 decryptor.decrypt(record);
                 decompressor.decompress(record);
                 addProducedContainer(record);
