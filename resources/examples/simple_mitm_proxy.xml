@@ -15,11 +15,16 @@
     </Receive>
     <Send>
         <connectionAlias>client2mitm</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+            <record/>
+            <record/>
+        </configuredRecords>
     </Send>
     <Receive>
         <connectionAlias>client2mitm</connectionAlias>
@@ -31,16 +36,23 @@
     </Receive>
     <Send>
         <connectionAlias>client2mitm</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+            <record/>
+        </configuredRecords>
     </Send>
     <Send>
         <connectionAlias>mitm2server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+        </configuredRecords>
     </Send>
     <Receive>
         <connectionAlias>mitm2server</connectionAlias>
@@ -52,11 +64,16 @@
     </Receive>
     <Send>
         <connectionAlias>mitm2server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+            <record/>
+            <record/>
+        </configuredRecords>
     </Send>
     <Receive>
         <connectionAlias>mitm2server</connectionAlias>
@@ -68,9 +85,9 @@
     <ForwardMessages>
         <from>client2mitm</from>
         <to>mitm2server</to>
-        <messages>
+        <expectedMessages>
             <Application/>
-        </messages>
+        </expectedMessages>
     </ForwardMessages>
     <PrintLastHandledApplicationData>
         <connectionAlias>client2mitm</connectionAlias>
@@ -79,9 +96,9 @@
     <ForwardMessages>
         <from>mitm2server</from>
         <to>client2mitm</to>
-        <messages>
+        <expectedMessages>
             <Application/>
-        </messages>
+        </expectedMessages>
     </ForwardMessages>
     <PrintLastHandledApplicationData>
         <connectionAlias>mitm2server</connectionAlias>
