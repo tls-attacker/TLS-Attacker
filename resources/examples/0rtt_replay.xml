@@ -27,8 +27,6 @@ OpenSSL should accept and print the early data
 	<!-- Buffer incoming ClientHello and early data -->
 	<BufferedGenericReceive>
 		<connectionAlias>client2mitm</connectionAlias>
-		<messages/>
-		<records/>
 	</BufferedGenericReceive>
 	<!-- Copy buffers to send the messages to the server -->
 	<DeepCopyBuffers>
@@ -45,13 +43,13 @@ OpenSSL should accept and print the early data
 	</PopAndSendRecord>
 	<!-- Forward server's responses to client -->
 	<ForwardRecords>
-		<receiveFromAlias>mitm2server</receiveFromAlias>
-		<forwardToAlias>client2mitm</forwardToAlias>
+		<from>mitm2server</from>
+		<to>client2mitm</to>
 	</ForwardRecords>
 	<!-- Forward client's EndOfEarlyData + Finished to Server -->
 	<ForwardRecords>
-		<receiveFromAlias>client2mitm</receiveFromAlias>
-		<forwardToAlias>mitm2server</forwardToAlias>
+		<from>client2mitm</from>
+		<to>mitm2server</to>
 	</ForwardRecords>
 	<!-- Reset connection to server -->
 	<ResetConnection>

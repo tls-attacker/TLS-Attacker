@@ -21,11 +21,16 @@ With TLS-Server:
         </expectedMessages>
     </Receive>
     <Send>
-        <messages>
+        <configuredMessages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+            <record/>
+            <record/>
+        </configuredRecords>
     </Send>
     <Receive>
         <expectedMessages>
@@ -36,14 +41,21 @@ With TLS-Server:
         </expectedMessages>
     </Receive>
     <Send>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+            <record/>
+        </configuredRecords>
     </Send>
     <Send>
-        <messages>
+        <configuredMessages>
             <Application/>
-        </messages>
+        </configuredMessages>
+        <configuredRecords>
+            <record/>
+        </configuredRecords>
     </Send>       
 </workflowTrace>
