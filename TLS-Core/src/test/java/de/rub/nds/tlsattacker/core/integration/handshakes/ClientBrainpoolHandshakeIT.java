@@ -27,10 +27,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag(TestCategories.INTEGRATION_TEST)
+@Disabled // Disabled because OpenSSL images is causing problems
 public class ClientBrainpoolHandshakeIT extends AbstractHandshakeIT {
 
     public ClientBrainpoolHandshakeIT() {
