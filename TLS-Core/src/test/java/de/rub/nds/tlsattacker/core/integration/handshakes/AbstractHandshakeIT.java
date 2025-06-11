@@ -31,7 +31,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -108,9 +107,6 @@ public abstract class AbstractHandshakeIT {
             Assume.assumeNoException(ex);
         }
         localImages = DockerTlsManagerFactory.getAllImages();
-
-        ProviderUtil.addBouncyCastleProvider();
-
         DockerClientManager.setDockerServerUsername(System.getenv("DOCKER_USERNAME"));
         DockerClientManager.setDockerServerPassword(System.getenv("DOCKER_PASSWORD"));
 
