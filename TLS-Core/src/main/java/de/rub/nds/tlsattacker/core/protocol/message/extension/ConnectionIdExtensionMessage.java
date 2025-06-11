@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ConnectionIdExtens
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ConnectionIdExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ConnectionIdExtensionPreperator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ConnectionIdExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ConnectionIdExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
@@ -76,7 +76,7 @@ public class ConnectionIdExtensionMessage extends ExtensionMessage {
 
     @Override
     public ExtensionPreparator<ConnectionIdExtensionMessage> getPreparator(Context context) {
-        return new ConnectionIdExtensionPreperator(context.getChooser(), this);
+        return new ConnectionIdExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
