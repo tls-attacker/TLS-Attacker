@@ -39,9 +39,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
         parseG(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-        // TODO: this.keyExchangeAlgorithm can currently be null, only for test
-        // code that needs to be reworked.
-        if (getKeyExchangeAlgorithm() == null || !getKeyExchangeAlgorithm().isAnon()) {
+        if (shouldParseSignature()) {
             if (isTLS12() || isDTLS12()) {
                 parseSignatureAndHashAlgorithm(msg);
             }
