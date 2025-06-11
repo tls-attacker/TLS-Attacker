@@ -172,7 +172,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>asn1-attacker</artifactId>
-            <version>4.1.2</version>
+            <version>4.1.3</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
