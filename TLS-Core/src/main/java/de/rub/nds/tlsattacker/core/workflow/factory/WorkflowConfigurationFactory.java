@@ -500,7 +500,8 @@ public class WorkflowConfigurationFactory {
                         config, connection, ConnectionEndType.CLIENT, new ApplicationMessage());
 
         // Client CKE, CCS, Fin
-        // TODO weired
+        // Find the last action by the client (either our last send if we're the client,
+        // or our last receive if we're the server receiving from the client)
         TlsAction lastClientAction;
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             lastClientAction = (TlsAction) workflowTrace.getLastSendingAction();

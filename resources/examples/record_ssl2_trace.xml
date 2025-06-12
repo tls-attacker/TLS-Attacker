@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <Send>
-        <messages>
+        <configuredSSL2Messages>
             <SSL2ClientHello/>
-        </messages>
-        <records>
-            <BlobRecord/>
-        </records>
+        </configuredSSL2Messages>
+        <configuredRecords>
+            <record/>
+        </configuredRecords>
     </Send>
     <Receive>
-        <records>
-            <BlobRecord/>
-        </records>
-        <expectedMessages>
+        <expectedRecords>
+            <record/>
+        </expectedRecords>
+        <expectedSSL2Messages>
             <SSL2ServerHello/>
-        </expectedMessages>
+        </expectedSSL2Messages>
     </Receive>
 </workflowTrace>
 
