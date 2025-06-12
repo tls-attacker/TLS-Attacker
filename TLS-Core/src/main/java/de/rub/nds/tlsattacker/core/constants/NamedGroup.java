@@ -129,7 +129,10 @@ public enum NamedGroup {
                             CURVE_SM2,
                             BRAINPOOLP256R1TLS13,
                             BRAINPOOLP384R1TLS13,
-                            BRAINPOOLP512R1TLS13));
+                            BRAINPOOLP512R1TLS13,
+                            X25519_MLKEM768,
+                            SECP256R1_MLKEM768,
+                            SECP384R1_MLKEM1024));
 
     private NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
