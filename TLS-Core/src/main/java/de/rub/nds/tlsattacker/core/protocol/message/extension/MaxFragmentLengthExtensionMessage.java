@@ -25,8 +25,7 @@ import java.io.InputStream;
 public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 
     /** Maximum fragment length value described in rfc3546 */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray maxFragmentLength;
+    @ModifiableVariableProperty private ModifiableByteArray maxFragmentLength;
 
     public MaxFragmentLengthExtensionMessage() {
         super(ExtensionType.MAX_FRAGMENT_LENGTH);

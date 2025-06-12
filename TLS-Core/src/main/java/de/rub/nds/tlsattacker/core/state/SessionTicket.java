@@ -24,8 +24,7 @@ public class SessionTicket extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty() private ModifiableByteArray encryptedState;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    private ModifiableByteArray mac;
+    @ModifiableVariableProperty private ModifiableByteArray mac;
 
     @ModifiableVariableProperty() private ModifiableByteArray identity;
 

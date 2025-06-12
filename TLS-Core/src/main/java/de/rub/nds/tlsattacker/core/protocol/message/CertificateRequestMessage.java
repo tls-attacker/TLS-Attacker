@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
@@ -37,33 +36,28 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger clientCertificateTypesCount;
+    @ModifiableVariableProperty private ModifiableInteger clientCertificateTypesCount;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray clientCertificateTypes;
+    @ModifiableVariableProperty private ModifiableByteArray clientCertificateTypes;
 
     // In TLS 1.3 this is moved to an extension
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureHashAlgorithmsLength;
 
     // In TLS 1.3 this is moved to an extension
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureHashAlgorithms;
+    @ModifiableVariableProperty private ModifiableByteArray signatureHashAlgorithms;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger distinguishedNamesLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray distinguishedNames;
+    @ModifiableVariableProperty private ModifiableByteArray distinguishedNames;
 
     // TLS 1.3 only
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger certificateRequestContextLength;
 
     // TLS 1.3 only
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray certificateRequestContext;
+    @ModifiableVariableProperty private ModifiableByteArray certificateRequestContext;
 
     public CertificateRequestMessage() {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
@@ -72,7 +66,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
     public CertificateRequestMessage(Config tlsConfig) {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
         if (tlsConfig.getHighestProtocolVersion().is13()) {
-            this.setExtensions(new LinkedList<ExtensionMessage>());
+            this.setExtensions(new LinkedList<>());
             this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
         if (tlsConfig.isAddSignatureAlgorithmsCertExtension()) {

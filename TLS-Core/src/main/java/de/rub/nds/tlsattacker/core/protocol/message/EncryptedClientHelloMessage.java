@@ -29,8 +29,7 @@ public class EncryptedClientHelloMessage extends CoreClientHelloMessage {
 
     @HoldsModifiableVariable ClientHelloMessage clientHelloInner;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    private ModifiableByteArray encodedClientHelloInnerPadding;
+    @ModifiableVariableProperty private ModifiableByteArray encodedClientHelloInnerPadding;
 
     @XmlTransient
     private final EncryptedClientHelloExtensionMessage encryptedClientHelloExtensionMessage;

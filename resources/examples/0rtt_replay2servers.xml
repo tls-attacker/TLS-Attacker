@@ -36,8 +36,6 @@ Server 2 should accept the re-transmitted application data
 	<!-- Buffer incoming ClientHello and early data -->
 	<BufferedGenericReceive>
 		<connectionAlias>client2mitm</connectionAlias>
-		<messages/>
-		<records/>
 	</BufferedGenericReceive>
 	<!-- Copy buffers to send the messages to the 1st server -->
 	<DeepCopyBuffers>
@@ -71,12 +69,12 @@ Server 2 should accept the re-transmitted application data
 	</ResetConnection>
 	<!-- Forward server responses to client -->
 	<ForwardRecords>
-		<receiveFromAlias>mitm2server2</receiveFromAlias>
-		<forwardToAlias>client2mitm</forwardToAlias>
+		<from>mitm2server2</from>
+		<to>client2mitm</to>
 	</ForwardRecords>
 	<!-- Forward client's handshake messages + retransmitted AppData to Server -->
 	<ForwardRecords>
-		<receiveFromAlias>client2mitm</receiveFromAlias>
-		<forwardToAlias>mitm2server2</forwardToAlias>
+		<from>client2mitm</from>
+		<to>mitm2server2</to>
 	</ForwardRecords>
 </workflowTrace>

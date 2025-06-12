@@ -28,12 +28,9 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class QuicFrameLayerTest extends AbstractLayerTest {
@@ -48,11 +45,6 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
             ArrayConverter.hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
     private final byte[] destinationConnectionId =
             ArrayConverter.hexStringToByteArray("8bf5abc395aa5e36e8c0b304a1352aa5");
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @Override
     public void setUpLayerSpecific() {

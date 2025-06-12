@@ -33,10 +33,7 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable @XmlElement protected GOSTClientComputations computations;
 
-    @ModifiableVariableProperty(
-            format = ModifiableVariableProperty.Format.ASN1,
-            type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray keyTransportBlob;
+    @ModifiableVariableProperty private ModifiableByteArray keyTransportBlob;
 
     public GOSTClientKeyExchangeMessage() {
         super();

@@ -22,7 +22,7 @@ public class ClientEsniInner extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty private ModifiableByteArray clientNonce;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger serverNameListLength;
 
     @ModifiableVariableProperty private ModifiableByteArray serverNameListBytes;

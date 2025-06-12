@@ -25,11 +25,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "ECPointFormat")
 public class ECPointFormatExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger pointFormatsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray pointFormats;
+    @ModifiableVariableProperty private ModifiableByteArray pointFormats;
 
     public ECPointFormatExtensionMessage() {
         super(ExtensionType.EC_POINT_FORMATS);

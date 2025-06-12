@@ -19,14 +19,13 @@ import java.util.Objects;
 public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
     /** Length of the serialized public key */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger publicKeyLength;
 
     /** serialized public key */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray publicKey;
+    @ModifiableVariableProperty private ModifiableByteArray publicKey;
 
-    public ClientKeyExchangeMessage() {
+    protected ClientKeyExchangeMessage() {
         super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 

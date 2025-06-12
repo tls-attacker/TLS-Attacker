@@ -26,12 +26,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "PskRsaClientKeyExchange")
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    @XmlElement
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @HoldsModifiableVariable @XmlElement @ModifiableVariableProperty
     private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskRsaClientKeyExchangeMessage() {
