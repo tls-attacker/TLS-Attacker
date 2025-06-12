@@ -15,11 +15,9 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 
 public class ECDHEServerComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte ecPointFormat;
+    @ModifiableVariableProperty private ModifiableByte ecPointFormat;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray namedGroup;
+    @ModifiableVariableProperty private ModifiableByteArray namedGroup;
 
     public ECDHEServerComputations() {}
 

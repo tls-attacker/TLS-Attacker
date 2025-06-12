@@ -15,16 +15,13 @@ import java.math.BigInteger;
 
 public class DHClientComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger publicKey;
+    @ModifiableVariableProperty private ModifiableBigInteger publicKey;
 
     /** dh modulus used for computations */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger modulus;
+    @ModifiableVariableProperty private ModifiableBigInteger modulus;
 
     /** dh generator used for computations */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger generator;
+    @ModifiableVariableProperty private ModifiableBigInteger generator;
 
     public DHClientComputations() {}
 

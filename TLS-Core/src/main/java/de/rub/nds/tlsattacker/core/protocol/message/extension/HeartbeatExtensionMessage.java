@@ -27,8 +27,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
 
     private HeartbeatMode heartbeatModeConfig;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray heartbeatMode;
+    @ModifiableVariableProperty private ModifiableByteArray heartbeatMode;
 
     public HeartbeatExtensionMessage() {
         super(ExtensionType.HEARTBEAT);

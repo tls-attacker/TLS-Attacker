@@ -29,7 +29,7 @@ public class AckMessage extends ProtocolMessage {
 
     private List<RecordNumber> recordNumbers;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger recordNumberLength;
 
     public List<RecordNumber> getRecordNumbers() {

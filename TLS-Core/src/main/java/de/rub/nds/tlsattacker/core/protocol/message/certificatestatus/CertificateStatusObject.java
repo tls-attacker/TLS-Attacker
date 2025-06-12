@@ -15,10 +15,9 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
 public class CertificateStatusObject {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger type;
+    @ModifiableVariableProperty private ModifiableInteger type;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger length;
 
     @ModifiableVariableProperty private ModifiableByteArray ocspResponse;

@@ -29,10 +29,9 @@ import java.util.Objects;
 @XmlRootElement(name = "NewConnectionId")
 public class NewConnectionIdMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ConnectionIdUsage usage;
+    @ModifiableVariableProperty private ConnectionIdUsage usage;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger connectionIdsLength;
 
     @HoldsModifiableVariable private List<ConnectionId> connectionIds;

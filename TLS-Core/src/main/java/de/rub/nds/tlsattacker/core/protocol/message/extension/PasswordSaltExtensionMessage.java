@@ -25,7 +25,7 @@ import java.io.InputStream;
 @XmlRootElement(name = "PasswordSaltExtension")
 public class PasswordSaltExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger saltLength;
 
     @ModifiableVariableProperty private ModifiableByteArray salt;

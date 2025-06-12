@@ -47,57 +47,47 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     /** maximum length configuration for this record */
     private Integer maxRecordLengthConfig;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray completeRecordBytes;
+    @ModifiableVariableProperty private ModifiableByteArray completeRecordBytes;
 
     /**
      * protocol message bytes transported in the record as seen on the transport layer if encryption
      * is active this is encrypted if not its plaintext
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray protocolMessageBytes;
+    @ModifiableVariableProperty private ModifiableByteArray protocolMessageBytes;
 
     /** The decrypted , unpadded, unmaced record bytes */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
-    private ModifiableByteArray cleanProtocolMessageBytes;
+    @ModifiableVariableProperty private ModifiableByteArray cleanProtocolMessageBytes;
 
     private ProtocolMessageType contentMessageType;
 
     /** Content type */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte contentType;
+    @ModifiableVariableProperty private ModifiableByte contentType;
 
     /** Record Layer Protocol Version */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
     /** total length of the protocol message (handshake, alert..) included in the record layer */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger length;
 
     /** The epoch number for DTLS */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger epoch;
+    @ModifiableVariableProperty private ModifiableInteger epoch;
 
     /**
      * This is the implicit sequence number in TLS and also the explicit sequence number in DTLS
      * This could also have been a separate field within the computations struct but i chose to only
      * keep one of them as the whole situation is already complicated enough
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableBigInteger sequenceNumber;
+    @ModifiableVariableProperty private ModifiableBigInteger sequenceNumber;
 
     /** The encrypted sequence number for DTLS 1.3 */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableByteArray encryptedSequenceNumber;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedSequenceNumber;
 
     /** The connectin ID for DTLS */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray connectionId;
+    @ModifiableVariableProperty private ModifiableByteArray connectionId;
 
     /** DTLS 1.3 unified header */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByte unifiedHeader;
+    @ModifiableVariableProperty private ModifiableByte unifiedHeader;
 
     private RecordCryptoComputations computations;
 
