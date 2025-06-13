@@ -28,25 +28,22 @@ import java.util.Objects;
 @XmlRootElement(name = "SSL2ClientHello")
 public class SSL2ClientHelloMessage extends SSL2Message {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cipherSuiteLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger sessionIdLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger challengeLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherSuites;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuites;
 
     private ModifiableByteArray sessionId;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray challenge;
+    @ModifiableVariableProperty private ModifiableByteArray challenge;
 
     public SSL2ClientHelloMessage() {
         super(SSL2MessageType.SSL_CLIENT_HELLO);

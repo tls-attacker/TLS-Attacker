@@ -33,8 +33,7 @@ public class DtlsHandshakeMessageFragment extends ModifiableVariableHolder
 
     @ModifiableVariableProperty private ModifiableInteger fragmentOffset = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByte type = null;
+    @ModifiableVariableProperty private ModifiableByte type = null;
 
     private ModifiableInteger length = null;
 

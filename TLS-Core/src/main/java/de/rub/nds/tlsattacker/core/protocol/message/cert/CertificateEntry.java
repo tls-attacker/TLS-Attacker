@@ -33,16 +33,14 @@ public class CertificateEntry extends ModifiableVariableHolder {
 
     private List<ExtensionMessage> extensionList;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray certificateBytes;
+    @ModifiableVariableProperty private ModifiableByteArray certificateBytes;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger certificateLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray extensionBytes;
+    @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionsLength;
 
     private X509Certificate x509certificate;

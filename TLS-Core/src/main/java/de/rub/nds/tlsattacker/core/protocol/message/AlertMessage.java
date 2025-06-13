@@ -34,12 +34,10 @@ public class AlertMessage extends ProtocolMessage {
     private byte[] config;
 
     /** alert level */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte level;
+    @ModifiableVariableProperty private ModifiableByte level;
 
     /** alert description */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte description;
+    @ModifiableVariableProperty private ModifiableByte description;
 
     public AlertMessage() {
         super();

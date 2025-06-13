@@ -20,7 +20,7 @@ public class SupplementalDataEntry extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty private ModifiableInteger supplementalDataEntryType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger supplementalDataEntryLength;
 
     public SupplementalDataEntry() {}
