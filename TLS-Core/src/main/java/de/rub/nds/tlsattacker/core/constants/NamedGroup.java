@@ -91,7 +91,7 @@ public enum NamedGroup {
     MLKEM1024(new byte[] {(byte) 2, (byte) 2}, null),
     SECP256R1_MLKEM768(new byte[] {0x11, (byte) 0xEB}, null),
     X25519_MLKEM768(new byte[] {0x11, (byte) 0xEC}, null),
-    SECP384R1_MLKEM1024(new byte[] {0x11, (byte) 0xEC}, null),
+    SECP384R1_MLKEM1024(new byte[] {0x11, (byte) 0xED}, null),
     X25519_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x99}, null),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
