@@ -24,7 +24,7 @@ public enum AuthzDataFormat {
     private final byte value;
     private static final Map<Byte, AuthzDataFormat> MAP;
 
-    private AuthzDataFormat(byte value) {
+    AuthzDataFormat(byte value) {
         this.value = value;
     }
 
