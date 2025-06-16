@@ -106,7 +106,7 @@ public class WaitAction extends TlsAction {
     public void filter(TlsAction defaultAction) {
         long defaultTime = DEFAULT_WAITING_TIME;
         if (defaultAction instanceof WaitAction) {
-            WaitAction a = ((WaitAction) defaultAction);
+            WaitAction a = (WaitAction) defaultAction;
             if (a.getTime() >= 0) {
                 defaultTime = a.getTime();
             }
