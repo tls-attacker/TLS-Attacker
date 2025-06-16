@@ -24,8 +24,8 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
         Config defaultConfig = new Config();
         for (Field field : Config.class.getDeclaredFields()) {
             if (!(Modifier.isStatic(field.getModifiers())
-                    || Modifier.isFinal(field.getModifiers()))) {
-                if (field.getType().isArray() || !field.getType().isPrimitive()) {
+                    || Modifier.isFinal(field.getModifiers()))
+                    && (field.getType().isArray() || !field.getType().isPrimitive())) {
                     field.setAccessible(true);
                     try {
                         Object defaultValue = field.get(defaultConfig);
@@ -55,7 +55,6 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
                         LOGGER.warn("Could not remove field in Config!", e);
                     }
                     field.setAccessible(false);
-                }
             }
         }
     }
