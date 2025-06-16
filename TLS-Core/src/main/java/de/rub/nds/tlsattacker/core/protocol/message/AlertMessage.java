@@ -166,9 +166,9 @@ public class AlertMessage extends ProtocolMessage {
                 && this.getLevel() != null
                 && this.getDescription() != null) {
 
-            return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                    && (Objects.equals(
-                            alert.getDescription().getValue(), this.getDescription().getValue()));
+            return Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue())
+                    && Objects.equals(
+                            alert.getDescription().getValue(), this.getDescription().getValue());
         } else {
             // If level is null we do not compare the values
             if (this.getLevel() == null || alert.getLevel() == null) {
