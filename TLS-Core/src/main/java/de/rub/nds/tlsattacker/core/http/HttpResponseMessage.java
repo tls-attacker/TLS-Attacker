@@ -52,6 +52,7 @@ public class HttpResponseMessage extends HttpMessage {
         trailer = new LinkedList<>();
     }
 
+    @SuppressWarnings("unused")
     public HttpResponseMessage(Config config) {
         header = new LinkedList<>();
         header.add(new GenericHttpHeader("Content-Type", "text/html; charset=UTF-8"));
@@ -124,7 +125,7 @@ public class HttpResponseMessage extends HttpMessage {
         return "HttpResponseMessage";
     }
 
-    public java.lang.String toShortString() {
+    public String toShortString() {
         return "HTTP_RES";
     }
 
