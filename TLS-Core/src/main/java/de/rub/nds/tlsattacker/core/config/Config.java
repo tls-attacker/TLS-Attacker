@@ -1000,7 +1000,7 @@ public class Config implements Serializable {
                     "00e208ff3431b8d1f6c48d9bb93c76a9c7f5693ada3eb45fa12581d2203a97246a5ceed7cf8d8fc1d6136225545855dd41581543cecba0b4a5776f90d05a0059ff",
                     16);
 
-    private BigInteger defaultServerEphemeralDhExportGenerator = new BigInteger("2");
+    private BigInteger defaultServerEphemeralDhExportGenerator = BigInteger.valueOf(2);
 
     private BigInteger defaultServerEphemeralDhExportModulus =
             new BigInteger(
