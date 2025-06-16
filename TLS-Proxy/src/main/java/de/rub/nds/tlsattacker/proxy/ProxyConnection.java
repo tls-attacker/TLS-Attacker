@@ -80,7 +80,8 @@ public class ProxyConnection implements Runnable {
                 } else {
                     Thread.currentThread().sleep(50);
                 }
-            } catch (Exception E) {
+            } catch (Exception e) {
+                LOGGER.debug("Error in proxy connection loop", e);
             }
         }
     }
