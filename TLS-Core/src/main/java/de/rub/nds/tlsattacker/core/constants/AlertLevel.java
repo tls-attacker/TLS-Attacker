@@ -21,7 +21,7 @@ public enum AlertLevel {
 
     private static final Map<Byte, AlertLevel> MAP;
 
-    private AlertLevel(byte value) {
+    AlertLevel(byte value) {
         this.value = value;
     }
 
