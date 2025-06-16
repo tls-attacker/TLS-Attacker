@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
 
 public class NewConnectionIdHandler extends HandshakeMessageHandler<NewConnectionIdMessage> {
 
-
     public NewConnectionIdHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
