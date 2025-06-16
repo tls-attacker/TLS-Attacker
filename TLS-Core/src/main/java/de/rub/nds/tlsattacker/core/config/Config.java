@@ -664,7 +664,7 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
-    private BigInteger defaultServerEphemeralDhGenerator = new BigInteger("2");
+    private BigInteger defaultServerEphemeralDhGenerator = BigInteger.valueOf(2);
 
     private BigInteger defaultServerEphemeralDhModulus =
             new BigInteger(
