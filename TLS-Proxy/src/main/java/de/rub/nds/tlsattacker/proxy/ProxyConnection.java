@@ -23,7 +23,7 @@ public class ProxyConnection implements Runnable {
 
     private TlsAttackerSslSocket socket;
 
-    private final boolean initialized = false;
+    private boolean initialized = false;
     private final Config config;
     private final ProxyConfig proxyConfig;
 
@@ -76,6 +76,7 @@ public class ProxyConnection implements Runnable {
                                 // ???
                             }
                         }
+                        initialized = true;
                     }
                 } else {
                     Thread.currentThread().sleep(50);
