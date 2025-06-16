@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
+import de.rub.nds.tlsattacker.core.record.handler.RecordHandler;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
@@ -214,12 +215,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     public RecordSerializer getRecordSerializer() {
         return new RecordSerializer(this);
-    }
-
-    public void adjustContext(TlsContext tlsContext) {
-        ProtocolVersion version =
-                ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
-        tlsContext.setLastRecordVersion(version);
     }
 
     public ProtocolMessageType getContentMessageType() {
@@ -476,6 +471,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
 
     @Override
     public Handler<Record> getHandler(Context context) {
-        return null; // TODO
+        return new RecordHandler(context.getTlsContext());
     }
 }
