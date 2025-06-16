@@ -30,7 +30,7 @@ public enum AuthzDataFormat {
 
     static {
         MAP = new HashMap<>();
-        for (AuthzDataFormat c : AuthzDataFormat.values()) {
+        for (AuthzDataFormat c : values()) {
             MAP.put(c.getValue(), c);
         }
     }
