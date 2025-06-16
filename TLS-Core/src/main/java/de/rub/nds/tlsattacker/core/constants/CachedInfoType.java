@@ -19,7 +19,7 @@ public enum CachedInfoType {
     private final byte value;
     private static final Map<Byte, CachedInfoType> MAP;
 
-    private CachedInfoType(byte value) {
+    CachedInfoType(byte value) {
         this.value = value;
     }
 
