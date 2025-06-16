@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import java.io.InputStream;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,6 +60,10 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
             setVersion(version);
         }
         parseRandom(msg);
+        msg.setHelloRetryRequest(
+                Arrays.equals(
+                        msg.getRandom().getValue(),
+                        ServerHelloMessage.getHelloRetryRequestRandom()));
         parseSessionIDLength(msg);
         parseSessionID(msg);
         parseSelectedCipherSuite(msg);
