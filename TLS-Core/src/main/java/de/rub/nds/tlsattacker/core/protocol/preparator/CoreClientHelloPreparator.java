@@ -72,7 +72,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
                     msg.getExtension(SessionTicketTLSExtensionMessage.class);
-            if (extensionMessage != null 
+            if (extensionMessage != null
                     && extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
                 isResumptionWithSessionTicket = true;
             }
