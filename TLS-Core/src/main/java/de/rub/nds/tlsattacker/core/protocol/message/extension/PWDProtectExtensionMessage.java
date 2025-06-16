@@ -25,7 +25,7 @@ import java.io.InputStream;
 @XmlRootElement(name = "PWDProtectExtension")
 public class PWDProtectExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger usernameLength;
 
     @ModifiableVariableProperty private ModifiableByteArray username;

@@ -111,11 +111,9 @@ public class ServerHelloMessage extends HelloMessage {
         return Arrays.copyOf(HELLO_RETRY_REQUEST_RANDOM, HELLO_RETRY_REQUEST_RANDOM.length);
     }
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray selectedCipherSuite;
+    @ModifiableVariableProperty private ModifiableByteArray selectedCipherSuite;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte selectedCompressionMethod;
+    @ModifiableVariableProperty private ModifiableByte selectedCompressionMethod;
 
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 

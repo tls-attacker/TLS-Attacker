@@ -21,11 +21,9 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RecordNumber extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableBigInteger epoch;
+    @ModifiableVariableProperty private ModifiableBigInteger epoch;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableBigInteger sequenceNumber;
+    @ModifiableVariableProperty private ModifiableBigInteger sequenceNumber;
 
     public RecordNumber() {}
 

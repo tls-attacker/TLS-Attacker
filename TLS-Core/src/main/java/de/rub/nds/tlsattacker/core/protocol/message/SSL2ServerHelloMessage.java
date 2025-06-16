@@ -34,23 +34,20 @@ public class SSL2ServerHelloMessage extends SSL2Message {
 
     @ModifiableVariableProperty private ModifiableByte certificateType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger certificateLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cipherSuitesLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger sessionIdLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CERTIFICATE)
-    private ModifiableByteArray certificate;
+    @ModifiableVariableProperty private ModifiableByteArray certificate;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherSuites;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuites;
 
     @ModifiableVariableProperty private ModifiableByteArray sessionId;
 

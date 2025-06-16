@@ -14,14 +14,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 
 public class PSKRSAPremasterComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    private ModifiableByteArray padding;
+    @ModifiableVariableProperty private ModifiableByteArray padding;
 
-    private ModifiableByteArray encryptedPremasterSecret;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedPremasterSecret;
 
-    private ModifiableByteArray psk;
+    @ModifiableVariableProperty private ModifiableByteArray psk;
 
-    public PSKRSAPremasterComputations() {}
+    private PSKRSAPremasterComputations() {}
 
     public void setPsk(ModifiableByteArray psk) {
         this.psk = psk;

@@ -25,7 +25,7 @@ import java.io.InputStream;
 @XmlRootElement(name = "PWDClearExtension")
 public class PWDClearExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger usernameLength;
 
     @ModifiableVariableProperty private ModifiableString username;

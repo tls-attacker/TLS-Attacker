@@ -25,11 +25,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "CookieExtension")
 public class CookieExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cookieLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie;
+    @ModifiableVariableProperty private ModifiableByteArray cookie;
 
     public CookieExtensionMessage() {
         super(ExtensionType.COOKIE);

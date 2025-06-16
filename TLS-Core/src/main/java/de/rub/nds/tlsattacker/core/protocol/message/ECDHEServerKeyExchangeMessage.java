@@ -29,11 +29,9 @@ import java.util.List;
 @XmlRootElement(name = "ECDHEServerKeyExchange")
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByte curveType;
+    @ModifiableVariableProperty protected ModifiableByte curveType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByteArray namedGroup;
+    @ModifiableVariableProperty protected ModifiableByteArray namedGroup;
 
     protected ECDHEServerComputations computations;
 

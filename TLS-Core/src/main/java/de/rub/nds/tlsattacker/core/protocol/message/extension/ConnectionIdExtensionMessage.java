@@ -33,10 +33,9 @@ public class ConnectionIdExtensionMessage extends ExtensionMessage {
         super(ExtensionType.CONNECTION_ID);
     }
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray connectionId;
+    @ModifiableVariableProperty private ModifiableByteArray connectionId;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger connectionIdLength;
 
     public ModifiableByteArray getConnectionId() {

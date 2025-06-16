@@ -29,16 +29,14 @@ import java.util.Objects;
 @XmlRootElement(name = "Heartbeat")
 public class HeartbeatMessage extends ProtocolMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte heartbeatMessageType;
+    @ModifiableVariableProperty ModifiableByte heartbeatMessageType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     ModifiableInteger payloadLength;
 
     @ModifiableVariableProperty() ModifiableByteArray payload;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray padding;
+    @ModifiableVariableProperty ModifiableByteArray padding;
 
     public HeartbeatMessage() {
         super();

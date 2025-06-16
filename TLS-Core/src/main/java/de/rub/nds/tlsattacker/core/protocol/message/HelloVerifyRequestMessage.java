@@ -26,14 +26,12 @@ import java.util.Objects;
 @XmlRootElement(name = "HelloVerifyRequest")
 public class HelloVerifyRequestMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion = null;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableByte cookieLength = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie = null;
+    @ModifiableVariableProperty private ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);

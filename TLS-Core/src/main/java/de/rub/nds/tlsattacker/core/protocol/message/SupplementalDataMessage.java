@@ -33,7 +33,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @HoldsModifiableVariable private List<SupplementalDataEntry> entries;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger supplementalDataLength;
 
     @ModifiableVariableProperty private ModifiableByteArray supplementalDataBytes;

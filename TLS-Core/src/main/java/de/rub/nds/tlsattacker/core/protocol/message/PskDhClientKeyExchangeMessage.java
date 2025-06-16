@@ -24,10 +24,9 @@ import java.io.InputStream;
 @XmlRootElement(name = "PskDhClientKeyExchange")
 public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskDhClientKeyExchangeMessage() {

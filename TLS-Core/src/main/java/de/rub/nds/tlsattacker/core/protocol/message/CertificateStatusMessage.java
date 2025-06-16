@@ -25,10 +25,9 @@ import java.util.Objects;
 @XmlRootElement(name = "CertificateStatus")
 public class CertificateStatusMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger certificateStatusType;
+    @ModifiableVariableProperty private ModifiableInteger certificateStatusType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger ocspResponseLength;
 
     @ModifiableVariableProperty private ModifiableByteArray ocspResponseBytes;

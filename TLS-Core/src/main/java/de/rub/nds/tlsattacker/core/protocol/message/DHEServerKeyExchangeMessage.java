@@ -29,18 +29,16 @@ import java.util.List;
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /** DH modulus */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableByteArray modulus;
+    @ModifiableVariableProperty protected ModifiableByteArray modulus;
 
     /** DH modulus Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     protected ModifiableInteger modulusLength;
 
     /** DH generator */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableByteArray generator;
+    @ModifiableVariableProperty protected ModifiableByteArray generator;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     protected ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable protected DHEServerComputations computations;

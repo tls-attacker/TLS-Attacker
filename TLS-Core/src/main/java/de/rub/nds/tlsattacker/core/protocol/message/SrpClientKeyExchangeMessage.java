@@ -28,29 +28,26 @@ import java.util.List;
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     /** SRP modulus */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray modulus;
+    @ModifiableVariableProperty private ModifiableByteArray modulus;
 
     /** SRP modulus Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger modulusLength;
 
     /** SRP generator */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray generator;
+    @ModifiableVariableProperty private ModifiableByteArray generator;
 
     /** SRP generator Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable protected SRPClientComputations computations;
 
     /** SRP salt */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray salt;
+    @ModifiableVariableProperty private ModifiableByteArray salt;
 
     /** SRP salt Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger saltLength;
 
     public SrpClientKeyExchangeMessage() {

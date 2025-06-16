@@ -25,11 +25,10 @@ import java.io.InputStream;
 /** This extension is defined in RFC8446 */
 @XmlRootElement(name = "SignatureAlgorithmsCertExtension")
 public class SignatureAlgorithmsCertExtensionMessage extends ExtensionMessage {
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureAndHashAlgorithmsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureAndHashAlgorithms;
+    @ModifiableVariableProperty private ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAlgorithmsCertExtensionMessage() {
         super(ExtensionType.SIGNATURE_ALGORITHMS_CERT);

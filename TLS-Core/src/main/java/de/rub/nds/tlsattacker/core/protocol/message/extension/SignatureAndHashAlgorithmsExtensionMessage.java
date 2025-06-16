@@ -25,11 +25,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "SignatureAndHashAlgorithmsExtension")
 public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureAndHashAlgorithmsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureAndHashAlgorithms;
+    @ModifiableVariableProperty private ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
         super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);

@@ -30,7 +30,7 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray extendedRandom;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extendedRandomLength;
 
     public ExtendedRandomExtensionMessage() {

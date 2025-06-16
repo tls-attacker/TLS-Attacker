@@ -32,26 +32,22 @@ import java.util.Objects;
 @XmlRootElement(name = "SSL2ClientMasterKey")
 public class SSL2ClientMasterKeyMessage extends SSL2Message {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherKind;
+    @ModifiableVariableProperty private ModifiableByteArray cipherKind;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger clearKeyLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger encryptedKeyLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger keyArgLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray clearKeyData;
+    @ModifiableVariableProperty private ModifiableByteArray clearKeyData;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray encryptedKeyData;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedKeyData;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray keyArgData;
+    @ModifiableVariableProperty private ModifiableByteArray keyArgData;
 
     @HoldsModifiableVariable @XmlElement private RSAClientComputations computations;
 

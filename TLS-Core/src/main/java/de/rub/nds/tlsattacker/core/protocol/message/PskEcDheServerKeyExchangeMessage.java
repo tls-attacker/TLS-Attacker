@@ -28,7 +28,7 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
 
     private ModifiableByteArray identityHint;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityHintLength;
 
     public PskEcDheServerKeyExchangeMessage() {

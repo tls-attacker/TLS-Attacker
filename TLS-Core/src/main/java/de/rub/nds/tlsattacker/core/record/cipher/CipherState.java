@@ -27,7 +27,7 @@ public class CipherState {
     /** sequence number used for the decryption */
     private long readSequenceNumber = 0;
 
-    private byte[] connectionId = null;
+    private byte[] connectionId = new byte[0];
 
     private Boolean encryptThenMac;
 
