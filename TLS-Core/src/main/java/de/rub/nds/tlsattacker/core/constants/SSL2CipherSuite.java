@@ -46,7 +46,7 @@ public enum SSL2CipherSuite {
 
     static {
         MAP = new HashMap<>();
-        for (SSL2CipherSuite c : SSL2CipherSuite.values()) {
+        for (SSL2CipherSuite c : values()) {
             MAP.put(c.value, c);
         }
     }

@@ -73,7 +73,7 @@ public enum HpkeAeadFunction {
 
     static {
         MAP = new HashMap<>();
-        for (HpkeAeadFunction version : HpkeAeadFunction.values()) {
+        for (HpkeAeadFunction version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

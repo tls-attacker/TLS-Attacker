@@ -50,7 +50,7 @@ public enum HandshakeMessageType {
 
     static {
         MAP = new HashMap<>();
-        for (HandshakeMessageType cm : HandshakeMessageType.values()) {
+        for (HandshakeMessageType cm : values()) {
             if (cm == UNKNOWN || cm.name().contains("SSL2")) {
                 continue;
             }

@@ -25,7 +25,7 @@ public enum HeartbeatMessageType {
 
     static {
         MAP = new HashMap<>();
-        for (HeartbeatMessageType cm : HeartbeatMessageType.values()) {
+        for (HeartbeatMessageType cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

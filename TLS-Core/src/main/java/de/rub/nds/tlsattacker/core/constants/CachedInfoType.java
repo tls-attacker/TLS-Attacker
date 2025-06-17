@@ -25,7 +25,7 @@ public enum CachedInfoType {
 
     static {
         MAP = new HashMap<>();
-        for (CachedInfoType cit : CachedInfoType.values()) {
+        for (CachedInfoType cit : values()) {
             MAP.put(cit.getValue(), cit);
         }
     }

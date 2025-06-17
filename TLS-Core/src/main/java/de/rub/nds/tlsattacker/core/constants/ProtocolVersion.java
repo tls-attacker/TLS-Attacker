@@ -67,7 +67,7 @@ public enum ProtocolVersion {
 
     static {
         MAP = new HashMap<>();
-        for (ProtocolVersion c : ProtocolVersion.values()) {
+        for (ProtocolVersion c : values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }
@@ -154,7 +154,7 @@ public enum ProtocolVersion {
     public static ProtocolVersion fromString(String protocolVersion) {
         protocolVersion = protocolVersion.replaceFirst("v", "");
         protocolVersion = protocolVersion.replaceFirst("\\.", "");
-        for (ProtocolVersion pv : ProtocolVersion.values()) {
+        for (ProtocolVersion pv : values()) {
             if (protocolVersion.equalsIgnoreCase(pv.toString())) {
                 return pv;
             }
@@ -164,7 +164,7 @@ public enum ProtocolVersion {
                         + protocolVersion
                         + " cannot be converted to a protocol version. "
                         + "Available values are: "
-                        + Arrays.toString(ProtocolVersion.values()));
+                        + Arrays.toString(values()));
     }
 
     /**

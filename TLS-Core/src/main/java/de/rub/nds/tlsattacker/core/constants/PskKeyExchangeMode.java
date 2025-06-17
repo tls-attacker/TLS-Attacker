@@ -32,7 +32,7 @@ public enum PskKeyExchangeMode {
 
     static {
         MAP = new HashMap<>();
-        for (PskKeyExchangeMode cm : PskKeyExchangeMode.values()) {
+        for (PskKeyExchangeMode cm : values()) {
             MAP.put(cm.value, cm);
         }
     }
