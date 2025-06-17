@@ -27,7 +27,7 @@ public enum ClientAuthenticationType {
 
     static {
         MAP = new HashMap<>();
-        for (ClientAuthenticationType c : ClientAuthenticationType.values()) {
+        for (ClientAuthenticationType c : values()) {
             MAP.put(c.value, c);
         }
     }

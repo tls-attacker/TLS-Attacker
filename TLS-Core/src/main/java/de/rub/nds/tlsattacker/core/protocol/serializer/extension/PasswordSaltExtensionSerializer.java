@@ -34,7 +34,7 @@ public class PasswordSaltExtensionSerializer
 
     private void writeSaltLength(PasswordSaltExtensionMessage msg) {
         appendInt(msg.getSaltLength().getValue(), ExtensionByteLength.PASSWORD_SALT);
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 
     private void writeSalt(PasswordSaltExtensionMessage msg) {

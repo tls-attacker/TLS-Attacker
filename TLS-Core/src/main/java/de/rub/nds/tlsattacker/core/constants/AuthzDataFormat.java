@@ -24,13 +24,13 @@ public enum AuthzDataFormat {
     private final byte value;
     private static final Map<Byte, AuthzDataFormat> MAP;
 
-    private AuthzDataFormat(byte value) {
+    AuthzDataFormat(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (AuthzDataFormat c : AuthzDataFormat.values()) {
+        for (AuthzDataFormat c : values()) {
             MAP.put(c.getValue(), c);
         }
     }

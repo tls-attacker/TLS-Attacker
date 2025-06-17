@@ -28,7 +28,7 @@ public enum CertificateType {
 
     static {
         MAP = new HashMap<>();
-        for (CertificateType c : CertificateType.values()) {
+        for (CertificateType c : values()) {
             MAP.put(c.getValue(), c);
         }
     }

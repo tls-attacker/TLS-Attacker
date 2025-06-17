@@ -65,7 +65,7 @@ public class ExtendedRandomExtensionPreparator
 
     private void prepareExtendedRandomLength(ExtendedRandomExtensionMessage msg) {
         msg.setExtendedRandomLength(msg.getExtendedRandom().getValue().length);
-        LOGGER.debug("ExtendedRandomLength: " + msg.getExtendedRandomLength().getValue());
+        LOGGER.debug("ExtendedRandomLength: {}", msg.getExtendedRandomLength().getValue());
     }
 
     private byte[] prepareExtendedRandom(int length) {

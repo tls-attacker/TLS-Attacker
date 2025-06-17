@@ -25,7 +25,7 @@ public enum SniType {
 
     static {
         MAP = new HashMap<>();
-        for (SniType cm : SniType.values()) {
+        for (SniType cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

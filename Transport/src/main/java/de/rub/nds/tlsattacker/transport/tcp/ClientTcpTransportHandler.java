@@ -103,7 +103,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 LOGGER.warn("Server @{}:{} is not available yet", hostname, dstPort);
                 try {
                     Thread.sleep(1000);
-                } catch (Exception ignore) {
+                } catch (InterruptedException ignored) {
+                    // Ignore interruption during retry sleep
                 }
             }
         }

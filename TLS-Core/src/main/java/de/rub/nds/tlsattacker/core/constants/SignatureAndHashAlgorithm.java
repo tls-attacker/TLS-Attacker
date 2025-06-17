@@ -176,7 +176,7 @@ public enum SignatureAndHashAlgorithm {
 
     static {
         MAP = new HashMap<>();
-        for (SignatureAndHashAlgorithm c : SignatureAndHashAlgorithm.values()) {
+        for (SignatureAndHashAlgorithm c : values()) {
             MAP.put(c.value, c);
         }
     }

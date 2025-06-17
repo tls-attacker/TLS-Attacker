@@ -62,7 +62,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the DTLS CookieLength of the ClientHelloMessage into the final byte[] */
     private void writeCookieLength(T msg) {
         appendInt(msg.getCookieLength().getValue(), HandshakeByteLength.DTLS_COOKIE_LENGTH);
-        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: {}", msg.getCookieLength().getValue());
     }
 
     /** Writes the DTLS Cookie of the ClientHelloMessage into the final byte[] */
@@ -74,7 +74,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the CipherSuiteLength of the ClientHelloMessage into the final byte[] */
     private void writeCipherSuiteLength(T msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), HandshakeByteLength.CIPHER_SUITES_LENGTH);
-        LOGGER.debug("CipherSuiteLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: {}", msg.getCipherSuiteLength().getValue());
     }
 
     /** Writes the CipherSuites of the ClientHelloMessage into the final byte[] */
@@ -86,7 +86,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the CompressionLength of the ClientHelloMessage into the final byte[] */
     private void writeCompressionLength(T msg) {
         appendInt(msg.getCompressionLength().getValue(), HandshakeByteLength.COMPRESSION_LENGTH);
-        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: {}", msg.getCompressionLength().getValue());
     }
 
     /** Writes the Compressions of the ClientHelloMessage into the final byte[] */
@@ -98,7 +98,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the ExtensionLength of the ClientHelloMessage into the final byte[] */
     private void writeExtensionLength(T msg) {
         appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", msg.getExtensionsLength().getValue());
     }
 
     /** Writes the ExtensionBytes of the ClientHelloMessage into the final byte[] */

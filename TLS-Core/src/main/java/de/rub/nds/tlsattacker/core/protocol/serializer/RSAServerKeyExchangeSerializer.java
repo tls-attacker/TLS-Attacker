@@ -68,7 +68,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     /** Writes the SignatureLength of the RSAServerKeyExchangeMessage into the final byte[] */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /** Writes the Signature of the RSAServerKeyExchangeMessage into the final byte[] */

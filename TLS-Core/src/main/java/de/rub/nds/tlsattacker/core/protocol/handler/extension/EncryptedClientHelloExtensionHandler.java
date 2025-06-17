@@ -53,8 +53,8 @@ public class EncryptedClientHelloExtensionHandler
                 LOGGER.warn("ECHConfig id's do not match");
             }
 
-            LOGGER.debug("Received ECH Config ID: " + message.getConfigId().getValue());
-            LOGGER.debug("Own ECH Config ID: " + echConfig.getConfigId());
+            LOGGER.debug("Received ECH Config ID: {}", message.getConfigId().getValue());
+            LOGGER.debug("Own ECH Config ID: {}", echConfig.getConfigId());
 
             HpkeUtil hpkeUtil = new HpkeUtil(echConfig);
             KeyShareEntry keyShareEntry = tlsContext.getChooser().getEchServerKeyShareEntry();

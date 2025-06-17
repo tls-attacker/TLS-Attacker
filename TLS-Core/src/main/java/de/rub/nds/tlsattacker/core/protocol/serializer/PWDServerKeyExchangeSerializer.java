@@ -48,7 +48,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeSaltLength(PWDServerKeyExchangeMessage msg) {
         appendInt(msg.getSaltLength().getValue(), HandshakeByteLength.PWD_SALT_LENGTH);
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 
     private void writeSalt(PWDServerKeyExchangeMessage msg) {
@@ -58,7 +58,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeCurveType(PWDServerKeyExchangeMessage msg) {
         appendByte(msg.getGroupType().getValue());
-        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
+        LOGGER.debug("CurveType: {}", msg.getGroupType().getValue());
     }
 
     private void writeNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -68,7 +68,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeElementLength(PWDServerKeyExchangeMessage msg) {
         appendInt(msg.getElementLength().getValue(), HandshakeByteLength.PWD_ELEMENT_LENGTH);
-        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength().getValue());
     }
 
     private void writeElement(PWDServerKeyExchangeMessage msg) {
@@ -78,7 +78,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeScalarLength(PWDServerKeyExchangeMessage msg) {
         appendInt(msg.getScalarLength().getValue(), HandshakeByteLength.PWD_SCALAR_LENGTH);
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength().getValue());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength().getValue());
     }
 
     private void writeScalar(PWDServerKeyExchangeMessage msg) {

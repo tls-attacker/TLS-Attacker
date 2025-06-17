@@ -19,13 +19,13 @@ public enum CachedInfoType {
     private final byte value;
     private static final Map<Byte, CachedInfoType> MAP;
 
-    private CachedInfoType(byte value) {
+    CachedInfoType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (CachedInfoType cit : CachedInfoType.values()) {
+        for (CachedInfoType cit : values()) {
             MAP.put(cit.getValue(), cit);
         }
     }

@@ -37,12 +37,12 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
     /** Writes the level of the AlertMessage into the final byte[] */
     private void writeLevel() {
         appendByte(message.getLevel().getValue());
-        LOGGER.debug("Level: " + message.getLevel().getValue());
+        LOGGER.debug("Level: {}", message.getLevel().getValue());
     }
 
     /** Writes the description of the AlertMessage into the final byte[] */
     private void writeDescription() {
         appendByte(message.getDescription().getValue());
-        LOGGER.debug("Description: " + message.getDescription().getValue());
+        LOGGER.debug("Description: {}", message.getDescription().getValue());
     }
 }

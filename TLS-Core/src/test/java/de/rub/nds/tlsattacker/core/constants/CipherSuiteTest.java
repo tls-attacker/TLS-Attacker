@@ -51,8 +51,8 @@ public class CipherSuiteTest {
         for (CipherSuite suite : CipherSuite.getNotImplemented()) {
             LOGGER.debug(suite.name());
         }
-        LOGGER.debug("Not implemented: " + CipherSuite.getNotImplemented().size());
-        LOGGER.debug("Implemented: " + CipherSuite.getImplemented().size());
+        LOGGER.debug("Not implemented: {}", CipherSuite.getNotImplemented().size());
+        LOGGER.debug("Implemented: {}", CipherSuite.getImplemented().size());
     }
 
     @Test

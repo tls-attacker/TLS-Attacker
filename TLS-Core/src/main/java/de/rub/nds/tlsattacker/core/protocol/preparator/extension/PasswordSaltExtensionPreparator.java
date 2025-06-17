@@ -39,6 +39,6 @@ public class PasswordSaltExtensionPreparator
 
     private void prepareSaltLength(PasswordSaltExtensionMessage msg) {
         msg.setSaltLength(msg.getSalt().getValue().length);
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 }

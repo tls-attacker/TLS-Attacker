@@ -55,7 +55,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the nLength of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeModulusLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.SRP_MODULUS_LENGTH);
-        LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
+        LOGGER.debug("pLength: {}", msg.getModulusLength().getValue());
     }
 
     /** Writes the N of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -67,7 +67,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the saltLength of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeSaltLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getSaltLength().getValue(), HandshakeByteLength.SRP_SALT_LENGTH);
-        LOGGER.debug("saltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("saltLength: {}", msg.getSaltLength().getValue());
     }
 
     /** Writes the Salt of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -79,7 +79,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the gLength of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeGeneratorLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH);
-        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("gLength: {}", msg.getGeneratorLength().getValue());
     }
 
     /** Writes the G of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -93,7 +93,7 @@ public class SrpServerKeyExchangeSerializer
      */
     private void writeSerializedPublicKeyLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /** Writes the SerializedPublicKey of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -114,7 +114,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the SignatureLength of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeSignatureLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /** Writes the Signature of the SrpServerKeyExchangeMessage into the final byte[] */

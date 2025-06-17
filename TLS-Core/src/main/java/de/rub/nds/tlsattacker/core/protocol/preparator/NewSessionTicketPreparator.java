@@ -43,7 +43,7 @@ public class NewSessionTicketPreparator
 
     private void prepareTicketLifetimeHint(NewSessionTicketMessage msg) {
         msg.setTicketLifetimeHint(generateTicketLifetimeHint());
-        LOGGER.debug("TicketLifetimeHint: " + msg.getTicketLifetimeHint().getValue());
+        LOGGER.debug("TicketLifetimeHint: {}", msg.getTicketLifetimeHint().getValue());
     }
 
     private void prepareTicket(NewSessionTicketMessage msg) {

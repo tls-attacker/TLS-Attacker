@@ -24,7 +24,7 @@ public enum TokenBindingType {
 
     static {
         MAP = new HashMap<>();
-        for (TokenBindingType c : TokenBindingType.values()) {
+        for (TokenBindingType c : values()) {
             MAP.put(c.tokenBindingTypeValue, c);
         }
     }

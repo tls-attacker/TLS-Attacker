@@ -31,7 +31,7 @@ public enum ProtocolMessageType {
 
     static {
         MAP = new HashMap<>();
-        for (ProtocolMessageType cm : ProtocolMessageType.values()) {
+        for (ProtocolMessageType cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

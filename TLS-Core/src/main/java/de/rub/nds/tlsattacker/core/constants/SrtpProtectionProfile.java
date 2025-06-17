@@ -45,7 +45,7 @@ public enum SrtpProtectionProfile {
 
     static {
         MAP = new HashMap<>();
-        for (SrtpProtectionProfile c : SrtpProtectionProfile.values()) {
+        for (SrtpProtectionProfile c : values()) {
             MAP.put(ArrayConverter.bytesToInt(c.srtpProtectionProfiles), c);
         }
     }

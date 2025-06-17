@@ -40,7 +40,7 @@ public class ECDHEServerKeyExchangeHandler<KeyExchangeMessage extends ECDHEServe
     protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
         NamedGroup group = NamedGroup.getNamedGroup(message.getNamedGroup().getValue());
         if (group != null) {
-            LOGGER.debug("Adjusting selected named group: " + group.name());
+            LOGGER.debug("Adjusting selected named group: {}", group.name());
             tlsContext.setSelectedGroup(group);
 
             LOGGER.debug("Adjusting EC Point");

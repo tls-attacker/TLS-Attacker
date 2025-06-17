@@ -36,6 +36,6 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
 
     private void parseExtendedRandomLength(ExtendedRandomExtensionMessage msg) {
         msg.setExtendedRandomLength(parseIntField(ExtensionByteLength.EXTENDED_RANDOM_LENGTH));
-        LOGGER.debug("ExtendedRandomLength : " + msg.getExtendedRandomLength().getValue());
+        LOGGER.debug("ExtendedRandomLength : {}", msg.getExtendedRandomLength().getValue());
     }
 }

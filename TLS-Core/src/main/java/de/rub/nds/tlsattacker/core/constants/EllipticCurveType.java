@@ -33,7 +33,7 @@ public enum EllipticCurveType {
 
     static {
         MAP = new HashMap<>();
-        for (EllipticCurveType c : EllipticCurveType.values()) {
+        for (EllipticCurveType c : values()) {
             MAP.put(c.value, c);
         }
     }

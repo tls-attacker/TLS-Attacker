@@ -70,21 +70,22 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     @Override
     public byte[] fetchData(int amountOfData) throws IOException {
-        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
-        outputStream.write(dataBufferInputStream.readAllBytes());
-        setTimeout(timeout);
-        // Read packets till we got atleast amountOfData bytes
-        while (outputStream.size() < amountOfData) {
-            DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
-            socket.receive(packet);
-            if (!socket.isConnected()) {
-                socket.connect(packet.getSocketAddress());
+        try (SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream()) {
+            outputStream.write(dataBufferInputStream.readAllBytes());
+            setTimeout(timeout);
+            // Read packets till we got atleast amountOfData bytes
+            while (outputStream.size() < amountOfData) {
+                DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
+                socket.receive(packet);
+                if (!socket.isConnected()) {
+                    socket.connect(packet.getSocketAddress());
+                }
+                outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
             }
-            outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
+            // Now we got atleast amount of data bytes. If we got more, cache them
+            dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            return dataBufferInputStream.readNBytes(amountOfData);
         }
-        // Now we got atleast amount of data bytes. If we got more, cache them
-        dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        return dataBufferInputStream.readNBytes(amountOfData);
     }
 
     @Override

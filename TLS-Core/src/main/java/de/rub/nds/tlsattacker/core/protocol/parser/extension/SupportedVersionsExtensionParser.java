@@ -47,7 +47,7 @@ public class SupportedVersionsExtensionParser
     private void parseSupportedVersionLength(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersionsLength(
                 parseIntField(ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH));
-        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
+        LOGGER.debug("SupportedVersionsLength: {}", msg.getSupportedVersionsLength().getValue());
     }
 
     /**

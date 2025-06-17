@@ -38,23 +38,23 @@ public class SrpServerKeyExchangeHandler
 
     private void adjustSRPGenerator(SrpServerKeyExchangeMessage message) {
         tlsContext.setSRPGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("SRP Generator: " + tlsContext.getSRPGenerator());
+        LOGGER.debug("SRP Generator: {}", tlsContext.getSRPGenerator());
     }
 
     private void adjustSRPModulus(SrpServerKeyExchangeMessage message) {
         tlsContext.setSRPModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("SRP Modulus: " + tlsContext.getSRPModulus());
+        LOGGER.debug("SRP Modulus: {}", tlsContext.getSRPModulus());
     }
 
     private void adjustServerPublicKey(SrpServerKeyExchangeMessage message) {
         tlsContext.setServerSRPPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + tlsContext.getServerSRPPublicKey());
+        LOGGER.debug("Server PublicKey: {}", tlsContext.getServerSRPPublicKey());
     }
 
     private void adjustServerPrivateKey(SrpServerKeyExchangeMessage message) {
         tlsContext.setServerSRPPrivateKey(
                 message.getKeyExchangeComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerSRPPrivateKey());
+        LOGGER.debug("Server PrivateKey: {}", tlsContext.getServerSRPPrivateKey());
     }
 
     private void adjustSalt(SrpServerKeyExchangeMessage message) {

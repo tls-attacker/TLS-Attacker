@@ -37,7 +37,7 @@ public enum EchConfigVersion {
 
     static {
         MAP = new HashMap<>();
-        for (EchConfigVersion version : EchConfigVersion.values()) {
+        for (EchConfigVersion version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

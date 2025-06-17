@@ -93,7 +93,7 @@ public enum HpkeKeyEncapsulationMechanism {
 
     static {
         MAP = new HashMap<>();
-        for (HpkeKeyEncapsulationMechanism version : HpkeKeyEncapsulationMechanism.values()) {
+        for (HpkeKeyEncapsulationMechanism version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

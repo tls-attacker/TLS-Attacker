@@ -25,7 +25,7 @@ public enum TokenBindingKeyParameters {
 
     static {
         MAP = new HashMap<>();
-        for (TokenBindingKeyParameters c : TokenBindingKeyParameters.values()) {
+        for (TokenBindingKeyParameters c : values()) {
             MAP.put(c.keyParameterValue, c);
         }
     }
