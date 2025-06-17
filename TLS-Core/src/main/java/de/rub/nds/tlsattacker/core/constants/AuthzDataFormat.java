@@ -44,11 +44,12 @@ public enum AuthzDataFormat {
     }
 
     public static byte[] listToByteArray(List<AuthzDataFormat> list) {
-        SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream(list.size());
-        for (AuthzDataFormat f : list) {
-            bytes.write(f.getValue());
+        try (SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream(list.size())) {
+            for (AuthzDataFormat f : list) {
+                bytes.write(f.getValue());
+            }
+            return bytes.toByteArray();
         }
-        return bytes.toByteArray();
     }
 
     public static List<AuthzDataFormat> byteArrayToList(byte[] values) {

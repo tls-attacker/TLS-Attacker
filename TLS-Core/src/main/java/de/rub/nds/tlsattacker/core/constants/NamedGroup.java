@@ -391,12 +391,12 @@ public enum NamedGroup {
             return new byte[0];
         }
 
-        SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream();
-        for (NamedGroup i : groups) {
-            bytes.write(i.getValue());
+        try (SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream()) {
+            for (NamedGroup i : groups) {
+                bytes.write(i.getValue());
+            }
+            return bytes.toByteArray();
         }
-
-        return bytes.toByteArray();
     }
 
     public static List<NamedGroup> namedGroupsFromByteArray(byte[] sourceBytes) {

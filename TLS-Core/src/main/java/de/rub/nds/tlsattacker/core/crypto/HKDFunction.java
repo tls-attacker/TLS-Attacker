@@ -128,58 +128,63 @@ public class HKDFunction {
         try {
             SecretKeySpec keySpec =
                     new SecretKeySpec(prk, hkdfAlgorithm.getMacAlgorithm().getJavaName());
-            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
-            int i = 1;
-            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
-                HMac hmac = new HMac(new SM3Digest());
-                KeyParameter keyParameter = new KeyParameter(keySpec.getEncoded());
-                hmac.init(keyParameter);
-                while (stream.toByteArray().length < outLen) {
-                    if (i != 1) {
-                        hmac.update(stream.toByteArray(), 0, stream.toByteArray().length);
+            try (SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream()) {
+                int i = 1;
+                if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                    HMac hmac = new HMac(new SM3Digest());
+                    KeyParameter keyParameter = new KeyParameter(keySpec.getEncoded());
+                    hmac.init(keyParameter);
+                    while (stream.toByteArray().length < outLen) {
+                        if (i != 1) {
+                            hmac.update(stream.toByteArray(), 0, stream.toByteArray().length);
+                        }
+                        hmac.update(info, 0, info.length);
+                        if (Integer.toHexString(i).length() % 2 != 0) {
+                            hmac.update(
+                                    ArrayConverter.hexStringToByteArray(
+                                            "0" + Integer.toHexString(i)),
+                                    0,
+                                    Integer.toHexString(i).length());
+                        } else {
+                            hmac.update(
+                                    ArrayConverter.hexStringToByteArray(Integer.toHexString(i)),
+                                    0,
+                                    Integer.toHexString(i).length());
+                        }
+                        byte[] ti = new byte[hmac.getMacSize()];
+                        hmac.doFinal(ti, 0);
+                        if (ti.length == 0) {
+                            throw new CryptoException(
+                                    "Could not expand HKDF. Mac Algorithm of 0 size");
+                        }
+                        stream.write(ti);
+                        i++;
                     }
-                    hmac.update(info, 0, info.length);
-                    if (Integer.toHexString(i).length() % 2 != 0) {
-                        hmac.update(
-                                ArrayConverter.hexStringToByteArray("0" + Integer.toHexString(i)),
-                                0,
-                                Integer.toHexString(i).length());
-                    } else {
-                        hmac.update(
-                                ArrayConverter.hexStringToByteArray(Integer.toHexString(i)),
-                                0,
-                                Integer.toHexString(i).length());
+                } else {
+                    Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
+                    mac.init(keySpec);
+                    byte[] ti = new byte[0];
+                    while (stream.toByteArray().length < outLen) {
+                        mac.update(ti);
+                        mac.update(info);
+                        if (Integer.toHexString(i).length() % 2 != 0) {
+                            mac.update(
+                                    ArrayConverter.hexStringToByteArray(
+                                            "0" + Integer.toHexString(i)));
+                        } else {
+                            mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
+                        }
+                        ti = mac.doFinal();
+                        if (ti.length == 0) {
+                            throw new CryptoException(
+                                    "Could not expand HKDF. Mac Algorithm of 0 size");
+                        }
+                        stream.write(ti);
+                        i++;
                     }
-                    byte[] ti = new byte[hmac.getMacSize()];
-                    hmac.doFinal(ti, 0);
-                    if (ti.length == 0) {
-                        throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
-                    }
-                    stream.write(ti);
-                    i++;
                 }
-            } else {
-                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
-                mac.init(keySpec);
-                byte[] ti = new byte[0];
-                while (stream.toByteArray().length < outLen) {
-                    mac.update(ti);
-                    mac.update(info);
-                    if (Integer.toHexString(i).length() % 2 != 0) {
-                        mac.update(
-                                ArrayConverter.hexStringToByteArray("0" + Integer.toHexString(i)));
-                    } else {
-                        mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
-                    }
-                    ti = mac.doFinal();
-                    if (ti.length == 0) {
-                        throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
-                    }
-                    stream.write(ti);
-                    i++;
-                }
+                return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
             }
-            return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
         } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             throw new CryptoException(ex);
         }
