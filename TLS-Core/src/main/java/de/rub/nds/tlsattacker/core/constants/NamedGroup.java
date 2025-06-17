@@ -152,7 +152,7 @@ public enum NamedGroup {
 
     static {
         MAP = new HashMap<>();
-        for (NamedGroup group : NamedGroup.values()) {
+        for (NamedGroup group : values()) {
             MAP.put(ByteBuffer.wrap(group.value), group);
         }
     }
@@ -361,7 +361,7 @@ public enum NamedGroup {
     }
 
     public static NamedGroup convert(GroupParameters<?> parameters) {
-        for (NamedGroup group : NamedGroup.values()) {
+        for (NamedGroup group : values()) {
             if (group.getGroupParameters() == parameters) {
                 return group;
             }

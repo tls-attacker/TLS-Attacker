@@ -31,7 +31,7 @@ public enum MaxFragmentLength {
 
     static {
         MAP = new HashMap<>();
-        for (MaxFragmentLength cm : MaxFragmentLength.values()) {
+        for (MaxFragmentLength cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

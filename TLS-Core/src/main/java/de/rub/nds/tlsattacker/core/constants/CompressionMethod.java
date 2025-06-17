@@ -25,7 +25,7 @@ public enum CompressionMethod {
 
     static {
         MAP = new HashMap<>();
-        for (CompressionMethod cm : CompressionMethod.values()) {
+        for (CompressionMethod cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

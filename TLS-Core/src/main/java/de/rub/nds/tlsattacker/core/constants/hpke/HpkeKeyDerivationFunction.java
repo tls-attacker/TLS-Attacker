@@ -47,7 +47,7 @@ public enum HpkeKeyDerivationFunction {
 
     static {
         MAP = new HashMap<>();
-        for (HpkeKeyDerivationFunction version : HpkeKeyDerivationFunction.values()) {
+        for (HpkeKeyDerivationFunction version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

@@ -103,7 +103,7 @@ public enum ExtensionType {
 
     static {
         MAP = new HashMap<>();
-        for (ExtensionType c : ExtensionType.values()) {
+        for (ExtensionType c : values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }

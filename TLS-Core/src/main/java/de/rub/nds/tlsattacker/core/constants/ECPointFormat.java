@@ -38,7 +38,7 @@ public enum ECPointFormat {
 
     static {
         MAP = new HashMap<>();
-        for (ECPointFormat cm : ECPointFormat.values()) {
+        for (ECPointFormat cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

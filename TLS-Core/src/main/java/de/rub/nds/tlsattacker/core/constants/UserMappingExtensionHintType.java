@@ -24,7 +24,7 @@ public enum UserMappingExtensionHintType {
 
     static {
         MAP = new HashMap<>();
-        for (UserMappingExtensionHintType c : UserMappingExtensionHintType.values()) {
+        for (UserMappingExtensionHintType c : values()) {
             MAP.put(c.value, c);
         }
     }

@@ -28,7 +28,7 @@ public enum TrustedCaIndicationIdentifierType {
     static {
         MAP = new HashMap<>();
 
-        for (TrustedCaIndicationIdentifierType type : TrustedCaIndicationIdentifierType.values()) {
+        for (TrustedCaIndicationIdentifierType type : values()) {
             MAP.put(type.value, type);
         }
     }

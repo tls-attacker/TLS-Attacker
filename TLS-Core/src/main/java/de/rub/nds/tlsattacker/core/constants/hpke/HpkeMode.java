@@ -36,7 +36,7 @@ public enum HpkeMode {
 
     static {
         MAP = new HashMap<>();
-        for (HpkeMode version : HpkeMode.values()) {
+        for (HpkeMode version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);
