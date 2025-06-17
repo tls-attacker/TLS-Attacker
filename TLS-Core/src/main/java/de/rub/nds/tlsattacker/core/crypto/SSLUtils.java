@@ -195,9 +195,9 @@ public class SSLUtils {
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
-                    return MD5_PAD1;
+                    return MD5_PAD1.clone();
                 case SSLMAC_SHA1:
-                    return SHA_PAD1;
+                    return SHA_PAD1.clone();
                 default:
                     throw new CryptoException(
                             ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
@@ -217,9 +217,9 @@ public class SSLUtils {
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
-                    return MD5_PAD2;
+                    return MD5_PAD2.clone();
                 case SSLMAC_SHA1:
-                    return SHA_PAD2;
+                    return SHA_PAD2.clone();
                 default:
                     throw new CryptoException(
                             ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
