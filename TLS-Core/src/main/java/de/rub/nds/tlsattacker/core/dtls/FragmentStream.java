@@ -28,10 +28,9 @@ public class FragmentStream {
 
     public boolean canInsertByteArray(byte[] bytesToAdd, int offset) {
         for (int i = 0; i < bytesToAdd.length; i++) {
-            if (fragmentByteMap.containsKey(offset + i)) {
-                if (fragmentByteMap.get(offset + i) != bytesToAdd[i]) {
-                    return false;
-                }
+            if (fragmentByteMap.containsKey(offset + i)
+                    && fragmentByteMap.get(offset + i) != bytesToAdd[i]) {
+                return false;
             }
         }
         return true;
