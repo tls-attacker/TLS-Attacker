@@ -38,7 +38,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      */
     private void parseSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroupsLength(parseIntField(ExtensionByteLength.SUPPORTED_GROUPS));
-        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
+        LOGGER.debug("SupportedGroupsLength: {}", msg.getSupportedGroupsLength().getValue());
     }
 
     /**

@@ -133,6 +133,6 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
 
     private void prepareKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
-        LOGGER.debug("KeyShareListBytesLength: " + msg.getKeyShareListLength().getValue());
+        LOGGER.debug("KeyShareListBytesLength: {}", msg.getKeyShareListLength().getValue());
     }
 }

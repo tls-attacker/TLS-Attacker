@@ -361,7 +361,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
             }
         }
         if (!isFoundSharedNamedGroup) {
-            LOGGER.warn("No private key available for selected named group: " + group);
+            LOGGER.warn("No private key available for selected named group: {}", group);
         }
         byte[] clientPublicKey = msg.getKeyShareEntry().getPublicKey().getValue();
 

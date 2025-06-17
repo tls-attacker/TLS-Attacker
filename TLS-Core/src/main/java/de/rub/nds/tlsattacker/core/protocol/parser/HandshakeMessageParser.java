@@ -73,7 +73,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage>
      */
     protected void parseExtensionLength(T message) {
         message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
-        LOGGER.debug("ExtensionLength:" + message.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", message.getExtensionsLength().getValue());
     }
 
     /**

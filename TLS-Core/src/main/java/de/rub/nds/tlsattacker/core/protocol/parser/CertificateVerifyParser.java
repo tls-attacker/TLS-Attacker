@@ -60,7 +60,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      */
     private void parseSignatureLength(CertificateVerifyMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /**

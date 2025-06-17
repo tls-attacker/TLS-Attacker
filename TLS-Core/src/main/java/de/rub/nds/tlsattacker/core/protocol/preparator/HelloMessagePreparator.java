@@ -62,6 +62,6 @@ public abstract class HelloMessagePreparator<T extends HelloMessage>
 
     protected void prepareSessionIDLength() {
         msg.setSessionIdLength(msg.getSessionId().getValue().length);
-        LOGGER.debug("SessionIdLength: " + msg.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIdLength: {}", msg.getSessionIdLength().getValue());
     }
 }

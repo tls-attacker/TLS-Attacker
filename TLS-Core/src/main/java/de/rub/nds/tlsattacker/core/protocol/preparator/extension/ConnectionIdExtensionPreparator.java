@@ -31,6 +31,6 @@ public class ConnectionIdExtensionPreparator
         message.setConnectionId(chooser.getConfig().getDefaultConnectionId());
         LOGGER.debug("ConnectionId: {}", message.getConnectionId().getValue());
         message.setConnectionIdLength(message.getConnectionId().getValue().length);
-        LOGGER.debug("ConnectionId length: " + message.getConnectionIdLength().getValue());
+        LOGGER.debug("ConnectionId length: {}", message.getConnectionIdLength().getValue());
     }
 }

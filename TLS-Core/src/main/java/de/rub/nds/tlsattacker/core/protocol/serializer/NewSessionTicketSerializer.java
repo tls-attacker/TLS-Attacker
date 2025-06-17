@@ -97,7 +97,7 @@ public class NewSessionTicketSerializer
                 ArrayConverter.intToBytes(
                         msg.getTicket().getTicketNonceLength().getValue(),
                         HandshakeByteLength.TICKET_NONCE_LENGTH));
-        LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
+        LOGGER.debug("TicketNonceLength: {}", msg.getTicket().getTicketNonceLength().getValue());
     }
 
     private void writeTicketNonce(NewSessionTicketMessage msg) {
@@ -110,7 +110,7 @@ public class NewSessionTicketSerializer
                 ArrayConverter.intToBytes(
                         msg.getTicket().getIdentityLength().getValue(),
                         ExtensionByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("TicketIdentityLength: " + msg.getTicket().getIdentityLength().getValue());
+        LOGGER.debug("TicketIdentityLength: {}", msg.getTicket().getIdentityLength().getValue());
     }
 
     private void writeTicketIdentity(NewSessionTicketMessage msg) {

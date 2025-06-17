@@ -181,7 +181,7 @@ public class PWDClientKeyExchangePreparator
 
     protected void prepareScalarLength(PWDClientKeyExchangeMessage msg) {
         msg.setScalarLength(msg.getScalar().getValue().length);
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength());
     }
 
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
@@ -196,7 +196,7 @@ public class PWDClientKeyExchangePreparator
 
     protected void prepareElementLength(PWDClientKeyExchangeMessage msg) {
         msg.setElementLength(msg.getElement().getValue().length);
-        LOGGER.debug("ElementLength: " + msg.getElementLength());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength());
     }
 
     private byte[] generatePremasterSecret(

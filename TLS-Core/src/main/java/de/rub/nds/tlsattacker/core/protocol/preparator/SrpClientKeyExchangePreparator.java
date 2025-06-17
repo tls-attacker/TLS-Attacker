@@ -223,12 +223,12 @@ public class SrpClientKeyExchangePreparator
 
     private void setComputationGenerator(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setGenerator(chooser.getSRPGenerator());
-        LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());
+        LOGGER.debug("Generator: {}", msg.getComputations().getGenerator().getValue());
     }
 
     private void setComputationModulus(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setModulus(chooser.getSRPModulus());
-        LOGGER.debug("Modulus: " + msg.getComputations().getModulus().getValue());
+        LOGGER.debug("Modulus: {}", msg.getComputations().getModulus().getValue());
     }
 
     private void preparePremasterSecret(SrpClientKeyExchangeMessage msg) {
@@ -244,7 +244,7 @@ public class SrpClientKeyExchangePreparator
 
     private void preparePublicKeyLength(SrpClientKeyExchangeMessage msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("PublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     private void prepareClientServerRandom(SrpClientKeyExchangeMessage msg) {
@@ -312,7 +312,7 @@ public class SrpClientKeyExchangePreparator
 
     private void setComputationSalt(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setSalt(chooser.getSRPServerSalt());
-        LOGGER.debug("Salt used for Computations: " + msg.getComputations().getSalt());
+        LOGGER.debug("Salt used for Computations: {}", msg.getComputations().getSalt());
     }
 
     private void prepareGenerator(SrpClientKeyExchangeMessage msg) {
@@ -327,11 +327,11 @@ public class SrpClientKeyExchangePreparator
 
     private void prepareGeneratorLength(SrpClientKeyExchangeMessage msg) {
         msg.setGeneratorLength(msg.getGenerator().getValue().length);
-        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("Generator Length: {}", msg.getGeneratorLength().getValue());
     }
 
     private void prepareModulusLength(SrpClientKeyExchangeMessage msg) {
         msg.setModulusLength(msg.getModulus().getValue().length);
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 }

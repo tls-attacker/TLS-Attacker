@@ -136,7 +136,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             }
             msg.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
         }
-        LOGGER.debug("SelectedCompressionMethod: " + msg.getSelectedCompressionMethod().getValue());
+        LOGGER.debug(
+                "SelectedCompressionMethod: {}", msg.getSelectedCompressionMethod().getValue());
     }
 
     private void prepareSessionID() {

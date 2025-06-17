@@ -39,7 +39,8 @@ public class ServerHelloSerializer extends HelloMessageSerializer<ServerHelloMes
     /** Writes the SelectedCompressionMethod of the message into the final byte[] */
     protected void writeSelectedCompressionMethod() {
         appendByte(msg.getSelectedCompressionMethod().getValue());
-        LOGGER.debug("SelectedCompressionMethod: " + msg.getSelectedCompressionMethod().getValue());
+        LOGGER.debug(
+                "SelectedCompressionMethod: {}", msg.getSelectedCompressionMethod().getValue());
     }
 
     @Override

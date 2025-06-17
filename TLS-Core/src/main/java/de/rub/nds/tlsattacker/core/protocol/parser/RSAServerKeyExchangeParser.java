@@ -76,7 +76,7 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage>
      */
     private void parseSignatureLength(RSAServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /**

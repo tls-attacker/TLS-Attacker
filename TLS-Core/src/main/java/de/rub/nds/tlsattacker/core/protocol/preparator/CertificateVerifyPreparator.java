@@ -110,7 +110,7 @@ public class CertificateVerifyPreparator
 
     private void prepareSignatureLength(CertificateVerifyMessage msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     private void prepareSignatureHashAlgorithm(CertificateVerifyMessage msg) {

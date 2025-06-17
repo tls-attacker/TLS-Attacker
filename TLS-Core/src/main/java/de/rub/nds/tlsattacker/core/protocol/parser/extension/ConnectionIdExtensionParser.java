@@ -32,7 +32,7 @@ public class ConnectionIdExtensionParser extends ExtensionParser<ConnectionIdExt
 
     private void parseConnectionIdLength(ConnectionIdExtensionMessage msg) {
         msg.setConnectionIdLength(parseIntField(HandshakeByteLength.CONNECTION_ID_LENGTH));
-        LOGGER.debug("ConnectionId length: " + msg.getConnectionIdLength().getValue());
+        LOGGER.debug("ConnectionId length: {}", msg.getConnectionIdLength().getValue());
     }
 
     private void parseConnectionId(ConnectionIdExtensionMessage msg) {

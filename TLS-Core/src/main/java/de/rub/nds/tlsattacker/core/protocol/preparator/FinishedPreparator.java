@@ -66,7 +66,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 } else {
                     macLength = Mac.getInstance(javaMacName).getMacLength();
                 }
-                LOGGER.debug("Connection End: " + chooser.getTalkingConnectionEnd());
+                LOGGER.debug("Connection End: {}", chooser.getTalkingConnectionEnd());
                 byte[] trafficSecret;
                 if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                     trafficSecret = chooser.getServerHandshakeTrafficSecret();
@@ -126,7 +126,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
         } else {
             LOGGER.debug("Calculating VerifyData:");
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
-            LOGGER.debug("Using PRF:" + prfAlgorithm.name());
+            LOGGER.debug("Using PRF: {}", prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret: {}", masterSecret);
             byte[] handshakeMessageHash =

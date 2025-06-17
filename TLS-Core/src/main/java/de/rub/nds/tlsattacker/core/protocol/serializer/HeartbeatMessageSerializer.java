@@ -40,13 +40,13 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
     /** Writes the HeartbeatMessageType of the HeartbeatMessage into the final byte[] */
     private void writeHeartbeatMessageType() {
         appendByte(message.getHeartbeatMessageType().getValue());
-        LOGGER.debug("HeartbeatMessageType: " + message.getHeartbeatMessageType().getValue());
+        LOGGER.debug("HeartbeatMessageType: {}", message.getHeartbeatMessageType().getValue());
     }
 
     /** Writes the PayloadLength of the HeartbeatMessage into the final byte[] */
     private void writePayloadLength() {
         appendInt(message.getPayloadLength().getValue(), HeartbeatByteLength.PAYLOAD_LENGTH);
-        LOGGER.debug("PayloadLength: " + message.getPayloadLength().getValue());
+        LOGGER.debug("PayloadLength: {}", message.getPayloadLength().getValue());
     }
 
     /** Writes the Payload of the HeartbeatMessage into the final byte[] */

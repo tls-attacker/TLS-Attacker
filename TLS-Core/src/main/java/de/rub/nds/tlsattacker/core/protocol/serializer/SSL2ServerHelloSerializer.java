@@ -39,13 +39,13 @@ public class SSL2ServerHelloSerializer extends SSL2MessageSerializer<SSL2ServerH
     /** Writes the SessionIdHit of the SSL2ServerHello into the final byte[] */
     private void writeSessionIdHit() {
         appendByte(message.getSessionIdHit().getValue());
-        LOGGER.debug("SessionIdHit: " + message.getSessionIdHit().getValue());
+        LOGGER.debug("SessionIdHit: {}", message.getSessionIdHit().getValue());
     }
 
     /** Writes the CertificateType of the SSL2ServerHello into the final byte[] */
     private void writeCertificateType() {
         appendByte(message.getCertificateType().getValue());
-        LOGGER.debug("CertificateType: " + message.getCertificateType().getValue());
+        LOGGER.debug("CertificateType: {}", message.getCertificateType().getValue());
     }
 
     /** Writes the ProtocolVersion of the SSL2ServerHello into the final byte[] */
@@ -57,19 +57,19 @@ public class SSL2ServerHelloSerializer extends SSL2MessageSerializer<SSL2ServerH
     /** Writes the CertificateLength of the SSL2ServerHello into the final byte[] */
     private void writeCertificateLength() {
         appendInt(message.getCertificateLength().getValue(), SSL2ByteLength.CERTIFICATE_LENGTH);
-        LOGGER.debug("CertificateLength: " + message.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", message.getCertificateLength().getValue());
     }
 
     /** Writes the CipherSuitesLength of the SSL2ServerHello into the final byte[] */
     private void writeCipherSuitesLength() {
         appendInt(message.getCipherSuitesLength().getValue(), SSL2ByteLength.CIPHERSUITE_LENGTH);
-        LOGGER.debug("CipherSuitesLength: " + message.getCipherSuitesLength().getValue());
+        LOGGER.debug("CipherSuitesLength: {}", message.getCipherSuitesLength().getValue());
     }
 
     /** Writes the SessionIDLength of the SSL2ServerHello into the final byte[] */
     private void writeSessionIDLength() {
         appendInt(message.getSessionIdLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength().getValue());
     }
 
     /** Writes the Certificate of the SSL2ServerHello into the final byte[] */

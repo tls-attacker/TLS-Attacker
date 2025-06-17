@@ -67,12 +67,12 @@ public class SSL2ClientMasterKeyPreparator
      */
     private void prepareMessagePaddingLength(SSL2ClientMasterKeyMessage message) {
         message.setPaddingLength(0);
-        LOGGER.debug("MessagePaddingLength: " + message.getPaddingLength().getValue());
+        LOGGER.debug("MessagePaddingLength: {}", message.getPaddingLength().getValue());
     }
 
     private void prepareType(SSL2ClientMasterKeyMessage message) {
         message.setType(message.getSsl2MessageType().getType());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     private void prepareCipherKind(SSL2ClientMasterKeyMessage message) {
@@ -88,7 +88,7 @@ public class SSL2ClientMasterKeyPreparator
 
     private void prepareClearKeyLength(SSL2ClientMasterKeyMessage message) {
         message.setClearKeyLength(message.getClearKeyData().getValue().length);
-        LOGGER.debug("ClearKeyLength: " + message.getClearKeyLength().getValue());
+        LOGGER.debug("ClearKeyLength: {}", message.getClearKeyLength().getValue());
     }
 
     private void prepareKeyArg(SSL2ClientMasterKeyMessage message) {
@@ -101,12 +101,12 @@ public class SSL2ClientMasterKeyPreparator
 
     private void prepareKeyArgLength(SSL2ClientMasterKeyMessage message) {
         message.setKeyArgLength(message.getKeyArgData().getValue().length);
-        LOGGER.debug("KeyArgLength: " + message.getKeyArgLength().getValue());
+        LOGGER.debug("KeyArgLength: {}", message.getKeyArgLength().getValue());
     }
 
     private void prepareMessageLength(SSL2ClientMasterKeyMessage message, int length) {
         message.setMessageLength(length);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 
     protected void preparePadding(SSL2ClientMasterKeyMessage msg) {
@@ -150,7 +150,7 @@ public class SSL2ClientMasterKeyPreparator
 
     protected void prepareEncryptedKeyDataLength(SSL2ClientMasterKeyMessage msg) {
         msg.setEncryptedKeyLength(msg.getEncryptedKeyData().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getEncryptedKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getEncryptedKeyLength().getValue());
     }
 
     private void prepareRSACiphertext(SSL2ClientMasterKeyMessage message) {

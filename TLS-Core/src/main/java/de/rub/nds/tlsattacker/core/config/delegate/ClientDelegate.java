@@ -92,7 +92,7 @@ public class ClientDelegate extends Delegate {
             try {
                 con.setIpv6(getIpv6ForHost(extractedHost));
             } catch (UnknownHostException ex) {
-                LOGGER.warn("Could not resolve IPv6 address for host " + extractedHost, ex);
+                LOGGER.warn("Could not resolve IPv6 address for host {}", extractedHost, ex);
             }
         }
     }

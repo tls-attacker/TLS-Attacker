@@ -39,7 +39,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseSaltLength(PWDServerKeyExchangeMessage msg) {
         msg.setSaltLength(parseIntField(HandshakeByteLength.PWD_SALT_LENGTH));
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 
     private void parseSalt(PWDServerKeyExchangeMessage msg) {
@@ -49,7 +49,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseCurveType(PWDServerKeyExchangeMessage msg) {
         msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
-        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
+        LOGGER.debug("CurveType: {}", msg.getGroupType().getValue());
     }
 
     private void parseNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -59,7 +59,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseElementLength(PWDServerKeyExchangeMessage msg) {
         msg.setElementLength(parseIntField(HandshakeByteLength.PWD_ELEMENT_LENGTH));
-        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength().getValue());
     }
 
     private void parseElement(PWDServerKeyExchangeMessage msg) {
@@ -69,7 +69,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseScalarLength(PWDServerKeyExchangeMessage msg) {
         msg.setScalarLength(parseIntField(HandshakeByteLength.PWD_SCALAR_LENGTH));
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength().getValue());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength().getValue());
     }
 
     private void parseScalar(PWDServerKeyExchangeMessage msg) {

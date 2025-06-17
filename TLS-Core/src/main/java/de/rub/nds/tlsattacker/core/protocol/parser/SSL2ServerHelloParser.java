@@ -45,7 +45,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseSessionIdHit(SSL2ServerHelloMessage message) {
         message.setSessionIdHit(parseByteField(SSL2ByteLength.SESSION_ID_HIT));
-        LOGGER.debug("SessionIdHit: " + message.getSessionIdHit().getValue());
+        LOGGER.debug("SessionIdHit: {}", message.getSessionIdHit().getValue());
     }
 
     /**
@@ -55,7 +55,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseCertificateType(SSL2ServerHelloMessage message) {
         message.setCertificateType(parseByteField(SSL2ByteLength.CERTIFICATE_TYPE));
-        LOGGER.debug("CertificateType: " + message.getCertificateType().getValue());
+        LOGGER.debug("CertificateType: {}", message.getCertificateType().getValue());
     }
 
     /**
@@ -75,7 +75,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseCertificateLength(SSL2ServerHelloMessage message) {
         message.setCertificateLength(parseIntField(SSL2ByteLength.CERTIFICATE_LENGTH));
-        LOGGER.debug("CertificateLength: " + message.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", message.getCertificateLength().getValue());
     }
 
     /**
@@ -85,7 +85,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseCipherSuitesLength(SSL2ServerHelloMessage message) {
         message.setCipherSuitesLength(parseIntField(SSL2ByteLength.CIPHERSUITE_LENGTH));
-        LOGGER.debug("CipherSuitesLength: " + message.getCipherSuitesLength().getValue());
+        LOGGER.debug("CipherSuitesLength: {}", message.getCipherSuitesLength().getValue());
     }
 
     /**
@@ -95,7 +95,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseSessionIDLength(SSL2ServerHelloMessage message) {
         message.setSessionIDLength(parseIntField(SSL2ByteLength.SESSIONID_LENGTH));
-        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength().getValue());
     }
 
     /**
