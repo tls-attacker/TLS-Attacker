@@ -35,7 +35,7 @@ public class EllipticCurvesExtensionSerializer
 
     private void writeSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
         appendInt(msg.getSupportedGroupsLength().getValue(), ExtensionByteLength.SUPPORTED_GROUPS);
-        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
+        LOGGER.debug("SupportedGroupsLength: {}", msg.getSupportedGroupsLength().getValue());
     }
 
     private void writeSupportedGroups(EllipticCurvesExtensionMessage msg) {

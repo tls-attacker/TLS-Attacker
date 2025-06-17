@@ -101,6 +101,6 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 }

@@ -45,7 +45,7 @@ public class TlsMitm implements Runnable {
         try {
             commander.parse(args);
         } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
         }
@@ -64,7 +64,7 @@ public class TlsMitm implements Runnable {
             Config config = cmdConfig.createConfig();
             WorkflowTrace trace = null;
             if (cmdConfig.getWorkflowInput() != null) {
-                LOGGER.debug("Reading workflow trace from " + cmdConfig.getWorkflowInput());
+                LOGGER.debug("Reading workflow trace from {}", cmdConfig.getWorkflowInput());
                 try (FileInputStream fis = new FileInputStream(cmdConfig.getWorkflowInput())) {
                     trace = WorkflowTraceSerializer.secureRead(fis);
                 }
@@ -72,26 +72,24 @@ public class TlsMitm implements Runnable {
             State state = executeMitmWorkflow(config, trace);
             if (cmdConfig.getWorkflowOutput() != null) {
                 trace = state.getWorkflowTrace();
-                LOGGER.debug("Writing workflow trace to " + cmdConfig.getWorkflowOutput());
+                LOGGER.debug("Writing workflow trace to {}", cmdConfig.getWorkflowOutput());
                 WorkflowTraceSerializer.write(new File(cmdConfig.getWorkflowOutput()), trace);
             }
         } catch (WorkflowExecutionException wee) {
             LOGGER.error(
-                    "The TLS protocol flow was not executed completely. "
-                            + wee.getLocalizedMessage()
-                            + " - See debug messages for more details.");
+                    "The TLS protocol flow was not executed completely. {} - See debug messages for more details.",
+                    wee.getLocalizedMessage());
             LOGGER.error(wee.getLocalizedMessage());
             LOGGER.debug(wee);
             throw wee;
         } catch (ConfigurationException ce) {
             LOGGER.error(
-                    "Encountered a ConfigurationException aborting. "
-                            + ce.getLocalizedMessage()
-                            + " - See debug messages for more details.");
+                    "Encountered a ConfigurationException aborting. {} - See debug messages for more details.",
+                    ce.getLocalizedMessage());
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
         } catch (Exception E) {

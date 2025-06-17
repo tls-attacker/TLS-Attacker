@@ -42,7 +42,7 @@ public class SupportedVersionsExtensionSerializer
         appendInt(
                 msg.getSupportedVersionsLength().getValue(),
                 ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
-        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
+        LOGGER.debug("SupportedVersionsLength: {}", msg.getSupportedVersionsLength().getValue());
     }
 
     private void writeSupportedVersions(SupportedVersionsExtensionMessage msg) {

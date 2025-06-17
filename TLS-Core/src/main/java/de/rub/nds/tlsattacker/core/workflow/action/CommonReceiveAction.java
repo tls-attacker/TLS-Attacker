@@ -61,7 +61,7 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
             throw new ActionExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving... (" + this.getClass().getSimpleName() + ")");
+        LOGGER.debug("Receiving... ({})", this.getClass().getSimpleName());
         List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(state);
         getReceiveResult(tlsContext.getLayerStack(), layerConfigurations);
         setExecuted(true);

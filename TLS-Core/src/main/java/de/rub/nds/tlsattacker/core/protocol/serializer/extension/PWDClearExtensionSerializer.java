@@ -34,11 +34,11 @@ public class PWDClearExtensionSerializer extends ExtensionSerializer<PWDClearExt
 
     private void writeUsernameLength(PWDClearExtensionMessage msg) {
         appendInt(msg.getUsernameLength().getValue(), ExtensionByteLength.PWD_NAME);
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 
     private void writeUsername(PWDClearExtensionMessage msg) {
         appendBytes(msg.getUsername().getValue().getBytes(StandardCharsets.ISO_8859_1));
-        LOGGER.debug("Username: " + msg.getUsername().getValue());
+        LOGGER.debug("Username: {}", msg.getUsername().getValue());
     }
 }

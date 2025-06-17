@@ -35,7 +35,7 @@ public class PWDClientKeyExchangeParser
 
     private void parseElementLength(PWDClientKeyExchangeMessage msg) {
         msg.setElementLength(parseIntField(HandshakeByteLength.PWD_ELEMENT_LENGTH));
-        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength().getValue());
     }
 
     private void parseElement(PWDClientKeyExchangeMessage msg) {
@@ -45,7 +45,7 @@ public class PWDClientKeyExchangeParser
 
     private void parseScalarLength(PWDClientKeyExchangeMessage msg) {
         msg.setScalarLength(parseIntField(HandshakeByteLength.PWD_SCALAR_LENGTH));
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength().getValue());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength().getValue());
     }
 
     private void parseScalar(PWDClientKeyExchangeMessage msg) {

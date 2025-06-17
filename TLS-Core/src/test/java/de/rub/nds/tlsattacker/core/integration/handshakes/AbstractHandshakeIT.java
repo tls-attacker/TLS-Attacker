@@ -281,12 +281,11 @@ public abstract class AbstractHandshakeIT {
             boolean addEncryptThenMac,
             boolean addExtendedMasterSecret) {
         LOGGER.error(
-                "["
-                        + this.getClass().getName()
-                        + "] Failed trace: "
-                        + state.getWorkflowTrace().toString());
+                "[{}] Failed trace: {}",
+                this.getClass().getName(),
+                state.getWorkflowTrace().toString());
         try {
-            LOGGER.error("Instance Feedback: " + dockerInstance.getLogs());
+            LOGGER.error("Instance Feedback: {}", dockerInstance.getLogs());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

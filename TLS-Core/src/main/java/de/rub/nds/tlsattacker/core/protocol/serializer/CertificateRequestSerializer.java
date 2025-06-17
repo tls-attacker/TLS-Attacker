@@ -106,7 +106,7 @@ public class CertificateRequestSerializer
         appendInt(
                 msg.getDistinguishedNamesLength().getValue(),
                 HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
-        LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
+        LOGGER.debug("DistinguishedNamesLength: {}", msg.getDistinguishedNamesLength().getValue());
     }
 
     private boolean hasDistinguishedNames(CertificateRequestMessage msg) {

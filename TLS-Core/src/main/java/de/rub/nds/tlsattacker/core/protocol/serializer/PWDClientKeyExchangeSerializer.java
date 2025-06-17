@@ -41,7 +41,7 @@ public class PWDClientKeyExchangeSerializer
 
     private void writeElementLength(PWDClientKeyExchangeMessage msg) {
         appendInt(msg.getElementLength().getValue(), HandshakeByteLength.PWD_ELEMENT_LENGTH);
-        LOGGER.debug("ElementLength: " + msg.getElementLength().getValue());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength().getValue());
     }
 
     private void writeElement(PWDClientKeyExchangeMessage msg) {
@@ -51,7 +51,7 @@ public class PWDClientKeyExchangeSerializer
 
     private void writeScalarLength(PWDClientKeyExchangeMessage msg) {
         appendInt(msg.getScalarLength().getValue(), HandshakeByteLength.PWD_SCALAR_LENGTH);
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength().getValue());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength().getValue());
     }
 
     private void writeScalar(PWDClientKeyExchangeMessage msg) {

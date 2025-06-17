@@ -33,7 +33,7 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
 
     private void parseIdentityLength(PSKIdentity pskIdentity) {
         pskIdentity.setIdentityLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("Identity length:" + pskIdentity.getIdentityLength().getValue());
+        LOGGER.debug("Identity length:: {}", pskIdentity.getIdentityLength().getValue());
     }
 
     private void parseIdentity(PSKIdentity pskIdentity) {

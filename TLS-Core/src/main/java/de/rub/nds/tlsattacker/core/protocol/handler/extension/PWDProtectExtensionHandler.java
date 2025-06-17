@@ -105,9 +105,9 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                             aesSIV.decrypt(ctrKey, macKey, encryptedUsername),
                             StandardCharsets.ISO_8859_1);
             tlsContext.setClientPWDUsername(username);
-            LOGGER.debug("Username: " + tlsContext.getClientPWDUsername());
+            LOGGER.debug("Username: {}", tlsContext.getClientPWDUsername());
         } catch (IllegalBlockSizeException | UnauthenticCiphertextException | CryptoException e) {
-            LOGGER.warn("Failed to decrypt username: " + e.getMessage());
+            LOGGER.warn("Failed to decrypt username: {}", e.getMessage());
         }
     }
 }

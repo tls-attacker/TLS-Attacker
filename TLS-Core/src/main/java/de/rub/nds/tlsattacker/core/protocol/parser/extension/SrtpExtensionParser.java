@@ -34,7 +34,7 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
                 parseByteArrayField(msg.getSrtpProtectionProfilesLength().getValue()));
         LOGGER.debug("Parsed the srtp protection profiles {}", msg.getSrtpProtectionProfiles());
         msg.setSrtpMkiLength(parseIntField(ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTH));
-        LOGGER.debug("Parsed the srtp mki length of " + msg.getSrtpMkiLength().getValue());
+        LOGGER.debug("Parsed the srtp mki length of : {}", msg.getSrtpMkiLength().getValue());
         msg.setSrtpMki(parseByteArrayField(msg.getSrtpMkiLength().getValue()));
         LOGGER.debug("Parsed the srtp mki {}", msg.getSrtpMki());
     }

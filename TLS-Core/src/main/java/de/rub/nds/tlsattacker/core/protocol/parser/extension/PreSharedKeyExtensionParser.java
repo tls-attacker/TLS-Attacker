@@ -49,7 +49,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private void parsePreSharedKeyIdentityListLength(PreSharedKeyExtensionMessage msg) {
         msg.setIdentityListLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH));
-        LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
+        LOGGER.debug("PreSharedKeyIdentityListLength: {}", msg.getIdentityListLength().getValue());
     }
 
     private void parsePreSharedKeyIdentityListBytes(PreSharedKeyExtensionMessage msg) {
@@ -70,7 +70,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private void parsePreSharedKeyBinderListLength(PreSharedKeyExtensionMessage msg) {
         msg.setBinderListLength(parseIntField(ExtensionByteLength.PSK_BINDER_LIST_LENGTH));
-        LOGGER.debug("PreSharedKeyBinderListLength: " + msg.getBinderListLength().getValue());
+        LOGGER.debug("PreSharedKeyBinderListLength: {}", msg.getBinderListLength().getValue());
     }
 
     private void parsePreSharedKeyBinderListBytes(PreSharedKeyExtensionMessage msg) {
@@ -92,6 +92,6 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private void parseSelectedIdentity(PreSharedKeyExtensionMessage msg) {
         msg.setSelectedIdentity(parseIntField(ExtensionByteLength.PSK_SELECTED_IDENTITY_LENGTH));
-        LOGGER.debug("SelectedIdentity:" + msg.getSelectedIdentity().getValue());
+        LOGGER.debug("SelectedIdentity:: {}", msg.getSelectedIdentity().getValue());
     }
 }

@@ -60,7 +60,7 @@ public abstract class CoreClientHelloParser<T extends CoreClientHelloMessage>
      */
     private void parseCipherSuiteLength(T msg) {
         msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
-        LOGGER.debug("CipherSuiteLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: {}", msg.getCipherSuiteLength().getValue());
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class CoreClientHelloParser<T extends CoreClientHelloMessage>
      */
     private void parseCompressionLength(T msg) {
         msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
-        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: {}", msg.getCompressionLength().getValue());
     }
 
     /**

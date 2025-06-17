@@ -53,7 +53,7 @@ public class SSL2ClientHelloParser extends SSL2MessageParser<SSL2ClientHelloMess
      */
     private void parseCipherSuiteLength(SSL2ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(SSL2ByteLength.CIPHERSUITE_LENGTH));
-        LOGGER.debug("CipherSuiteLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: {}", msg.getCipherSuiteLength().getValue());
     }
 
     /**
@@ -63,7 +63,7 @@ public class SSL2ClientHelloParser extends SSL2MessageParser<SSL2ClientHelloMess
      */
     private void parseSessionIDLength(SSL2ClientHelloMessage msg) {
         msg.setSessionIDLength(parseIntField(SSL2ByteLength.SESSIONID_LENGTH));
-        LOGGER.debug("SessionIDLength: " + msg.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", msg.getSessionIdLength().getValue());
     }
 
     /**
@@ -73,7 +73,7 @@ public class SSL2ClientHelloParser extends SSL2MessageParser<SSL2ClientHelloMess
      */
     private void parseChallengeLength(SSL2ClientHelloMessage msg) {
         msg.setChallengeLength(parseIntField(SSL2ByteLength.CHALLENGE_LENGTH));
-        LOGGER.debug("ChallengeLength: " + msg.getChallengeLength().getValue());
+        LOGGER.debug("ChallengeLength: {}", msg.getChallengeLength().getValue());
     }
 
     /**

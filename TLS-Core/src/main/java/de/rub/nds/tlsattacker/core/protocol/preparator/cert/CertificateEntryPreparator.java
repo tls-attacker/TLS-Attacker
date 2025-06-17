@@ -52,13 +52,13 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
         }
 
         LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(entry.getCertificateBytes().getValue()));
+                "Certificate: {}",
+                ArrayConverter.bytesToHexString(entry.getCertificateBytes().getValue()));
     }
 
     private void prepareCertificateLength(CertificateEntry entry) {
         entry.setCertificateLength(entry.getCertificateBytes().getValue().length);
-        LOGGER.debug("CertificateLength: " + entry.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", entry.getCertificateLength().getValue());
     }
 
     private void prepareExtensions(CertificateEntry entry) {
@@ -71,12 +71,12 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
             entry.setExtensionBytes(stream.toByteArray());
         }
         LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(entry.getExtensionBytes().getValue()));
+                "ExtensionBytes: {}",
+                ArrayConverter.bytesToHexString(entry.getExtensionBytes().getValue()));
     }
 
     private void prepareExtensionLength(CertificateEntry entry) {
         entry.setExtensionsLength(entry.getExtensionBytes().getValue().length);
-        LOGGER.debug("ExtensionLength: " + entry.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", entry.getExtensionsLength().getValue());
     }
 }

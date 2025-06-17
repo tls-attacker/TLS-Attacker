@@ -73,7 +73,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private void parseVersion(EsniKeyRecord record) {
         byte[] version = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_VERSION);
         record.setVersion(EsniDnsKeyRecordVersion.getEnumByByte(version));
-        LOGGER.debug("Version: " + record.getVersion());
+        LOGGER.debug("Version: {}", record.getVersion());
     }
 
     private void parseChecksum(EsniKeyRecord record) {
@@ -88,14 +88,14 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         record.setPublicNameLength(publicNameLen);
         byte[] publicName = this.parseByteArrayField(ArrayConverter.bytesToInt(publicNameLen));
         record.setPublicName(publicName);
-        LOGGER.debug("Public Name Length: " + ArrayConverter.bytesToInt(publicNameLen));
-        LOGGER.debug("Public Name: " + Arrays.toString(record.getPublicName()));
+        LOGGER.debug("Public Name Length: {}", ArrayConverter.bytesToInt(publicNameLen));
+        LOGGER.debug("Public Name: {}", Arrays.toString(record.getPublicName()));
     }
 
     private void parseKeys(EsniKeyRecord record) {
         byte[] keysLen = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         record.setKeysLength(keysLen);
-        LOGGER.debug("KeysLength: " + ArrayConverter.bytesToInt(keysLen));
+        LOGGER.debug("KeysLength: {}", ArrayConverter.bytesToInt(keysLen));
         KeyShareStoreEntry entry;
         // TODO this should use streams
         int i = 0;
@@ -119,7 +119,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private void parseCipherSuites(EsniKeyRecord record) {
         byte[] cipherSuitesLen = this.parseByteArrayField(HandshakeByteLength.CIPHER_SUITES_LENGTH);
         record.setCipherSuitesLength(cipherSuitesLen);
-        LOGGER.debug("CipherSuitesLength: " + ArrayConverter.bytesToInt(cipherSuitesLen));
+        LOGGER.debug("CipherSuitesLength: {}", ArrayConverter.bytesToInt(cipherSuitesLen));
         byte[] cipherSuitesBytes =
                 this.parseByteArrayField(ArrayConverter.bytesToInt(cipherSuitesLen));
         List<CipherSuite> cipherSuites = CipherSuite.getCipherSuites(cipherSuitesBytes);
@@ -129,26 +129,26 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private void parsePaddedLength(EsniKeyRecord record) {
         int paddedLength = this.parseIntField(ExtensionByteLength.ESNI_RECORD_PADDED_LENGTH);
         record.setPaddedLength(paddedLength);
-        LOGGER.debug("paddedLen: " + record.getPaddedLength());
+        LOGGER.debug("paddedLen: {}", record.getPaddedLength());
     }
 
     private void parseNotBefore(EsniKeyRecord record) {
         byte[] notBefore = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
         record.setNotBefore(ArrayConverter.bytesToLong(notBefore));
-        LOGGER.debug("notBefore: " + record.getNotBefore());
+        LOGGER.debug("notBefore: {}", record.getNotBefore());
     }
 
     private void parseNotAfter(EsniKeyRecord record) {
         byte[] notAfter = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
         record.setNotAfter(ArrayConverter.bytesToLong(notAfter));
-        LOGGER.debug("notAfter: " + record.getNotAfter());
+        LOGGER.debug("notAfter: {}", record.getNotAfter());
     }
 
     private void parseExtensions(EsniKeyRecord record) {
         byte[] extensionsLengthBytes =
                 this.parseByteArrayField(HandshakeByteLength.EXTENSION_LENGTH);
         record.setExtensionsLength(extensionsLengthBytes);
-        LOGGER.debug("ExtensionsLength: " + ArrayConverter.bytesToInt(extensionsLengthBytes));
+        LOGGER.debug("ExtensionsLength: {}", ArrayConverter.bytesToInt(extensionsLengthBytes));
         int extensionsLength = ArrayConverter.bytesToInt(extensionsLengthBytes);
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);

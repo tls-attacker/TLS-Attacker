@@ -150,7 +150,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCompressionLength(T msg) {
         msg.setCompressionLength(msg.getCompressions().getValue().length);
-        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: {}", msg.getCompressionLength().getValue());
     }
 
     private void prepareCipherSuites(T msg) {
@@ -161,7 +161,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCipherSuitesLength(T msg) {
         msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuitesLength: {}", msg.getCipherSuiteLength().getValue());
     }
 
     private boolean hasClientRandom() {
@@ -179,7 +179,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCookieLength(T msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
-        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: {}", msg.getCookieLength().getValue());
     }
 
     @Override

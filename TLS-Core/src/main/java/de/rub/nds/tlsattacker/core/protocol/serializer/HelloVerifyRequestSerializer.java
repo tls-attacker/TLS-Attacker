@@ -47,7 +47,7 @@ public class HelloVerifyRequestSerializer
     /** Writes the CookieLength of the HelloVerifyMessage into the final byte[] */
     private void writeCookieLength(HelloVerifyRequestMessage msg) {
         appendByte(msg.getCookieLength().getValue());
-        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: {}", msg.getCookieLength().getValue());
     }
 
     /** Writes the Cookie of the HelloVerifyMessage into the final byte[] */

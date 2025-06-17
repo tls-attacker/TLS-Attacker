@@ -56,12 +56,12 @@ public class SSL2ClientHelloPreparator extends SSL2MessagePreparator<SSL2ClientH
 
     private void preparePaddingLength(SSL2ClientHelloMessage message) {
         message.setPaddingLength(0);
-        LOGGER.debug("PaddingLength: " + message.getPaddingLength().getValue());
+        LOGGER.debug("PaddingLength: {}", message.getPaddingLength().getValue());
     }
 
     private void prepareType(SSL2ClientHelloMessage message) {
         message.setType(message.getSsl2MessageType().getType());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     private void prepareProtocolVersion(SSL2ClientHelloMessage message) {
@@ -92,21 +92,21 @@ public class SSL2ClientHelloPreparator extends SSL2MessagePreparator<SSL2ClientH
 
     private void prepareSessionIDLength(SSL2ClientHelloMessage message) {
         message.setSessionIDLength(message.getSessionId().getValue().length);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength().getValue());
     }
 
     private void prepareChallengeLength(SSL2ClientHelloMessage message) {
         message.setChallengeLength(message.getChallenge().getValue().length);
-        LOGGER.debug("ChallengeLength: " + message.getChallengeLength().getValue());
+        LOGGER.debug("ChallengeLength: {}", message.getChallengeLength().getValue());
     }
 
     private void prepareCipherSuiteLength(SSL2ClientHelloMessage message) {
         message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuiteLength: " + message.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: {}", message.getCipherSuiteLength().getValue());
     }
 
     private void prepareMessageLength(SSL2ClientHelloMessage message, int length) {
         message.setMessageLength(length);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 }
