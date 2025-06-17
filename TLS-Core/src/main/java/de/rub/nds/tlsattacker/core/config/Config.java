@@ -341,7 +341,7 @@ public class Config implements Serializable {
 
     /** Default QuicTransportParameters */
     @XmlElement(name = "defaultQuicTransportParameters")
-    private transient QuicTransportParameters defaultQuicTransportParameters;
+    private QuicTransportParameters defaultQuicTransportParameters;
 
     /** If true tries to decrypt the initial QUIC packets with own keys */
     private Boolean echoQuic = false;
@@ -3512,9 +3512,6 @@ public class Config implements Serializable {
     }
 
     public QuicTransportParameters getDefaultQuicTransportParameters() {
-        if (defaultQuicTransportParameters == null) {
-            defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
-        }
         return defaultQuicTransportParameters;
     }
 
