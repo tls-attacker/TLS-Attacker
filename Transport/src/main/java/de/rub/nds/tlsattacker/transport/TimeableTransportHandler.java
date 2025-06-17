@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.transport;
 
 public interface TimeableTransportHandler {
 
-    public abstract Long getLastMeasurement();
+    Long getLastMeasurement();
 
-    public boolean isMeasuringActive();
+    boolean isMeasuringActive();
 
-    public void setMeasuringActive(boolean measuringActive);
+    void setMeasuringActive(boolean measuringActive);
 }
