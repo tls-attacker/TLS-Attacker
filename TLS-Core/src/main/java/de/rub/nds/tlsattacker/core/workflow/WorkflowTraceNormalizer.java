@@ -144,7 +144,7 @@ public class WorkflowTraceNormalizer {
      */
     public void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();
-        if ((connections == null) || (connections.isEmpty())) {
+        if (connections == null || connections.isEmpty()) {
             throw new ConfigurationException(
                     "Workflow trace not well defined. " + "Trace does not define any connections.");
         }

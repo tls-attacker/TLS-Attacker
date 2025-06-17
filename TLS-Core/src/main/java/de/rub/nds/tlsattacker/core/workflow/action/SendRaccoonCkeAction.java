@@ -107,7 +107,7 @@ public class SendRaccoonCkeAction extends CommonSendAction {
                 return cke;
             }
         }
-        initialClientDhSecret = initialClientDhSecret.add(new BigInteger("1"));
+        initialClientDhSecret = initialClientDhSecret.add(BigInteger.ONE);
         return getClientPublicKey(g, m, serverPublicKey, initialClientDhSecret, withNullByte);
     }
 

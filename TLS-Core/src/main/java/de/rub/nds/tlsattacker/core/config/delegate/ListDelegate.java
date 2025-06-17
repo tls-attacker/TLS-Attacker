@@ -30,7 +30,7 @@ public class ListDelegate extends Delegate {
     public ListDelegate() {}
 
     public boolean isSet() {
-        return (listDelegateType != null);
+        return listDelegateType != null;
     }
 
     public void plotListing() {

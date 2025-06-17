@@ -58,7 +58,7 @@ public enum AlertDescription {
 
     static {
         MAP = new HashMap<>();
-        for (AlertDescription cm : AlertDescription.values()) {
+        for (AlertDescription cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

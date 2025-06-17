@@ -150,8 +150,8 @@ public class ConfigIO {
 
     public static Config copy(Config config) {
         SilentByteArrayOutputStream byteArrayOutputStream = new SilentByteArrayOutputStream();
-        ConfigIO.write(config, byteArrayOutputStream);
-        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        write(config, byteArrayOutputStream);
+        return read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
     private ConfigIO() {}

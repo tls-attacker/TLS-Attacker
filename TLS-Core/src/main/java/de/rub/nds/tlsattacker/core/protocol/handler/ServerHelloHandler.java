@@ -240,7 +240,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContextAfterSerialize(ServerHelloMessage message) {
-        if ((tlsContext.getChooser().getSelectedProtocolVersion().is13())
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()
                 && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
         }

@@ -21,13 +21,13 @@ public enum AlertLevel {
 
     private static final Map<Byte, AlertLevel> MAP;
 
-    private AlertLevel(byte value) {
+    AlertLevel(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (AlertLevel cm : AlertLevel.values()) {
+        for (AlertLevel cm : values()) {
             MAP.put(cm.value, cm);
         }
     }
