@@ -20,8 +20,8 @@ public class SignatureAndHashAlgorithmTest {
     public void testPrintAlgos() {
         for (SignatureAndHashAlgorithm algo : SignatureAndHashAlgorithm.values()) {
             LOGGER.debug("---");
-            LOGGER.debug("Original Value:" + algo.name());
-            LOGGER.debug("HashAlgo:" + algo.getHashAlgorithm());
+            LOGGER.debug("Original Value: {}", algo.name());
+            LOGGER.debug("HashAlgo: {}", algo.getHashAlgorithm());
         }
     }
 }

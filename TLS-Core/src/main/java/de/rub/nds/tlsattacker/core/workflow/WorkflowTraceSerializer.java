@@ -113,7 +113,7 @@ public class WorkflowTraceSerializer {
     public static void write(File file, WorkflowTrace trace)
             throws FileNotFoundException, JAXBException, IOException {
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            WorkflowTraceSerializer.write(fos, trace);
+            write(fos, trace);
         }
     }
 

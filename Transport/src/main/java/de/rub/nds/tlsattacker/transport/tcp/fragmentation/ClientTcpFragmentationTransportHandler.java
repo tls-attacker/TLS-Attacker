@@ -55,7 +55,8 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
             outStream.flush();
             try {
                 Thread.sleep(10);
-            } catch (Exception e) {
+            } catch (InterruptedException ignored) {
+                // Ignore interruption during packet delay
             }
         }
     }

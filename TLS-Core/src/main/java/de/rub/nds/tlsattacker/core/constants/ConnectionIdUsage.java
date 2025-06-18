@@ -25,7 +25,7 @@ public enum ConnectionIdUsage {
 
     static {
         MAP = new HashMap<>();
-        for (ConnectionIdUsage usage : ConnectionIdUsage.values()) {
+        for (ConnectionIdUsage usage : values()) {
             MAP.put(usage.value, usage);
         }
     }

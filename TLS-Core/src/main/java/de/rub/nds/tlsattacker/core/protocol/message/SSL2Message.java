@@ -33,32 +33,28 @@ public abstract class SSL2Message extends Message {
     @XmlTransient protected boolean adjustContextDefault = true;
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger messageLength;
 
     // Number of padding bytes for payloads encrypted with a block cipher (not
     // to be mistaken with PKCS#1 padding)
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger paddingLength;
 
     /** resulting message */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
-    protected ModifiableByteArray completeResultingMessage;
+    @ModifiableVariableProperty protected ModifiableByteArray completeResultingMessage;
 
     /** Defines whether this message is necessarily required in the workflow. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean required;
+    @ModifiableVariableProperty private ModifiableBoolean required;
 
     /**
      * Defines if the message should be sent during the workflow. Using this flag it is possible to
      * omit a message is sent during the handshake while it is executed to initialize specific
      * variables.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean goingToBeSent;
+    @ModifiableVariableProperty private ModifiableBoolean goingToBeSent;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean adjustContext;
+    @ModifiableVariableProperty private ModifiableBoolean adjustContext;
 
     /** content type */
     @XmlTransient protected ProtocolMessageType protocolMessageType;

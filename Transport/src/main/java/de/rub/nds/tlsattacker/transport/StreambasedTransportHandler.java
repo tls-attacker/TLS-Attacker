@@ -40,25 +40,26 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
      * @return
      */
     public byte[] fetchData(int amountOfData) throws IOException {
-        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
-        for (int i = 0; i < amountOfData; i++) {
-            try {
-                final int byteRead = inStream.read();
-                if (byteRead == -1) {
-                    throw new EOFException(
-                            String.format(
-                                    "Encountered EOF after %d bytes while reading %d bytes of data",
-                                    i, amountOfData));
+        try (SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream()) {
+            for (int i = 0; i < amountOfData; i++) {
+                try {
+                    final int byteRead = inStream.read();
+                    if (byteRead == -1) {
+                        throw new EOFException(
+                                String.format(
+                                        "Encountered EOF after %d bytes while reading %d bytes of data",
+                                        i, amountOfData));
+                    }
+                    outputStream.write(byteRead);
+                } catch (IOException e) {
+                    if (outputStream.size() > 0) {
+                        inStream.unread(outputStream.toByteArray());
+                    }
+                    throw e;
                 }
-                outputStream.write(byteRead);
-            } catch (IOException e) {
-                if (outputStream.size() > 0) {
-                    inStream.unread(outputStream.toByteArray());
-                }
-                throw e;
             }
+            return outputStream.toByteArray();
         }
-        return outputStream.toByteArray();
     }
 
     public byte[] fetchData() throws IOException {

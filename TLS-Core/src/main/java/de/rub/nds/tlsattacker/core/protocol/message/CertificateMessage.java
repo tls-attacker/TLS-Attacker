@@ -34,15 +34,14 @@ import java.util.Objects;
 public class CertificateMessage extends HandshakeMessage {
 
     /** request context length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger requestContextLength;
 
     /** request context */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray requestContext;
+    @ModifiableVariableProperty private ModifiableByteArray requestContext;
 
     /** certificates length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger certificatesListLength;
 
     @ModifiableVariableProperty private ModifiableByteArray certificatesListBytes;

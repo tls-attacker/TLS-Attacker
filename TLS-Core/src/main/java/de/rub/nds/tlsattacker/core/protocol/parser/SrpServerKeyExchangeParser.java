@@ -56,7 +56,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseModulusLength(SrpServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.SRP_MODULUS_LENGTH));
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 
     /**
@@ -66,7 +66,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseModulus(SrpServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
-        LOGGER.debug("Modulus: " + Arrays.toString(msg.getModulus().getValue()));
+        LOGGER.debug("Modulus: {}", Arrays.toString(msg.getModulus().getValue()));
     }
 
     /**
@@ -76,7 +76,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseSaltLength(SrpServerKeyExchangeMessage msg) {
         msg.setSaltLength(parseIntField(HandshakeByteLength.SRP_SALT_LENGTH));
-        LOGGER.debug("Salt Length: " + msg.getSaltLength().getValue());
+        LOGGER.debug("Salt Length: {}", msg.getSaltLength().getValue());
     }
 
     /**
@@ -86,7 +86,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseSalt(SrpServerKeyExchangeMessage msg) {
         msg.setSalt(parseByteArrayField(msg.getSaltLength().getValue()));
-        LOGGER.debug("Salt: " + Arrays.toString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", Arrays.toString(msg.getSalt().getValue()));
     }
 
     /**
@@ -96,7 +96,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseGeneratorLength(SrpServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(parseIntField(HandshakeByteLength.SRP_GENERATOR_LENGTH));
-        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("gLength: {}", msg.getGeneratorLength().getValue());
     }
 
     /**
@@ -106,7 +106,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseGenerator(SrpServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
-        LOGGER.debug("G: " + Arrays.toString(msg.getGenerator().getValue()));
+        LOGGER.debug("G: {}", Arrays.toString(msg.getGenerator().getValue()));
     }
 
     /**
@@ -116,7 +116,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseSerializedPublicKeyLength(SrpServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.SRP_PUBLICKEY_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -148,7 +148,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseSignatureLength(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /**

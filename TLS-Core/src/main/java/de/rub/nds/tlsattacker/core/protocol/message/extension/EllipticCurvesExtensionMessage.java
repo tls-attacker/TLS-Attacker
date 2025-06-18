@@ -28,11 +28,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "EllipticCurves")
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger supportedGroupsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray supportedGroups;
+    @ModifiableVariableProperty private ModifiableByteArray supportedGroups;
 
     public EllipticCurvesExtensionMessage() {
         super(ExtensionType.ELLIPTIC_CURVES);

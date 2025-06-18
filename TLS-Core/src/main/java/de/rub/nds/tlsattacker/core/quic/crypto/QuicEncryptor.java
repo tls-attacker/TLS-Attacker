@@ -95,7 +95,7 @@ public class QuicEncryptor {
                 headerProtectionMask = clientHeaderProtectionMask;
                 break;
             default:
-                LOGGER.error("Unknown connectionEndType" + connectionEndType);
+                LOGGER.error("Unknown connectionEndType: {}", connectionEndType);
                 return;
         }
 
@@ -180,7 +180,7 @@ public class QuicEncryptor {
                 encryptionKey = clientKey;
                 break;
             default:
-                LOGGER.error("Unknown connectionEndType" + connectionEndType);
+                LOGGER.error("Unknown connectionEndType: {}", connectionEndType);
                 return;
         }
 

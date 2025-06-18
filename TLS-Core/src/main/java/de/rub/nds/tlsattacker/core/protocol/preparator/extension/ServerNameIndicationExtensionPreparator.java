@@ -103,6 +103,6 @@ public class ServerNameIndicationExtensionPreparator
 
     private void prepareServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListLength(msg.getServerNameListBytes().getValue().length);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 }

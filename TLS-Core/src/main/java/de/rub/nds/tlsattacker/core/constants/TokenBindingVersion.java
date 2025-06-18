@@ -40,12 +40,12 @@ public enum TokenBindingVersion {
 
     static {
         MAP = new HashMap<>();
-        for (TokenBindingVersion c : TokenBindingVersion.values()) {
+        for (TokenBindingVersion c : values()) {
             MAP.put(ArrayConverter.bytesToInt(c.tokenBindingVersion), c);
         }
     }
 
-    private TokenBindingVersion(byte[] tokenBindingVersion) {
+    TokenBindingVersion(byte[] tokenBindingVersion) {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 

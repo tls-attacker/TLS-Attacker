@@ -24,14 +24,14 @@ public enum MaxFragmentLength {
 
     private static final Map<Byte, MaxFragmentLength> MAP;
 
-    private MaxFragmentLength(byte value, int lengthValue) {
+    MaxFragmentLength(byte value, int lengthValue) {
         this.value = value;
         this.lengthValue = lengthValue;
     }
 
     static {
         MAP = new HashMap<>();
-        for (MaxFragmentLength cm : MaxFragmentLength.values()) {
+        for (MaxFragmentLength cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

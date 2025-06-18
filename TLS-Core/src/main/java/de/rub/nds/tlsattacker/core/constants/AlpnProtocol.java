@@ -73,7 +73,7 @@ public enum AlpnProtocol {
     private final String constant;
     private final String printableName;
 
-    private AlpnProtocol(String constant, String printableName) {
+    AlpnProtocol(String constant, String printableName) {
         this.constant = constant;
         this.printableName = printableName;
     }

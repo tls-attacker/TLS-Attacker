@@ -28,23 +28,21 @@ import java.io.InputStream;
 @XmlRootElement(name = "PWDServerKeyExchange")
 public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger saltLength;
 
     @ModifiableVariableProperty private ModifiableByteArray salt;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByte curveType;
+    @ModifiableVariableProperty protected ModifiableByte curveType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByteArray namedGroup;
+    @ModifiableVariableProperty protected ModifiableByteArray namedGroup;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger elementLength;
 
     @ModifiableVariableProperty private ModifiableByteArray element;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger scalarLength;
 
     @ModifiableVariableProperty private ModifiableByteArray scalar;

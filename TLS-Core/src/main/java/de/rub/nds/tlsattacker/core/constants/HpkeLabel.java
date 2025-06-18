@@ -37,7 +37,7 @@ public enum HpkeLabel {
 
     private final String name;
 
-    private HpkeLabel(String name) {
+    HpkeLabel(String name) {
         this.name = name;
     }
 

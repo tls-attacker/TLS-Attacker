@@ -176,7 +176,7 @@ public class SrpServerKeyExchangePreparator
 
     private void prepareGeneratorLength(SrpServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(msg.getGenerator().getValue().length);
-        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("Generator Length: {}", msg.getGeneratorLength().getValue());
     }
 
     private void prepareSalt(SrpServerKeyExchangeMessage msg) {

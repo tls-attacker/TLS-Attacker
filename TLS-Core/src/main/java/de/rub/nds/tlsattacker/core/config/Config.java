@@ -68,6 +68,8 @@ import org.apache.logging.log4j.Logger;
 @XmlType(propOrder = {})
 public class Config implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
@@ -664,7 +666,7 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<ActionOption> messageFactoryActionOptions = new LinkedList<>();
 
-    private BigInteger defaultServerEphemeralDhGenerator = new BigInteger("2");
+    private BigInteger defaultServerEphemeralDhGenerator = BigInteger.valueOf(2);
 
     private BigInteger defaultServerEphemeralDhModulus =
             new BigInteger(
@@ -959,7 +961,7 @@ public class Config implements Serializable {
                     ArrayConverter.hexStringToByteArray(
                             "EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3"));
 
-    private BigInteger defaultSRPGenerator = new BigInteger("2");
+    private BigInteger defaultSRPGenerator = BigInteger.valueOf(2);
 
     private BigInteger defaultSRPServerPrivateKey = new BigInteger("3");
 
@@ -1000,7 +1002,7 @@ public class Config implements Serializable {
                     "00e208ff3431b8d1f6c48d9bb93c76a9c7f5693ada3eb45fa12581d2203a97246a5ceed7cf8d8fc1d6136225545855dd41581543cecba0b4a5776f90d05a0059ff",
                     16);
 
-    private BigInteger defaultServerEphemeralDhExportGenerator = new BigInteger("2");
+    private BigInteger defaultServerEphemeralDhExportGenerator = BigInteger.valueOf(2);
 
     private BigInteger defaultServerEphemeralDhExportModulus =
             new BigInteger(

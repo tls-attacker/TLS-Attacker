@@ -32,12 +32,12 @@ public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMess
 
     @HoldsModifiableVariable private KeyShareEntry keyShareEntry;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger recordDigestLength;
 
     @ModifiableVariableProperty private ModifiableByteArray recordDigest;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger encryptedSniLength;
 
     @ModifiableVariableProperty private ModifiableByteArray encryptedSni;

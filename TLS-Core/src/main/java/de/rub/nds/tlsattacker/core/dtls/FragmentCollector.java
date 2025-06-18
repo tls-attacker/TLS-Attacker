@@ -109,9 +109,9 @@ public class FragmentCollector {
      * @return true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
-        if (fragment.getType().getValue() == type
-                && fragment.getMessageSequence().getValue() == this.messageSeq
-                && fragment.getLength().getValue() == this.messageLength) {
+        if (fragment.getType().getValue().equals(type)
+                && fragment.getMessageSequence().getValue().equals(this.messageSeq)
+                && fragment.getLength().getValue().equals(this.messageLength)) {
             return fragmentStream.canInsertByteArray(
                     fragment.getFragmentContent().getValue(),
                     fragment.getFragmentOffset().getValue());

@@ -39,12 +39,12 @@ public class CertificateStatusPreparator
 
     private void prepareCertificateStatusType() {
         msg.setCertificateStatusType(TYPE_OCSP); // 1: OCSP 2: OCSP_multi
-        LOGGER.debug("CertificateStatusType: " + msg.getCertificateStatusType().getValue());
+        LOGGER.debug("CertificateStatusType: {}", msg.getCertificateStatusType().getValue());
     }
 
     private void prepareOcspResponseLength() {
         msg.setOcspResponseLength(0);
-        LOGGER.debug("OCSPResponseLength: " + msg.getOcspResponseLength());
+        LOGGER.debug("OCSPResponseLength: {}", msg.getOcspResponseLength());
     }
 
     private void prepareOcspResponseBytes() {

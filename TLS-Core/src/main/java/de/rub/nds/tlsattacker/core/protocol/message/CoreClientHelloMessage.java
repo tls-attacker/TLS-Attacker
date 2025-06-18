@@ -30,25 +30,22 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /** compression length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger compressionLength;
 
     /** cipher suite byte length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cipherSuiteLength;
 
     /** array of supported CipherSuites */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherSuites;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuites;
 
     /** array of supported compressions */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray compressions;
+    @ModifiableVariableProperty private ModifiableByteArray compressions;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie;
+    @ModifiableVariableProperty private ModifiableByteArray cookie;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cookieLength;
 
     public CoreClientHelloMessage() {

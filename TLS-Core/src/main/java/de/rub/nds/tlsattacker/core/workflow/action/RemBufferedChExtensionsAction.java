@@ -99,7 +99,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         int origExtLength = ch.getExtensionBytes().getValue().length;
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Original extensions in " + msgName + ":\n" + summarizeExtensions(ch));
+            LOGGER.debug("Original extensions in {}:\n{}", msgName, summarizeExtensions(ch));
         }
 
         ExtensionType type;

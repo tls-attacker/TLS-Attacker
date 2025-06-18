@@ -33,7 +33,7 @@ public class PWDProtectExtensionSerializer extends ExtensionSerializer<PWDProtec
 
     private void writeUsernameLength(PWDProtectExtensionMessage msg) {
         appendInt(msg.getUsernameLength().getValue(), ExtensionByteLength.PWD_NAME);
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 
     private void writeUsername(PWDProtectExtensionMessage msg) {

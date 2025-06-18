@@ -34,7 +34,7 @@ public class CookieExtensionSerializer extends ExtensionSerializer<CookieExtensi
 
     private void serializeCookieLength(CookieExtensionMessage msg) {
         appendInt(msg.getCookieLength().getValue(), ExtensionByteLength.COOKIE_LENGTH);
-        LOGGER.debug("Cookie length: " + msg.getCookieLength().getValue());
+        LOGGER.debug("Cookie length: {}", msg.getCookieLength().getValue());
     }
 
     private void serializeCookie(CookieExtensionMessage msg) {

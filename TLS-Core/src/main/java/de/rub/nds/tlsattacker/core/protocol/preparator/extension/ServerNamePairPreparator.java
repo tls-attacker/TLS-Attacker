@@ -40,11 +40,11 @@ public class ServerNamePairPreparator extends Preparator<ServerNamePair> {
 
     private void prepareServerNameType(ServerNamePair pair) {
         pair.setServerNameType(pair.getServerNameTypeConfig());
-        LOGGER.debug("ServerNameType: " + pair.getServerNameType().getValue());
+        LOGGER.debug("ServerNameType: {}", pair.getServerNameType().getValue());
     }
 
     private void prepareServerNameLength(ServerNamePair pair) {
         pair.setServerNameLength(pair.getServerName().getValue().length);
-        LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
+        LOGGER.debug("ServerNameLength: {}", pair.getServerNameLength().getValue());
     }
 }

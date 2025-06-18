@@ -31,14 +31,14 @@ public enum ECPointFormat {
 
     private static final Map<Byte, ECPointFormat> MAP;
 
-    private ECPointFormat(byte value, PointFormat format) {
+    ECPointFormat(byte value, PointFormat format) {
         this.value = value;
         this.format = format;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ECPointFormat cm : ECPointFormat.values()) {
+        for (ECPointFormat cm : values()) {
             MAP.put(cm.value, cm);
         }
     }
@@ -78,11 +78,11 @@ public enum ECPointFormat {
             return new byte[0];
         }
 
-        SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(bytes);
-        os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
-
-        return bytes.toByteArray();
+        try (SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream();
+                ObjectOutputStream os = new ObjectOutputStream(bytes)) {
+            os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
+            return bytes.toByteArray();
+        }
     }
 
     public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) {

@@ -34,7 +34,7 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] keyExchangeModesConfig;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger keyExchangeModesListLength;
 
     @ModifiableVariableProperty private ModifiableByteArray keyExchangeModesListBytes;

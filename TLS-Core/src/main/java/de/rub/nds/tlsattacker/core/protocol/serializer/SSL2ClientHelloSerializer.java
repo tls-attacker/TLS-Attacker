@@ -43,19 +43,19 @@ public class SSL2ClientHelloSerializer extends SSL2MessageSerializer<SSL2ClientH
     /** Writes the CipherSuitesLength of the SSL2ClientHello into the final byte[] */
     private void writeCipherSuiteLength() {
         appendInt(message.getCipherSuiteLength().getValue(), SSL2ByteLength.CIPHERSUITE_LENGTH);
-        LOGGER.debug("CipherSuiteLength: " + message.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: {}", message.getCipherSuiteLength().getValue());
     }
 
     /** Writes the SessionIDLength of the SSL2ClientHello into the final byte[] */
     private void writeSessionIDLength() {
         appendInt(message.getSessionIdLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength().getValue());
     }
 
     /** Writes the ChallengeLength of the SSL2ClientHello into the final byte[] */
     private void writeChallengeLength() {
         appendInt(message.getChallengeLength().getValue(), SSL2ByteLength.CHALLENGE_LENGTH);
-        LOGGER.debug("ChallengeLength: " + message.getChallengeLength().getValue());
+        LOGGER.debug("ChallengeLength: {}", message.getChallengeLength().getValue());
     }
 
     /** Writes the CipherSuites of the SSL2ClientHello into the final byte[] */

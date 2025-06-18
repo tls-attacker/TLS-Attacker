@@ -36,7 +36,7 @@ public class PSKKeyExchangeModesExtensionParser
     private void parseExchangeModesListLength(PSKKeyExchangeModesExtensionMessage msg) {
         msg.setKeyExchangeModesListLength(
                 parseIntField(ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH));
-        LOGGER.debug("PSKKeyModesList length:" + msg.getKeyExchangeModesListLength().getValue());
+        LOGGER.debug("PSKKeyModesList length:: {}", msg.getKeyExchangeModesListLength().getValue());
     }
 
     private void parseExchangeModesBytes(PSKKeyExchangeModesExtensionMessage msg) {

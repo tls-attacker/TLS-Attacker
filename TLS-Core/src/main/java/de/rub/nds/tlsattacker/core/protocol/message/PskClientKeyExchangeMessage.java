@@ -31,12 +31,9 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable @XmlElement protected PSKPremasterComputations computations;
 
-    @ModifiableVariableProperty(
-            format = ModifiableVariableProperty.Format.PKCS1,
-            type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskClientKeyExchangeMessage() {

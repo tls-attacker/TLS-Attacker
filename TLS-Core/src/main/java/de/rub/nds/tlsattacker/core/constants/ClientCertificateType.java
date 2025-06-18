@@ -37,13 +37,13 @@ public enum ClientCertificateType {
 
     private static final Map<Byte, ClientCertificateType> MAP;
 
-    private ClientCertificateType(byte value) {
+    ClientCertificateType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ClientCertificateType c : ClientCertificateType.values()) {
+        for (ClientCertificateType c : values()) {
             MAP.put(c.value, c);
         }
     }

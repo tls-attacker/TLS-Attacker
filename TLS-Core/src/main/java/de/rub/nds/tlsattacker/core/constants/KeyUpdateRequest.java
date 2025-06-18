@@ -14,7 +14,7 @@ public enum KeyUpdateRequest {
 
     private byte value;
 
-    private KeyUpdateRequest(byte value) {
+    KeyUpdateRequest(byte value) {
         this.value = value;
     }
 

@@ -60,7 +60,7 @@ public class SSL2ServerHelloPreparator extends SSL2MessagePreparator<SSL2ServerH
         length += message.getProtocolVersion().getValue().length;
         length += message.getCertificateLength().getValue();
         message.setMessageLength(length);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 
     private void prepareCertificate(SSL2ServerHelloMessage message) {
@@ -68,42 +68,42 @@ public class SSL2ServerHelloPreparator extends SSL2MessagePreparator<SSL2ServerH
         certificateMessage.getPreparator(chooser.getContext()).prepare();
         certificateMessage.getCertificatesListBytes();
         message.setCertificate(certificateMessage.getCertificatesListBytes());
-        LOGGER.debug("Certificate: " + message.getCertificate());
+        LOGGER.debug("Certificate: {}", message.getCertificate());
     }
 
     private void prepareSessionIdLength(SSL2ServerHelloMessage message) {
         message.setSessionIDLength(0);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength());
     }
 
     private void prepareSessionId(SSL2ServerHelloMessage message) {
         message.setSessionID(new byte[0]);
-        LOGGER.debug("SessionID: " + message.getSessionId());
+        LOGGER.debug("SessionID: {}", message.getSessionId());
     }
 
     private void prepareCipherSuitesLength(SSL2ServerHelloMessage message) {
         message.setCipherSuitesLength(message.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuiteLength: " + message.getCertificateLength());
+        LOGGER.debug("CipherSuiteLength: {}", message.getCertificateLength());
     }
 
     private void prepareCertificateLength(SSL2ServerHelloMessage message) {
         message.setCertificateLength(message.getCertificate().getValue().length);
-        LOGGER.debug("CertificateType: " + message.getCertificateLength());
+        LOGGER.debug("CertificateType: {}", message.getCertificateLength());
     }
 
     private void prepareCertificateType(SSL2ServerHelloMessage message) {
         message.setCertificateType(chooser.getSelectedServerCertificateType().getValue());
-        LOGGER.debug("CertificateType: " + message.getCertificateType().getValue());
+        LOGGER.debug("CertificateType: {}", message.getCertificateType().getValue());
     }
 
     private void prepareSessionIdHit(SSL2ServerHelloMessage message) {
         message.setSessionIdHit((byte) 0);
-        LOGGER.debug("SessionIdHit: " + message.getSessionIdHit());
+        LOGGER.debug("SessionIdHit: {}", message.getSessionIdHit());
     }
 
     private void preparePaddingLength(SSL2ServerHelloMessage message) {
         message.setPaddingLength(0);
-        LOGGER.debug("PaddingLength: " + message.getPaddingLength().getValue());
+        LOGGER.debug("PaddingLength: {}", message.getPaddingLength().getValue());
     }
 
     private void prepareType(SSL2ServerHelloMessage message) {

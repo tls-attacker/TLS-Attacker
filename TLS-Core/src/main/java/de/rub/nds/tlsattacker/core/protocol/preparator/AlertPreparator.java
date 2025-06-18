@@ -38,7 +38,7 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
         } else {
             msg.setLevel(chooser.getConfig().getDefaultAlertLevel().getValue());
         }
-        LOGGER.debug("Level: " + msg.getLevel().getValue());
+        LOGGER.debug("Level: {}", msg.getLevel().getValue());
     }
 
     private void prepareDescription(AlertMessage msg) {
@@ -47,6 +47,6 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
         } else {
             msg.setDescription(chooser.getConfig().getDefaultAlertDescription().getValue());
         }
-        LOGGER.debug("Description: " + msg.getDescription().getValue());
+        LOGGER.debug("Description: {}", msg.getDescription().getValue());
     }
 }

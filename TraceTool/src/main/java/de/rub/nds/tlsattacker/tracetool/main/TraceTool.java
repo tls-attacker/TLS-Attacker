@@ -54,7 +54,7 @@ public class TraceTool {
         try {
             commander.parse(args);
         } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
         }
@@ -77,13 +77,12 @@ public class TraceTool {
             System.out.println(xml);
         } catch (ConfigurationException ce) {
             LOGGER.error(
-                    "Encountered a ConfigurationException aborting. "
-                            + ce.getLocalizedMessage()
-                            + " - See debug messages for more details.");
+                    "Encountered a ConfigurationException aborting. {} - See debug messages for more details.",
+                    ce.getLocalizedMessage());
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
         }

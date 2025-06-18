@@ -20,13 +20,13 @@ public enum HeartbeatMode {
 
     private static final Map<Byte, HeartbeatMode> MAP;
 
-    private HeartbeatMode(byte value) {
+    HeartbeatMode(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (HeartbeatMode cm : HeartbeatMode.values()) {
+        for (HeartbeatMode cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

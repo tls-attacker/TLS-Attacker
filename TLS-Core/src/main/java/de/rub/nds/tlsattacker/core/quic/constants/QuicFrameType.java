@@ -50,11 +50,11 @@ public enum QuicFrameType {
     private int value;
     private static final Map<Byte, QuicFrameType> MAP;
 
-    private QuicFrameType(byte value) {
+    QuicFrameType(byte value) {
         this.value = value;
     }
 
-    private QuicFrameType() {
+    QuicFrameType() {
         this.value = -1;
     }
 

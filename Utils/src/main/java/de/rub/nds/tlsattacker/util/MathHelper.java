@@ -15,7 +15,7 @@ import java.util.List;
 public class MathHelper {
 
     public static BigInteger intFloorDiv(BigInteger c, BigInteger d) {
-        return (c.subtract(c.mod(d))).divide(d);
+        return c.subtract(c.mod(d)).divide(d);
     }
 
     public static int intFloorDiv(int c, int d) {
@@ -147,7 +147,7 @@ public class MathHelper {
         // while y>x/y
         while (y.compareTo(x.divide(y)) > 0) {
             // y=(x/y+y)/2
-            y = ((x.divide(y)).add(y)).divide(two);
+            y = x.divide(y).add(y).divide(two);
         }
         return y;
     } // end bigIntSqRootFloor
@@ -175,7 +175,7 @@ public class MathHelper {
         // while y>x/y
         while (y.compareTo(x.divide(y)) > 0) {
             // y=(x/y+y)/2
-            y = ((x.divide(y)).add(y)).divide(two);
+            y = x.divide(y).add(y).divide(two);
         }
         if (x.compareTo(y.multiply(y)) == 0) {
             return y;

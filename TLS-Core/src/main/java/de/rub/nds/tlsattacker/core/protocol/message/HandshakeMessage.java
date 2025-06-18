@@ -51,14 +51,12 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     /** handshake type */
     private ModifiableByte type = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger length = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean includeInDigest = null;
+    @ModifiableVariableProperty private ModifiableBoolean includeInDigest = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableBoolean retransmission = null;
+    @ModifiableVariableProperty private ModifiableBoolean retransmission = null;
 
     private ModifiableByteArray messageContent = null;
 
@@ -68,11 +66,10 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSequence = null;
+    @ModifiableVariableProperty private ModifiableInteger messageSequence = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();

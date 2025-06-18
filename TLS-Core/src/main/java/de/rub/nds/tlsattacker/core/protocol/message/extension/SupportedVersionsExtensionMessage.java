@@ -24,11 +24,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "SupportedVersions")
 public class SupportedVersionsExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger supportedVersionsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray supportedVersions;
+    @ModifiableVariableProperty private ModifiableByteArray supportedVersions;
 
     public SupportedVersionsExtensionMessage() {
         super(ExtensionType.SUPPORTED_VERSIONS);

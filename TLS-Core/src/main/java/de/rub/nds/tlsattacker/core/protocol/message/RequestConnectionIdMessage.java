@@ -24,8 +24,7 @@ import java.util.Objects;
 @XmlRootElement(name = "RequestConnectionId")
 public class RequestConnectionIdMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableInteger numberOfConnectionIds;
+    @ModifiableVariableProperty private ModifiableInteger numberOfConnectionIds;
 
     public RequestConnectionIdMessage() {
         super(HandshakeMessageType.REQUEST_CONNECTION_ID);

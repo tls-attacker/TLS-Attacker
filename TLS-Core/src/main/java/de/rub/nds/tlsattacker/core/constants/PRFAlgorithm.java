@@ -17,7 +17,7 @@ public enum PRFAlgorithm {
     TLS_PRF_GOSTR3411(MacAlgorithm.HMAC_GOSTR3411),
     TLS_PRF_GOSTR3411_2012_256(MacAlgorithm.HMAC_GOSTR3411_2012_256);
 
-    private PRFAlgorithm(MacAlgorithm macAlgorithm) {
+    PRFAlgorithm(MacAlgorithm macAlgorithm) {
         this.macAlgorithm = macAlgorithm;
     }
 

@@ -17,7 +17,7 @@ public enum FiniteFieldGroups {
 
     private final byte[] value;
 
-    private FiniteFieldGroups(byte[] value) {
+    FiniteFieldGroups(byte[] value) {
         this.value = value;
     }
 

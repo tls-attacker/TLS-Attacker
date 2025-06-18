@@ -37,7 +37,7 @@ public class PWDProtectExtensionParser extends ExtensionParser<PWDProtectExtensi
      */
     private void parseUsernameLength(PWDProtectExtensionMessage msg) {
         msg.setUsernameLength(parseIntField(ExtensionByteLength.PWD_NAME));
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 
     /**

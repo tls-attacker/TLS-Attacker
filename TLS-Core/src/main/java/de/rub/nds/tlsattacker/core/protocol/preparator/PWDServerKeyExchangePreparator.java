@@ -143,7 +143,7 @@ public class PWDServerKeyExchangePreparator
 
     protected void prepareSaltLength(PWDServerKeyExchangeMessage msg) {
         msg.setSaltLength(msg.getSalt().getValue().length);
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 
     protected void prepareCurveType(PWDServerKeyExchangeMessage msg) {
@@ -212,7 +212,7 @@ public class PWDServerKeyExchangePreparator
 
     protected void prepareScalarLength(PWDServerKeyExchangeMessage msg) {
         msg.setScalarLength(msg.getScalar().getValue().length);
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength());
     }
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {

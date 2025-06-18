@@ -45,7 +45,7 @@ public class SupportedVersionsExtensionPreparator
 
     private void prepareProtocolVersionsLength(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersionsLength(msg.getSupportedVersions().getValue().length);
-        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
+        LOGGER.debug("SupportedVersionsLength: {}", msg.getSupportedVersionsLength().getValue());
     }
 
     private byte[] createProtocolVersionArray() {

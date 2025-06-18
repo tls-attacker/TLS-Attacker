@@ -15,11 +15,9 @@ import java.math.BigInteger;
 
 public class RSAServerComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger modulus;
+    @ModifiableVariableProperty private ModifiableBigInteger modulus;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger publicExponent;
+    @ModifiableVariableProperty private ModifiableBigInteger publicExponent;
 
     public void setModulus(BigInteger modulus) {
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);

@@ -31,16 +31,14 @@ import java.util.Objects;
 public class CertificateVerifyMessage extends HandshakeMessage {
 
     /** selected Signature and Hashalgorithm */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureHashAlgorithm;
+    @ModifiableVariableProperty private ModifiableByteArray signatureHashAlgorithm;
 
     /** signature length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureLength;
 
     /** signature */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    private ModifiableByteArray signature;
+    @ModifiableVariableProperty private ModifiableByteArray signature;
 
     @HoldsModifiableVariable private SignatureComputations signatureComputations;
 

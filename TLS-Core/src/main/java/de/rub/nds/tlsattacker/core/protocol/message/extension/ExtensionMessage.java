@@ -83,10 +83,9 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
 
     protected ExtensionType extensionTypeConstant;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray extensionType;
+    @ModifiableVariableProperty private ModifiableByteArray extensionType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionLength;
 
     @ModifiableVariableProperty private ModifiableByteArray extensionBytes;

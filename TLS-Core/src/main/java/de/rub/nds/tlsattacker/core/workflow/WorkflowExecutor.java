@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
@@ -35,10 +34,12 @@ import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
+import java.security.Security;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public abstract class WorkflowExecutor {
 
@@ -46,7 +47,7 @@ public abstract class WorkflowExecutor {
 
     static {
         if (!BouncyCastleProviderChecker.isLoaded()) {
-            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
+            Security.addProvider(new BouncyCastleProvider());
         }
     }
 

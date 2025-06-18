@@ -33,6 +33,6 @@ public class RequestConnectionIdSerializer
         appendInt(
                 message.getNumberOfConnectionIds().getValue(),
                 HandshakeByteLength.REQUEST_CONNECTION_ID_NUMBER_CIDS_LENGTH);
-        LOGGER.debug("NumberOfConnectionIds: " + message.getNumberOfConnectionIds().getValue());
+        LOGGER.debug("NumberOfConnectionIds: {}", message.getNumberOfConnectionIds().getValue());
     }
 }

@@ -39,13 +39,13 @@ public enum SrtpProtectionProfile {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private SrtpProtectionProfile(byte[] value) {
+    SrtpProtectionProfile(byte[] value) {
         this.srtpProtectionProfiles = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (SrtpProtectionProfile c : SrtpProtectionProfile.values()) {
+        for (SrtpProtectionProfile c : values()) {
             MAP.put(ArrayConverter.bytesToInt(c.srtpProtectionProfiles), c);
         }
     }

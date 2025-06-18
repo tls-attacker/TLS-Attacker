@@ -36,8 +36,7 @@ public enum SSL2CipherSuite {
 
     private static final Map<Integer, SSL2CipherSuite> MAP;
 
-    private SSL2CipherSuite(
-            int value, int secretKeyByteNumber, int clearKeyByteNumber, int blockSize) {
+    SSL2CipherSuite(int value, int secretKeyByteNumber, int clearKeyByteNumber, int blockSize) {
         this.value = value;
         this.secretKeyByteNumber = secretKeyByteNumber;
         this.clearKeyByteNumber = clearKeyByteNumber;
@@ -46,7 +45,7 @@ public enum SSL2CipherSuite {
 
     static {
         MAP = new HashMap<>();
-        for (SSL2CipherSuite c : SSL2CipherSuite.values()) {
+        for (SSL2CipherSuite c : values()) {
             MAP.put(c.value, c);
         }
     }

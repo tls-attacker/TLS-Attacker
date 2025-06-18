@@ -35,6 +35,6 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
 
     private void parseMaxEarlyDataSize(EarlyDataExtensionMessage msg) {
         msg.setMaxEarlyDataSize(parseIntField(ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH));
-        LOGGER.debug("MaxEarlyDataSize: " + msg.getMaxEarlyDataSize().getValue());
+        LOGGER.debug("MaxEarlyDataSize: {}", msg.getMaxEarlyDataSize().getValue());
     }
 }

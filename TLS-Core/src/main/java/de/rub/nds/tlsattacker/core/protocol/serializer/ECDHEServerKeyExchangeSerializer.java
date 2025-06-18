@@ -68,7 +68,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     /** Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeCurveType(T msg) {
         appendByte(msg.getGroupType().getValue());
-        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
+        LOGGER.debug("CurveType: {}", msg.getGroupType().getValue());
     }
 
     /** Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final byte[] */
@@ -83,7 +83,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /** Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into the final byte[] */
@@ -105,7 +105,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     /** Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /** Writes the Signature of the ECDHEServerKeyExchangeMessage into the final byte[] */

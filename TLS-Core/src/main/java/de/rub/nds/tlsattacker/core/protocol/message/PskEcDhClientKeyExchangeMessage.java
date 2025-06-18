@@ -24,12 +24,9 @@ import java.io.InputStream;
 @XmlRootElement(name = "PskEcDhClientKeyExchange")
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(
-            format = ModifiableVariableProperty.Format.PKCS1,
-            type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskEcDhClientKeyExchangeMessage() {

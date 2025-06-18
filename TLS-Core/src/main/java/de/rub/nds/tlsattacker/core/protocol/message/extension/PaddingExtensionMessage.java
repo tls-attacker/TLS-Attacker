@@ -25,8 +25,7 @@ import java.io.InputStream;
 public class PaddingExtensionMessage extends ExtensionMessage {
 
     /** Contains the padding bytes of the padding extension. The bytes shall be empty. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray paddingBytes;
+    @ModifiableVariableProperty private ModifiableByteArray paddingBytes;
 
     public PaddingExtensionMessage() {
         super(ExtensionType.PADDING);

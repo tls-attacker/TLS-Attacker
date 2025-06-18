@@ -97,13 +97,13 @@ public enum ExtensionType {
 
     private static final Map<Integer, ExtensionType> MAP;
 
-    private ExtensionType(byte[] value) {
+    ExtensionType(byte[] value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ExtensionType c : ExtensionType.values()) {
+        for (ExtensionType c : values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }

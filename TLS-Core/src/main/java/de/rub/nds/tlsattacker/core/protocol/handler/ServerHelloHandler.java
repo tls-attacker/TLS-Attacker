@@ -130,7 +130,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (suite != null) {
             tlsContext.setSelectedCipherSuite(suite);
-            LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+            LOGGER.debug("Set SelectedCipherSuite in Context to {}", suite.name());
         } else {
             LOGGER.warn("Unknown CipherSuite, did not adjust Context");
         }
@@ -152,7 +152,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (method != null) {
             tlsContext.setSelectedCompressionMethod(method);
-            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+            LOGGER.debug("Set SelectedCompressionMethod in Context to {}", method.name());
         } else {
             LOGGER.warn("Not adjusting CompressionMethod - Method is null!");
         }
@@ -173,7 +173,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (version != null) {
             tlsContext.setSelectedProtocolVersion(version);
-            LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+            LOGGER.debug("Set SelectedProtocolVersion in Context to {}", version.name());
         } else {
             LOGGER.warn(
                     "Did not Adjust ProtocolVersion since version is undefined {}",
@@ -240,7 +240,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContextAfterSerialize(ServerHelloMessage message) {
-        if ((tlsContext.getChooser().getSelectedProtocolVersion().is13())
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()
                 && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
         }

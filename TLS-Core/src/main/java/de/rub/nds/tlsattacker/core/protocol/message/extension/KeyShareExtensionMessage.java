@@ -35,15 +35,14 @@ import java.util.List;
 @XmlRootElement(name = "KeyShareExtension")
 public class KeyShareExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger keyShareListLength;
 
     @ModifiableVariableProperty private ModifiableByteArray keyShareListBytes;
 
     @HoldsModifiableVariable private List<KeyShareEntry> keyShareList;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean retryRequestMode;
+    @ModifiableVariableProperty private ModifiableBoolean retryRequestMode;
 
     public KeyShareExtensionMessage() {
         super(ExtensionType.KEY_SHARE);
