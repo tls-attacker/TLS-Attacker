@@ -39,7 +39,7 @@ public enum SrtpProtectionProfile {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private SrtpProtectionProfile(byte[] value) {
+    SrtpProtectionProfile(byte[] value) {
         this.srtpProtectionProfiles = value;
     }
 

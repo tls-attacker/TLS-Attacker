@@ -97,7 +97,7 @@ public enum ExtensionType {
 
     private static final Map<Integer, ExtensionType> MAP;
 
-    private ExtensionType(byte[] value) {
+    ExtensionType(byte[] value) {
         this.value = value;
     }
 

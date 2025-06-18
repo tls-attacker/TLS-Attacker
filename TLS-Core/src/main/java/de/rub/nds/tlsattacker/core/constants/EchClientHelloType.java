@@ -19,7 +19,7 @@ public enum EchClientHelloType {
 
     private static final HashMap<BigInteger, EchClientHelloType> MAP;
 
-    private EchClientHelloType(byte[] byteValue) {
+    EchClientHelloType(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 

@@ -21,7 +21,7 @@ public enum TrustedCaIndicationIdentifierType {
     private final byte value;
     private static final Map<Byte, TrustedCaIndicationIdentifierType> MAP;
 
-    private TrustedCaIndicationIdentifierType(byte value) {
+    TrustedCaIndicationIdentifierType(byte value) {
         this.value = value;
     }
 

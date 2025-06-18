@@ -167,7 +167,7 @@ public enum SignatureAndHashAlgorithm {
 
     private static final Map<Integer, SignatureAndHashAlgorithm> MAP;
 
-    private SignatureAndHashAlgorithm(
+    SignatureAndHashAlgorithm(
             int value, SignatureAlgorithm signatureAlgorithm, HashAlgorithm hashAlgorithm) {
         this.value = value;
         this.hashAlgorithm = hashAlgorithm;

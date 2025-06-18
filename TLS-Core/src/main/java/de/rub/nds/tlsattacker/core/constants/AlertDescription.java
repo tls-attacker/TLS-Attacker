@@ -52,7 +52,7 @@ public enum AlertDescription {
 
     private static final Map<Byte, AlertDescription> MAP;
 
-    private AlertDescription(byte value) {
+    AlertDescription(byte value) {
         this.value = value;
     }
 

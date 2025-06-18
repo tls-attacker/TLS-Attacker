@@ -19,7 +19,7 @@ public enum TokenBindingKeyParameters {
     private final byte keyParameterValue;
     private static final Map<Byte, TokenBindingKeyParameters> MAP;
 
-    private TokenBindingKeyParameters(byte keyParameterValue) {
+    TokenBindingKeyParameters(byte keyParameterValue) {
         this.keyParameterValue = keyParameterValue;
     }
 

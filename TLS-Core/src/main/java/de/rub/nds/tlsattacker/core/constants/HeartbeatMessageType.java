@@ -19,7 +19,7 @@ public enum HeartbeatMessageType {
 
     private static final Map<Byte, HeartbeatMessageType> MAP;
 
-    private HeartbeatMessageType(byte value) {
+    HeartbeatMessageType(byte value) {
         this.value = value;
     }
 

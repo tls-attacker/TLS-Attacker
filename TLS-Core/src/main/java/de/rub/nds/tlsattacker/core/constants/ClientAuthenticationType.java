@@ -21,7 +21,7 @@ public enum ClientAuthenticationType {
 
     private static final Map<Byte, ClientAuthenticationType> MAP;
 
-    private ClientAuthenticationType(byte value) {
+    ClientAuthenticationType(byte value) {
         this.value = value;
     }
 

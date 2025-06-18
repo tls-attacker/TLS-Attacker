@@ -3165,7 +3165,7 @@ public enum CipherSuite {
     private final boolean export;
     private boolean isRealCipherSuite;
 
-    private CipherSuite(
+    CipherSuite(
             int value,
             CipherType cipherType,
             KeyExchangeAlgorithm keyExchangeAlgorithm,
@@ -3190,7 +3190,7 @@ public enum CipherSuite {
      * @param value
      * @param isGrease
      */
-    private CipherSuite(int value, boolean isGrease) {
+    CipherSuite(int value, boolean isGrease) {
         this.value = value;
         this.grease = isGrease;
         this.cipherAlgorithm = null;

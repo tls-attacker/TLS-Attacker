@@ -17,7 +17,7 @@ public enum DigestAlgorithm {
     GOSTR34112012_256("GOST3411-2012-256"),
     SM3("SM3");
 
-    private DigestAlgorithm(String digestAlgorithm) {
+    DigestAlgorithm(String digestAlgorithm) {
         this.javaName = digestAlgorithm;
     }
 

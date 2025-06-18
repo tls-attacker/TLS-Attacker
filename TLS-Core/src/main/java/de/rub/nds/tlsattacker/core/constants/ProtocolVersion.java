@@ -61,7 +61,7 @@ public enum ProtocolVersion {
 
     private static final Map<Integer, ProtocolVersion> MAP;
 
-    private ProtocolVersion(byte[] value) {
+    ProtocolVersion(byte[] value) {
         this.value = value;
     }
 

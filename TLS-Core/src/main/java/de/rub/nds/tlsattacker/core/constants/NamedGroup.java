@@ -145,7 +145,7 @@ public enum NamedGroup {
                             SECP256R1_MLKEM768,
                             SECP384R1_MLKEM1024));
 
-    private NamedGroup(byte[] value, GroupParameters<?> group) {
+    NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
         this.groupParameters = group;
     }

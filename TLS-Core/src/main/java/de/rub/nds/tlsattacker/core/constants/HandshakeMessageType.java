@@ -40,11 +40,11 @@ public enum HandshakeMessageType {
 
     private static final Map<Byte, HandshakeMessageType> MAP;
 
-    private HandshakeMessageType(byte value) {
+    HandshakeMessageType(byte value) {
         this.value = value;
     }
 
-    private HandshakeMessageType() {
+    HandshakeMessageType() {
         this.value = -1;
     }
 

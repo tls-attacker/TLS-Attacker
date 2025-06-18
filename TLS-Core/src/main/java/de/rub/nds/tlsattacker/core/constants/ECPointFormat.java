@@ -31,7 +31,7 @@ public enum ECPointFormat {
 
     private static final Map<Byte, ECPointFormat> MAP;
 
-    private ECPointFormat(byte value, PointFormat format) {
+    ECPointFormat(byte value, PointFormat format) {
         this.value = value;
         this.format = format;
     }

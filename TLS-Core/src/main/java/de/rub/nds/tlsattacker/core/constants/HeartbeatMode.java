@@ -20,7 +20,7 @@ public enum HeartbeatMode {
 
     private static final Map<Byte, HeartbeatMode> MAP;
 
-    private HeartbeatMode(byte value) {
+    HeartbeatMode(byte value) {
         this.value = value;
     }
 

@@ -24,7 +24,7 @@ public enum EchConfigVersion {
     DRAFT_FF0C(new byte[] {(byte) 0xfe, (byte) 0x0c}),
     DRAFT_FF0D(new byte[] {(byte) 0xfe, (byte) 0x0d});
 
-    private EchConfigVersion(byte[] byteValue) {
+    EchConfigVersion(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 

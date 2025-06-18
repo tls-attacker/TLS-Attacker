@@ -26,7 +26,7 @@ public enum PskKeyExchangeMode {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private PskKeyExchangeMode(byte value) {
+    PskKeyExchangeMode(byte value) {
         this.value = value;
     }
 

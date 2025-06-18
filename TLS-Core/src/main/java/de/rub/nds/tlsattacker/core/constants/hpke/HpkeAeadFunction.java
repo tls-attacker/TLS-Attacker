@@ -38,7 +38,7 @@ public enum HpkeAeadFunction {
     private final int tagLength;
     private final CipherSuite cipherSuite;
 
-    private HpkeAeadFunction(
+    HpkeAeadFunction(
             byte[] byteValue,
             int keyLength,
             int nonceLength,

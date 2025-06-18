@@ -27,7 +27,7 @@ public enum EllipticCurveType {
 
     private static final Map<Byte, EllipticCurveType> MAP;
 
-    private EllipticCurveType(byte value) {
+    EllipticCurveType(byte value) {
         this.value = value;
     }
 

@@ -23,7 +23,7 @@ public enum HpkeMode {
     MODE_AUTH_PSK(new byte[] {(byte) 0x03}),
     ;
 
-    private HpkeMode(byte[] byteValue) {
+    HpkeMode(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 

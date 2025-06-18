@@ -45,7 +45,7 @@ public enum TokenBindingVersion {
         }
     }
 
-    private TokenBindingVersion(byte[] tokenBindingVersion) {
+    TokenBindingVersion(byte[] tokenBindingVersion) {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 

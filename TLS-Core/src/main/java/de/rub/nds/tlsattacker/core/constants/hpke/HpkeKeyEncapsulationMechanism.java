@@ -46,7 +46,7 @@ public enum HpkeKeyEncapsulationMechanism {
 
     private final NamedGroup namedGroup;
 
-    private HpkeKeyEncapsulationMechanism(
+    HpkeKeyEncapsulationMechanism(
             byte[] byteValue,
             int secretLength,
             int encryptionLength,

@@ -24,7 +24,7 @@ public enum MaxFragmentLength {
 
     private static final Map<Byte, MaxFragmentLength> MAP;
 
-    private MaxFragmentLength(byte value, int lengthValue) {
+    MaxFragmentLength(byte value, int lengthValue) {
         this.value = value;
         this.lengthValue = lengthValue;
     }

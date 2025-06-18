@@ -19,7 +19,7 @@ public enum CertificateStatusRequestType {
     private final int certificateStatusRequestValue;
     private static final Map<Integer, CertificateStatusRequestType> MAP;
 
-    private CertificateStatusRequestType(int value) {
+    CertificateStatusRequestType(int value) {
         this.certificateStatusRequestValue = value;
     }
 

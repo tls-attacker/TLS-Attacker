@@ -26,8 +26,7 @@ public enum HpkeKeyDerivationFunction {
     private final int hashLength;
     private final HKDFAlgorithm hkdfAlgorithm;
 
-    private HpkeKeyDerivationFunction(
-            byte[] byteValue, int hashLength, HKDFAlgorithm hkdfAlgorithm) {
+    HpkeKeyDerivationFunction(byte[] byteValue, int hashLength, HKDFAlgorithm hkdfAlgorithm) {
         this.byteValue = byteValue;
         this.hashLength = hashLength;
         this.hkdfAlgorithm = hkdfAlgorithm;

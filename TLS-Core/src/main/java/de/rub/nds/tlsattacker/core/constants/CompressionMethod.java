@@ -19,7 +19,7 @@ public enum CompressionMethod {
 
     private static final Map<Byte, CompressionMethod> MAP;
 
-    private CompressionMethod(byte value) {
+    CompressionMethod(byte value) {
         this.value = value;
     }
 

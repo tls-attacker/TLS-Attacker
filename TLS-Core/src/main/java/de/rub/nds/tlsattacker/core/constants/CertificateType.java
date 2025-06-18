@@ -22,7 +22,7 @@ public enum CertificateType {
     private final byte value;
     private static final Map<Byte, CertificateType> MAP;
 
-    private CertificateType(byte value) {
+    CertificateType(byte value) {
         this.value = value;
     }
 

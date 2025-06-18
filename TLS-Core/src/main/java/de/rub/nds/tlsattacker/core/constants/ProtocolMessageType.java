@@ -25,7 +25,7 @@ public enum ProtocolMessageType {
 
     private static final Map<Byte, ProtocolMessageType> MAP;
 
-    private ProtocolMessageType(byte value) {
+    ProtocolMessageType(byte value) {
         this.value = value;
     }
 

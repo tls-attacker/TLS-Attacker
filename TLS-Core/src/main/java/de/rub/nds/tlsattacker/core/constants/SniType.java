@@ -19,7 +19,7 @@ public enum SniType {
 
     private static final Map<Byte, SniType> MAP;
 
-    private SniType(byte value) {
+    SniType(byte value) {
         this.value = value;
     }
 

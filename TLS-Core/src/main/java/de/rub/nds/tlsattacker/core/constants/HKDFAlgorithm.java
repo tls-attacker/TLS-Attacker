@@ -16,7 +16,7 @@ public enum HKDFAlgorithm {
     TLS_HKDF_SHA512(MacAlgorithm.HMAC_SHA512),
     TLS_HKDF_SM3(MacAlgorithm.HMAC_SM3);
 
-    private HKDFAlgorithm(MacAlgorithm macAlgorithm) {
+    HKDFAlgorithm(MacAlgorithm macAlgorithm) {
         this.macAlgorithm = macAlgorithm;
     }
 
