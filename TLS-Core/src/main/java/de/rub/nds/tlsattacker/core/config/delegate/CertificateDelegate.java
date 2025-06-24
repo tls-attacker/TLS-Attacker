@@ -48,7 +48,10 @@ public class CertificateDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = "-cert", description = "PEM encoded certificate file")
+    @Parameter(
+            names = "-cert",
+            description =
+                    "PEM encoded certificate file (can contain multiple certificates for a certificate chain)")
     private String certificate = null;
 
     @Parameter(names = "-key", description = "PEM encoded private key")
@@ -127,7 +130,7 @@ public class CertificateDelegate extends Delegate {
         }
         if (certificate != null) {
             if (privateKey == null) {
-                LOGGER.warn("Certificate provided without chain");
+                LOGGER.warn("Certificate provided without private key");
             }
             LOGGER.debug("Loading certificate chain");
             try {
