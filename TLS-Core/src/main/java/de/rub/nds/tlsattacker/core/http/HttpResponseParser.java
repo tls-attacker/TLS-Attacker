@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,7 +53,8 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             throw new ParserException("Could not parse as HttpsResponseMessage");
         }
         message.setResponseProtocol(split[0]);
-        message.setResponseStatusCode(request.replaceFirst(split[0] + " ", "").trim());
+        message.setResponseStatusCode(
+                request.replaceFirst(Pattern.quote(split[0] + " "), "").trim());
 
         message.setHeader(parseHeaders());
 
@@ -92,7 +94,7 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             HttpHeader header;
             String headerName = split[0];
             String headerValue =
-                    line.replaceFirst(split[0] + ":", "")
+                    line.replaceFirst(Pattern.quote(split[0] + ":"), "")
                             .replace("\n", "")
                             .replace("\r", "")
                             .trim();

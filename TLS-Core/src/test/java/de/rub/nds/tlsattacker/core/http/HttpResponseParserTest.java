@@ -160,4 +160,45 @@ class HttpResponseParserTest {
         assertEquals("A".repeat(50), parsedMessage.getResponseContent().getValue());
         assertEquals(52, inputStream.available());
     }
+
+    @Test
+    void testParseWithRegexMetacharactersInProtocol() {
+        // Test case for issue #661 - protocol containing regex metacharacters
+        String message = "* 200 OK\r\nContent-Length: 4\r\n\r\ntest";
+
+        HttpResponseParser parser =
+                new HttpResponseParser(
+                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)), 1000);
+        HttpResponseMessage parsedMessage = new HttpResponseMessage();
+        parser.parse(parsedMessage);
+
+        assertEquals("*", parsedMessage.getResponseProtocol().getValue());
+        assertEquals("200 OK", parsedMessage.getResponseStatusCode().getValue());
+        assertEquals("test", parsedMessage.getResponseContent().getValue());
+    }
+
+    @Test
+    void testParseWithRegexMetacharactersInHeaders() {
+        // Test case for issue #661 - header names containing regex metacharacters
+        String message =
+                "HTTP/1.1 200 OK\r\n[*]: value1\r\n$test: value2\r\n^header: value3\r\nContent-Length: 0\r\n\r\n";
+
+        HttpResponseParser parser =
+                new HttpResponseParser(
+                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)), 1000);
+        HttpResponseMessage parsedMessage = new HttpResponseMessage();
+        parser.parse(parsedMessage);
+
+        assertEquals("HTTP/1.1", parsedMessage.getResponseProtocol().getValue());
+        assertEquals("200 OK", parsedMessage.getResponseStatusCode().getValue());
+
+        assertEquals("[*]", parsedMessage.getHeader().get(0).getHeaderName().getValue());
+        assertEquals("value1", parsedMessage.getHeader().get(0).getHeaderValue().getValue());
+
+        assertEquals("$test", parsedMessage.getHeader().get(1).getHeaderName().getValue());
+        assertEquals("value2", parsedMessage.getHeader().get(1).getHeaderValue().getValue());
+
+        assertEquals("^header", parsedMessage.getHeader().get(2).getHeaderName().getValue());
+        assertEquals("value3", parsedMessage.getHeader().get(2).getHeaderValue().getValue());
+    }
 }
