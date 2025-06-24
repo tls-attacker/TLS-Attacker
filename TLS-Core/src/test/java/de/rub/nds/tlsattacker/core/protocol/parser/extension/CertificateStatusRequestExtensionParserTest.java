@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
@@ -50,13 +50,13 @@ public class CertificateStatusRequestExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("000500050100000000"),
+                        DataConverter.hexStringToByteArray("000500050100000000"),
                         List.of(),
                         ExtensionType.STATUS_REQUEST,
                         5,
                         List.of(1, 0, new byte[0], 0, new byte[0])),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0005000701000102000103"),
+                        DataConverter.hexStringToByteArray("0005000701000102000103"),
                         List.of(),
                         ExtensionType.STATUS_REQUEST,
                         7,

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
@@ -1157,7 +1157,7 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getClientServerRandom() {
-        return ArrayConverter.concatenate(clientRandom, serverRandom);
+        return DataConverter.concatenate(clientRandom, serverRandom);
     }
 
     public byte[] getClearKey() {

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -51,10 +51,10 @@ public class ExtendedRandomExtensionHandler
             LOGGER.debug(
                     "Extended Random was agreed on. Concatenating extended Randoms to normal Randoms.");
             byte[] clientConcatRandom =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             tlsContext.getClientRandom(), tlsContext.getClientExtendedRandom());
             byte[] serverConcatRandom =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             tlsContext.getServerRandom(), tlsContext.getServerExtendedRandom());
             tlsContext.setClientRandom(clientConcatRandom);
             LOGGER.debug("ClientRandom: {}", tlsContext.getClientRandom());

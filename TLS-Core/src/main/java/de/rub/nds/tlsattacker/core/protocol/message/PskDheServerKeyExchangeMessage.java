@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
@@ -65,19 +65,19 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
         sb.append("PskDheServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (super.modulus != null && super.modulus.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
+            sb.append(DataConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
         if (generator != null && generator.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
+            sb.append(DataConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }

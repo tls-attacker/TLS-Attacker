@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -220,9 +220,9 @@ public class DtlsFragmentLayer
                         byte[] content =
                                 uninterpretedMessageFragment.getFragmentContent().getValue();
                         byte[] message =
-                                ArrayConverter.concatenate(
+                                DataConverter.concatenate(
                                         new byte[] {type},
-                                        ArrayConverter.intToBytes(
+                                        DataConverter.intToBytes(
                                                 content.length,
                                                 HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                                         content);

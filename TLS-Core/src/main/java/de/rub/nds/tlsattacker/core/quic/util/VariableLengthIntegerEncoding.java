@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.util;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 
 public class VariableLengthIntegerEncoding {
 
@@ -25,15 +25,15 @@ public class VariableLengthIntegerEncoding {
         }
         byte[] result;
         if (value <= EncodingLength.SIX_BITS.maxValue) {
-            result = ArrayConverter.longToBytes(value, 1);
+            result = DataConverter.longToBytes(value, 1);
         } else if (value <= EncodingLength.FOURTEEN_BITS.maxValue) {
-            result = ArrayConverter.longToBytes(value, 2);
+            result = DataConverter.longToBytes(value, 2);
             result[0] = (byte) (result[0] | 0x40);
         } else if (value <= EncodingLength.THIRTY_BITS.maxValue) {
-            result = ArrayConverter.longToBytes(value, 4);
+            result = DataConverter.longToBytes(value, 4);
             result[0] = (byte) (result[0] | 0x80);
         } else {
-            result = ArrayConverter.longToBytes(value, 8);
+            result = DataConverter.longToBytes(value, 8);
             result[0] = (byte) (result[0] | 0xc0);
         }
         return result;

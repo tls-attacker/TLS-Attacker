@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -22,7 +22,7 @@ public class AlpnExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<AlpnExtensionMessage, AlpnExtensionHandler> {
 
     private final byte[] announcedProtocols =
-            ArrayConverter.hexStringToByteArray("02683208687474702f312e31");
+            DataConverter.hexStringToByteArray("02683208687474702f312e31");
     private final int announcedProtocolsLength = 12;
 
     public AlpnExtensionHandlerTest() {

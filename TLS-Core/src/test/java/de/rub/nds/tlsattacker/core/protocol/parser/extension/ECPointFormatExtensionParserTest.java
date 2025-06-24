@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ECPointFormatExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("000b000403000102"),
+                        DataConverter.hexStringToByteArray("000b000403000102"),
                         List.of(),
                         ExtensionType.EC_POINT_FORMATS,
                         4,

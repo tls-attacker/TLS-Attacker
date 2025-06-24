@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -95,14 +95,14 @@ public class SendRaccoonCkeAction extends CommonSendAction {
             BigInteger serverPublicKey,
             BigInteger initialClientDhSecret,
             boolean withNullByte) {
-        int length = ArrayConverter.bigIntegerToByteArray(m).length;
+        int length = DataConverter.bigIntegerToByteArray(m).length;
         byte[] pms =
-                ArrayConverter.bigIntegerToNullPaddedByteArray(
+                DataConverter.bigIntegerToNullPaddedByteArray(
                         serverPublicKey.modPow(initialClientDhSecret, m), length);
 
         if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
             BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);
-            byte[] cke = ArrayConverter.bigIntegerToByteArray(clientPublicKey);
+            byte[] cke = DataConverter.bigIntegerToByteArray(clientPublicKey);
             if (cke.length == length) {
                 return cke;
             }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -31,7 +31,7 @@ public class ECDHClientKeyExchangePreparatorTest
 
     private static final String RANDOM = "CAFEBABECAFE";
     private static final byte[] PREMASTER_SECRET =
-            ArrayConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
+            DataConverter.hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
 
     public ECDHClientKeyExchangePreparatorTest() {
         super(ECDHClientKeyExchangeMessage::new, ECDHClientKeyExchangePreparator::new);
@@ -53,8 +53,8 @@ public class ECDHClientKeyExchangePreparatorTest
         // prepare context
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
-        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setClientRandom(DataConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(DataConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
         tlsContext.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         tlsContext.setSelectedGroup(NamedGroup.SECP192R1);
@@ -76,9 +76,9 @@ public class ECDHClientKeyExchangePreparatorTest
         assertNotNull(message.getPublicKey());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
     }
 }

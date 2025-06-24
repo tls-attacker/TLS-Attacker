@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
@@ -108,13 +108,13 @@ public class RecordStreamCipher extends RecordCipher {
                 collectAdditionalAuthenticatedData(record, getState().getVersion()));
         computations.setMac(
                 calculateMac(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 computations.getAuthenticatedMetaData().getValue(),
                                 computations.getAuthenticatedNonMetaData().getValue()),
                         getLocalConnectionEndType()));
 
         computations.setPlainRecordBytes(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         record.getCleanProtocolMessageBytes().getValue(),
                         computations.getMac().getValue()));
 
@@ -158,7 +158,7 @@ public class RecordStreamCipher extends RecordCipher {
             record.getComputations().setMac(hmac);
             byte[] calculatedHmac =
                     calculateMac(
-                            ArrayConverter.concatenate(
+                            DataConverter.concatenate(
                                     record.getComputations().getAuthenticatedMetaData().getValue(),
                                     record.getComputations()
                                             .getAuthenticatedNonMetaData()

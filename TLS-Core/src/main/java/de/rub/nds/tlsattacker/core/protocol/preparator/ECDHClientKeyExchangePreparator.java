@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
@@ -65,9 +65,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 return new byte[1];
             }
             int elementLength =
-                    ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus())
+                    DataConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus())
                             .length;
-            return ArrayConverter.bigIntegerToNullPaddedByteArray(
+            return DataConverter.bigIntegerToNullPaddedByteArray(
                     sharedPoint.getFieldX().getData(), elementLength);
         }
     }
@@ -83,7 +83,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected void prepareClientServerRandom(T msg) {
-        random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        random = DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         LOGGER.debug(
                 "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());

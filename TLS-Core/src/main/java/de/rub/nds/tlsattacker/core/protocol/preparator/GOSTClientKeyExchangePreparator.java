@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
@@ -117,7 +117,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 prepareKek(chooser.getServerEphemeralEcPrivateKey(), publicKey);
 
                 byte[] wrapped =
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 keyBlob.getSessionEncryptedKey().getEncryptedKey(),
                                 keyBlob.getSessionEncryptedKey().getMacKey());
 
@@ -133,7 +133,7 @@ public abstract class GOSTClientKeyExchangePreparator
 
     private void prepareClientServerRandom() {
         byte[] random =
-                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+                DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         LOGGER.debug(
                 "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());

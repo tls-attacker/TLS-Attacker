@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +32,7 @@ public class SSLUtilsTest {
         byte[] masterSecret = {0, 1};
         byte[] clientRdm = {1};
         byte[] serverRdm = {0};
-        byte[] seed = ArrayConverter.concatenate(serverRdm, clientRdm);
+        byte[] seed = DataConverter.concatenate(serverRdm, clientRdm);
         int secretSetSize = 64;
         Mac digest = Mac.getInstance(providedMacAlgorithm.getJavaName());
         byte[] keyBlock = SSLUtils.calculateKeyBlockSSL3(masterSecret, seed, secretSetSize);

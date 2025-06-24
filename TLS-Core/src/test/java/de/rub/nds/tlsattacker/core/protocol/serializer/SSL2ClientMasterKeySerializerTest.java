@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
@@ -45,7 +45,7 @@ public class SSL2ClientMasterKeySerializerTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "808a02010080000000800000b28367d5b44f6f585096540ab798705ecb6ce66336d5068952db71542701870754fdc25da8414d0977ec0401b5ff4cc853779d6069be867bf65a2250d14a189d74c608f4f76a9aa8a4f1a909370b86f5fd0740d368083e78e1034e38573b32799cf59ea52a771633ffdbd0e8123ada764f677cd09b05106ea9af8168a71249d4"),
                         Arrays.asList(
                                 SSL2MessageType.SSL_CLIENT_MASTER_KEY.getType(),
@@ -57,7 +57,7 @@ public class SSL2ClientMasterKeySerializerTest
                                 128,
                                 0,
                                 new byte[0],
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "b28367d5b44f6f585096540ab798705ecb6ce66336d5068952db71542701870754fdc25da8414d0977ec0401b5ff4cc853779d6069be867bf65a2250d14a189d74c608f4f76a9aa8a4f1a909370b86f5fd0740d368083e78e1034e38573b32799cf59ea52a771633ffdbd0e8123ada764f677cd09b05106ea9af8168a71249d4"),
                                 new byte[0],
                                 0)));

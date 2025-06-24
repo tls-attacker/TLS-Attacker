@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -471,7 +471,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
 
         keyShareListBytesLengthField =
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         clientHelloKeyShareStream.write(keyShareListBytesLengthField);
         clientHelloKeyShareStream.write(keyShareListBytes);

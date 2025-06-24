@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
@@ -36,7 +36,7 @@ public class PWDProtectExtensionPreparatorTest
         context.setClientPWDUsername("jens");
         preparator.prepare();
         byte[] encryptedUsername =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6");
         assertArrayEquals(
                 ExtensionType.PWD_PROTECT.getValue(), message.getExtensionType().getValue());

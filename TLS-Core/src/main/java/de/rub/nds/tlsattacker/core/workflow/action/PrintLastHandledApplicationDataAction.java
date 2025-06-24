@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -58,7 +58,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
             if (stringEncoding != null) {
                 lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));
             } else {
-                lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
+                lastHandledApplicationData = DataConverter.bytesToHexString(rawBytes);
             }
             LOGGER.info("Last handled application data: {}", lastHandledApplicationData);
         } else {

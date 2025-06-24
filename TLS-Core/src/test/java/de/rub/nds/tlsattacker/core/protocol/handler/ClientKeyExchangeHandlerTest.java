@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -48,15 +48,15 @@ public class ClientKeyExchangeHandlerTest
      */
     @Test
     public void testMasterSecretCalculationSSL3() throws NoSuchAlgorithmException, CryptoException {
-        byte[] preMasterSecret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
-        byte[] serverRdm = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
-        byte[] clientRdm = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
+        byte[] preMasterSecret = DataConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
+        byte[] serverRdm = DataConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
+        byte[] clientRdm = DataConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
 
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
         message.prepareComputations();
         message.getComputations().setPremasterSecret(preMasterSecret);
         message.getComputations()
-                .setClientServerRandom(ArrayConverter.concatenate(clientRdm, serverRdm));
+                .setClientServerRandom(DataConverter.concatenate(clientRdm, serverRdm));
         tlsContext.setServerRandom(serverRdm);
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.SSL3);
@@ -66,33 +66,32 @@ public class ClientKeyExchangeHandlerTest
         final MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");
         final byte[] shaDigest1 =
                 sha.digest(
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray("41"),
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray("41"),
                                 preMasterSecret,
                                 clientRdm,
                                 serverRdm));
         final byte[] shaDigest2 =
                 sha.digest(
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray("4242"),
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray("4242"),
                                 preMasterSecret,
                                 clientRdm,
                                 serverRdm));
         final byte[] shaDigest3 =
                 sha.digest(
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray("434343"),
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray("434343"),
                                 preMasterSecret,
                                 clientRdm,
                                 serverRdm));
         final byte[] md5Digest1 =
-                md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest1));
+                md5.digest(DataConverter.concatenate(preMasterSecret, shaDigest1));
         final byte[] md5Digest2 =
-                md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest2));
+                md5.digest(DataConverter.concatenate(preMasterSecret, shaDigest2));
         final byte[] md5Digest3 =
-                md5.digest(ArrayConverter.concatenate(preMasterSecret, shaDigest3));
-        byte[] expectedMasterSecret =
-                ArrayConverter.concatenate(md5Digest1, md5Digest2, md5Digest3);
+                md5.digest(DataConverter.concatenate(preMasterSecret, shaDigest3));
+        byte[] expectedMasterSecret = DataConverter.concatenate(md5Digest1, md5Digest2, md5Digest3);
 
         byte[] calculatedMasterSecret =
                 KeyDerivator.calculateMasterSecret(

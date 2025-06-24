@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
@@ -53,7 +53,7 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
 
         LOGGER.debug(
                 "Certificate: {}",
-                ArrayConverter.bytesToHexString(entry.getCertificateBytes().getValue()));
+                DataConverter.bytesToHexString(entry.getCertificateBytes().getValue()));
     }
 
     private void prepareCertificateLength(CertificateEntry entry) {
@@ -72,7 +72,7 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
         }
         LOGGER.debug(
                 "ExtensionBytes: {}",
-                ArrayConverter.bytesToHexString(entry.getExtensionBytes().getValue()));
+                DataConverter.bytesToHexString(entry.getExtensionBytes().getValue()));
     }
 
     private void prepareExtensionLength(CertificateEntry entry) {

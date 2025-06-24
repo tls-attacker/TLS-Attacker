@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +46,7 @@ public enum SrtpProtectionProfile {
     static {
         MAP = new HashMap<>();
         for (SrtpProtectionProfile c : values()) {
-            MAP.put(ArrayConverter.bytesToInt(c.srtpProtectionProfiles), c);
+            MAP.put(DataConverter.bytesToInt(c.srtpProtectionProfiles), c);
         }
     }
 
@@ -55,7 +55,7 @@ public enum SrtpProtectionProfile {
     }
 
     public static SrtpProtectionProfile getProfileByType(byte[] value) {
-        return MAP.get(ArrayConverter.bytesToInt(value));
+        return MAP.get(DataConverter.bytesToInt(value));
     }
 
     public static List<SrtpProtectionProfile> getProfilesAsArrayList(byte[] value) {

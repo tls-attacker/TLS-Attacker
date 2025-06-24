@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -39,16 +39,16 @@ public enum QuicVersion {
     QuicVersion(int value, String initialSalt) {
         this.value = value;
         this.byteValue = ByteBuffer.allocate(4).putInt(value).array();
-        this.initialSalt = ArrayConverter.hexStringToByteArray(initialSalt);
+        this.initialSalt = DataConverter.hexStringToByteArray(initialSalt);
     }
 
     public static QuicVersion getFromVersionBytes(byte[] versionBytes) {
-        int versionValue = ArrayConverter.bytesToInt(versionBytes);
+        int versionValue = DataConverter.bytesToInt(versionBytes);
         return MAP.getOrDefault(versionValue, UNKNOWN);
     }
 
     public static String getVersionNameFromBytes(byte[] versionBytes) {
-        int versionValue = ArrayConverter.bytesToInt(versionBytes);
+        int versionValue = DataConverter.bytesToInt(versionBytes);
         QuicVersion version = MAP.get(versionValue);
         if (version != null) {
             return version.getName();

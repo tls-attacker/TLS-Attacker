@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
@@ -101,7 +101,7 @@ public class EmptyClientKeyExchangePreparatorTest
                     "4bacb3c2b27d0abecd1928125d1f531170b4606ebf79e85326e26e0aed2c620e1d5ad26a12bb3b172de9fbd761f83b7d34f51e1830dae9cf54b8b3938441b8e4a6a080ed76f90be5e95e082fc4f8cd51f1205c73799c02e26c5c019ad1e4efda7b12c96dbdae7a07492cb326063e95c9fc03b572482b6aa046da81daf235ddb0",
                     16);
     private final byte[] DH_PREMASTER =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "94d76287236c384db4a712b1ae996da7e8cc19c8a38cac6e8245404106f1c7094a0806470abafe884bab0073821f2d04ebf989f33f688280146bf97267b0e08c93a34dbfb3a59747b0dc97670bfc7ecb9332312cf2599d67944dad9576dfd29ca334a006c2abfb883d8645e54ad8f4fd229ec231714a7c8bcf1392c244c14e90");
 
     private final String EC_CLIENT_CERT =
@@ -125,10 +125,10 @@ public class EmptyClientKeyExchangePreparatorTest
     private final BigInteger EC_CLIENT_PRIVATE_KEY =
             new BigInteger("ec20862b9bbfa1d27ac4654cbf4ed38858562827e8e75408366288d1e252ba6d", 16);
     private final byte[] EC_SERVER_PUBLIC_KEY_BYTES =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "0459c8daa2f6828f780c9e83a112b3e9bff2bb859e9fc65be2243f03b81f33e6375fd77e401288b70ac4d5b3a4a81332078e1374287c7adf2e6b36dcf4cc6af234");
     private final byte[] EC_PREMASTER =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "26d7439f907fbd24408203579f7c712b04ee2aa55e62734adda2ecb904c6da0a");
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -142,8 +142,8 @@ public class EmptyClientKeyExchangePreparatorTest
         super(EmptyClientKeyExchangeMessage::new, EmptyClientKeyExchangePreparator::new);
         tlsContext.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setClientRandom(DataConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(DataConverter.hexStringToByteArray(RANDOM));
     }
 
     @Test
@@ -156,9 +156,9 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // check client and server random are correctly set and concatenated
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
     }
 
@@ -201,9 +201,9 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // check client and server random are correctly set and concatenated
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
 
         // check PMS correctly calculated
@@ -240,9 +240,9 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // check client and server random are correctly set and concatenated
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
 
         // check PMS correctly calculated

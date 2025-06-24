@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -86,15 +86,15 @@ public class FinishedHandlerTest
                 Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, tlsContext.getActiveClientKeySetType());
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
                 tlsContext.getClientApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
                 tlsContext.getServerApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
                 tlsContext.getMasterSecret());
     }
@@ -188,15 +188,15 @@ public class FinishedHandlerTest
         assertArrayEquals(null, tlsContext.getLastServerVerifyData());
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
                 tlsContext.getClientApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
                 tlsContext.getServerApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
                 tlsContext.getMasterSecret());
     }
@@ -261,15 +261,15 @@ public class FinishedHandlerTest
         assertEquals(Tls13KeySetType.NONE, tlsContext.getActiveClientKeySetType());
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "F8FAD34AEB9E4A8A3233A5F3C01D9E7B25CFAA4CBD7E255426A39B5EA8AE9840"),
                 tlsContext.getClientApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2FC28A45C71076589231CE9095D933E120AFD9F38895CFE2EC8A56B89FBCEF33"),
                 tlsContext.getServerApplicationTrafficSecret());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
                 tlsContext.getMasterSecret());
     }

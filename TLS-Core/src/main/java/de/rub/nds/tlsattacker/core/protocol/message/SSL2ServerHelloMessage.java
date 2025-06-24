@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
@@ -215,7 +215,7 @@ public class SSL2ServerHelloMessage extends SSL2Message {
         }
         sb.append("\n  Supported CipherSuites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(DataConverter.bytesToHexString(getCipherSuites().getValue()));
         } else {
             sb.append("null");
         }
@@ -227,13 +227,13 @@ public class SSL2ServerHelloMessage extends SSL2Message {
         }
         sb.append("\n  Certificate: ");
         if (getCertificate() != null && getCertificate().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCertificate().getValue()));
+            sb.append(DataConverter.bytesToHexString(getCertificate().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  SessionID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSessionId().getValue()));
         } else {
             sb.append("null");
         }

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +56,7 @@ public enum SSL2CipherSuite {
         while (pointer < values.length) {
             byte[] suiteBytes =
                     Arrays.copyOfRange(values, pointer, pointer + SSL2CipherSuiteLength);
-            int suiteValue = ArrayConverter.bytesToInt(suiteBytes);
+            int suiteValue = DataConverter.bytesToInt(suiteBytes);
             cipherSuites.add(getCipherSuite(suiteValue));
             pointer += SSL2CipherSuiteLength;
         }
@@ -76,7 +76,7 @@ public enum SSL2CipherSuite {
     }
 
     public byte[] getByteValue() {
-        return ArrayConverter.intToBytes(value, SSL2CipherSuiteLength);
+        return DataConverter.intToBytes(value, SSL2CipherSuiteLength);
     }
 
     public int getClearKeyByteNumber() {

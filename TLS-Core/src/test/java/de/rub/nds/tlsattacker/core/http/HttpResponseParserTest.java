@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.http;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +26,7 @@ class HttpResponseParserTest {
         HttpResponseParser parser =
                 new HttpResponseParser(
                         new ByteArrayInputStream(
-                                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
+                                DataConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")),
                         1000);
         HttpResponseMessage parsedMessage = new HttpResponseMessage();
         assertThrows(EndOfStreamException.class, () -> parser.parse(parsedMessage));

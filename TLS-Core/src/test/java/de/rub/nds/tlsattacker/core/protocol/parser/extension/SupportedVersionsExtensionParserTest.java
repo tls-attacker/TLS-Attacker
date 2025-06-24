@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import java.util.List;
@@ -36,12 +36,12 @@ public class SupportedVersionsExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"),
+                        DataConverter.hexStringToByteArray("002B000D0C000203000301030203037F14"),
                         List.of(),
                         ExtensionType.SUPPORTED_VERSIONS,
                         13,
                         List.of(
                                 12,
-                                ArrayConverter.hexStringToByteArray("000203000301030203037F14"))));
+                                DataConverter.hexStringToByteArray("000203000301030203037F14"))));
     }
 }

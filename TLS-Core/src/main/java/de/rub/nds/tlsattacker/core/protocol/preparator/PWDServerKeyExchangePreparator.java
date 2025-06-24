@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
@@ -77,7 +77,7 @@ public class PWDServerKeyExchangePreparator
 
         LOGGER.debug(
                 "PasswordElement.x: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+                () -> DataConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -196,7 +196,7 @@ public class PWDServerKeyExchangePreparator
         msg.getKeyExchangeComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
                 "Private: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
+                () -> DataConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -206,8 +206,8 @@ public class PWDServerKeyExchangePreparator
     }
 
     protected void prepareScalar(PWDServerKeyExchangeMessage msg, BigInteger scalar) {
-        msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
+        msg.setScalar(DataConverter.bigIntegerToByteArray(scalar));
+        LOGGER.debug("Scalar: {}", () -> DataConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDServerKeyExchangeMessage msg) {

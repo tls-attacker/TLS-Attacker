@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
@@ -41,12 +41,12 @@ public class PskRsaClientKeyExchangePreparator
     protected byte[] manipulatePremasterSecret(byte[] premasterSecret) {
         outputStream = new SilentByteArrayOutputStream();
         outputStream.write(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         HandshakeByteLength.PREMASTER_SECRET,
                         HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
         outputStream.write(premasterSecret);
         outputStream.write(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         chooser.getConfig().getDefaultPSKKey().length,
                         HandshakeByteLength.PSK_LENGTH));
         outputStream.write(chooser.getConfig().getDefaultPSKKey());

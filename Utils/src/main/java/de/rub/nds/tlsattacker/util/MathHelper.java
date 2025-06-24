@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -118,8 +118,8 @@ public class MathHelper {
      * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
     public static BigInteger crt(List<BigInteger> congs, List<BigInteger> moduli) {
-        BigInteger[] cs = ArrayConverter.convertListToArray(congs);
-        BigInteger[] ms = ArrayConverter.convertListToArray(moduli);
+        BigInteger[] cs = DataConverter.convertListToArray(congs);
+        BigInteger[] ms = DataConverter.convertListToArray(moduli);
         return crt(cs, ms);
     }
 

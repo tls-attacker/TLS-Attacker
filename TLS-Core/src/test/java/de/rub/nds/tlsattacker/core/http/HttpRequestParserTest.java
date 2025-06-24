@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.http;
 
 import static org.junit.Assert.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
@@ -30,7 +30,7 @@ public class HttpRequestParserTest {
         HttpRequestParser parser =
                 new HttpRequestParser(
                         new ByteArrayInputStream(
-                                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")));
+                                DataConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA")));
         HttpRequestMessage message = new HttpRequestMessage();
         parser.parse(message);
     }

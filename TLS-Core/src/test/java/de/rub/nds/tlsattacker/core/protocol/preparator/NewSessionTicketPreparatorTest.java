@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadFixedRandom;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -55,7 +55,7 @@ public class NewSessionTicketPreparatorTest
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
         tlsContext.setMasterSecret(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b")); // SessionTicketMS+SessionTicketMS+SessionTicketMS+
         tlsContext.setClientAuthentication(false);
         TimeHelper.setProvider(new FixedTimeProvider(152113433000l)); // 0x09111119
@@ -68,7 +68,7 @@ public class NewSessionTicketPreparatorTest
         // Correct value was calculated by http://aes.online-domain-tools.com/
         assertArrayEquals(
                 message.getTicket().getEncryptedState().getValue(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "23403433756E7E6C0777047BECA5B4A1FC987804A39B420BE56DA996D6F9C233CC6C97FC2F5A3EE3A193A2ACE6F320E6AA3E98B66B4A3C51AA4056D7EF5898F8"));
 
         // Revert encryption to check the correct encryption
@@ -81,7 +81,7 @@ public class NewSessionTicketPreparatorTest
                         message.getTicket().getIV().getValue());
         assertArrayEquals(
                 decrypted,
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0303009c0053657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b0009111119"));
 
         // Smaller Tests to be complete
@@ -89,30 +89,30 @@ public class NewSessionTicketPreparatorTest
         assertEquals(130, (int) message.getTicket().getIdentityLength().getValue());
         assertArrayEquals(
                 message.getTicket().getIV().getValue(),
-                ArrayConverter.hexStringToByteArray("55555555555555555555555555555555"));
+                DataConverter.hexStringToByteArray("55555555555555555555555555555555"));
         assertArrayEquals(
                 message.getTicket().getKeyName().getValue(),
-                ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"));
+                DataConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"));
 
         // Correct value was assembled by hand and calculated by
         // https://www.liavaag.org/English/SHA-Generator/HMAC/
         assertArrayEquals(
                 message.getTicket().getMAC().getValue(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "C12AC5FD8690B8E61F647F86630271F16C9A6281663014C2873EE4934A6C9C3B"));
 
         byte[] macinput =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         message.getTicket().getKeyName().getValue(),
                         message.getTicket().getIV().getValue());
         macinput =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         macinput,
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 message.getTicket().getEncryptedState().getValue().length,
                                 HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
         macinput =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         macinput, message.getTicket().getEncryptedState().getValue());
         assertTrue(
                 StaticTicketCrypto.verifyHMAC(

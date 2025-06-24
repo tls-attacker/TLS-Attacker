@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
@@ -57,12 +57,12 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
             BigInteger difference =
                     BigInteger.valueOf(
                             Duration.between(ticketDate, LocalDateTime.now()).toMillis());
-            BigInteger addValue = BigInteger.valueOf(ArrayConverter.bytesToLong(ticketAgeAdd));
+            BigInteger addValue = BigInteger.valueOf(DataConverter.bytesToLong(ticketAgeAdd));
             BigInteger mod = BigInteger.valueOf(2).pow(32);
             difference = difference.add(addValue);
             difference = difference.mod(mod);
             byte[] obfTicketAge =
-                    ArrayConverter.longToBytes(
+                    DataConverter.longToBytes(
                             difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
 
             LOGGER.debug("Calculated ObfuscatedTicketAge: {}", obfTicketAge);

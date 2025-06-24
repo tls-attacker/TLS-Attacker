@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.GroupParameters;
@@ -420,7 +420,7 @@ public enum NamedGroup {
                     groups.add(group);
                 } else {
                     LOGGER.warn(
-                            "Unknown named group: {}", ArrayConverter.bytesToHexString(groupBytes));
+                            "Unknown named group: {}", DataConverter.bytesToHexString(groupBytes));
                 }
             } catch (IOException ex) {
                 LOGGER.error("Could not read from ByteArrayInputStream", ex);

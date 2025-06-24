@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
@@ -79,7 +79,7 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue()));
         } else {
             sb.append("null");
         }
