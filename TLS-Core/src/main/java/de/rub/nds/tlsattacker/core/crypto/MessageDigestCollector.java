@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -66,7 +66,7 @@ public class MessageDigestCollector {
             if (hash2 != null) {
                 hash2.update(stream.toByteArray());
                 byte[] d2 = hash2.digest();
-                digest = ArrayConverter.concatenate(digest, d2);
+                digest = DataConverter.concatenate(digest, d2);
             }
             return digest;
         } catch (NoSuchAlgorithmException ex) {

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
@@ -25,10 +25,10 @@ public class ExtendedRandomExtensionPreparatorTest
 
     private static final byte[] extendedRandomShort = new byte[0];
     private static final byte[] extendedRandom =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
     private static final byte[] extendedRandomLong =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 

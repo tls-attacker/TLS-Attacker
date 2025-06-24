@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -41,7 +41,7 @@ public enum TokenBindingVersion {
     static {
         MAP = new HashMap<>();
         for (TokenBindingVersion c : values()) {
-            MAP.put(ArrayConverter.bytesToInt(c.tokenBindingVersion), c);
+            MAP.put(DataConverter.bytesToInt(c.tokenBindingVersion), c);
         }
     }
 
@@ -54,7 +54,7 @@ public enum TokenBindingVersion {
     }
 
     public static TokenBindingVersion getExtensionType(byte[] value) {
-        TokenBindingVersion type = MAP.get(ArrayConverter.bytesToInt(value));
+        TokenBindingVersion type = MAP.get(DataConverter.bytesToInt(value));
         return type;
     }
 

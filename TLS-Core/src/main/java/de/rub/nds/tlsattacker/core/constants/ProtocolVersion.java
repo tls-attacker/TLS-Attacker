@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
 import java.util.*;
 
@@ -271,8 +271,8 @@ public enum ProtocolVersion {
             return 0;
         }
 
-        if (ArrayConverter.bytesToInt(protocolVersion1.getValue())
-                > ArrayConverter.bytesToInt(protocolVersion2.getValue())) {
+        if (DataConverter.bytesToInt(protocolVersion1.getValue())
+                > DataConverter.bytesToInt(protocolVersion2.getValue())) {
             return 1;
         }
 

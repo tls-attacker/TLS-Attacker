@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
@@ -34,7 +34,7 @@ public class SignedCertificateTimestampExtensionPreparatorTest
     @Override
     public void testPrepare() {
         byte[] timestamp =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "00ef007500ee4bbdb775ce60"
                                 + "bae142691fabe19e66a30f7e5fb072d8"
                                 + "8300c47b897aa8fdcb0000015b8fdb11"

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
@@ -102,7 +102,7 @@ public class PWDClientKeyExchangePreparator
 
         LOGGER.debug(
                 "PasswordElement.x: {}",
-                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+                DataConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -165,7 +165,7 @@ public class PWDClientKeyExchangePreparator
         msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
                 "Private: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
+                () -> DataConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -175,8 +175,8 @@ public class PWDClientKeyExchangePreparator
     }
 
     protected void prepareScalar(PWDClientKeyExchangeMessage msg, BigInteger scalar) {
-        msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
+        msg.setScalar(DataConverter.bigIntegerToByteArray(scalar));
+        LOGGER.debug("Scalar: {}", () -> DataConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDClientKeyExchangeMessage msg) {
@@ -222,7 +222,7 @@ public class PWDClientKeyExchangePreparator
                 curve.mult(
                         privateKeyScalar,
                         curve.add(curve.mult(peerScalar, passwordElement), peerElement));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData());
+        return DataConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData());
     }
 
     private void preparePremasterSecret(PWDClientKeyExchangeMessage msg, byte[] premasterSecret) {
@@ -232,7 +232,7 @@ public class PWDClientKeyExchangePreparator
 
     private void prepareClientServerRandom(PWDClientKeyExchangeMessage msg) {
         byte[] clientRandom =
-                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+                DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientRandom);
         LOGGER.debug(
                 "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());

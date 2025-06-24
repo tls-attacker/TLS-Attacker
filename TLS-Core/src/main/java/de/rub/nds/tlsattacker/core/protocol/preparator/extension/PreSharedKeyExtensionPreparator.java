@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -178,7 +178,7 @@ public class PreSharedKeyExtensionPreparator
                                         digestAlgo.getJavaName(),
                                         earlySecret,
                                         HKDFunction.BINDER_KEY_RES,
-                                        ArrayConverter.hexStringToByteArray(""),
+                                        DataConverter.hexStringToByteArray(""),
                                         tlsContext.getChooser().getSelectedProtocolVersion());
                         byte[] binderFinKey =
                                 HKDFunction.expandLabel(
@@ -191,7 +191,7 @@ public class PreSharedKeyExtensionPreparator
                         byte[] hashBefore = tlsContext.getDigest().getRawBytes();
                         tlsContext
                                 .getDigest()
-                                .setRawBytes(ArrayConverter.concatenate(hashBefore, relevantBytes));
+                                .setRawBytes(DataConverter.concatenate(hashBefore, relevantBytes));
                         SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                         mac.init(keySpec);
                         mac.update(

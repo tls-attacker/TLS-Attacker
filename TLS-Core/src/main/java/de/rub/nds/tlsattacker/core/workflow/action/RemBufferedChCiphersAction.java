@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
@@ -148,7 +148,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         StringBuilder sb = new StringBuilder();
         sb.append("cipher suite bytes length: ").append(ch.getCipherSuites().getValue().length);
         sb.append("\ncipher suite bytes:");
-        sb.append(ArrayConverter.bytesToHexString(ch.getCipherSuites().getValue()));
+        sb.append(DataConverter.bytesToHexString(ch.getCipherSuites().getValue()));
         sb.append("\nreadable cipher suite list:\n");
         for (CipherSuite cs : CipherSuite.getCipherSuites(ch.getCipherSuites().getValue())) {
             sb.append(cs.name()).append("\n");

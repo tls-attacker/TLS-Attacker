@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -52,11 +52,11 @@ public class ClientHelloPreparatorTest
         tlsContext.getConfig().setDefaultClientSessionId(new byte[] {0, 1, 2, 3});
         preparator.prepare();
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("009AC02B"),
+                DataConverter.hexStringToByteArray("009AC02B"),
                 message.getCipherSuites().getValue());
         assertEquals(4, message.getCipherSuiteLength().getValue());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
+                DataConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
         assertEquals(2, message.getCompressionLength().getValue());
         assertNull(message.getCookie());
         assertNull(message.getCookieLength());
@@ -65,7 +65,7 @@ public class ClientHelloPreparatorTest
         assertArrayEquals(message.getSessionId().getValue(), new byte[] {0, 1, 2, 3});
         assertEquals(4, message.getSessionIdLength().getValue());
         assertArrayEquals(
-                ArrayConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
+                DataConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
         assertEquals(0, message.getExtensionsLength().getValue());
         assertEquals(0, message.getExtensionBytes().getValue().length);
     }
@@ -93,11 +93,11 @@ public class ClientHelloPreparatorTest
                                 new DtlsFragmentLayer(tlsContext.getContext())));
         preparator.prepare();
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("009AC02B"),
+                DataConverter.hexStringToByteArray("009AC02B"),
                 message.getCipherSuites().getValue());
         assertEquals(4, message.getCipherSuiteLength().getValue());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
+                DataConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
         assertEquals(2, message.getCompressionLength().getValue());
         assertArrayEquals(new byte[] {7, 6, 5}, message.getCookie().getValue());
         assertEquals(3, (int) message.getCookieLength().getValue());
@@ -106,7 +106,7 @@ public class ClientHelloPreparatorTest
         assertArrayEquals(message.getSessionId().getValue(), new byte[] {0, 1, 2, 3});
         assertEquals(4, message.getSessionIdLength().getValue());
         assertArrayEquals(
-                ArrayConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
+                DataConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
         assertEquals(0, message.getExtensionsLength().getValue());
         assertEquals(0, message.getExtensionBytes().getValue().length);
     }
@@ -128,11 +128,11 @@ public class ClientHelloPreparatorTest
         tlsContext.setDtlsCookie(new byte[] {7, 6, 5});
         preparator.prepare();
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("009AC02B"),
+                DataConverter.hexStringToByteArray("009AC02B"),
                 message.getCipherSuites().getValue());
         assertEquals(4, message.getCipherSuiteLength().getValue());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
+                DataConverter.hexStringToByteArray("0100"), message.getCompressions().getValue());
         assertEquals(2, message.getCompressionLength().getValue());
         assertArrayEquals(new byte[] {7, 6, 5}, message.getCookie().getValue());
         assertEquals(3, message.getCookieLength().getValue());
@@ -141,7 +141,7 @@ public class ClientHelloPreparatorTest
         assertArrayEquals(message.getSessionId().getValue(), new byte[] {0, 1, 2, 3});
         assertEquals(4, message.getSessionIdLength().getValue());
         assertArrayEquals(
-                ArrayConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
+                DataConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
         assertEquals(0, message.getExtensionsLength().getValue());
         assertEquals(0, message.getExtensionBytes().getValue().length);
     }

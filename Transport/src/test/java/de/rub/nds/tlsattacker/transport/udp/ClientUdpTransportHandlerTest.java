@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -72,9 +72,9 @@ public class ClientUdpTransportHandlerTest {
                 RandomHelper.getRandom().nextBytes(txData);
                 txPacket = new DatagramPacket(txData, txData.length, localhost, udpTH.getSrcPort());
                 testSocket.send(txPacket);
-                allSentData = ArrayConverter.concatenate(allSentData, txData);
+                allSentData = DataConverter.concatenate(allSentData, txData);
                 rxData = udpTH.fetchData();
-                allReceivedData = ArrayConverter.concatenate(allReceivedData, rxData);
+                allReceivedData = DataConverter.concatenate(allReceivedData, rxData);
             }
             assertEquals(
                     allSentData.length,

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -41,14 +41,14 @@ public class SendActionTest extends AbstractActionTest<SendAction> {
     @Test
     public void testExecute() throws Exception {
         super.testExecute();
-        byte[] expectedBytes = ArrayConverter.hexStringToByteArray("15030300020233");
+        byte[] expectedBytes = DataConverter.hexStringToByteArray("15030300020233");
         testContents(expectedBytes);
     }
 
     @Test
     public void testPredefinedRecord() throws Exception {
         Record modifiedRecord = getModifiedRecord();
-        byte[] expectedBytes = ArrayConverter.hexStringToByteArray("FF030300020233");
+        byte[] expectedBytes = DataConverter.hexStringToByteArray("FF030300020233");
         action.setConfiguredRecords(List.of(modifiedRecord));
         super.testExecute();
         testContents(expectedBytes);
@@ -66,7 +66,7 @@ public class SendActionTest extends AbstractActionTest<SendAction> {
         Record shortRecord = new Record();
         shortRecord.setMaxRecordLengthConfig(1);
         action.setConfiguredRecords(List.of(shortRecord, modifiedRecord));
-        byte[] expectedBytes = ArrayConverter.hexStringToByteArray("150303000102FF0303000133");
+        byte[] expectedBytes = DataConverter.hexStringToByteArray("150303000102FF0303000133");
         super.testExecute();
         testContents(expectedBytes);
     }

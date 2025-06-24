@@ -47,6 +47,6 @@ public class GenericReceiveActionTest extends AbstractActionTest<GenericReceiveA
         ((FakeTcpTransportHandler) tlsContext.getContext().getTransportHandler())
                 .setFetchableByte(new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50});
         super.testExecute();
-        assertEquals(action.getReceivedMessages().get(0), alert);
+        assertEquals(alert, action.getReceivedMessages().get(0));
     }
 }

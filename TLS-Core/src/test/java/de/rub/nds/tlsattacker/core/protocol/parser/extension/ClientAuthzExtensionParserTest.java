@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import java.util.List;
@@ -36,10 +36,10 @@ public class ClientAuthzExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("000700050400010203"),
+                        DataConverter.hexStringToByteArray("000700050400010203"),
                         List.of(),
                         ExtensionType.CLIENT_AUTHZ,
                         5,
-                        List.of(4, ArrayConverter.hexStringToByteArray("00010203"))));
+                        List.of(4, DataConverter.hexStringToByteArray("00010203"))));
     }
 }

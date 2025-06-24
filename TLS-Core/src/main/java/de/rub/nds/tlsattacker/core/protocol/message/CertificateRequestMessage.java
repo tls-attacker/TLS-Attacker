@@ -240,7 +240,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
-        // sb.append("\n Distinguished Names: ").append(ArrayConverter
+        // sb.append("\n Distinguished Names: ").append(DataConverter
         // .bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
     }

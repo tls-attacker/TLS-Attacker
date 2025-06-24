@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -47,10 +47,10 @@ public class KeyShareExtensionHandlerTest
                 new KeyShareEntry(
                         NamedGroup.ECDH_X25519,
                         new BigInteger(
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
         pair.setPublicKey(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
         pair.setGroup(NamedGroup.ECDH_X25519.getValue());
         pairList.add(pair);
@@ -59,7 +59,7 @@ public class KeyShareExtensionHandlerTest
         assertNotNull(tlsContext.getServerKeyShareStoreEntry());
         KeyShareStoreEntry entry = tlsContext.getServerKeyShareStoreEntry();
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
                 entry.getPublicKey());
         assertSame(NamedGroup.ECDH_X25519, entry.getGroup());

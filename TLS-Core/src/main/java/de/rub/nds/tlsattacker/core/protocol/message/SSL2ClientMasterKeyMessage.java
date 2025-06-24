@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
@@ -191,15 +191,15 @@ public class SSL2ClientMasterKeyMessage extends SSL2Message {
         }
         if (getClearKeyData() != null && getClearKeyData().getValue() != null) {
             sb.append("\n Clear Key Data: ")
-                    .append(ArrayConverter.bytesToHexString(getClearKeyData().getValue()));
+                    .append(DataConverter.bytesToHexString(getClearKeyData().getValue()));
         }
         if (getEncryptedKeyData() != null && getEncryptedKeyData().getValue() != null) {
             sb.append("\n Encrypted Key Data: ")
-                    .append(ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
+                    .append(DataConverter.bytesToHexString(getEncryptedKeyData().getValue()));
         }
         if (getKeyArgData() != null && getKeyArgData().getValue() != null) {
             sb.append("\n Key Arg Data: ")
-                    .append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));
+                    .append(DataConverter.bytesToHexString(getKeyArgData().getValue()));
         }
         return sb.toString();
     }

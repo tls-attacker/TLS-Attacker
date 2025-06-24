@@ -23,16 +23,16 @@ public class ChangeMasterSecretActionTest
     @Test
     @Override
     public void testSetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
+        assertArrayEquals(new byte[] {0, 1}, action.getNewValue());
         action.setNewValue(new byte[] {0});
-        assertArrayEquals(action.getNewValue(), new byte[] {0});
+        assertArrayEquals(new byte[] {0}, action.getNewValue());
     }
 
     /** Test of getNewValue method, of class ChangeMasterSecretAction. */
     @Test
     @Override
     public void testGetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
+        assertArrayEquals(new byte[] {0, 1}, action.getNewValue());
     }
 
     /** Test of getOldValue method, of class ChangeMasterSecretAction. */
@@ -42,7 +42,7 @@ public class ChangeMasterSecretActionTest
         context.setMasterSecret(new byte[] {3});
         action.normalize();
         action.execute(state);
-        assertArrayEquals(action.getOldValue(), new byte[] {3});
+        assertArrayEquals(new byte[] {3}, action.getOldValue());
     }
 
     /** Test of execute method, of class ChangeMasterSecretAction. */
@@ -51,8 +51,8 @@ public class ChangeMasterSecretActionTest
     public void testExecute() throws Exception {
         context.setMasterSecret(new byte[] {3});
         super.testExecute();
-        assertArrayEquals(action.getOldValue(), new byte[] {3});
-        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
-        assertArrayEquals(context.getMasterSecret(), new byte[] {0, 1});
+        assertArrayEquals(new byte[] {3}, action.getOldValue());
+        assertArrayEquals(new byte[] {0, 1}, action.getNewValue());
+        assertArrayEquals(new byte[] {0, 1}, context.getMasterSecret());
     }
 }

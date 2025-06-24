@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -66,7 +66,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
             builder.append("\n  ServerRsaModulus (chooser): ");
             builder.append(
                     toIndentedString(
-                            ArrayConverter.bigIntegerToByteArray(
+                            DataConverter.bigIntegerToByteArray(
                                     context.getChooser()
                                             .getContext()
                                             .getTlsContext()
@@ -98,7 +98,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
     }
 
     private String toIndentedString(byte[] bytes) {
-        return ArrayConverter.bytesToHexString(bytes).replace("\n", "\n  ");
+        return DataConverter.bytesToHexString(bytes).replace("\n", "\n  ");
     }
 
     @Override

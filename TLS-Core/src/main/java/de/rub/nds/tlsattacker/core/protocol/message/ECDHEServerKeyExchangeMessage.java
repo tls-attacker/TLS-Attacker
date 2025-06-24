@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
@@ -81,7 +81,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null && getPublicKey().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue()));
         } else {
             sb.append("null");
         }
@@ -90,13 +90,13 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // (D)TLS 1.2
         if (this.getSignatureAndHashAlgorithm() != null
                 && getSignatureAndHashAlgorithm().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature: ");
         if (getSignature() != null && getSignature().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignature().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignature().getValue()));
         } else {
             sb.append("null");
         }

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.quic;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -35,19 +35,19 @@ public class Quicv2Test {
         QuicContext quicv1Context = calculateInitialSecretsForVersion(QuicVersion.VERSION_1);
         Assert.assertArrayEquals(
                 quicv1Context.getInitialSalt(),
-                ArrayConverter.hexStringToByteArray("38762cf7f55934b34d179ae6a4c80cadccbb7f0a"));
+                DataConverter.hexStringToByteArray("38762cf7f55934b34d179ae6a4c80cadccbb7f0a"));
         Assert.assertArrayEquals(
                 quicv1Context.getInitialSecret(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "e41d1a39cbb637025d7f57f60656d50b30d71f6271e9f3d5687ff4556cca69eb"));
 
         QuicContext quicv2Context = calculateInitialSecretsForVersion(QuicVersion.VERSION_2);
         Assert.assertArrayEquals(
                 quicv2Context.getInitialSalt(),
-                ArrayConverter.hexStringToByteArray("0dede3def700a6db819381be6e269dcbf9bd2ed9"));
+                DataConverter.hexStringToByteArray("0dede3def700a6db819381be6e269dcbf9bd2ed9"));
         Assert.assertArrayEquals(
                 quicv2Context.getInitialSecret(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "dc59198d08f2dea69f55bb1d07622fd0ee9c0e5aca344977ee0d2099d5befddb"));
 
         // And check that we do not generate any secrets for "pseudo-versions"

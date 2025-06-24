@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
@@ -24,10 +24,10 @@ public class PSKBinderParserTest {
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "2034c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9"),
                         32,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "34c8ead79d29168694fcbff00106f86005ddf0a6480ea86cf06d8440752b62f9")));
     }
 

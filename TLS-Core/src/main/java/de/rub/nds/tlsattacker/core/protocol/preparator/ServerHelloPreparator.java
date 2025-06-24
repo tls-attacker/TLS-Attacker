@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
@@ -204,8 +204,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         byte[] serverHello =
                 msg.getSerializer(chooser.getContext()).serializeHandshakeMessageContent();
         byte[] type = new byte[] {HandshakeMessageType.SERVER_HELLO.getValue()};
-        byte[] length = ArrayConverter.intToBytes(serverHello.length, 3);
-        serverHello = ArrayConverter.concatenate(type, length, serverHello);
+        byte[] length = DataConverter.intToBytes(serverHello.length, 3);
+        serverHello = DataConverter.concatenate(type, length, serverHello);
 
         // replace random
 
@@ -245,7 +245,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         }
         // set serverRandom accordingly
         byte[] newRandom =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         Arrays.copyOfRange(serverRandom, 0, serverRandom.length - 8),
                         acceptConfirmation);
         msg.setRandom(newRandom);

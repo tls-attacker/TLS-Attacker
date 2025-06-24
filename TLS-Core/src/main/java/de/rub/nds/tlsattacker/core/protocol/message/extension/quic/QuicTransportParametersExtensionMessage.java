@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -153,15 +153,15 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
             } catch (UnknownHostException e) {
                 this.ipv4Address = null;
             }
-            this.ipv4Port = ArrayConverter.bytesToInt(Arrays.copyOfRange(entryValue, 4, 6));
+            this.ipv4Port = DataConverter.bytesToInt(Arrays.copyOfRange(entryValue, 4, 6));
             try {
                 this.ipv6Address = InetAddress.getByAddress(Arrays.copyOfRange(entryValue, 6, 22));
             } catch (UnknownHostException e) {
                 this.ipv6Address = null;
             }
-            this.ipv6Port = ArrayConverter.bytesToInt(Arrays.copyOfRange(entryValue, 22, 24));
+            this.ipv6Port = DataConverter.bytesToInt(Arrays.copyOfRange(entryValue, 22, 24));
             this.connectionIdLength =
-                    ArrayConverter.bytesToInt(Arrays.copyOfRange(entryValue, 24, 25));
+                    DataConverter.bytesToInt(Arrays.copyOfRange(entryValue, 24, 25));
             this.connectionId = Arrays.copyOfRange(entryValue, 25, 25 + this.connectionIdLength);
             this.statelessResetToken =
                     Arrays.copyOfRange(
@@ -182,9 +182,9 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
                     + ", ipv6Port="
                     + ipv6Port
                     + ", connectionId="
-                    + ArrayConverter.bytesToHexString(connectionId)
+                    + DataConverter.bytesToHexString(connectionId)
                     + ", statelessResetToken="
-                    + ArrayConverter.bytesToHexString(statelessResetToken)
+                    + DataConverter.bytesToHexString(statelessResetToken)
                     + '}';
         }
 

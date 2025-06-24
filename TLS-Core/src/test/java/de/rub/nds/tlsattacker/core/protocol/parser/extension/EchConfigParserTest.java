@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -36,7 +36,7 @@ public class EchConfigParserTest {
     public void testDraft14() {
 
         byte[] recordBytes =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0046FE0D0042B800200020AB31C5831D3BA3B6902FFA9CDC8CA22F318F74CFDB0795374910A28FAD9630540004000100010013636C6F7564666C6172652D65736E692E636F6D0000");
         EchConfigParser parser =
                 new EchConfigParser(
@@ -47,7 +47,7 @@ public class EchConfigParserTest {
         EchConfig echConfig = echConfigs.get(0);
 
         byte[] expectedEchConfigBytes =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "FE0D0042B800200020AB31C5831D3BA3B6902FFA9CDC8CA22F318F74CFDB0795374910A28FAD9630540004000100010013636C6F7564666C6172652D65736E692E636F6D0000");
         byte[] resultEchConfigBytes = echConfig.getEchConfigBytes();
 
@@ -62,7 +62,7 @@ public class EchConfigParserTest {
         HpkeKeyEncapsulationMechanism resultKemId = echConfig.getKem();
 
         byte[] expectedHpkePublicKey =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "AB31C5831D3BA3B6902FFA9CDC8CA22F318F74CFDB0795374910A28FAD963054");
         byte[] resultHpkePublicKey = echConfig.getHpkePublicKey();
 
@@ -77,7 +77,7 @@ public class EchConfigParserTest {
         int resultMaximumNameLength = echConfig.getMaximumNameLength();
 
         byte[] expectedPublicName =
-                ArrayConverter.hexStringToByteArray("636C6F7564666C6172652D65736E692E636F6D");
+                DataConverter.hexStringToByteArray("636C6F7564666C6172652D65736E692E636F6D");
         byte[] resultPublicName = echConfig.getPublicDomainName();
 
         List<ExtensionMessage> expectedExtensionMessages = new LinkedList<>();

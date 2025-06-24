@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -319,12 +319,12 @@ public class ServerHelloMessage extends HelloMessage {
                 && getProtocolVersion().getValue() != null
                 && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
             sb.append("\n  Server Unix Time: ")
-                    .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+                    .append(new Date(DataConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
             if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
-                sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+                sb.append(new Date(DataConverter.bytesToLong(getUnixTime().getValue()) * 1000));
             } else {
                 sb.append("null");
             }
@@ -333,14 +333,14 @@ public class ServerHelloMessage extends HelloMessage {
         }
         sb.append("\n  Server Random: ");
         if (getRandom() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+            sb.append(DataConverter.bytesToHexString(getRandom().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Session ID: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
             if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
-                sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+                sb.append(DataConverter.bytesToHexString(getSessionId().getValue()));
             } else {
                 sb.append("null");
             }

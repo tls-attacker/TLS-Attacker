@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.concatenate;
+import static de.rub.nds.modifiablevariable.util.DataConverter.concatenate;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -33,7 +33,7 @@ public class CertificateVerifyPreparatorTest
     }
 
     private static byte[] repeatBytes(String hex, int count) {
-        return ArrayConverter.hexStringToByteArray(StringUtils.repeat(hex, count));
+        return DataConverter.hexStringToByteArray(StringUtils.repeat(hex, count));
     }
 
     /**
@@ -109,7 +109,7 @@ public class CertificateVerifyPreparatorTest
         // TODO I don't check if the signature is correctly calculated or
         // calculated over the correct values
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "479FB09700E855666B1D65C9C5B0D279088A0573A7FDA4F59E5816E7869CA7753F7648143F9A7DB86534D33EEA9ED40BB8FE052F5BAF1D9BE52502B57B6B5661F9A4DC077D4AC0714F5768D7319C6E3862BD6EFA2F85E464B54E8A89FC19FD2090E53DA05D5556E74A7EE31CD217A510620BD61F24F5CDFEF5ACDFE060B9F37E"),
                 message.getSignature().getValue());
         assertEquals(128, (int) message.getSignatureLength().getValue());

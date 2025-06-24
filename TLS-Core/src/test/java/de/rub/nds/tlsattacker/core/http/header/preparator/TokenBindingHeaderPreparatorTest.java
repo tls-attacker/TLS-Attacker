@@ -51,7 +51,7 @@ public class TokenBindingHeaderPreparatorTest {
     public void testPrepare() {
         preparator.prepare();
 
-        assertEquals(header.getHeaderName().getValue(), "Sec-Token-Binding");
+        assertEquals("Sec-Token-Binding", header.getHeaderName().getValue());
         assertEquals(
                 "AIkAAgBBQF7L5NGmMwpEyPfvlR1L8WXmxrch762phftBZhvG5_1shzRkDEmY_343SwbOGmSi7NgqsDY4T7g9mnmxJ6J9UDIAQBiMGdH7awDozrs8wPI2pfRAqtPX2vx3LTNCmY-9ngpdWHu9GFxflmo9jN0yKR1IxnVNtU-85XOUEwjlYaPYUJMAAA",
                 header.getHeaderValue().getValue());

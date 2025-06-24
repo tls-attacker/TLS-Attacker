@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -47,7 +47,7 @@ public class RemBufferedChExtensionsActionTest
         expected.add(ExtensionType.EXTENDED_MASTER_SECRET);
         expected.add(ExtensionType.ENCRYPT_THEN_MAC);
         expectedBytes =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "000B00020100000A000A000800130017001800190017000000160000");
         expectedLength = 28;
 
@@ -103,7 +103,7 @@ public class RemBufferedChExtensionsActionTest
     }
 
     private void setExpectedFields(String extensionBytes) {
-        expectedBytes = ArrayConverter.hexStringToByteArray(extensionBytes);
+        expectedBytes = DataConverter.hexStringToByteArray(extensionBytes);
         int diff = expectedLength;
         expectedLength = extensionBytes.length() / 2;
         diff -= expectedLength;

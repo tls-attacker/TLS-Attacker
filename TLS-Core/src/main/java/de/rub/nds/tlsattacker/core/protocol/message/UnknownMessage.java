@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
@@ -88,7 +88,7 @@ public class UnknownMessage extends ProtocolMessage {
         sb.append("\n  Data: ");
         if (getCompleteResultingMessage() != null
                 && getCompleteResultingMessage().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
+            sb.append(DataConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
         } else {
             sb.append("null");
         }

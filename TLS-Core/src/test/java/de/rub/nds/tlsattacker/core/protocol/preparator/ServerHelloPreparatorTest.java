@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -56,15 +56,15 @@ public class ServerHelloPreparatorTest
         assertArrayEquals(
                 ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
         assertArrayEquals(
-                ArrayConverter.longToUint32Bytes(12345L), message.getUnixTime().getValue());
+                DataConverter.longToUint32Bytes(12345L), message.getUnixTime().getValue());
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.longToUint32Bytes(12345L),
-                        ArrayConverter.hexStringToByteArray(
+                DataConverter.concatenate(
+                        DataConverter.longToUint32Bytes(12345L),
+                        DataConverter.hexStringToByteArray(
                                 "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C")),
                 message.getRandom().getValue());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("000102030405"),
+                DataConverter.hexStringToByteArray("000102030405"),
                 message.getSessionId().getValue());
         assertEquals(6, (int) message.getSessionIdLength().getValue());
         assertEquals(0, message.getExtensionBytes().getValue().length);

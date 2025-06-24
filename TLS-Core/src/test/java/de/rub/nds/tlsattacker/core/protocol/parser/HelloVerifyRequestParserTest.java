@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -41,14 +41,14 @@ public class HelloVerifyRequestParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.DTLS10,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "03000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
                         List.of(
                                 HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue(),
                                 23,
                                 ProtocolVersion.DTLS10.getValue(),
                                 (byte) 20,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "15520276466763250a851c5b9eaeb44676ff3381"))));
     }
 }

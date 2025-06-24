@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
@@ -46,12 +46,12 @@ public class PskEcDhClientKeyExchangePreparator
         byte[] premasterSecret = super.computePremasterSecret(curve, publicKey, privateKey);
         outputStream = new SilentByteArrayOutputStream();
         outputStream.write(
-                ArrayConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
+                DataConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
         LOGGER.debug("PremasterSecret: dhValue Length: {}", premasterSecret.length);
         outputStream.write(premasterSecret);
         LOGGER.debug("PremasterSecret: dhValue {}", premasterSecret);
         outputStream.write(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         chooser.getConfig().getDefaultPSKKey().length,
                         HandshakeByteLength.PSK_LENGTH));
         outputStream.write(chooser.getConfig().getDefaultPSKKey());

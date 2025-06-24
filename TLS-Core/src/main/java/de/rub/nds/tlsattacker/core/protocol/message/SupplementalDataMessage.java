@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
@@ -123,7 +123,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
                         .append(entry.getSupplementalDataEntryLength().getValue());
                 sb.append("\n   Supplemental Data : ")
                         .append(
-                                ArrayConverter.bytesToHexString(
+                                DataConverter.bytesToHexString(
                                         entry.getSupplementalDataEntry().getValue()));
             }
         } else {

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
@@ -39,7 +39,7 @@ public class ServerCertificateTypeExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0014000100"),
+                        DataConverter.hexStringToByteArray("0014000100"),
                         List.of(ConnectionEndType.SERVER),
                         ExtensionType.SERVER_CERTIFICATE_TYPE,
                         1,
@@ -48,7 +48,7 @@ public class ServerCertificateTypeExtensionParserTest
                                 CertificateType.toByteArray(List.of(CertificateType.X509)),
                                 false)),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("001400020100"),
+                        DataConverter.hexStringToByteArray("001400020100"),
                         List.of(ConnectionEndType.CLIENT),
                         ExtensionType.SERVER_CERTIFICATE_TYPE,
                         2,
@@ -57,7 +57,7 @@ public class ServerCertificateTypeExtensionParserTest
                                 CertificateType.toByteArray(List.of(CertificateType.X509)),
                                 true)),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("00140003020100"),
+                        DataConverter.hexStringToByteArray("00140003020100"),
                         List.of(ConnectionEndType.CLIENT),
                         ExtensionType.SERVER_CERTIFICATE_TYPE,
                         3,

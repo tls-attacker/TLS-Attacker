@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.http.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,7 +52,7 @@ public class HttpRequestParser extends HttpMessageParser<HttpRequestMessage> {
             HttpHeader header;
             String headerName = split[0];
             String headerValue =
-                    line.replaceFirst(split[0] + ":", "")
+                    line.replaceFirst(Pattern.quote(split[0] + ":"), "")
                             .replaceAll("\n", "")
                             .replaceAll("\r", "")
                             .trim();

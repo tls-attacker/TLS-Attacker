@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
@@ -62,7 +62,7 @@ public class EncryptedClientHelloExtensionSerializer
         appendBytes(aeadFunction.getByteValue());
         LOGGER.debug(
                 "HPKE Ciphersuite: {}",
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         keyDerivationFunction.getByteValue(), aeadFunction.getByteValue()));
     }
 

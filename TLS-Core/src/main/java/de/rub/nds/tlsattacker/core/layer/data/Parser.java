@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
@@ -94,7 +94,7 @@ public abstract class Parser<T> {
         if (length == 0) {
             throw new ParserException("Cannot parse int of size 0");
         }
-        return ArrayConverter.bytesToInt(parseByteArrayField(length));
+        return DataConverter.bytesToInt(parseByteArrayField(length));
     }
 
     /**
@@ -125,7 +125,7 @@ public abstract class Parser<T> {
         if (length > 1) {
             LOGGER.warn("Parsing byte[] field into a byte of size >1");
         }
-        return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
+        return (byte) DataConverter.bytesToInt(parseByteArrayField(length));
     }
 
     /**

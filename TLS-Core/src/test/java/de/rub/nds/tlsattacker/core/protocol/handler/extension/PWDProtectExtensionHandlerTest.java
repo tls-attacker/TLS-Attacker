@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
@@ -31,7 +31,7 @@ public class PWDProtectExtensionHandlerTest
     public void testadjustTLSExtensionContext() {
         PWDProtectExtensionMessage message = new PWDProtectExtensionMessage();
         message.setUsername(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6"));
         handler.adjustContext(message);
         assertTrue(tlsContext.isExtensionProposed(ExtensionType.PWD_PROTECT));

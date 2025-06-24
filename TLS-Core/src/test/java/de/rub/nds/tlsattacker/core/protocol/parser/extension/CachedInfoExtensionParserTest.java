@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
@@ -46,7 +46,7 @@ public class CachedInfoExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0019000400020102"),
+                        DataConverter.hexStringToByteArray("0019000400020102"),
                         List.of(ConnectionEndType.SERVER),
                         ExtensionType.CACHED_INFO,
                         4,
@@ -57,20 +57,19 @@ public class CachedInfoExtensionParserTest
                                         new CachedObject((byte) 1, null, null),
                                         new CachedObject((byte) 2, null, null)))),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "0019000f000d01060102030405060203070809"),
                         List.of(),
                         ExtensionType.CACHED_INFO,
                         15,
                         List.of(
                                 13,
-                                ArrayConverter.hexStringToByteArray("01060102030405060203070809"),
+                                DataConverter.hexStringToByteArray("01060102030405060203070809"),
                                 Arrays.asList(
                                         new CachedObject(
                                                 (byte) 1,
                                                 6,
-                                                ArrayConverter.hexStringToByteArray(
-                                                        "010203040506")),
+                                                DataConverter.hexStringToByteArray("010203040506")),
                                         new CachedObject(
                                                 (byte) 2, 3, new byte[] {0x07, 0x08, 0x09})))));
     }

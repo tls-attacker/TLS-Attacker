@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -48,77 +48,77 @@ public class EsniKeyRecordParserTest {
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000"),
                         EsniVersion.DRAFT_2,
-                        ArrayConverter.hexStringToByteArray("00124b2a"),
+                        DataConverter.hexStringToByteArray("00124b2a"),
                         List.of(
                                 new KeyShareStoreEntry(
                                         NamedGroup.ECDH_X25519,
-                                        ArrayConverter.hexStringToByteArray(
+                                        DataConverter.hexStringToByteArray(
                                                 "fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"))),
                         List.of(CipherSuite.TLS_AES_128_GCM_SHA256),
                         260,
-                        ArrayConverter.hexStringToByteArray("000000005dcc3a45"),
-                        ArrayConverter.hexStringToByteArray("000000005dda1205"),
+                        DataConverter.hexStringToByteArray("000000005dcc3a45"),
+                        DataConverter.hexStringToByteArray("000000005dda1205"),
                         0,
                         null),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac5818118633259444120004130113020104000000005dcc3a45000000005dda12050000"),
                         EsniVersion.DRAFT_2,
-                        ArrayConverter.hexStringToByteArray("00124b2a"),
+                        DataConverter.hexStringToByteArray("00124b2a"),
                         List.of(
                                 new KeyShareStoreEntry(
                                         NamedGroup.ECDH_X25519,
-                                        ArrayConverter.hexStringToByteArray(
+                                        DataConverter.hexStringToByteArray(
                                                 "fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"))),
                         List.of(
                                 CipherSuite.TLS_AES_128_GCM_SHA256,
                                 CipherSuite.TLS_AES_256_GCM_SHA384),
                         260,
-                        ArrayConverter.hexStringToByteArray("000000005dcc3a45"),
-                        ArrayConverter.hexStringToByteArray("000000005dda1205"),
+                        DataConverter.hexStringToByteArray("000000005dcc3a45"),
+                        DataConverter.hexStringToByteArray("000000005dda1205"),
                         0,
                         null),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "ff0100124b2a0046001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412001E001Efa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325940004130113020104000000005dcc3a45000000005dda12050000"),
                         EsniVersion.DRAFT_2,
-                        ArrayConverter.hexStringToByteArray("00124b2a"),
+                        DataConverter.hexStringToByteArray("00124b2a"),
                         List.of(
                                 new KeyShareStoreEntry(
                                         NamedGroup.ECDH_X25519,
-                                        ArrayConverter.hexStringToByteArray(
+                                        DataConverter.hexStringToByteArray(
                                                 "fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412")),
                                 new KeyShareStoreEntry(
                                         NamedGroup.ECDH_X448,
-                                        ArrayConverter.hexStringToByteArray(
+                                        DataConverter.hexStringToByteArray(
                                                 "fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac58181186332594"))),
                         List.of(
                                 CipherSuite.TLS_AES_128_GCM_SHA256,
                                 CipherSuite.TLS_AES_256_GCM_SHA384),
                         260,
-                        ArrayConverter.hexStringToByteArray("000000005dcc3a45"),
-                        ArrayConverter.hexStringToByteArray("000000005dda1205"),
+                        DataConverter.hexStringToByteArray("000000005dcc3a45"),
+                        DataConverter.hexStringToByteArray("000000005dda1205"),
                         0,
                         null),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050014ffce0010a7284c9a52f15c13644b947261774657"),
                         EsniVersion.DRAFT_2,
-                        ArrayConverter.hexStringToByteArray("00124b2a"),
+                        DataConverter.hexStringToByteArray("00124b2a"),
                         List.of(
                                 new KeyShareStoreEntry(
                                         NamedGroup.ECDH_X25519,
-                                        ArrayConverter.hexStringToByteArray(
+                                        DataConverter.hexStringToByteArray(
                                                 "fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412"))),
                         List.of(CipherSuite.TLS_AES_128_GCM_SHA256),
                         260,
-                        ArrayConverter.hexStringToByteArray("000000005dcc3a45"),
-                        ArrayConverter.hexStringToByteArray("000000005dda1205"),
+                        DataConverter.hexStringToByteArray("000000005dcc3a45"),
+                        DataConverter.hexStringToByteArray("000000005dda1205"),
                         1,
-                        ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657")));
+                        DataConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657")));
     }
 
     @ParameterizedTest
@@ -157,11 +157,11 @@ public class EsniKeyRecordParserTest {
         assertEquals(expectedPaddedLength, esniKeyRecord.getPaddedLength());
         assertArrayEquals(
                 expectedNotBefore,
-                ArrayConverter.longToBytes(
+                DataConverter.longToBytes(
                         esniKeyRecord.getNotBefore(), ExtensionByteLength.ESNI_RECORD_NOT_BEFORE));
         assertArrayEquals(
                 expectedNotAfter,
-                ArrayConverter.longToBytes(
+                DataConverter.longToBytes(
                         esniKeyRecord.getNotAfter(), ExtensionByteLength.ESNI_RECORD_NOT_AFTER));
         assertEquals(expectedExtensionsLength, esniKeyRecord.getExtensions().size());
         if (expectedExtensionsLength > 0) {

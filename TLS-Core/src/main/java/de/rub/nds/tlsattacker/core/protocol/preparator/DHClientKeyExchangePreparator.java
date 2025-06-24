@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -92,7 +92,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected void preparePublicKey(T msg) {
-        msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(clientPublicKey));
+        msg.setPublicKey(DataConverter.bigIntegerToByteArray(clientPublicKey));
         LOGGER.debug("PublicKey: {}", msg.getPublicKey().getValue());
     }
 
@@ -102,7 +102,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected void prepareClientServerRandom(T msg) {
-        random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        random = DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug(
