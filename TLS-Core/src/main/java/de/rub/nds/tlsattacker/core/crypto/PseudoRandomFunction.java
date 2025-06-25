@@ -115,7 +115,7 @@ public class PseudoRandomFunction {
      * @param seed The Seed
      * @param size The size
      * @return the Prf output
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] compute(
             PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)

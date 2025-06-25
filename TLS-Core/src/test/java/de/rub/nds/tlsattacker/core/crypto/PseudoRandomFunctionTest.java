@@ -39,7 +39,7 @@ public class PseudoRandomFunctionTest {
     /**
      * Test of compute method, of class PseudoRandomFunction.
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testComputeForTls12() throws CryptoException {
@@ -94,7 +94,7 @@ public class PseudoRandomFunctionTest {
     /**
      * Test of compute method, of class PseudoRandomFunction.
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testComputeForTls11() throws CryptoException {

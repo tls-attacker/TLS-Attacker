@@ -78,7 +78,7 @@ public class HKDFunction {
      * @param salt The Salt
      * @param ikm The IKM
      * @return The HKDF-Extracted output
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] extract(HKDFAlgorithm hkdfAlgorithm, byte[] salt, byte[] ikm)
             throws CryptoException {
@@ -121,7 +121,7 @@ public class HKDFunction {
      * @param info The info
      * @param outLen The output Length
      * @return The expanded bytes
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] expand(HKDFAlgorithm hkdfAlgorithm, byte[] prk, byte[] info, int outLen)
             throws CryptoException {
@@ -225,7 +225,7 @@ public class HKDFunction {
      * @param toHash The data to hash
      * @param protocolVersion The protocol version
      * @return The derivedSecret
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] deriveSecret(
             HKDFAlgorithm hkdfAlgorithm,
@@ -280,7 +280,7 @@ public class HKDFunction {
      * @param outLen The output length
      * @param protocolVersion The protocol version
      * @return The expanded Label bytes
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] expandLabel(
             HKDFAlgorithm hkdfAlgorithm,

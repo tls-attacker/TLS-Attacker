@@ -35,7 +35,7 @@ public class TokenCalculatorTest {
     /**
      * Test of calculateEKM method, of class TokenCalculator.
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testCalculateEKM() throws CryptoException {
@@ -58,7 +58,7 @@ public class TokenCalculatorTest {
     /**
      * Test of calculateEKM method, of class TokenCalculator.
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testCalculateSSLEKM() throws CryptoException {
