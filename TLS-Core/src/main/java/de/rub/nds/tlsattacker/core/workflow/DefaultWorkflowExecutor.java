@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
+        TlsAction lastExecutedAction = null;
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
             if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
@@ -62,8 +64,15 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
             if ((config.getStopActionsAfterIOException() && isIoException())) {
-                LOGGER.debug(
-                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                if (lastExecutedAction != null && lastExecutedAction instanceof SendingAction) {
+                    LOGGER.debug(
+                            "Received IO Exception with StopActionsAfterIOException active, skipping to next receive action to process pending message bytes.");
+                    processPendingReceiveBufferBytes(
+                            tlsActions.get(tlsActions.indexOf(action) - 1));
+                } else {
+                    LOGGER.debug(
+                            "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                }
                 break;
             }
 
@@ -71,10 +80,18 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 this.executeAction(action, state);
             } catch (SkipActionException ex) {
                 continue;
+            } finally {
+                lastExecutedAction = action;
             }
 
             if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
-                LOGGER.debug("Skipping all Actions, action did not execute as planned.");
+                if (lastExecutedAction instanceof SendingAction) {
+                    LOGGER.debug(
+                            "SendingAction did not execute as planned, skipping to next receive action to process pending message bytes.");
+                    processPendingReceiveBufferBytes(action);
+                } else {
+                    LOGGER.debug("Skipping all Actions, action did not execute as planned.");
+                }
                 break;
             }
         }
@@ -106,6 +123,35 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         } catch (Exception ex) {
             LOGGER.trace("Error during AfterExecutionCallback", ex);
+        }
+    }
+
+    /**
+     * Attempt to process any remaining bytes in the TCP receive buffer through the next
+     * ReceivingAction. This is useful when send a stack of messages where the first already
+     * triggers the other side to close with an alert. Otherwise, the IO Exception raised during
+     * sending would cause us to abort the workflow trace without ever processing the alert.
+     *
+     * @param lastActionExecuted The last action executed (successful or not)
+     */
+    private void processPendingReceiveBufferBytes(TlsAction lastActionExecuted) {
+        List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
+        // execute next receiving action to ensure possibly remaining bytes of the TCP receive
+        // buffer get parsed
+        ReceivingAction nextReceiveAction = null;
+        for (int i = tlsActions.indexOf(lastActionExecuted) + 1; i < tlsActions.size(); i++) {
+            if (tlsActions.get(i) instanceof ReceivingAction) {
+                nextReceiveAction = (ReceivingAction) tlsActions.get(i);
+                break;
+            }
+        }
+
+        if (nextReceiveAction != null) {
+            try {
+                this.executeAction((TlsAction) nextReceiveAction, state);
+            } catch (Exception ignored) {
+
+            }
         }
     }
 }
