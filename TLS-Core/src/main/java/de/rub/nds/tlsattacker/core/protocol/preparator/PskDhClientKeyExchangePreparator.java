@@ -57,4 +57,20 @@ public class PskDhClientKeyExchangePreparator
         LOGGER.debug("PSK PremasterSecret: {}", tempPremasterSecret);
         return tempPremasterSecret;
     }
+
+    @Override
+    public void prepareAfterParse() {
+        msg.prepareComputations();
+        prepareClientServerRandom(msg);
+        setComputationGenerator(msg);
+        setComputationModulus(msg);
+        setComputationPrivateKey(msg);
+        setComputationPublicKey(msg);
+        premasterSecret =
+                calculatePremasterSecret(
+                        msg.getComputations().getModulus().getValue(),
+                        msg.getComputations().getPrivateKey().getValue(),
+                        msg.getComputations().getPublicKey().getValue());
+        preparePremasterSecret(msg);
+    }
 }
