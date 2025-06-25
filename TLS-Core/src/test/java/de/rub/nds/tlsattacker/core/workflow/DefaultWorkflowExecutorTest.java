@@ -40,7 +40,6 @@ public class DefaultWorkflowExecutorTest {
 
     @Test
     public void testIOExceptionInSendActionProcessesPendingAlert() throws ConfigurationException {
-        // Setup
         Config config = new Config();
         config.setStopActionsAfterIOException(true);
 
