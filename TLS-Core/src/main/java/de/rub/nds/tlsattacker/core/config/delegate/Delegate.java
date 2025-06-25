@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
 public abstract class Delegate {
 

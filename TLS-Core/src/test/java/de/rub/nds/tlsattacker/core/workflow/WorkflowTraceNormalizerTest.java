@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static de.rub.nds.tlsattacker.util.FileHelper.inputStreamToString;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;

@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -475,7 +474,7 @@ public class QuicPacketLayer
                                                                             (InitialPacket) packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -504,7 +503,7 @@ public class QuicPacketLayer
                                                                                     packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -532,7 +531,7 @@ public class QuicPacketLayer
                                                                             (OneRTTPacket) packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
