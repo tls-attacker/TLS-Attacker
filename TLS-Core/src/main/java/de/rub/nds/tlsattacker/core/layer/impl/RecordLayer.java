@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.tcp.TcpSegmentConfiguration;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,7 +111,15 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
-                getLowerLayer().sendData(null, record.getCompleteRecordBytes().getValue());
+
+                // Check if TCP segmentation is configured for this record
+                if (record.getTcpSegmentConfiguration() != null) {
+                    sendWithTcpSegmentation(
+                            record.getCompleteRecordBytes().getValue(),
+                            record.getTcpSegmentConfiguration());
+                } else {
+                    getLowerLayer().sendData(null, record.getCompleteRecordBytes().getValue());
+                }
                 addProducedContainer(record);
             }
         }
@@ -297,6 +306,50 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public RecordCipher getDecryptorCipher() {
         return decryptor.getRecordMostRecentCipher();
+    }
+
+    /**
+     * Sends data with TCP segmentation according to the provided configuration.
+     *
+     * @param data The data to send
+     * @param segmentConfig The TCP segmentation configuration
+     * @throws IOException If the data cannot be sent
+     */
+    private void sendWithTcpSegmentation(byte[] data, TcpSegmentConfiguration segmentConfig)
+            throws IOException {
+        if (segmentConfig.getSegments() == null || segmentConfig.getSegments().isEmpty()) {
+            // No segments defined, send as single packet
+            getLowerLayer().sendData(null, data);
+            return;
+        }
+
+        for (TcpSegmentConfiguration.TcpSegment segment : segmentConfig.getSegments()) {
+            int offset = segment.getOffset() != null ? segment.getOffset() : 0;
+            int length = segment.getLength() != null ? segment.getLength() : data.length - offset;
+
+            // Ensure we don't go out of bounds
+            if (offset >= data.length) {
+                LOGGER.warn("TCP segment offset {} exceeds data length {}", offset, data.length);
+                continue;
+            }
+
+            int actualLength = Math.min(length, data.length - offset);
+            byte[] segmentData = new byte[actualLength];
+            System.arraycopy(data, offset, segmentData, 0, actualLength);
+
+            // Send the segment
+            getLowerLayer().sendData(null, segmentData);
+
+            // Add delay between segments if configured
+            if (segmentConfig.getSegmentDelay() != null && segmentConfig.getSegmentDelay() > 0) {
+                try {
+                    Thread.sleep(segmentConfig.getSegmentDelay());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    LOGGER.warn("TCP segment delay interrupted", e);
+                }
+            }
+        }
     }
 
     public void updateCompressor() {
