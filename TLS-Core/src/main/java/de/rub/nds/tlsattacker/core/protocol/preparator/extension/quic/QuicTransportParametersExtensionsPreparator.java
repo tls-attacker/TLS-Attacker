@@ -45,12 +45,11 @@ public class QuicTransportParametersExtensionsPreparator
         quicTransportEntrys.add(
                 new QuicTransportParameterEntry(
                         QuicTransportParameterEntryTypes.INITIAL_SOURCE_CONNECTION_ID,
-                        DataConverter.bytesToHexString(
+                        DataConverter.bytesToRawHexString(
                                         chooser.getContext()
                                                 .getQuicContext()
                                                 .getSourceConnectionId())
-                                .toLowerCase()
-                                .replaceAll("\\s", "")));
+                                .toLowerCase()));
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
 
         for (QuicTransportParameterEntry parameterEntry : quicTransportEntrys) {
