@@ -1384,6 +1384,20 @@ public class WorkflowConfigurationFactory {
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             }
+
+            // Add proper connection termination with close_notify alert for both TLS 1.2 and TLS
+            // 1.3
+            AlertMessage closeNotify = new AlertMessage();
+            closeNotify.setLevel(AlertLevel.WARNING.getValue());
+            closeNotify.setDescription(AlertDescription.CLOSE_NOTIFY.getValue());
+            trace.addTlsAction(new SendAction(closeNotify));
+
+            // Expect close_notify from server
+            AlertMessage serverCloseNotify = new AlertMessage();
+            serverCloseNotify.setLevel(AlertLevel.WARNING.getValue());
+            serverCloseNotify.setDescription(AlertDescription.CLOSE_NOTIFY.getValue());
+            trace.addTlsAction(new ReceiveTillAction(serverCloseNotify));
+
             return trace;
         } else {
             trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
