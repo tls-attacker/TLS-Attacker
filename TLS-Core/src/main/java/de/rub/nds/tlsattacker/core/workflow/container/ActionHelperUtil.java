@@ -127,9 +127,8 @@ public class ActionHelperUtil {
                 layer = (ImplementedLayers) layerType;
             } catch (ClassCastException e) {
                 LOGGER.warn(
-                        "Cannot assign layer "
-                                + layerType.getName()
-                                + "to current LayerStack. LayerType not implemented for TlsAction.");
+                        "Cannot assign layer {} to current LayerStack. LayerType not implemented for TlsAction.",
+                        layerType.getName());
                 continue;
             }
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();

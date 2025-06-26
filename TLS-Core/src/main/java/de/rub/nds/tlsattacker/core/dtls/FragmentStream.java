@@ -84,18 +84,15 @@ public class FragmentStream {
             }
             if (fillingCounter > 0) {
                 LOGGER.warn(
-                        "Had to fill "
-                                + fillingCounter
-                                + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
+                        "Had to fill {} missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages",
+                        fillingCounter);
             }
             for (Integer i : fragmentByteMap.keySet()) {
                 if (i > intendedSize) {
                     LOGGER.warn(
-                            "Found fragment greater than intended message size(intended size: "
-                                    + intendedSize
-                                    + " but found byte for: "
-                                    + i
-                                    + "). Ignoring");
+                            "Found fragment greater than intended message size(intended size: {} but found byte for: {}). Ignoring",
+                            intendedSize,
+                            i);
                 }
             }
             return stream.toByteArray();
@@ -119,11 +116,9 @@ public class FragmentStream {
             for (Integer i : fragmentByteMap.keySet()) {
                 if (i > intendedSize) {
                     LOGGER.warn(
-                            "Found fragment greater than intended message size(intended size: "
-                                    + intendedSize
-                                    + " but found byte for: "
-                                    + i
-                                    + "). Ignoring");
+                            "Found fragment greater than intended message size(intended size: {} but found byte for: {}). Ignoring",
+                            intendedSize,
+                            i);
                 }
             }
             return stream.toByteArray();
