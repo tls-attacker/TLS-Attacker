@@ -82,4 +82,3 @@ public class AlertMessageToCompactStringTest {
         assertEquals("Alert(FATAL,UNEXPECTED_MESSAGE)", message.toCompactString());
     }
 }
-
