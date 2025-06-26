@@ -8,37 +8,78 @@
  */
 package de.rub.nds.tlsattacker.server.config;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ServerCommandConfigTest {
 
-    /** Test config command line parsing */
+    private ServerCommandConfig serverCommandConfig;
+    private JCommander jcommander;
+
+    @BeforeEach
+    public void setUp() {
+        GeneralDelegate generalDelegate = new GeneralDelegate();
+        serverCommandConfig = new ServerCommandConfig(generalDelegate);
+        jcommander =
+                JCommander.newBuilder()
+                        .addCommand(ServerCommandConfig.COMMAND, serverCommandConfig)
+                        .build();
+    }
+
     @Test
-    @Disabled("Not implemented")
-    public void testCommandLineParsing() {}
+    public void testClientAuthenticationFlag() {
+        String[] args = new String[] {"server", "-client_authentication"};
+        jcommander.parse(args);
 
-    /** Test invalid config with invalid cipher suite */
-    @Test()
-    public void testInvalidCommandLineParsing() {
-        JCommander jc = new JCommander();
+        Config config = serverCommandConfig.createConfig();
+        assertTrue(config.isClientAuthentication());
+    }
 
-        ServerCommandConfig server = new ServerCommandConfig(new GeneralDelegate());
-        jc.addCommand(ServerCommandConfig.COMMAND, server);
+    @Test
+    public void testVerifyFlag() {
+        String[] args = new String[] {"server", "-Verify", "1"};
+        jcommander.parse(args);
 
-        assertThrows(
-                ParameterException.class,
-                () ->
-                        jc.parse(
-                                "server",
-                                "-cipher",
-                                "invalid,TLS_RSA_WITH_AES_256_CBC_SHA",
-                                "-version",
-                                "TLSv1.2"));
+        Config config = serverCommandConfig.createConfig();
+        assertTrue(config.isClientAuthentication());
+    }
+
+    @Test
+    public void testVerifyFlagLowerCase() {
+        String[] args = new String[] {"server", "-verify", "3"};
+        jcommander.parse(args);
+
+        Config config = serverCommandConfig.createConfig();
+        assertTrue(config.isClientAuthentication());
+    }
+
+    @Test
+    public void testBothClientAuthAndVerifyFlags() {
+        String[] args = new String[] {"server", "-client_authentication", "-Verify", "2"};
+        jcommander.parse(args);
+
+        Config config = serverCommandConfig.createConfig();
+        assertTrue(config.isClientAuthentication());
+    }
+
+    @Test
+    public void testNoClientAuthFlags() {
+        String[] args = new String[] {"server"};
+        jcommander.parse(args);
+
+        Config config = serverCommandConfig.createConfig();
+        assertFalse(config.isClientAuthentication());
+    }
+
+    @Test
+    public void testInvalidVerifyValue() {
+        String[] args = new String[] {"server", "-Verify", "invalid"};
+        assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 }
