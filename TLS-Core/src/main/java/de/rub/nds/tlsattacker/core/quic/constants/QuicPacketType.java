@@ -49,7 +49,8 @@ public enum QuicPacketType {
             // 1-RTT packets are the only short header packets
             return ONE_RTT_PACKET;
         } else {
-            QuicPacketType type = getHeaderMap(version).get((byte) (firstByte & 0b11110000));
+            QuicPacketType type =
+                    getHeaderMap(version).get((byte) (firstByte & 0b1111_0000 | 0b0100_0000));
             if (type != null) {
                 return type;
             } else {
