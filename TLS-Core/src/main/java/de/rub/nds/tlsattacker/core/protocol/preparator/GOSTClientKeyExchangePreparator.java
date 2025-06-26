@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -203,6 +204,10 @@ public abstract class GOSTClientKeyExchangePreparator
         msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         Point publicKey =
                 curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
+        if (publicKey == null) {
+            LOGGER.warn("Failed to generate ephemeral public key - using base point");
+            publicKey = curve.getBasePoint();
+        }
         msg.getComputations().setClientPublicKey(publicKey);
     }
 
@@ -281,15 +286,38 @@ public abstract class GOSTClientKeyExchangePreparator
 
     private void prepareKeyBlob() throws IOException {
         try {
+            if (msg.getComputations().getClientPublicKeyX() == null
+                    || msg.getComputations().getClientPublicKeyY() == null
+                    || msg.getComputations().getClientPublicKeyX().getValue() == null
+                    || msg.getComputations().getClientPublicKeyY().getValue() == null) {
+                LOGGER.warn(
+                        "Client public key coordinates are not properly initialized - cannot create GOST key blob");
+                msg.setKeyTransportBlob(new byte[0]);
+                return;
+            }
+
             Point ecPoint =
                     Point.createPoint(
                             msg.getComputations().getClientPublicKeyX().getValue(),
                             msg.getComputations().getClientPublicKeyY().getValue(),
                             chooser.getSelectedGostCurve().getGroupParameters());
+
+            if (ecPoint == null) {
+                LOGGER.warn("Failed to create EC point from coordinates");
+                msg.setKeyTransportBlob(new byte[0]);
+                return;
+            }
+
+            PublicKey generatedKey =
+                    GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint);
+            if (generatedKey == null) {
+                LOGGER.warn("Failed to generate public key from EC point");
+                msg.setKeyTransportBlob(new byte[0]);
+                return;
+            }
+
             SubjectPublicKeyInfo ephemeralKey =
-                    SubjectPublicKeyInfo.getInstance(
-                            GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint)
-                                    .getEncoded());
+                    SubjectPublicKeyInfo.getInstance(generatedKey.getEncoded());
 
             Gost2814789EncryptedKey encryptedKey =
                     new Gost2814789EncryptedKey(
@@ -309,7 +337,7 @@ public abstract class GOSTClientKeyExchangePreparator
             LOGGER.debug("GOST key blob: {}", ASN1Dump.dumpAsString(blob, true));
         } catch (Exception e) {
             msg.setKeyTransportBlob(new byte[0]);
-            LOGGER.warn("Could not compute correct GOST key blob: using byte[0]");
+            LOGGER.warn("Could not compute correct GOST key blob: using byte[0]", e);
         }
     }
 
