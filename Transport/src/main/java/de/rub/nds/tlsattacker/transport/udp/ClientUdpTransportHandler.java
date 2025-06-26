@@ -56,7 +56,6 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         socket.connect(new InetSocketAddress(ipAddress, port));
         socket.setSoTimeout((int) timeout);
         cachedSocketState = null;
-        resetByteCounter();
         this.initialized = true;
     }
 

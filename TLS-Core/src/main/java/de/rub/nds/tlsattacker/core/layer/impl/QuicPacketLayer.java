@@ -297,7 +297,14 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 addProducedContainer(new StatelessResetPseudoPacket());
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
             } else {
-                receivedPacketBuffer.get(packetType).add(reatPacket);
+                if (context.getConfig().discardPacketsWithMismatchedSCID()
+                        && !Arrays.equals(
+                                reatPacket.getDestinationConnectionId().getValue(),
+                                context.getQuicContext().getSourceConnectionId())) {
+                    LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
+                } else {
+                    receivedPacketBuffer.get(packetType).add(reatPacket);
+                }
             }
         }
 

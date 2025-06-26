@@ -1055,6 +1055,12 @@ public class Config implements Serializable {
     private Boolean quicDoNotPad = false;
 
     /**
+     * QUIC Packets with mismatching SCID are most likely stray packets from previous connection
+     * etc. The default use case should be to discard them
+     */
+    private Boolean discardPacketsWithMismatchedSCID = true;
+
+    /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
      * HttpRequestMessage or httpParsing is disabled
      */
@@ -4339,5 +4345,13 @@ public class Config implements Serializable {
 
     public void setQuicDoNotPad(boolean quicDoNotPad) {
         this.quicDoNotPad = quicDoNotPad;
+    }
+
+    public Boolean discardPacketsWithMismatchedSCID() {
+        return discardPacketsWithMismatchedSCID;
+    }
+
+    public void setDiscardPacketsWithMismatchedSCID(Boolean discardPacketsWithMismatchedSCID) {
+        this.discardPacketsWithMismatchedSCID = discardPacketsWithMismatchedSCID;
     }
 }
