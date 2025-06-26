@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,30 +54,17 @@ public class CertificateRequestPreparator
     }
 
     private byte[] convertClientCertificateTypes(List<ClientCertificateType> typeList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (ClientCertificateType type : typeList) {
-            try {
-                stream.write(type.getArrayValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare CertificateRequestMessage. Failed to write ClientCertificateType into message",
-                        ex);
-            }
+            stream.write(type.getArrayValue());
         }
         return stream.toByteArray();
     }
 
     private byte[] convertSigAndHashAlgos(List<SignatureAndHashAlgorithm> algoList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (SignatureAndHashAlgorithm algo : algoList) {
-            try {
-                stream.write(algo.getByteValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare CertificateRequestMessage. Failed to write SignatureAndHash Algorithm into "
-                                + "message",
-                        ex);
-            }
+            stream.write(algo.getByteValue());
         }
         return stream.toByteArray();
     }
@@ -102,7 +87,7 @@ public class CertificateRequestPreparator
 
     private void prepareDistinguishedNamesLength(CertificateRequestMessage msg) {
         msg.setDistinguishedNamesLength(msg.getDistinguishedNames().getValue().length);
-        LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
+        LOGGER.debug("DistinguishedNamesLength: {}", msg.getDistinguishedNamesLength().getValue());
     }
 
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {

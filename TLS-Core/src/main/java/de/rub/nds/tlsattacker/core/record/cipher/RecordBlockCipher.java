@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
@@ -136,13 +136,13 @@ public final class RecordBlockCipher extends RecordCipher {
                     calculatePadding(calculatePaddingLength(record, cleanBytes.length)));
             LOGGER.debug("Padding: {}", computations.getPadding().getValue());
             computations.setPlainRecordBytes(
-                    ArrayConverter.concatenate(cleanBytes, computations.getPadding().getValue()));
+                    DataConverter.concatenate(cleanBytes, computations.getPadding().getValue()));
             LOGGER.debug("PlainRecordBytes: {}", computations.getPlainRecordBytes().getValue());
             byte[] ciphertext = encrypt(computations.getPlainRecordBytes().getValue(), iv);
             computations.setCiphertext(ciphertext);
             if (useExplicitIv) {
                 computations.setAuthenticatedNonMetaData(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 iv, record.getComputations().getCiphertext().getValue()));
             } else {
                 computations.setAuthenticatedNonMetaData(
@@ -152,19 +152,19 @@ public final class RecordBlockCipher extends RecordCipher {
                     collectAdditionalAuthenticatedData(record, getState().getVersion()));
             computations.setMac(
                     calculateMac(
-                            ArrayConverter.concatenate(
+                            DataConverter.concatenate(
                                     computations.getAuthenticatedMetaData().getValue(),
                                     computations.getAuthenticatedNonMetaData().getValue()),
                             getLocalConnectionEndType()));
             if (useExplicitIv) {
                 record.setProtocolMessageBytes(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 iv,
                                 computations.getCiphertext().getValue(),
                                 computations.getMac().getValue()));
             } else {
                 record.setProtocolMessageBytes(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 computations.getCiphertext().getValue(),
                                 computations.getMac().getValue()));
             }
@@ -174,7 +174,7 @@ public final class RecordBlockCipher extends RecordCipher {
                     collectAdditionalAuthenticatedData(record, getState().getVersion()));
             computations.setMac(
                     calculateMac(
-                            ArrayConverter.concatenate(
+                            DataConverter.concatenate(
                                     computations.getAuthenticatedMetaData().getValue(),
                                     computations.getAuthenticatedNonMetaData().getValue()),
                             getLocalConnectionEndType()));
@@ -188,7 +188,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
             record.getComputations()
                     .setPlainRecordBytes(
-                            ArrayConverter.concatenate(
+                            DataConverter.concatenate(
                                     cleanBytes,
                                     computations.getMac().getValue(),
                                     computations.getPadding().getValue()));
@@ -199,7 +199,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
             if (useExplicitIv) {
                 record.setProtocolMessageBytes(
-                        ArrayConverter.concatenate(iv, computations.getCiphertext().getValue()));
+                        DataConverter.concatenate(iv, computations.getCiphertext().getValue()));
             } else {
                 record.setProtocolMessageBytes(computations.getCiphertext());
             }
@@ -330,6 +330,11 @@ public final class RecordBlockCipher extends RecordCipher {
 
             LOGGER.debug("Decrypted plaintext: {}", plainData);
             int paddingLength = (plainData[plainData.length - 1] & 0xff) + 1;
+            if (plainData.length - paddingLength < 0) {
+                LOGGER.warn("Error while decrypting record. Padding length is wrong.");
+                record.setCleanProtocolMessageBytes(plainData);
+                return;
+            }
             byte[] padding =
                     Arrays.copyOfRange(
                             plainData, plainData.length - paddingLength, plainData.length);
@@ -361,7 +366,7 @@ public final class RecordBlockCipher extends RecordCipher {
             if (getState().isEncryptThenMac()) {
                 if (useExplicitIv) {
                     computations.setAuthenticatedNonMetaData(
-                            ArrayConverter.concatenate(
+                            DataConverter.concatenate(
                                     record.getComputations()
                                             .getCbcInitialisationVector()
                                             .getValue(),
@@ -379,7 +384,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
             byte[] calculatedHMAC =
                     calculateMac(
-                            ArrayConverter.concatenate(
+                            DataConverter.concatenate(
                                     computations.getAuthenticatedMetaData().getValue(),
                                     computations.getAuthenticatedNonMetaData().getValue()),
                             getLocalConnectionEndType().getPeer());
@@ -409,7 +414,7 @@ public final class RecordBlockCipher extends RecordCipher {
             return padding.length == padding[padding.length - 1] + 1;
         }
         for (int i = 0; i < padding.length; i++) {
-            if (ArrayConverter.byteToUnsignedInt(padding[i]) != padding.length - 1) {
+            if (DataConverter.byteToUnsignedInt(padding[i]) != padding.length - 1) {
                 LOGGER.debug("Padding is invalid");
                 return false;
             }

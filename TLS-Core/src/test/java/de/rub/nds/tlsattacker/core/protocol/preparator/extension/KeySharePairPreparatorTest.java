@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -47,10 +47,10 @@ public class KeySharePairPreparatorTest {
         preparator.prepare();
         assertArrayEquals(
                 entry.getPublicKey().getValue(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         assertEquals(32, (int) entry.getPublicKeyLength().getValue());
-        assertArrayEquals(entry.getGroup().getValue(), ArrayConverter.hexStringToByteArray("001D"));
+        assertArrayEquals(entry.getGroup().getValue(), DataConverter.hexStringToByteArray("001D"));
     }
 
     @Test

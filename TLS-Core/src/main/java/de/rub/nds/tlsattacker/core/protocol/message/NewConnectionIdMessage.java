@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewConnectionIdHandler;
@@ -29,10 +29,9 @@ import java.util.Objects;
 @XmlRootElement(name = "NewConnectionId")
 public class NewConnectionIdMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ConnectionIdUsage usage;
+    @ModifiableVariableProperty private ConnectionIdUsage usage;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger connectionIdsLength;
 
     @HoldsModifiableVariable private List<ConnectionId> connectionIds;
@@ -134,12 +133,12 @@ public class NewConnectionIdMessage extends HandshakeMessage {
         sb.append("\n  ConnectionIds: ");
         if (connectionIds != null && !connectionIds.isEmpty()) {
             sb.append(
-                    ArrayConverter.bytesToHexString(
+                    DataConverter.bytesToHexString(
                             connectionIds.get(0).getConnectionId().getValue()));
             for (int i = 1; i < connectionIds.size(); i++) {
                 sb.append(", ");
                 sb.append(
-                        ArrayConverter.bytesToHexString(
+                        DataConverter.bytesToHexString(
                                 connectionIds.get(i).getConnectionId().getValue()));
             }
         } else {

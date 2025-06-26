@@ -63,7 +63,7 @@ public class ServerNameIndicationExtensionParser
      */
     private void parseServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListLength(parseIntField(ExtensionByteLength.SERVER_NAME_LIST));
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 
     /**

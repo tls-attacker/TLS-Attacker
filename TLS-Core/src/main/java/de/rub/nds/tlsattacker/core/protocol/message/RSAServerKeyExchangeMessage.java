@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
@@ -28,10 +28,9 @@ import java.util.List;
 @XmlRootElement(name = "RSAServerKeyExchange")
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableByteArray modulus;
+    @ModifiableVariableProperty protected ModifiableByteArray modulus;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     protected ModifiableInteger modulusLength;
 
     @HoldsModifiableVariable protected RSAServerComputations computations;
@@ -82,13 +81,13 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("RSAServerKeyExchangeMessage:");
         sb.append("\n  Modulus N: ");
         if (modulus != null && modulus.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
+            sb.append(DataConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key e: ");
         if (getPublicKey() != null && getPublicKey().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
@@ -97,13 +96,13 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // (D)TLS 1.2
         if (this.getSignatureAndHashAlgorithm() != null
                 && this.getSignatureAndHashAlgorithm().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature: ");
         if (this.getSignature() != null && this.getSignature().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
+            sb.append(DataConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");
         }

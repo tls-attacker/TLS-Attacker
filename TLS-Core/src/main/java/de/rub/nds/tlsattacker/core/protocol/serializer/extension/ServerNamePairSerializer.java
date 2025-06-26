@@ -35,12 +35,12 @@ public class ServerNamePairSerializer extends Serializer<ServerNamePair> {
 
     private void writeServerNameType(ServerNamePair pair) {
         appendByte(pair.getServerNameType().getValue());
-        LOGGER.debug("ServerNameType: " + pair.getServerNameType().getValue());
+        LOGGER.debug("ServerNameType: {}", pair.getServerNameType().getValue());
     }
 
     private void writeServerNameLength(ServerNamePair pair) {
         appendInt(pair.getServerNameLength().getValue(), ExtensionByteLength.SERVER_NAME);
-        LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
+        LOGGER.debug("ServerNameLength: {}", pair.getServerNameLength().getValue());
     }
 
     private void writeServerName(ServerNamePair pair) {

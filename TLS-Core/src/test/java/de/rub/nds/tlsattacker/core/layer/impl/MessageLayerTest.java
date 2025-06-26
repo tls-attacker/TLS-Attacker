@@ -42,6 +42,88 @@ public class MessageLayerTest extends AbstractLayerTest {
         }
     }
 
+    @Test
+    public void testMessageLayerReadsCompleteResultingMessage() {
+        // This test verifies that MessageLayer reads the completeResultingMessage value
+        // from the message and uses it during processing, not just writes to it
+
+        // Create a test message with a specific completeResultingMessage
+        byte[] expectedMessageContent = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05};
+        ClientHelloMessage message = new ClientHelloMessage();
+        message.setAdjustContext(false);
+        message.setCompleteResultingMessage(Modifiable.explicit(expectedMessageContent));
+
+        // Send the message
+        SendAction sendAction = new SendAction("client", message);
+        sendAction.execute(state);
+
+        // The expected output should include:
+        // - Record header: type (0x16 for handshake), version (3,3), length (0,5)
+        // - The message content from completeResultingMessage
+        byte[] expectedOutput =
+                new byte[] {
+                    0x16, // Handshake type
+                    0x03,
+                    0x03, // TLS 1.2 version
+                    0x00,
+                    0x05, // Length of content (5 bytes)
+                    0x01,
+                    0x02,
+                    0x03,
+                    0x04,
+                    0x05 // The actual message content
+                };
+
+        // Verify that the sent bytes include the content from completeResultingMessage
+        Assert.assertArrayEquals(expectedOutput, transportHandler.getSentBytes());
+    }
+
+    @Test
+    public void testMultipleMessagesReadCompleteResultingMessage() {
+        // Test that when multiple handshake messages are sent,
+        // MessageLayer reads each one's completeResultingMessage
+
+        byte[] message1Content = new byte[] {0x01, 0x02};
+        byte[] message2Content = new byte[] {0x03, 0x04, 0x05};
+
+        ClientHelloMessage message1 = new ClientHelloMessage();
+        message1.setAdjustContext(false);
+        message1.setCompleteResultingMessage(Modifiable.explicit(message1Content));
+
+        ClientHelloMessage message2 = new ClientHelloMessage();
+        message2.setAdjustContext(false);
+        message2.setCompleteResultingMessage(Modifiable.explicit(message2Content));
+
+        // Send both messages in one action
+        SendAction sendAction = new SendAction("client", message1, message2);
+        sendAction.execute(state);
+
+        // When messages have completeResultingMessage already set,
+        // they are sent in separate records
+        byte[] expectedOutput =
+                new byte[] {
+                    // First record with message1
+                    0x16, // Handshake type
+                    0x03,
+                    0x03, // TLS 1.2 version
+                    0x00,
+                    0x02, // Length of content (2 bytes)
+                    0x01,
+                    0x02, // message1 content
+                    // Second record with message2
+                    0x16, // Handshake type
+                    0x03,
+                    0x03, // TLS 1.2 version
+                    0x00,
+                    0x03, // Length of content (3 bytes)
+                    0x03,
+                    0x04,
+                    0x05 // message2 content
+                };
+
+        Assert.assertArrayEquals(expectedOutput, transportHandler.getSentBytes());
+    }
+
     private ProtocolMessage createProtocolMessage(ProtocolMessageType protocolMessageType) {
         ProtocolMessage message = null;
         switch (protocolMessageType) {

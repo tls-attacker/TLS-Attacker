@@ -39,11 +39,11 @@ public abstract class SSL2MessageSerializer<T extends SSL2Message> extends Seria
             throw new UnsupportedOperationException("Long record headers are not supported");
         }
         appendInt(message.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 
     protected void writeType() {
         appendByte(message.getType().getValue());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 }

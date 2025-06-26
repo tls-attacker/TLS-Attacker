@@ -8,14 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -28,7 +26,7 @@ public class ServerNameIndicationExtensionPreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ServerNameIndicationExtensionMessage msg;
-    private ByteArrayOutputStream stream;
+    private SilentByteArrayOutputStream stream;
 
     public ServerNameIndicationExtensionPreparator(
             Chooser chooser, ServerNameIndicationExtensionMessage message) {
@@ -39,7 +37,7 @@ public class ServerNameIndicationExtensionPreparator
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing ServerNameIndicationExtensionMessage");
-        stream = new ByteArrayOutputStream();
+        stream = new SilentByteArrayOutputStream();
 
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             prepareEntryList();
@@ -95,11 +93,7 @@ public class ServerNameIndicationExtensionPreparator
                 new ServerNamePairPreparator(chooser, namePair);
         namePairPreparator.prepare();
         ServerNamePairSerializer serializer = new ServerNamePairSerializer(namePair);
-        try {
-            stream.write(serializer.serialize());
-        } catch (IOException ex) {
-            throw new PreparationException("Could not write byte[] from ServerNamePair", ex);
-        }
+        stream.write(serializer.serialize());
     }
 
     private void prepareServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
@@ -109,6 +103,6 @@ public class ServerNameIndicationExtensionPreparator
 
     private void prepareServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListLength(msg.getServerNameListBytes().getValue().length);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 }

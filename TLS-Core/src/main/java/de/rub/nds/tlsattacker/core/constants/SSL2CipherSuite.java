@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,8 +36,7 @@ public enum SSL2CipherSuite {
 
     private static final Map<Integer, SSL2CipherSuite> MAP;
 
-    private SSL2CipherSuite(
-            int value, int secretKeyByteNumber, int clearKeyByteNumber, int blockSize) {
+    SSL2CipherSuite(int value, int secretKeyByteNumber, int clearKeyByteNumber, int blockSize) {
         this.value = value;
         this.secretKeyByteNumber = secretKeyByteNumber;
         this.clearKeyByteNumber = clearKeyByteNumber;
@@ -46,7 +45,7 @@ public enum SSL2CipherSuite {
 
     static {
         MAP = new HashMap<>();
-        for (SSL2CipherSuite c : SSL2CipherSuite.values()) {
+        for (SSL2CipherSuite c : values()) {
             MAP.put(c.value, c);
         }
     }
@@ -57,7 +56,7 @@ public enum SSL2CipherSuite {
         while (pointer < values.length) {
             byte[] suiteBytes =
                     Arrays.copyOfRange(values, pointer, pointer + SSL2CipherSuiteLength);
-            int suiteValue = ArrayConverter.bytesToInt(suiteBytes);
+            int suiteValue = DataConverter.bytesToInt(suiteBytes);
             cipherSuites.add(getCipherSuite(suiteValue));
             pointer += SSL2CipherSuiteLength;
         }
@@ -77,7 +76,7 @@ public enum SSL2CipherSuite {
     }
 
     public byte[] getByteValue() {
-        return ArrayConverter.intToBytes(value, SSL2CipherSuiteLength);
+        return DataConverter.intToBytes(value, SSL2CipherSuiteLength);
     }
 
     public int getClearKeyByteNumber() {

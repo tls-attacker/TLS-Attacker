@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import java.util.List;
@@ -42,10 +42,10 @@ public class PWDProtectExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("001d00050466726564"),
+                        DataConverter.hexStringToByteArray("001d00050466726564"),
                         List.of(),
                         ExtensionType.PWD_PROTECT,
                         5,
-                        List.of(4, ArrayConverter.hexStringToByteArray("66726564"))));
+                        List.of(4, DataConverter.hexStringToByteArray("66726564"))));
     }
 }

@@ -21,14 +21,14 @@ public enum TrustedCaIndicationIdentifierType {
     private final byte value;
     private static final Map<Byte, TrustedCaIndicationIdentifierType> MAP;
 
-    private TrustedCaIndicationIdentifierType(byte value) {
+    TrustedCaIndicationIdentifierType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
 
-        for (TrustedCaIndicationIdentifierType type : TrustedCaIndicationIdentifierType.values()) {
+        for (TrustedCaIndicationIdentifierType type : values()) {
             MAP.put(type.value, type);
         }
     }

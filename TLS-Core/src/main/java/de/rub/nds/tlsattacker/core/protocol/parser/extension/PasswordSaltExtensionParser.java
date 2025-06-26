@@ -32,7 +32,7 @@ public class PasswordSaltExtensionParser extends ExtensionParser<PasswordSaltExt
 
     private void parseSaltLength(PasswordSaltExtensionMessage msg) {
         msg.setSaltLength(parseIntField(ExtensionByteLength.PASSWORD_SALT));
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 
     private void parseSalt(PasswordSaltExtensionMessage msg) {

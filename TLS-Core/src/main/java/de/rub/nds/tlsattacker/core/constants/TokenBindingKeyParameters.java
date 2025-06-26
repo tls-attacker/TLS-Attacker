@@ -19,13 +19,13 @@ public enum TokenBindingKeyParameters {
     private final byte keyParameterValue;
     private static final Map<Byte, TokenBindingKeyParameters> MAP;
 
-    private TokenBindingKeyParameters(byte keyParameterValue) {
+    TokenBindingKeyParameters(byte keyParameterValue) {
         this.keyParameterValue = keyParameterValue;
     }
 
     static {
         MAP = new HashMap<>();
-        for (TokenBindingKeyParameters c : TokenBindingKeyParameters.values()) {
+        for (TokenBindingKeyParameters c : values()) {
             MAP.put(c.keyParameterValue, c);
         }
     }

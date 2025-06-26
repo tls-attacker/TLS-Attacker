@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
@@ -16,6 +17,7 @@ import java.io.InputStream;
  * with data it only needs to know how to parse, prepare, serialize and handle the message. All
  * messages must therefore provide this functionality.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public interface DataContainer {
 
     public Parser<? extends DataContainer> getParser(Context context, InputStream stream);

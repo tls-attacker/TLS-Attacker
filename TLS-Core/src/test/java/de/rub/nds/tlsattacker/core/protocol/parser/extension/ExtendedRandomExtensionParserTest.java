@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import java.util.List;
@@ -36,10 +36,10 @@ public class ExtendedRandomExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("002800030001AB"),
+                        DataConverter.hexStringToByteArray("002800030001AB"),
                         List.of(),
                         ExtensionType.EXTENDED_RANDOM,
                         3,
-                        List.of(1, ArrayConverter.hexStringToByteArray("AB"))));
+                        List.of(1, DataConverter.hexStringToByteArray("AB"))));
     }
 }

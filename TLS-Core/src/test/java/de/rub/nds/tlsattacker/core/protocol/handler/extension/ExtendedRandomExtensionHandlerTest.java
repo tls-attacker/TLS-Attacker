@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
@@ -21,16 +21,16 @@ public class ExtendedRandomExtensionHandlerTest
                 ExtendedRandomExtensionMessage, ExtendedRandomExtensionHandler> {
     private final byte[] EXTENDED_RANDOM_SHORT = new byte[0];
     private final byte[] EXTENDED_RANDOM_DEFAULT =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
     private final byte[] EXTENDED_RANDOM_LONG =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     private final byte[] EXTENDED_RANDOM_CLIENT =
-            ArrayConverter.hexStringToByteArray("AABBCCDDEEFF");
+            DataConverter.hexStringToByteArray("AABBCCDDEEFF");
     private final byte[] EXTENDED_RANDOM_SERVER =
-            ArrayConverter.hexStringToByteArray("112233445566");
+            DataConverter.hexStringToByteArray("112233445566");
 
     public ExtendedRandomExtensionHandlerTest() {
         super(ExtendedRandomExtensionMessage::new, ExtendedRandomExtensionHandler::new);
@@ -97,10 +97,10 @@ public class ExtendedRandomExtensionHandlerTest
     @Test
     public void testConcatRandoms() {
         byte[] clientRandom =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "001122334455667788990000112233445566778899000011223344556677889900AABB");
         byte[] serverRandom =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "FF1122334455667788990000112233445566778899000011223344556677889900AABB");
         tlsContext.setClientRandom(clientRandom);
         tlsContext.setServerRandom(serverRandom);
@@ -117,10 +117,8 @@ public class ExtendedRandomExtensionHandlerTest
         tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustContext(message);
 
-        byte[] concatClientRandom =
-                ArrayConverter.concatenate(clientRandom, EXTENDED_RANDOM_CLIENT);
-        byte[] concatServerRandom =
-                ArrayConverter.concatenate(serverRandom, EXTENDED_RANDOM_SERVER);
+        byte[] concatClientRandom = DataConverter.concatenate(clientRandom, EXTENDED_RANDOM_CLIENT);
+        byte[] concatServerRandom = DataConverter.concatenate(serverRandom, EXTENDED_RANDOM_SERVER);
 
         assertArrayEquals(concatClientRandom, tlsContext.getClientRandom());
         assertArrayEquals(concatServerRandom, tlsContext.getServerRandom());

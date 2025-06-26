@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -149,7 +149,7 @@ public class StaticTicketCrypto {
         for (int i = 0; i < padLen; i++) {
             padding[i] = padLen;
         }
-        byte[] padded = ArrayConverter.concatenate(plainTextRaw, padding);
+        byte[] padded = DataConverter.concatenate(plainTextRaw, padding);
         return padded;
     }
 

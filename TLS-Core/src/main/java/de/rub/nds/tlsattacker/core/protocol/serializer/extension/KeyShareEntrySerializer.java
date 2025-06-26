@@ -40,7 +40,7 @@ public class KeyShareEntrySerializer extends Serializer<KeyShareEntry> {
 
     private void writeKeyShareLength(KeyShareEntry pair) {
         appendInt(pair.getPublicKeyLength().getValue(), ExtensionByteLength.KEY_SHARE_LENGTH);
-        LOGGER.debug("KeyShareLength: " + pair.getPublicKeyLength().getValue());
+        LOGGER.debug("KeyShareLength: {}", pair.getPublicKeyLength().getValue());
     }
 
     private void writeKeyShare(KeyShareEntry entry) {

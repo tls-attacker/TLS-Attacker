@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -57,17 +57,17 @@ public class ServerHelloParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "020000480303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000"),
                         List.of(
                                 HandshakeMessageType.SERVER_HELLO.getValue(),
                                 72,
                                 ProtocolVersion.TLS12.getValue(),
-                                ArrayConverter.hexStringToByteArray("378f93cb"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray("378f93cb"),
+                                DataConverter.hexStringToByteArray(
                                         "378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
                                 CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(),
                                 CompressionMethod.NULL.getValue(),
@@ -76,39 +76,39 @@ public class ServerHelloParserTest
                                 0)),
                 Arguments.of(
                         ProtocolVersion.TLS11,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "020000360302697b9fc9eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b00003500000eff0100010000230000000f000101"),
                         List.of(
                                 HandshakeMessageType.SERVER_HELLO.getValue(),
                                 54,
                                 ProtocolVersion.TLS11.getValue(),
-                                ArrayConverter.hexStringToByteArray("697b9fc9"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray("697b9fc9"),
+                                DataConverter.hexStringToByteArray(
                                         "697b9fc9eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b"),
                                 0,
                                 new byte[0],
                                 CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA.getByteValue(),
                                 CompressionMethod.NULL.getValue(),
                                 14,
-                                ArrayConverter.hexStringToByteArray("ff0100010000230000000f000101"),
+                                DataConverter.hexStringToByteArray("ff0100010000230000000f000101"),
                                 3)),
                 Arguments.of(
                         ProtocolVersion.TLS10,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "0200003603013a40a6187edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f100003500000eff0100010000230000000f000101"),
                         List.of(
                                 HandshakeMessageType.SERVER_HELLO.getValue(),
                                 54,
                                 ProtocolVersion.TLS10.getValue(),
-                                ArrayConverter.hexStringToByteArray("3a40a618"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray("3a40a618"),
+                                DataConverter.hexStringToByteArray(
                                         "3a40a6187edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f1"),
                                 0,
                                 new byte[0],
                                 CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA.getByteValue(),
                                 CompressionMethod.NULL.getValue(),
                                 14,
-                                ArrayConverter.hexStringToByteArray("ff0100010000230000000f000101"),
+                                DataConverter.hexStringToByteArray("ff0100010000230000000f000101"),
                                 3)));
     }
 }

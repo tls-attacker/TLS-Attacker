@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,10 +72,9 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
                     msg.getExtension(SessionTicketTLSExtensionMessage.class);
-            if (extensionMessage != null) {
-                if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
-                    isResumptionWithSessionTicket = true;
-                }
+            if (extensionMessage != null
+                    && extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
+                isResumptionWithSessionTicket = true;
             }
         }
         if (isResumptionWithSessionTicket && chooser.getConfig().isOverrideSessionIdForTickets()) {
@@ -113,29 +110,17 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CompressionMethod compression : compressionList) {
-            try {
-                stream.write(compression.getArrayValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
-                        ex);
-            }
+            stream.write(compression.getArrayValue());
         }
         return stream.toByteArray();
     }
 
     private byte[] convertCipherSuites(List<CipherSuite> suiteList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CipherSuite suite : suiteList) {
-            try {
-                stream.write(suite.getByteValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
-                        ex);
-            }
+            stream.write(suite.getByteValue());
         }
         return stream.toByteArray();
     }
@@ -164,7 +149,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCompressionLength(T msg) {
         msg.setCompressionLength(msg.getCompressions().getValue().length);
-        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: {}", msg.getCompressionLength().getValue());
     }
 
     private void prepareCipherSuites(T msg) {
@@ -175,7 +160,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCipherSuitesLength(T msg) {
         msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuitesLength: {}", msg.getCipherSuiteLength().getValue());
     }
 
     private boolean hasClientRandom() {
@@ -193,7 +178,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCookieLength(T msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
-        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: {}", msg.getCookieLength().getValue());
     }
 
     @Override

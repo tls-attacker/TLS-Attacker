@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,12 +56,12 @@ public class SSL2ClientHelloPreparator extends SSL2MessagePreparator<SSL2ClientH
 
     private void preparePaddingLength(SSL2ClientHelloMessage message) {
         message.setPaddingLength(0);
-        LOGGER.debug("PaddingLength: " + message.getPaddingLength().getValue());
+        LOGGER.debug("PaddingLength: {}", message.getPaddingLength().getValue());
     }
 
     private void prepareType(SSL2ClientHelloMessage message) {
         message.setType(message.getSsl2MessageType().getType());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     private void prepareProtocolVersion(SSL2ClientHelloMessage message) {
@@ -72,16 +70,10 @@ public class SSL2ClientHelloPreparator extends SSL2MessagePreparator<SSL2ClientH
     }
 
     private void prepareCipherSuites(SSL2ClientHelloMessage message) {
-        ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream cipherStream = new SilentByteArrayOutputStream();
         for (SSL2CipherSuite suite : SSL2CipherSuite.values()) {
-            try {
-                if (suite != SSL2CipherSuite.SSL_UNKNOWN_CIPHER) {
-                    cipherStream.write(suite.getByteValue());
-                }
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message",
-                        ex);
+            if (suite != SSL2CipherSuite.SSL_UNKNOWN_CIPHER) {
+                cipherStream.write(suite.getByteValue());
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());
@@ -100,21 +92,21 @@ public class SSL2ClientHelloPreparator extends SSL2MessagePreparator<SSL2ClientH
 
     private void prepareSessionIDLength(SSL2ClientHelloMessage message) {
         message.setSessionIDLength(message.getSessionId().getValue().length);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength().getValue());
     }
 
     private void prepareChallengeLength(SSL2ClientHelloMessage message) {
         message.setChallengeLength(message.getChallenge().getValue().length);
-        LOGGER.debug("ChallengeLength: " + message.getChallengeLength().getValue());
+        LOGGER.debug("ChallengeLength: {}", message.getChallengeLength().getValue());
     }
 
     private void prepareCipherSuiteLength(SSL2ClientHelloMessage message) {
         message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuiteLength: " + message.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: {}", message.getCipherSuiteLength().getValue());
     }
 
     private void prepareMessageLength(SSL2ClientHelloMessage message, int length) {
         message.setMessageLength(length);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 }

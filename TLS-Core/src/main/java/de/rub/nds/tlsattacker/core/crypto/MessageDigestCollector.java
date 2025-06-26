@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -29,20 +28,15 @@ public class MessageDigestCollector {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ByteArrayOutputStream stream;
+    private SilentByteArrayOutputStream stream;
 
     /** Default constructor. */
     public MessageDigestCollector() {
-        stream = new ByteArrayOutputStream();
+        stream = new SilentByteArrayOutputStream();
     }
 
     public void append(byte[] bytes) {
-        try {
-            stream.write(bytes);
-        } catch (IOException ex) {
-            // Should never fail
-            LOGGER.error("Could not append bytes to Stream", ex);
-        }
+        stream.write(bytes);
     }
 
     public byte[] digest(ProtocolVersion version, CipherSuite suite) {
@@ -72,7 +66,7 @@ public class MessageDigestCollector {
             if (hash2 != null) {
                 hash2.update(stream.toByteArray());
                 byte[] d2 = hash2.digest();
-                digest = ArrayConverter.concatenate(digest, d2);
+                digest = DataConverter.concatenate(digest, d2);
             }
             return digest;
         } catch (NoSuchAlgorithmException ex) {
@@ -81,7 +75,7 @@ public class MessageDigestCollector {
     }
 
     public void reset() {
-        stream = new ByteArrayOutputStream();
+        stream = new SilentByteArrayOutputStream();
     }
 
     public byte[] getRawBytes() {
@@ -90,13 +84,8 @@ public class MessageDigestCollector {
 
     public void setRawBytes(byte[] rawBytes) {
         reset();
-        try {
-            if (rawBytes != null) {
-                stream.write(rawBytes);
-            }
-        } catch (IOException ex) {
-            // Should never fail
-            LOGGER.error("Could not set RawBytes in MessageDigestCollector", ex);
+        if (rawBytes != null) {
+            stream.write(rawBytes);
         }
     }
 }

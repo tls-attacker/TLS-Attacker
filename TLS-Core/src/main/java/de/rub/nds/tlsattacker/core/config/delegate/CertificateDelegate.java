@@ -48,7 +48,10 @@ public class CertificateDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = "-cert", description = "PEM encoded certificate file")
+    @Parameter(
+            names = "-cert",
+            description =
+                    "PEM encoded certificate file (can contain multiple certificates for a certificate chain)")
     private String certificate = null;
 
     @Parameter(names = "-key", description = "PEM encoded private key")
@@ -127,7 +130,7 @@ public class CertificateDelegate extends Delegate {
         }
         if (certificate != null) {
             if (privateKey == null) {
-                LOGGER.warn("Certificate provided without chain");
+                LOGGER.warn("Certificate provided without private key");
             }
             LOGGER.debug("Loading certificate chain");
             try {
@@ -173,22 +176,22 @@ public class CertificateDelegate extends Delegate {
     private void adjustPrivateKey(X509CertificateConfig config, PrivateKey privateKey) {
         if (privateKey instanceof RSAPrivateKey) {
             RSAPrivateKey rsaKey = (RSAPrivateKey) privateKey;
-            config.setRsaPrivateKey(rsaKey.getPrivateExponent());
-            config.setRsaModulus(rsaKey.getModulus());
+            config.setDefaultSubjectRsaPrivateExponent(rsaKey.getPrivateExponent());
+            config.setDefaultSubjectRsaModulus(rsaKey.getModulus());
         } else if (privateKey instanceof DSAPrivateKey) {
             DSAPrivateKey dsaKey = (DSAPrivateKey) privateKey;
-            config.setDsaGenerator(dsaKey.getParams().getG());
-            config.setDsaPrimeP(dsaKey.getParams().getP());
-            config.setDsaPrimeQ(dsaKey.getParams().getQ());
-            config.setDsaPrivateKey(dsaKey.getX());
+            config.setDefaultSubjectDsaGenerator(dsaKey.getParams().getG());
+            config.setDefaultSubjectDsaPrimeP(dsaKey.getParams().getP());
+            config.setDefaultSubjectDsaPrimeQ(dsaKey.getParams().getQ());
+            config.setDefaultSubjectDsaPrivateKey(dsaKey.getX());
         } else if (privateKey instanceof DHPrivateKey) {
             DHPrivateKey dhKey = (DHPrivateKey) privateKey;
-            config.setDhPrivateKey(dhKey.getX());
+            config.setDefaultSubjectDhPrivateKey(dhKey.getX());
             config.setDhModulus(dhKey.getParams().getP());
             config.setDhGenerator(dhKey.getParams().getG());
         } else if (privateKey instanceof ECPrivateKey) {
             ECPrivateKey ecKey = (ECPrivateKey) privateKey;
-            config.setEcPrivateKey(ecKey.getS());
+            config.setDefaultSubjectEcPrivateKey(ecKey.getS());
             config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
         } else {
             throw new UnsupportedOperationException("This private key is not supported:" + key);

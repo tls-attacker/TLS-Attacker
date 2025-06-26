@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
-import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -33,7 +33,6 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -143,22 +142,17 @@ public class DtlsFragmentLayer
                                             + HandshakeByteLength.MESSAGE_LENGTH_FIELD,
                                     data.length),
                             fragments);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             // send the fragments
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 fragment.getPreparator(context).prepare();
-                try {
-                    byte[] completeMessage = fragment.getSerializer(context).serialize();
-                    fragment.setCompleteResultingMessage(completeMessage);
-                    stream.write(fragment.getCompleteResultingMessage().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException(
-                            "Could not write Record bytes to ByteArrayStream", ex);
-                }
+                byte[] completeMessage = fragment.getSerializer(context).serialize();
+                fragment.setCompleteResultingMessage(completeMessage);
+                stream.write(fragment.getCompleteResultingMessage().getValue());
                 addProducedContainer(fragment);
                 if (context.getConfig().isIndividualTransportPacketsForFragments()) {
                     getLowerLayer().sendData(hint, stream.toByteArray());
-                    stream = new ByteArrayOutputStream();
+                    stream = new SilentByteArrayOutputStream();
                 }
             }
             if (!context.getConfig().isIndividualTransportPacketsForFragments()) {
@@ -226,9 +220,9 @@ public class DtlsFragmentLayer
                         byte[] content =
                                 uninterpretedMessageFragment.getFragmentContent().getValue();
                         byte[] message =
-                                ArrayConverter.concatenate(
+                                DataConverter.concatenate(
                                         new byte[] {type},
-                                        ArrayConverter.intToBytes(
+                                        DataConverter.intToBytes(
                                                 content.length,
                                                 HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                                         content);

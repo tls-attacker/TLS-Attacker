@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class RecordSizeLimitExtensionPreparatorTest
         assertArrayEquals(
                 new byte[] {(byte) 0x05, (byte) 0x39}, message.getRecordSizeLimit().getValue());
         assertArrayEquals(
-                ArrayConverter.intToBytes(context.getConfig().getInboundRecordSizeLimit(), 2),
+                DataConverter.intToBytes(context.getConfig().getInboundRecordSizeLimit(), 2),
                 message.getRecordSizeLimit().getValue());
     }
 }

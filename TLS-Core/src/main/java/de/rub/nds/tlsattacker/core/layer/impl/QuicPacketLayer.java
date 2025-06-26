@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
@@ -27,7 +28,6 @@ import de.rub.nds.tlsattacker.core.quic.crypto.QuicEncryptor;
 import de.rub.nds.tlsattacker.core.quic.packet.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.PortUnreachableException;
@@ -233,7 +233,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     /** Reads all packets in one UDP datagram and add to packet buffer. */
     private void readPackets(InputStream dataStream) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
 
         if (dataStream.available() == 0) {
             throw new EndOfStreamException();

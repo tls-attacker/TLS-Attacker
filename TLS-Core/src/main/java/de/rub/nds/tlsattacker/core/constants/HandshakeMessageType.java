@@ -40,17 +40,17 @@ public enum HandshakeMessageType {
 
     private static final Map<Byte, HandshakeMessageType> MAP;
 
-    private HandshakeMessageType(byte value) {
+    HandshakeMessageType(byte value) {
         this.value = value;
     }
 
-    private HandshakeMessageType() {
+    HandshakeMessageType() {
         this.value = -1;
     }
 
     static {
         MAP = new HashMap<>();
-        for (HandshakeMessageType cm : HandshakeMessageType.values()) {
+        for (HandshakeMessageType cm : values()) {
             if (cm == UNKNOWN || cm.name().contains("SSL2")) {
                 continue;
             }

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -41,15 +41,15 @@ public class RSAClientKeyExchangePreparatorTest
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
         tlsContext.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
-        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
+        tlsContext.setClientRandom(DataConverter.hexStringToByteArray("AABBCCDDEEFF"));
+        tlsContext.setServerRandom(DataConverter.hexStringToByteArray("AABBCCDDEEFF"));
     }
 
     private void checkMessageContents() {
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"),
-                        ArrayConverter.hexStringToByteArray("AABBCCDDEEFF")),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray("AABBCCDDEEFF"),
+                        DataConverter.hexStringToByteArray("AABBCCDDEEFF")),
                 message.getComputations().getClientServerRandom().getValue());
         assertNotNull(message.getComputations().getPremasterSecret().getValue());
         assertEquals(

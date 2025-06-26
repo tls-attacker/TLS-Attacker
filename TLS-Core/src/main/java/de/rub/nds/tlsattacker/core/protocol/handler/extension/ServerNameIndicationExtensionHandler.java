@@ -41,7 +41,7 @@ public class ServerNameIndicationExtensionHandler
                                         StandardCharsets.ISO_8859_1),
                                 type));
             } else {
-                LOGGER.warn("Unknown SNI Type:" + pair.getServerNameType().getValue());
+                LOGGER.warn("Unknown SNI Type: {}", pair.getServerNameType().getValue());
             }
         }
         tlsContext.setClientSNIEntryList(sniEntryList);

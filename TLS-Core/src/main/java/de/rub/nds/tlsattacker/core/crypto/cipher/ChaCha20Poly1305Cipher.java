@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -105,11 +105,11 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
         byte[] plaintext = new byte[getOutputSize(false, ciphertext.length)];
         byte[] aadLengthLittleEndian =
-                ArrayConverter.reverseByteOrder(
-                        ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
+                DataConverter.reverseByteOrder(
+                        DataConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
         byte[] ciphertextLengthLittleEndian =
-                ArrayConverter.reverseByteOrder(
-                        ArrayConverter.longToBytes(Long.valueOf(ciphertextLength), 8));
+                DataConverter.reverseByteOrder(
+                        DataConverter.longToBytes(Long.valueOf(ciphertextLength), 8));
 
         this.cipher.init(false, new ParametersWithIV(null, iv));
         initMAC();
@@ -117,16 +117,16 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
         if (draftStructure) {
             byte[] macInput =
-                    ArrayConverter.concatenate(additionalAuthenticatedData, aadLengthLittleEndian);
-            macInput = ArrayConverter.concatenate(macInput, ciphertext, ciphertextLength);
-            macInput = ArrayConverter.concatenate(macInput, ciphertextLengthLittleEndian);
+                    DataConverter.concatenate(additionalAuthenticatedData, aadLengthLittleEndian);
+            macInput = DataConverter.concatenate(macInput, ciphertext, ciphertextLength);
+            macInput = DataConverter.concatenate(macInput, ciphertextLengthLittleEndian);
             this.mac.update(macInput, 0, macInput.length);
             this.mac.doFinal(calculatedMAC, 0);
         } else {
             updateMAC(additionalAuthenticatedData, 0, additionalDataLength);
             updateMAC(ciphertext, 0, ciphertextLength);
             calculatedMAC =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             aadLengthLittleEndian, ciphertextLengthLittleEndian, 8);
             this.mac.update(calculatedMAC, 0, (tagLength / Bits.IN_A_BYTE));
             this.mac.doFinal(calculatedMAC, 0);
@@ -179,19 +179,19 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
         cipher.processBytes(someBytes, 0, plaintextLength, ciphertext, 0);
 
         byte[] aadLengthLittleEndian =
-                ArrayConverter.reverseByteOrder(
-                        ArrayConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
+                DataConverter.reverseByteOrder(
+                        DataConverter.longToBytes(Long.valueOf(additionalDataLength), 8));
         byte[] plaintextLengthLittleEndian =
-                ArrayConverter.reverseByteOrder(
-                        ArrayConverter.longToBytes(Long.valueOf(plaintextLength), 8));
+                DataConverter.reverseByteOrder(
+                        DataConverter.longToBytes(Long.valueOf(plaintextLength), 8));
         byte[] aadPlaintextLengthsLittleEndian =
-                ArrayConverter.concatenate(aadLengthLittleEndian, plaintextLengthLittleEndian, 8);
+                DataConverter.concatenate(aadLengthLittleEndian, plaintextLengthLittleEndian, 8);
 
         if (draftStructure) {
             byte[] macInput =
-                    ArrayConverter.concatenate(additionAuthenticatedData, aadLengthLittleEndian);
-            macInput = ArrayConverter.concatenate(macInput, ciphertext, plaintextLength);
-            macInput = ArrayConverter.concatenate(macInput, plaintextLengthLittleEndian);
+                    DataConverter.concatenate(additionAuthenticatedData, aadLengthLittleEndian);
+            macInput = DataConverter.concatenate(macInput, ciphertext, plaintextLength);
+            macInput = DataConverter.concatenate(macInput, plaintextLengthLittleEndian);
             mac.update(macInput, 0, macInput.length);
             mac.doFinal(ciphertext, 0 + plaintextLength);
         } else {

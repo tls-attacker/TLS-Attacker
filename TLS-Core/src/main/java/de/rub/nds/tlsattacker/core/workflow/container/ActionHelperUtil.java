@@ -117,7 +117,7 @@ public class ActionHelperUtil {
         // allow for additional application data to arrive unhandled
         messageConfiguration.setAllowTrailingContainers(true);
 
-        return ActionHelperUtil.sortLayerConfigurations(
+        return sortLayerConfigurations(
                 layerStack, false, List.of(httpConfiguration, messageConfiguration));
     }
 

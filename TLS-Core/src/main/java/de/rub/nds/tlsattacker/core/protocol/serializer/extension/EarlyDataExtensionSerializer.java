@@ -38,6 +38,6 @@ public class EarlyDataExtensionSerializer extends ExtensionSerializer<EarlyDataE
         appendInt(
                 msg.getMaxEarlyDataSize().getValue(),
                 ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH);
-        LOGGER.debug("MaxEarlyDataSize: " + msg.getMaxEarlyDataSize());
+        LOGGER.debug("MaxEarlyDataSize: {}", msg.getMaxEarlyDataSize());
     }
 }

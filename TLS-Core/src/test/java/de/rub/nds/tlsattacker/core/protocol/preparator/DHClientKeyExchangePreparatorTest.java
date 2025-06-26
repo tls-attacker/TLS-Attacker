@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
@@ -32,7 +32,7 @@ public class DHClientKeyExchangePreparatorTest
             new BigInteger(
                     "49437715717798893754105488735114516682455843745607681454511055039168584592490468625265408270895845434581657576902999182876198939742286450124559319006108449708689975897919447736149482114339733412256412716053305356946744588719383899737036630001856916051516306568909530334115858523077759833807187583559767008031");
     private static final byte[] PREMASTERSECRET =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "3CDCE99BB99CCE256355C696A39E4B5BE3726FCC5F104EE36DD05CB68EA1102DAAEA515EB51F519E656EA8E2B4E2604CC9D4E017EE44B3854D133F5418688AC251D88196651611E5D91F5297B1C68989A208641F8C54AECBF4F360F2222FF692936F74803696E7627D7B2710A08CC21220042649277049ABA23FEA6422C3BE1C");
 
     public DHClientKeyExchangePreparatorTest() {
@@ -52,8 +52,8 @@ public class DHClientKeyExchangePreparatorTest
         // prepare context
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
-        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setClientRandom(DataConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(DataConverter.hexStringToByteArray(RANDOM));
         // set server DH-parameters
         tlsContext.setServerEphemeralDhModulus(new BigInteger(DH_M, 16));
         tlsContext.setServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
@@ -68,9 +68,9 @@ public class DHClientKeyExchangePreparatorTest
         assertNotNull(message.getPublicKey());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
     }
 

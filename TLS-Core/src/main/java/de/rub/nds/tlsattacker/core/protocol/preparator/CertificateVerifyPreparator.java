@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -58,8 +58,8 @@ public class CertificateVerifyPreparator
         if (chooser.getSelectedProtocolVersion().is13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray(
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray(
                                         "2020202020202020202020202020202020202020202020202020"
                                                 + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
                                 CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
@@ -72,8 +72,8 @@ public class CertificateVerifyPreparator
                                                 chooser.getSelectedCipherSuite()));
             } else {
                 toBeSigned =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray(
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray(
                                         "2020202020202020202020202020202020202020202020202020"
                                                 + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
                                 CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
@@ -110,7 +110,7 @@ public class CertificateVerifyPreparator
 
     private void prepareSignatureLength(CertificateVerifyMessage msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     private void prepareSignatureHashAlgorithm(CertificateVerifyMessage msg) {

@@ -21,7 +21,7 @@ public enum StarttlsType {
      */
     private String negotiatationString;
 
-    private StarttlsType(String negotiatationString) {
+    StarttlsType(String negotiatationString) {
         this.negotiatationString = negotiatationString;
     }
 

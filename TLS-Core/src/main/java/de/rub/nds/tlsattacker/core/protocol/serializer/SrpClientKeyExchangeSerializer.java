@@ -43,7 +43,7 @@ public class SrpClientKeyExchangeSerializer
      */
     private void writeSerializedPublicKeyLength(SrpClientKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH);
-        LOGGER.debug("SerializedPublicKexLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKexLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /** Writes the SerializedPublicKey of the SrpClientKeyExchangeMessage into the final byte[] */

@@ -43,7 +43,7 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
      */
     private void parseLevel(AlertMessage msg) {
         msg.setLevel(parseByteField(AlertByteLength.LEVEL_LENGTH));
-        LOGGER.debug("Level: " + msg.getLevel().getValue());
+        LOGGER.debug("Level: {}", msg.getLevel().getValue());
     }
 
     /**
@@ -53,6 +53,6 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
      */
     private void parseDescription(AlertMessage msg) {
         msg.setDescription(parseByteField(AlertByteLength.DESCRIPTION_LENGTH));
-        LOGGER.debug("Description: " + msg.getDescription().getValue());
+        LOGGER.debug("Description: {}", msg.getDescription().getValue());
     }
 }

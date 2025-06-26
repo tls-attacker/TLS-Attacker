@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
@@ -64,10 +64,10 @@ public class PseudoRandomFunctionTest {
         assertArrayEquals(result1, result2);
 
         seed =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "DD65AFF37A86CD3BECFAF84BE5C85787009FCE23DED71B513EC6F97BA44CF654C6891E4146BBE9DE33DFE9936917C47ED8810D90DDFA90CBDFFAEAD7");
         result1 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "49BC96FF7CB5A404DFBE1F06CFE49A01D728BDBCDA0FDD87F9B349FF9E2537959F2D0DB3C4480E2C1916D19C2FF5623D");
         result2 =
                 PseudoRandomFunction.compute(
@@ -76,13 +76,13 @@ public class PseudoRandomFunctionTest {
         assertArrayEquals(result1, result2);
 
         secret =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0DA8674196F2496C4EE1E4779DE04990BE3CE4655252F1961E707B61178436131369D11E7DA84C05374535B95550DD0F");
         seed =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "52E78F4F4E131F8CABAFD5D7C9C62A5EDF62CADB4D033131FE9B83DE9D459EFD52E78F4F6AA0FE312217AEF691AD763932945E8CEDD7F96E3C336B0866A66698");
         result1 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "6622B653451DBB85BA0494959A6255F02100B93FCF09AF94176A3CA6E7FD09DCDA0357FE5AF3110EBC7B2466B66AB37E");
         result2 =
                 PseudoRandomFunction.compute(
@@ -126,14 +126,14 @@ public class PseudoRandomFunctionTest {
 
     @Test
     public void testComputeForSSL3() throws NoSuchAlgorithmException, IOException {
-        byte[] master_secret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
-        byte[] client_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
-        byte[] server_random = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
+        byte[] master_secret = DataConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
+        byte[] client_random = DataConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
+        byte[] server_random = DataConverter.hexStringToByteArray(StringUtils.repeat("03", 32));
 
         byte[] result1 =
                 PseudoRandomFunction.computeSSL3(master_secret, client_random, server_random, 48);
         byte[] result2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "24d8e8797e3a106b7752b22cbf8829acf27c8f1e2630e9c2d3442f991e7736288d696027c06fd118f1c59311a66039a0");
 
         assertArrayEquals(result1, result2);
@@ -162,11 +162,11 @@ public class PseudoRandomFunctionTest {
         message.prepareComputations();
         message.getComputations()
                 .setPremasterSecret(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "17631f03fb5f59e65ef9b581bb6494e7304e2eaffb07ff7356cf62db1c44f4e4c15614909a3f2980c1908da2200924a23bc037963c204048cc77b1bcab5e6c9ef2c32928bcbdc0b664535885d46a9d4af4104eba4d7428c5741cf1c74bbd54d8e7ea16eaa126218286639a740fc39173e8989aea7f4b4440e1cad321315911fc4a8135d1217ebada1c70cb4ce99ff11dc8c8ca4ffc3c48a9f3f2143588a8fec147a6c3da4d36df18cf075eb7de187d83c7e3b7fd27124741a4b8809bed4f43ed9a434ce59c6a33277be96d8ef27b8e6a59d70bf6a04a86f04dfc37ab69ad90da53dfc1ea27f60a32ee7608b2197943bf8673dbe68003277bfd40b40d18b1a3bf"));
         message.getComputations()
                 .setClientServerRandom(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "c8c9c788adbd9dc72b5dd0635f9e2576e09c87b67e045c026ffa3281069601fd594c07e445947b545a746fcbc094e12427e0286be2199300925a81be02bf5467"));
         result1 =
                 PRF_legacy(
@@ -189,7 +189,7 @@ public class PseudoRandomFunctionTest {
          * 16 Bytes
          */
         byte[] serverClientRandom =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4a8135d1217ebada1c70cb4ce99ff11dc8c8ca4ffc3c48a9f3f2143588a8fec147a6c3da4d36df18cf075eb7de187d83c7e3b7fd27124741a4b8809bed4f43ed9a434ce59c6a33277be96d8ef27b8e6a59d70bf6a04a86f04dfc37ab69ad90da53dfc1ea27f60a32ee7608b2197943bf8673dbe68003277bfd40b40d18b1a3bf17631f03fb5f59e65ef9b581bb6494e7304e2eaffb07ff7356cf62db1c44f4e4c15614909a3f2980c1908da2200924a23bc037963c204048cc77b1bcab5e6c9ef2c32928bcbdc0b664535885d46a9d4af4104eba4d7428c5741cf1c74bbd54d8e7ea16eaa126218286639a740fc39173e8989aea7f4b4440e1cad321315911fc");
         result1 = PRF_legacy(result1, "key expansion", serverClientRandom, 136);
         result2 =

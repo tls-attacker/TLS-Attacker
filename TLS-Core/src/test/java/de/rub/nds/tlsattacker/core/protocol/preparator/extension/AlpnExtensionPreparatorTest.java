@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
@@ -34,7 +34,7 @@ public class AlpnExtensionPreparatorTest
     public void testPrepare() {
         String announcedProtocols = "h2";
         byte[] protocolsWithLength =
-                ArrayConverter.concatenate(new byte[] {0x02}, announcedProtocols.getBytes());
+                DataConverter.concatenate(new byte[] {0x02}, announcedProtocols.getBytes());
 
         context.getConfig().setDefaultProposedAlpnProtocols(announcedProtocols);
         preparator.prepare();

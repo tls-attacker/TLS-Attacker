@@ -48,7 +48,7 @@ public class PskRsaClientKeyExchangeSerializer
      */
     private void writePSKIdentityLength(PskRsaClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityLength: " + msg.getIdentityLength().getValue());
+        LOGGER.debug("SerializedPSKIdentityLength: {}", msg.getIdentityLength().getValue());
     }
 
     /**

@@ -16,22 +16,15 @@ import java.math.BigInteger;
 
 public class RSAClientComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray premasterSecretProtocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray premasterSecretProtocolVersion;
 
-    @ModifiableVariableProperty(
-            format = ModifiableVariableProperty.Format.PKCS1,
-            type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray plainPaddedPremasterSecret;
+    @ModifiableVariableProperty private ModifiableByteArray plainPaddedPremasterSecret;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    private ModifiableByteArray padding;
+    @ModifiableVariableProperty private ModifiableByteArray padding;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger modulus;
+    @ModifiableVariableProperty private ModifiableBigInteger modulus;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger publicExponent;
+    @ModifiableVariableProperty private ModifiableBigInteger publicExponent;
 
     public RSAClientComputations() {}
 

@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
@@ -31,16 +31,14 @@ import java.util.Objects;
 public class CertificateVerifyMessage extends HandshakeMessage {
 
     /** selected Signature and Hashalgorithm */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureHashAlgorithm;
+    @ModifiableVariableProperty private ModifiableByteArray signatureHashAlgorithm;
 
     /** signature length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureLength;
 
     /** signature */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    private ModifiableByteArray signature;
+    @ModifiableVariableProperty private ModifiableByteArray signature;
 
     @HoldsModifiableVariable private SignatureComputations signatureComputations;
 
@@ -102,7 +100,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         builder.append("CertificateVerifyMessage:");
         builder.append("\n  SignatureAndHashAlgorithm: ");
         if (signatureHashAlgorithm != null && signatureHashAlgorithm.getValue() != null) {
-            builder.append(ArrayConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
+            builder.append(DataConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
         } else {
             builder.append("null");
         }
@@ -114,7 +112,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         }
         builder.append("\n  Signature: ");
         if (signature != null && signature.getValue() != null) {
-            builder.append(ArrayConverter.bytesToHexString(signature.getValue()));
+            builder.append(DataConverter.bytesToHexString(signature.getValue()));
         } else {
             builder.append("null");
         }

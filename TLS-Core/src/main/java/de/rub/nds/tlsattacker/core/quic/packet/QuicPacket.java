@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -24,7 +25,6 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,8 +58,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     protected ModifiableByteArray protectedPayload;
 
     public ModifiableByteArray completeUnprotectedHeader;
-    public ByteArrayOutputStream protectedHeaderHelper = new ByteArrayOutputStream();
-    public ByteArrayOutputStream unprotectedHeaderHelper = new ByteArrayOutputStream();
+    public SilentByteArrayOutputStream protectedHeaderHelper = new SilentByteArrayOutputStream();
+    public SilentByteArrayOutputStream unprotectedHeaderHelper = new SilentByteArrayOutputStream();
 
     protected QuicCryptoSecrets packetSecret;
     public int offsetToPacketNumber;

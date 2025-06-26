@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -28,7 +28,7 @@ public class ApplicationMessageHandler extends ProtocolMessageHandler<Applicatio
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
         if (LOGGER.isDebugEnabled()) {
             String readableAppData =
-                    ArrayConverter.bytesToHexString(
+                    DataConverter.bytesToHexString(
                             tlsContext.getLastHandledApplicationMessageData());
             if (tlsContext.getTalkingConnectionEndType()
                     == tlsContext.getChooser().getMyConnectionPeer()) {

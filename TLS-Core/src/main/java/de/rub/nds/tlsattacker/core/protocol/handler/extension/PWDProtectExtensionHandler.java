@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
@@ -88,7 +88,7 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                             HKDFunction.extract(
                                     hkdfAlgorithm,
                                     null,
-                                    ArrayConverter.bigIntegerToByteArray(sharedSecret)),
+                                    DataConverter.bigIntegerToByteArray(sharedSecret)),
                             new byte[0],
                             parameters.getElementSizeBytes());
 
@@ -105,9 +105,9 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                             aesSIV.decrypt(ctrKey, macKey, encryptedUsername),
                             StandardCharsets.ISO_8859_1);
             tlsContext.setClientPWDUsername(username);
-            LOGGER.debug("Username: " + tlsContext.getClientPWDUsername());
+            LOGGER.debug("Username: {}", tlsContext.getClientPWDUsername());
         } catch (IllegalBlockSizeException | UnauthenticCiphertextException | CryptoException e) {
-            LOGGER.warn("Failed to decrypt username: " + e.getMessage());
+            LOGGER.warn("Failed to decrypt username: {}", e.getMessage());
         }
     }
 }

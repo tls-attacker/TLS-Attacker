@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -29,16 +29,14 @@ import java.util.Objects;
 @XmlRootElement(name = "Heartbeat")
 public class HeartbeatMessage extends ProtocolMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte heartbeatMessageType;
+    @ModifiableVariableProperty ModifiableByte heartbeatMessageType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     ModifiableInteger payloadLength;
 
     @ModifiableVariableProperty() ModifiableByteArray payload;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray padding;
+    @ModifiableVariableProperty ModifiableByteArray padding;
 
     public HeartbeatMessage() {
         super();
@@ -115,13 +113,13 @@ public class HeartbeatMessage extends ProtocolMessage {
         }
         sb.append("\n  Payload: ");
         if (payload != null && payload.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
+            sb.append(DataConverter.bytesToHexString(payload.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Padding: ");
         if (padding != null && padding.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
+            sb.append(DataConverter.bytesToHexString(padding.getValue()));
         } else {
             sb.append("null");
         }

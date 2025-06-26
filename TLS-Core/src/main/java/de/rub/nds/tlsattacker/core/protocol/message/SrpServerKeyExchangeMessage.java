@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
@@ -29,27 +29,24 @@ import java.util.List;
 public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /** SRP modulus */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray modulus;
+    @ModifiableVariableProperty private ModifiableByteArray modulus;
 
     /** SRP modulus Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger modulusLength;
 
     /** SRP generator */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray generator;
+    @ModifiableVariableProperty private ModifiableByteArray generator;
 
     /** SRP generator Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger generatorLength;
 
     /** SRP salt */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray salt;
+    @ModifiableVariableProperty private ModifiableByteArray salt;
 
     /** SRP salt Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger saltLength;
 
     @HoldsModifiableVariable protected SRPServerComputations computations;
@@ -143,32 +140,32 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("SrpServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (modulus != null && modulus.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
+            sb.append(DataConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
         if (generator != null && generator.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
+            sb.append(DataConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null && getPublicKey().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature and Hash Algorithm: ");
         if (this.getSignatureAndHashAlgorithm() != null
                 && getSignatureAndHashAlgorithm().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature: ");
         if (this.getSignature() != null && getSignature().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
+            sb.append(DataConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");
         }

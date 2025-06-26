@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
@@ -33,7 +33,7 @@ public class PasswordSaltExtensionPreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        byte[] salt = ArrayConverter.hexStringToByteArray("00aaff");
+        byte[] salt = DataConverter.hexStringToByteArray("00aaff");
         context.getConfig().setDefaultServerPWDSalt(salt);
         preparator.prepare();
 

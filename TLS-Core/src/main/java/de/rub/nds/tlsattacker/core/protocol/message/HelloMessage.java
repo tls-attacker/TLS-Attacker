@@ -17,8 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 public abstract class HelloMessage extends HandshakeMessage {
 
     /** protocol version in the client and server hello */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
     /** unix time */
     @ModifiableVariableProperty private ModifiableByteArray unixTime;
@@ -27,7 +26,7 @@ public abstract class HelloMessage extends HandshakeMessage {
     @ModifiableVariableProperty private ModifiableByteArray random;
 
     /** length of the session id length field indicating the session id length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger sessionIdLength;
 
     /** session id */

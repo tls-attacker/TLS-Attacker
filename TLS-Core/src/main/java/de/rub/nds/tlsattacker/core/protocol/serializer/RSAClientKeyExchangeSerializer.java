@@ -65,7 +65,7 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
         appendInt(
                 msg.getPublicKeyLength().getValue(),
                 HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /**

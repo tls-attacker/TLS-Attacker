@@ -34,12 +34,10 @@ public class AlertMessage extends ProtocolMessage {
     private byte[] config;
 
     /** alert level */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte level;
+    @ModifiableVariableProperty private ModifiableByte level;
 
     /** alert description */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte description;
+    @ModifiableVariableProperty private ModifiableByte description;
 
     public AlertMessage() {
         super();
@@ -168,9 +166,9 @@ public class AlertMessage extends ProtocolMessage {
                 && this.getLevel() != null
                 && this.getDescription() != null) {
 
-            return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                    && (Objects.equals(
-                            alert.getDescription().getValue(), this.getDescription().getValue()));
+            return Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue())
+                    && Objects.equals(
+                            alert.getDescription().getValue(), this.getDescription().getValue());
         } else {
             // If level is null we do not compare the values
             if (this.getLevel() == null || alert.getLevel() == null) {

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -51,7 +52,7 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
         try {
             for (Record record : src.getRecordBuffer()) {
 
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
                 outStream = new ObjectOutputStream(stream);
                 outStream.writeObject(record);
                 inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,13 +24,13 @@ public enum AuthzDataFormat {
     private final byte value;
     private static final Map<Byte, AuthzDataFormat> MAP;
 
-    private AuthzDataFormat(byte value) {
+    AuthzDataFormat(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (AuthzDataFormat c : AuthzDataFormat.values()) {
+        for (AuthzDataFormat c : values()) {
             MAP.put(c.getValue(), c);
         }
     }
@@ -44,11 +44,12 @@ public enum AuthzDataFormat {
     }
 
     public static byte[] listToByteArray(List<AuthzDataFormat> list) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream(list.size());
-        for (AuthzDataFormat f : list) {
-            bytes.write(f.getValue());
+        try (SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream(list.size())) {
+            for (AuthzDataFormat f : list) {
+                bytes.write(f.getValue());
+            }
+            return bytes.toByteArray();
         }
-        return bytes.toByteArray();
     }
 
     public static List<AuthzDataFormat> byteArrayToList(byte[] values) {

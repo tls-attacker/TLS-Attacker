@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 
 public class SessionTicket extends ModifiableVariableHolder {
     @ModifiableVariableProperty() private ModifiableByteArray keyName;
@@ -24,8 +24,7 @@ public class SessionTicket extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty() private ModifiableByteArray encryptedState;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    private ModifiableByteArray mac;
+    @ModifiableVariableProperty private ModifiableByteArray mac;
 
     @ModifiableVariableProperty() private ModifiableByteArray identity;
 
@@ -93,31 +92,31 @@ public class SessionTicket extends ModifiableVariableHolder {
         StringBuilder sb = new StringBuilder();
         sb.append("\n    KeyName: ");
         if (keyName != null) {
-            sb.append(ArrayConverter.bytesToHexString(keyName.getValue()));
+            sb.append(DataConverter.bytesToHexString(keyName.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n    IV: ");
         if (iv != null) {
-            sb.append(ArrayConverter.bytesToHexString(iv.getValue()));
+            sb.append(DataConverter.bytesToHexString(iv.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n    EncryptedState: ");
         if (encryptedState != null) {
-            sb.append(ArrayConverter.bytesToHexString(encryptedState.getValue()));
+            sb.append(DataConverter.bytesToHexString(encryptedState.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n    MAC: ");
         if (mac != null) {
-            sb.append(ArrayConverter.bytesToHexString(mac.getValue()));
+            sb.append(DataConverter.bytesToHexString(mac.getValue()));
         } else {
             sb.append("null");
         }
         if (identity != null) {
             sb.append("\n    Identity: ");
-            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+            sb.append(DataConverter.bytesToHexString(identity.getValue()));
         }
         return sb.toString();
     }

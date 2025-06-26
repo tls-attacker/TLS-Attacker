@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
@@ -28,23 +28,21 @@ import java.io.InputStream;
 @XmlRootElement(name = "PWDServerKeyExchange")
 public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger saltLength;
 
     @ModifiableVariableProperty private ModifiableByteArray salt;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByte curveType;
+    @ModifiableVariableProperty protected ModifiableByte curveType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByteArray namedGroup;
+    @ModifiableVariableProperty protected ModifiableByteArray namedGroup;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger elementLength;
 
     @ModifiableVariableProperty private ModifiableByteArray element;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger scalarLength;
 
     @ModifiableVariableProperty private ModifiableByteArray scalar;
@@ -192,7 +190,7 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("PWDServerKeyExchangeMessage:");
         sb.append("\n  Salt: ");
         if (getSalt() != null && getSalt().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSalt().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSalt().getValue()));
         } else {
             sb.append("null");
         }
@@ -210,13 +208,13 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
         sb.append("\n  Element: ");
         if (getElement() != null && getElement().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getElement().getValue()));
+            sb.append(DataConverter.bytesToHexString(getElement().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Scalar: ");
         if (getScalar() != null && getScalar().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getScalar().getValue()));
+            sb.append(DataConverter.bytesToHexString(getScalar().getValue()));
         } else {
             sb.append("null");
         }

@@ -32,7 +32,7 @@ public class PSKBinderParser extends Parser<PSKBinder> {
 
     private void parseBinderLength(PSKBinder pskBinder) {
         pskBinder.setBinderEntryLength(parseIntField(ExtensionByteLength.PSK_BINDER_LENGTH));
-        LOGGER.debug("Binder length:" + pskBinder.getBinderEntryLength().getValue());
+        LOGGER.debug("Binder length:: {}", pskBinder.getBinderEntryLength().getValue());
     }
 
     private void parseBinderEntry(PSKBinder pskBinder) {

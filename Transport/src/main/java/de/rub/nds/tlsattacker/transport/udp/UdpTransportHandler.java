@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.PacketbasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -34,10 +35,6 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
 
-    private int receivedBytes, sentByes = 0;
-
-    private static final int IP_OVERHEAD = 28;
-
     /**
      * It can happen that we only read half a packet. If we do that, we need to cache the remainder
      * of the packet and return it the next time somebody reads
@@ -56,15 +53,12 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
     public void sendData(byte[] data) throws IOException {
         DatagramPacket packet = new DatagramPacket(data, data.length);
         socket.send(packet);
-        sentByes += data.length + IP_OVERHEAD;
     }
 
     @Override
     public byte[] fetchData() throws IOException {
         if (dataBufferInputStream != null && dataBufferInputStream.available() > 0) {
-            byte[] allBytes = dataBufferInputStream.readAllBytes();
-            receivedBytes += allBytes.length + IP_OVERHEAD;
-            return allBytes;
+            return dataBufferInputStream.readAllBytes();
         } else {
             setTimeout(timeout);
             DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
@@ -72,30 +66,28 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
             if (!socket.isConnected()) {
                 socket.connect(packet.getSocketAddress());
             }
-            receivedBytes += packet.getLength() + IP_OVERHEAD;
             return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
         }
     }
 
     @Override
     public byte[] fetchData(int amountOfData) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        outputStream.write(dataBufferInputStream.readAllBytes());
-        setTimeout(timeout);
-        // Read packets till we got atleast amountOfData bytes
-        while (outputStream.size() < amountOfData) {
-            DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
-            socket.receive(packet);
-            if (!socket.isConnected()) {
-                socket.connect(packet.getSocketAddress());
+        try (SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream()) {
+            outputStream.write(dataBufferInputStream.readAllBytes());
+            setTimeout(timeout);
+            // Read packets till we got atleast amountOfData bytes
+            while (outputStream.size() < amountOfData) {
+                DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
+                socket.receive(packet);
+                if (!socket.isConnected()) {
+                    socket.connect(packet.getSocketAddress());
+                }
+                outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
             }
-            outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
+            // Now we got atleast amount of data bytes. If we got more, cache them
+            dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            return dataBufferInputStream.readNBytes(amountOfData);
         }
-        // Now we got atleast amount of data bytes. If we got more, cache them
-        dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        byte[] nBytes = dataBufferInputStream.readNBytes(amountOfData);
-        receivedBytes += nBytes.length;
-        return nBytes;
     }
 
     @Override
@@ -172,18 +164,5 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         } else {
             return socket.getInetAddress().getHostAddress();
         }
-    }
-
-    public int getSentByes() {
-        return sentByes;
-    }
-
-    public int getReceivedBytes() {
-        return receivedBytes;
-    }
-
-    public void resetByteCounter() {
-        receivedBytes = sentByes = 0;
-        LOGGER.debug("Resetting UDP Transport Handler's Byte Counter");
     }
 }

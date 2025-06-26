@@ -8,23 +8,26 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 /** HKDF functions computation for (D)TLS 1.3 */
 public class HKDFunction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String KEY = "key";
 
@@ -125,62 +128,64 @@ public class HKDFunction {
         try {
             SecretKeySpec keySpec =
                     new SecretKeySpec(prk, hkdfAlgorithm.getMacAlgorithm().getJavaName());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            int i = 1;
-            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
-                HMac hmac = new HMac(new SM3Digest());
-                KeyParameter keyParameter = new KeyParameter(keySpec.getEncoded());
-                hmac.init(keyParameter);
-                while (stream.toByteArray().length < outLen) {
-                    if (i != 1) {
-                        hmac.update(stream.toByteArray(), 0, stream.toByteArray().length);
+            try (SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream()) {
+                int i = 1;
+                if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                    HMac hmac = new HMac(new SM3Digest());
+                    KeyParameter keyParameter = new KeyParameter(keySpec.getEncoded());
+                    hmac.init(keyParameter);
+                    while (stream.toByteArray().length < outLen) {
+                        if (i != 1) {
+                            hmac.update(stream.toByteArray(), 0, stream.toByteArray().length);
+                        }
+                        hmac.update(info, 0, info.length);
+                        if (Integer.toHexString(i).length() % 2 != 0) {
+                            hmac.update(
+                                    DataConverter.hexStringToByteArray(
+                                            "0" + Integer.toHexString(i)),
+                                    0,
+                                    Integer.toHexString(i).length());
+                        } else {
+                            hmac.update(
+                                    DataConverter.hexStringToByteArray(Integer.toHexString(i)),
+                                    0,
+                                    Integer.toHexString(i).length());
+                        }
+                        byte[] ti = new byte[hmac.getMacSize()];
+                        hmac.doFinal(ti, 0);
+                        if (ti.length == 0) {
+                            throw new CryptoException(
+                                    "Could not expand HKDF. Mac Algorithm of 0 size");
+                        }
+                        stream.write(ti);
+                        i++;
                     }
-                    hmac.update(info, 0, info.length);
-                    if (Integer.toHexString(i).length() % 2 != 0) {
-                        hmac.update(
-                                ArrayConverter.hexStringToByteArray("0" + Integer.toHexString(i)),
-                                0,
-                                Integer.toHexString(i).length());
-                    } else {
-                        hmac.update(
-                                ArrayConverter.hexStringToByteArray(Integer.toHexString(i)),
-                                0,
-                                Integer.toHexString(i).length());
+                } else {
+                    Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
+                    mac.init(keySpec);
+                    byte[] ti = new byte[0];
+                    while (stream.toByteArray().length < outLen) {
+                        mac.update(ti);
+                        mac.update(info);
+                        if (Integer.toHexString(i).length() % 2 != 0) {
+                            mac.update(
+                                    DataConverter.hexStringToByteArray(
+                                            "0" + Integer.toHexString(i)));
+                        } else {
+                            mac.update(DataConverter.hexStringToByteArray(Integer.toHexString(i)));
+                        }
+                        ti = mac.doFinal();
+                        if (ti.length == 0) {
+                            throw new CryptoException(
+                                    "Could not expand HKDF. Mac Algorithm of 0 size");
+                        }
+                        stream.write(ti);
+                        i++;
                     }
-                    byte[] ti = new byte[hmac.getMacSize()];
-                    hmac.doFinal(ti, 0);
-                    if (ti.length == 0) {
-                        throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
-                    }
-                    stream.write(ti);
-                    i++;
                 }
-            } else {
-                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
-                mac.init(keySpec);
-                byte[] ti = new byte[0];
-                while (stream.toByteArray().length < outLen) {
-                    mac.update(ti);
-                    mac.update(info);
-                    if (Integer.toHexString(i).length() % 2 != 0) {
-                        mac.update(
-                                ArrayConverter.hexStringToByteArray("0" + Integer.toHexString(i)));
-                    } else {
-                        mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
-                    }
-                    ti = mac.doFinal();
-                    if (ti.length == 0) {
-                        throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
-                    }
-                    stream.write(ti);
-                    i++;
-                }
+                return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
             }
-            return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
-        } catch (NoSuchAlgorithmException
-                | IOException
-                | InvalidKeyException
-                | IllegalArgumentException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             throw new CryptoException(ex);
         }
     }
@@ -194,17 +199,18 @@ public class HKDFunction {
         } else if (protocolVersion.isDTLS13()) {
             label = "dtls13" + labelIn;
         } else {
-            throw new UnsupportedOperationException(
-                    "The given protocol version does not have a label for expansion implemented.");
+            LOGGER.warn(
+                    "The given protocol version does not have a label for expansion implemented. Using 'tls13'");
+            label = "tls13 " + labelIn;
         }
         int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
         int hashValueLength = hashValue.length;
         byte[] result =
-                ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(outLen, 2),
-                        ArrayConverter.intToBytes(labelLength, 1),
+                DataConverter.concatenate(
+                        DataConverter.intToBytes(outLen, 2),
+                        DataConverter.intToBytes(labelLength, 1),
                         label.getBytes(StandardCharsets.US_ASCII),
-                        ArrayConverter.intToBytes(hashValueLength, 1),
+                        DataConverter.intToBytes(hashValueLength, 1),
                         hashValue);
         return result;
     }

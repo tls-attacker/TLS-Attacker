@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
@@ -32,26 +32,22 @@ import java.util.Objects;
 @XmlRootElement(name = "SSL2ClientMasterKey")
 public class SSL2ClientMasterKeyMessage extends SSL2Message {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherKind;
+    @ModifiableVariableProperty private ModifiableByteArray cipherKind;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger clearKeyLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger encryptedKeyLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger keyArgLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray clearKeyData;
+    @ModifiableVariableProperty private ModifiableByteArray clearKeyData;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray encryptedKeyData;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedKeyData;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray keyArgData;
+    @ModifiableVariableProperty private ModifiableByteArray keyArgData;
 
     @HoldsModifiableVariable @XmlElement private RSAClientComputations computations;
 
@@ -195,15 +191,15 @@ public class SSL2ClientMasterKeyMessage extends SSL2Message {
         }
         if (getClearKeyData() != null && getClearKeyData().getValue() != null) {
             sb.append("\n Clear Key Data: ")
-                    .append(ArrayConverter.bytesToHexString(getClearKeyData().getValue()));
+                    .append(DataConverter.bytesToHexString(getClearKeyData().getValue()));
         }
         if (getEncryptedKeyData() != null && getEncryptedKeyData().getValue() != null) {
             sb.append("\n Encrypted Key Data: ")
-                    .append(ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
+                    .append(DataConverter.bytesToHexString(getEncryptedKeyData().getValue()));
         }
         if (getKeyArgData() != null && getKeyArgData().getValue() != null) {
             sb.append("\n Key Arg Data: ")
-                    .append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));
+                    .append(DataConverter.bytesToHexString(getKeyArgData().getValue()));
         }
         return sb.toString();
     }

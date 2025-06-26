@@ -44,7 +44,7 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
 
     private void parseSupplementalDataLength(SupplementalDataMessage msg) {
         msg.setSupplementalDataLength(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_LENGTH));
-        LOGGER.debug("SupplementalDataLength: " + msg.getSupplementalDataLength().getValue());
+        LOGGER.debug("SupplementalDataLength: {}", msg.getSupplementalDataLength().getValue());
     }
 
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {

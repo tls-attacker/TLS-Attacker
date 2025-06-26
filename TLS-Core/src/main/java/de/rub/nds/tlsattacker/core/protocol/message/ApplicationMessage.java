@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -72,7 +72,7 @@ public class ApplicationMessage extends ProtocolMessage {
         sb.append("ApplicationMessage:");
         sb.append("\n  Data: ");
         if (data != null && data.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(data.getValue()));
+            sb.append(DataConverter.bytesToHexString(data.getValue()));
         } else {
             sb.append("null");
         }

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -33,7 +33,7 @@ public class RecordSizeLimitExtensionPreparator
         final int recordSizeLimit = chooser.getConfig().getInboundRecordSizeLimit();
         LOGGER.debug("Preparing RecordSizeLimitExtensionMessage with {}", recordSizeLimit);
         message.setRecordSizeLimit(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         recordSizeLimit, ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
     }
 }

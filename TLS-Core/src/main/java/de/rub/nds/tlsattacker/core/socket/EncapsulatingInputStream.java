@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.socket;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -51,7 +51,7 @@ public class EncapsulatingInputStream extends InputStream {
                 receivedAppMessages.add((ApplicationMessage) message);
             }
         }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (ApplicationMessage message : receivedAppMessages) {
             stream.write(message.getData().getValue());
         }

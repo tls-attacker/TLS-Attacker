@@ -27,7 +27,7 @@ public class QuicTransportParametersExtensionsHandler
 
     @Override
     public void adjustTLSExtensionContext(QuicTransportParametersExtensionMessage message) {
-        LOGGER.debug("Adjust Quic Transport Parameters in Context to:\n" + message);
+        LOGGER.debug("Adjust Quic Transport Parameters in Context to:\n{}", message);
         tlsContext
                 .getContext()
                 .getQuicContext()

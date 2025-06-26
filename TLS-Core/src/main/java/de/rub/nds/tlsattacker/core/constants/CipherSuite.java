@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
 import java.util.Arrays;
@@ -3165,7 +3165,7 @@ public enum CipherSuite {
     private final boolean export;
     private boolean isRealCipherSuite;
 
-    private CipherSuite(
+    CipherSuite(
             int value,
             CipherType cipherType,
             KeyExchangeAlgorithm keyExchangeAlgorithm,
@@ -3190,7 +3190,7 @@ public enum CipherSuite {
      * @param value
      * @param isGrease
      */
-    private CipherSuite(int value, boolean isGrease) {
+    CipherSuite(int value, boolean isGrease) {
         this.value = value;
         this.grease = isGrease;
         this.cipherAlgorithm = null;
@@ -3204,7 +3204,7 @@ public enum CipherSuite {
 
     static {
         MAP = new HashMap<>();
-        for (CipherSuite c : CipherSuite.values()) {
+        for (CipherSuite c : values()) {
             MAP.put(c.value, c);
         }
     }
@@ -3253,7 +3253,7 @@ public enum CipherSuite {
     }
 
     public byte[] getByteValue() {
-        return ArrayConverter.intToBytes(value, 2);
+        return DataConverter.intToBytes(value, 2);
     }
 
     /**
@@ -3797,11 +3797,11 @@ public enum CipherSuite {
 
     public static List<CipherSuite> getEsniImplemented() {
         List<CipherSuite> list = new LinkedList<>();
-        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        list.add(TLS_AES_128_GCM_SHA256);
+        list.add(TLS_AES_256_GCM_SHA384);
+        list.add(TLS_CHACHA20_POLY1305_SHA256);
+        list.add(TLS_AES_128_CCM_SHA256);
+        list.add(TLS_AES_128_CCM_8_SHA256);
         return list;
     }
 

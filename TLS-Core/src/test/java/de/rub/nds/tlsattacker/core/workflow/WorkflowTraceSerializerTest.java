@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -28,7 +29,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -76,7 +76,7 @@ public class WorkflowTraceSerializerTest {
         action = new SendAction(new ClientHelloMessage());
         ((SendAction) action).setConfiguredRecords(records);
 
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream os = new SilentByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);
 
         String serializedWorkflow = new String(os.toByteArray());
@@ -84,7 +84,7 @@ public class WorkflowTraceSerializerTest {
         ByteArrayInputStream bis = new ByteArrayInputStream(os.toByteArray());
         WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
-        os = new ByteArrayOutputStream();
+        os = new SilentByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, wt);
         LOGGER.debug(os.toString());
 

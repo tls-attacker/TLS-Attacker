@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -96,19 +96,18 @@ public class SrpServerKeyExchangePreparator
 
         publicKey = helpValue1;
 
-        LOGGER.debug(
-                "Server-Public-Key: {}", () -> ArrayConverter.bigIntegerToByteArray(publicKey));
+        LOGGER.debug("Server-Public-Key: {}", () -> DataConverter.bigIntegerToByteArray(publicKey));
         return publicKey;
     }
 
     public BigInteger calculateX(byte[] salt, byte[] identity, byte[] password) {
         byte[] hashInput1 =
-                ArrayConverter.concatenate(
-                        identity, ArrayConverter.hexStringToByteArray("3A"), password);
+                DataConverter.concatenate(
+                        identity, DataConverter.hexStringToByteArray("3A"), password);
         LOGGER.debug("HashInput for hashInput1: {}", hashInput1);
         byte[] hashOutput1 = HashCalculator.compute(hashInput1, HashAlgorithm.SHA1);
         LOGGER.debug("HashValue for hashInput1: {}", hashOutput1);
-        byte[] hashInput2 = ArrayConverter.concatenate(salt, hashOutput1);
+        byte[] hashInput2 = DataConverter.concatenate(salt, hashOutput1);
         LOGGER.debug("HashInput for hashInput2: {}", hashInput2);
         byte[] hashOutput2 = HashCalculator.compute(hashInput2, HashAlgorithm.SHA1);
         LOGGER.debug("HashValue for hashInput2: {}", hashOutput2);
@@ -118,8 +117,8 @@ public class SrpServerKeyExchangePreparator
     private BigInteger calculateSRP6Multiplier(BigInteger modulus, BigInteger generator) {
         byte[] paddedGenerator = calculatePadding(modulus, generator);
         byte[] hashInput =
-                ArrayConverter.concatenate(
-                        ArrayConverter.bigIntegerToByteArray(modulus), paddedGenerator);
+                DataConverter.concatenate(
+                        DataConverter.bigIntegerToByteArray(modulus), paddedGenerator);
         LOGGER.debug("HashInput SRP6Multi: {}", hashInput);
         byte[] hashOutput = HashCalculator.compute(hashInput, HashAlgorithm.SHA1);
         return new BigInteger(1, hashOutput);
@@ -127,8 +126,8 @@ public class SrpServerKeyExchangePreparator
 
     private byte[] calculatePadding(BigInteger modulus, BigInteger toPad) {
         byte[] padding;
-        int modulusByteLength = ArrayConverter.bigIntegerToByteArray(modulus).length;
-        byte[] paddingArray = ArrayConverter.bigIntegerToByteArray(toPad);
+        int modulusByteLength = DataConverter.bigIntegerToByteArray(modulus).length;
+        byte[] paddingArray = DataConverter.bigIntegerToByteArray(toPad);
         if (modulusByteLength == paddingArray.length) {
             return paddingArray;
         }
@@ -138,29 +137,29 @@ public class SrpServerKeyExchangePreparator
             paddingByteLength = 0;
         }
         padding = new byte[paddingByteLength];
-        return ArrayConverter.concatenate(padding, paddingArray);
+        return DataConverter.concatenate(padding, paddingArray);
     }
 
     private byte[] generateToBeSigned() {
         byte[] srpParams =
-                ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(
+                DataConverter.concatenate(
+                        DataConverter.intToBytes(
                                 msg.getModulusLength().getValue(),
                                 HandshakeByteLength.SRP_MODULUS_LENGTH),
                         msg.getModulus().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getGeneratorLength().getValue(),
                                 HandshakeByteLength.SRP_GENERATOR_LENGTH),
                         msg.getGenerator().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getSaltLength().getValue(),
                                 HandshakeByteLength.SRP_SALT_LENGTH),
                         msg.getSalt().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getPublicKeyLength().getValue(),
                                 HandshakeByteLength.SRP_PUBLICKEY_LENGTH),
                         msg.getPublicKey().getValue());
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getKeyExchangeComputations().getClientServerRandom().getValue(), srpParams);
     }
 
@@ -176,7 +175,7 @@ public class SrpServerKeyExchangePreparator
 
     private void prepareGeneratorLength(SrpServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(msg.getGenerator().getValue().length);
-        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("Generator Length: {}", msg.getGeneratorLength().getValue());
     }
 
     private void prepareSalt(SrpServerKeyExchangeMessage msg) {
@@ -250,11 +249,11 @@ public class SrpServerKeyExchangePreparator
     private void prepareClientServerRandom(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations()
                 .setClientServerRandom(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",
-                ArrayConverter.bytesToHexString(
+                DataConverter.bytesToHexString(
                         msg.getKeyExchangeComputations().getClientServerRandom().getValue()));
     }
 

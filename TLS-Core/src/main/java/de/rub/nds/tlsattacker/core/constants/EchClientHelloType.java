@@ -19,7 +19,7 @@ public enum EchClientHelloType {
 
     private static final HashMap<BigInteger, EchClientHelloType> MAP;
 
-    private EchClientHelloType(byte[] byteValue) {
+    EchClientHelloType(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 
@@ -29,7 +29,7 @@ public enum EchClientHelloType {
 
     static {
         MAP = new HashMap<>();
-        for (EchClientHelloType version : EchClientHelloType.values()) {
+        for (EchClientHelloType version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

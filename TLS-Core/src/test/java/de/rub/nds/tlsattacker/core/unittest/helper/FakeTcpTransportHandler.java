@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,16 +19,21 @@ import java.io.OutputStream;
 public class FakeTcpTransportHandler extends TcpTransportHandler implements FakeTransportHandler {
 
     /** Data that will be returned on a fetchData() call */
-    private ByteArrayOutputStream outputStream;
+    private SilentByteArrayOutputStream outputStream;
 
     private ByteArrayInputStream inputStream;
 
     private Boolean opened = false;
 
+    private boolean throwExceptionOnSend = false;
+    private boolean throwExceptionOnReceive = false;
+    private IOException sendException = new IOException("Simulated send failure");
+    private IOException receiveException = new IOException("Simulated receive failure");
+
     public FakeTcpTransportHandler(ConnectionEndType type) {
         super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     public byte[] getSentBytes() {
@@ -46,6 +51,9 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
 
     @Override
     public byte[] fetchData() throws IOException {
+        if (throwExceptionOnReceive) {
+            throw receiveException;
+        }
         byte[] data = new byte[inputStream.available()];
         inputStream.read(data);
         return data;
@@ -53,6 +61,9 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
 
     @Override
     public void sendData(byte[] data) throws IOException {
+        if (throwExceptionOnSend) {
+            throw sendException;
+        }
         outputStream.write(data);
     }
 
@@ -113,6 +124,22 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
 
     @Override
     public void resetOutputStream() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
+    }
+
+    public void setThrowExceptionOnSend(boolean throwException) {
+        this.throwExceptionOnSend = throwException;
+    }
+
+    public void setThrowExceptionOnReceive(boolean throwException) {
+        this.throwExceptionOnReceive = throwException;
+    }
+
+    public void setSendException(IOException exception) {
+        this.sendException = exception;
+    }
+
+    public void setReceiveException(IOException exception) {
+        this.receiveException = exception;
     }
 }

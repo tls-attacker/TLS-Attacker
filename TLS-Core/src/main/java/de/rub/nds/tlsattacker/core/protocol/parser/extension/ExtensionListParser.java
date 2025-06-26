@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -47,10 +47,9 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             extension.setExtensionLength(length);
             extension.setExtensionContent(extensionPayload);
             extension.setExtensionBytes(
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             typeBytes,
-                            ArrayConverter.intToBytes(
-                                    length, ExtensionByteLength.EXTENSIONS_LENGTH),
+                            DataConverter.intToBytes(length, ExtensionByteLength.EXTENSIONS_LENGTH),
                             extensionPayload));
             Parser parser =
                     extension.getParser(

@@ -17,14 +17,11 @@ import java.math.BigInteger;
 
 public abstract class KeyExchangeComputations extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray premasterSecret;
+    @ModifiableVariableProperty protected ModifiableByteArray premasterSecret;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray clientServerRandom;
+    @ModifiableVariableProperty protected ModifiableByteArray clientServerRandom;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger privateKey;
+    @ModifiableVariableProperty private ModifiableBigInteger privateKey;
 
     public ModifiableByteArray getPremasterSecret() {
         return premasterSecret;

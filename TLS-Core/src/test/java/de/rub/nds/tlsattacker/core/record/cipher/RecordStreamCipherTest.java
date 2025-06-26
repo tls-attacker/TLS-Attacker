@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -26,9 +26,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -39,23 +36,18 @@ public class RecordStreamCipherTest {
     private KeySet keySet;
     private byte[] data;
 
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
     @BeforeEach
     public void setUp() {
         context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         keySet =
                 generateKeySet(
-                        ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                        DataConverter.hexStringToByteArray(
                                 "DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                         new byte[1],
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"));
-        data = ArrayConverter.hexStringToByteArray("01010101010101010101010101010101");
+        data = DataConverter.hexStringToByteArray("01010101010101010101010101010101");
     }
 
     // TODO check why cipher.contains("WITH_NULL") in
@@ -160,7 +152,7 @@ public class RecordStreamCipherTest {
                                 false));
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
+                DataConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
                 cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
 
         context.setConnection(new InboundConnection());
@@ -174,7 +166,7 @@ public class RecordStreamCipherTest {
                                 false));
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
+                DataConverter.hexStringToByteArray("740b1374aac883ec9171730684b9f7bf84c56cc1"),
                 cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
     }
 
@@ -196,7 +188,7 @@ public class RecordStreamCipherTest {
                                 false));
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
+                DataConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
                 cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
 
         context.setConnection(new InboundConnection());
@@ -210,7 +202,7 @@ public class RecordStreamCipherTest {
                                 false));
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
+                DataConverter.hexStringToByteArray("6af39a238e82675131e6a383f801674e"),
                 cipher.calculateMac(data, context.getConnection().getLocalConnectionEndType()));
     }
 
@@ -238,39 +230,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
+                DataConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -288,7 +280,7 @@ public class RecordStreamCipherTest {
                         ProtocolVersion.SSL2);
 
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5");
         Record record = setRecord(new BigInteger("0"), data, ProtocolVersion.SSL2);
         RecordStreamCipher plaintext =
@@ -302,38 +294,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
+                DataConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -361,39 +353,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
+                DataConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -405,7 +397,7 @@ public class RecordStreamCipherTest {
          * SSL2! Those tests are for test purposes only to check if the undefined behavior is working.
          */
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2");
         TlsContext context =
                 setContext(
@@ -424,38 +416,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
+                DataConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -479,39 +471,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
+                DataConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -523,7 +515,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000001160010"),
+                DataConverter.hexStringToByteArray("0000000000000001160010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -532,24 +524,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("2c023bf9e7c17717ed3a7b8362ba5a13e8222c36"),
+                DataConverter.hexStringToByteArray("2c023bf9e7c17717ed3a7b8362ba5a13e8222c36"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101012c023bf9e7c17717ed3a7b8362ba5a13e8222c36"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0be5fbcbd97d3e897d1a43e229f84c0f28bd49338"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0be5fbcbd97d3e897d1a43e229f84c0f28bd49338"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -557,10 +549,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptSSL3SHA() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0be5fbcbd97d3e897d1a43e229f84c0f28bd49338");
         TlsContext context =
                 setContext(
@@ -579,38 +571,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
+                DataConverter.hexStringToByteArray("618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101618C472957C9EA333ED9437FBC24F8701801A4A9"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef704c1e230428b4e84377ab0cf1f8ac98e5d9281b5"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -622,7 +614,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000001160010"),
+                DataConverter.hexStringToByteArray("0000000000000001160010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -631,23 +623,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("2c023bf9e7c17717ed3a7b8362ba5a13e8222c36"),
+                DataConverter.hexStringToByteArray("2c023bf9e7c17717ed3a7b8362ba5a13e8222c36"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101012c023bf9e7c17717ed3a7b8362ba5a13e8222c36"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0be5fbcbd97d3e897d1a43e229f84c0f28bd49338"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -671,39 +663,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
+                DataConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -715,7 +707,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000001160010"),
+                DataConverter.hexStringToByteArray("0000000000000001160010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -724,24 +716,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("c69de0303fedadcb5793ca09fca60815"),
+                DataConverter.hexStringToByteArray("c69de0303fedadcb5793ca09fca60815"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101c69de0303fedadcb5793ca09fca60815"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629a900fe91adb02a8f27815589c0384db4"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629a900fe91adb02a8f27815589c0384db4"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -749,10 +741,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptSSL3MD5() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629a900fe91adb02a8f27815589c0384db4");
         TlsContext context =
                 setContext(
@@ -771,38 +763,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000000160010"),
+                DataConverter.hexStringToByteArray("0000000000000000160010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
+                DataConverter.hexStringToByteArray("C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101C32FA2CD251C661C8D26BE230933CE2C"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a66207d4305ec2ab84854d93aa9dffd2"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -814,7 +806,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0000000000000001160010"),
+                DataConverter.hexStringToByteArray("0000000000000001160010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -823,23 +815,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("c69de0303fedadcb5793ca09fca60815"),
+                DataConverter.hexStringToByteArray("c69de0303fedadcb5793ca09fca60815"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101c69de0303fedadcb5793ca09fca60815"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629a900fe91adb02a8f27815589c0384db4"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -864,39 +856,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
+                DataConverter.hexStringToByteArray("00000000000000001603010010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("eaed6e296a5cdface7557c18873e42ea42c44df8"),
+                DataConverter.hexStringToByteArray("eaed6e296a5cdface7557c18873e42ea42c44df8"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101eaed6e296a5cdface7557c18873e42ea42c44df8"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef78fa0cb307f1e7b1beef68fa824907314075768e4"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef78fa0cb307f1e7b1beef68fa824907314075768e4"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -908,7 +900,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603010010"),
+                DataConverter.hexStringToByteArray("00000000000000011603010010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -917,24 +909,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("040fe0b0381877b4d448462e9b30cfb6a5b87ff6"),
+                DataConverter.hexStringToByteArray("040fe0b0381877b4d448462e9b30cfb6a5b87ff6"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101040fe0b0381877b4d448462e9b30cfb6a5b87ff6"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0965267f4480ae834e8d6038f660e5557c64ec0f8"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0965267f4480ae834e8d6038f660e5557c64ec0f8"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -942,10 +934,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLSv10SHA() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef78fa0cb307f1e7b1beef68fa824907314075768e4");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0965267f4480ae834e8d6038f660e5557c64ec0f8");
         TlsContext context =
                 setContext(
@@ -964,38 +956,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
+                DataConverter.hexStringToByteArray("00000000000000001603010010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("eaed6e296a5cdface7557c18873e42ea42c44df8"),
+                DataConverter.hexStringToByteArray("eaed6e296a5cdface7557c18873e42ea42c44df8"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101eaed6e296a5cdface7557c18873e42ea42c44df8"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef78fa0cb307f1e7b1beef68fa824907314075768e4"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1007,7 +999,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603010010"),
+                DataConverter.hexStringToByteArray("00000000000000011603010010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1016,23 +1008,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("040fe0b0381877b4d448462e9b30cfb6a5b87ff6"),
+                DataConverter.hexStringToByteArray("040fe0b0381877b4d448462e9b30cfb6a5b87ff6"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101040fe0b0381877b4d448462e9b30cfb6a5b87ff6"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0965267f4480ae834e8d6038f660e5557c64ec0f8"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1056,39 +1048,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
+                DataConverter.hexStringToByteArray("00000000000000001603010010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("a7ade7c77687ac136ee4a2af76713c2b"),
+                DataConverter.hexStringToByteArray("a7ade7c77687ac136ee4a2af76713c2b"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101a7ade7c77687ac136ee4a2af76713c2b"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7c2e042de63c508a46747511fd5df0dd5"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7c2e042de63c508a46747511fd5df0dd5"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1100,7 +1092,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603010010"),
+                DataConverter.hexStringToByteArray("00000000000000011603010010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1109,24 +1101,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("a17ccd76dd57c0891e93fe50f9d5ab9c"),
+                DataConverter.hexStringToByteArray("a17ccd76dd57c0891e93fe50f9d5ab9c"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101a17ccd76dd57c0891e93fe50f9d5ab9c"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629cee1d3d74f0a47cd6e8161d0c54bee3d"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629cee1d3d74f0a47cd6e8161d0c54bee3d"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1134,10 +1126,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLSv10MD5() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7c2e042de63c508a46747511fd5df0dd5");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629cee1d3d74f0a47cd6e8161d0c54bee3d");
         TlsContext context =
                 setContext(
@@ -1156,38 +1148,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603010010"),
+                DataConverter.hexStringToByteArray("00000000000000001603010010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("a7ade7c77687ac136ee4a2af76713c2b"),
+                DataConverter.hexStringToByteArray("a7ade7c77687ac136ee4a2af76713c2b"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101a7ade7c77687ac136ee4a2af76713c2b"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7c2e042de63c508a46747511fd5df0dd5"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1199,7 +1191,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603010010"),
+                DataConverter.hexStringToByteArray("00000000000000011603010010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1208,23 +1200,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("a17ccd76dd57c0891e93fe50f9d5ab9c"),
+                DataConverter.hexStringToByteArray("a17ccd76dd57c0891e93fe50f9d5ab9c"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101a17ccd76dd57c0891e93fe50f9d5ab9c"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629cee1d3d74f0a47cd6e8161d0c54bee3d"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1248,39 +1240,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
+                DataConverter.hexStringToByteArray("00000000000000001603020010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
+                DataConverter.hexStringToByteArray("bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1292,7 +1284,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603020010"),
+                DataConverter.hexStringToByteArray("00000000000000011603020010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1301,24 +1293,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("5b021120828d86a81449dc384bf86bc2d5baa09d"),
+                DataConverter.hexStringToByteArray("5b021120828d86a81449dc384bf86bc2d5baa09d"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101015b021120828d86a81449dc384bf86bc2d5baa09d"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0c95f9664f29f192828d79999b6c6f123b64c1f93"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0c95f9664f29f192828d79999b6c6f123b64c1f93"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1326,10 +1318,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLS11SHA() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0c95f9664f29f192828d79999b6c6f123b64c1f93");
 
         TlsContext context =
@@ -1349,38 +1341,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
+                DataConverter.hexStringToByteArray("00000000000000001603020010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
+                DataConverter.hexStringToByteArray("bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101bd1d22bbebb5b506c4ce9807f6432c7f78291d75"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d85087a2fef711b1cd6d6bb755ed1d813dba3869"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1392,7 +1384,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603020010"),
+                DataConverter.hexStringToByteArray("00000000000000011603020010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1401,23 +1393,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("5b021120828d86a81449dc384bf86bc2d5baa09d"),
+                DataConverter.hexStringToByteArray("5b021120828d86a81449dc384bf86bc2d5baa09d"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101015b021120828d86a81449dc384bf86bc2d5baa09d"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa0c95f9664f29f192828d79999b6c6f123b64c1f93"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1441,39 +1433,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
+                DataConverter.hexStringToByteArray("00000000000000001603020010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6f4fb670f37ce1e18038ca2d6c4e4162"),
+                DataConverter.hexStringToByteArray("6f4fb670f37ce1e18038ca2d6c4e4162"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101016f4fb670f37ce1e18038ca2d6c4e4162"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1485,7 +1477,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603020010"),
+                DataConverter.hexStringToByteArray("00000000000000011603020010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1494,24 +1486,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("d566e45299d46f13ce01839a336bac92"),
+                DataConverter.hexStringToByteArray("d566e45299d46f13ce01839a336bac92"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101d566e45299d46f13ce01839a336bac92"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629bafbfaf30b89e857be131c1a0ff5e933"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629bafbfaf30b89e857be131c1a0ff5e933"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1519,10 +1511,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLSv11MD5() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629bafbfaf30b89e857be131c1a0ff5e933");
         TlsContext context =
                 setContext(
@@ -1541,38 +1533,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603020010"),
+                DataConverter.hexStringToByteArray("00000000000000001603020010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6f4fb670f37ce1e18038ca2d6c4e4162"),
+                DataConverter.hexStringToByteArray("6f4fb670f37ce1e18038ca2d6c4e4162"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101016f4fb670f37ce1e18038ca2d6c4e4162"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef70a021369e63e4556899b399dcfe0709c"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1584,7 +1576,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603020010"),
+                DataConverter.hexStringToByteArray("00000000000000011603020010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1593,23 +1585,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("d566e45299d46f13ce01839a336bac92"),
+                DataConverter.hexStringToByteArray("d566e45299d46f13ce01839a336bac92"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101d566e45299d46f13ce01839a336bac92"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629bafbfaf30b89e857be131c1a0ff5e933"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1633,39 +1625,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
+                DataConverter.hexStringToByteArray("00000000000000001603030010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("cc0c3e4421441b9b88bfcd06628c2db994887b78"),
+                DataConverter.hexStringToByteArray("cc0c3e4421441b9b88bfcd06628c2db994887b78"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101cc0c3e4421441b9b88bfcd06628c2db994887b78"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1677,7 +1669,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603030010"),
+                DataConverter.hexStringToByteArray("00000000000000011603030010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1686,24 +1678,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("f8349c55095baa9e953d9cbafa4c6dce2682ebf1"),
+                DataConverter.hexStringToByteArray("f8349c55095baa9e953d9cbafa4c6dce2682ebf1"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101f8349c55095baa9e953d9cbafa4c6dce2682ebf1"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa06a691b117949351ea9a3d91b0772f72f457454ff"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa06a691b117949351ea9a3d91b0772f72f457454ff"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1711,10 +1703,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLS12SHA() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa06a691b117949351ea9a3d91b0772f72f457454ff");
         TlsContext context =
                 setContext(
@@ -1733,38 +1725,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
+                DataConverter.hexStringToByteArray("00000000000000001603030010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("cc0c3e4421441b9b88bfcd06628c2db994887b78"),
+                DataConverter.hexStringToByteArray("cc0c3e4421441b9b88bfcd06628c2db994887b78"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101cc0c3e4421441b9b88bfcd06628c2db994887b78"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7a9419b5d3406bf2c811c3eb6c1221c47d11b5e64"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1776,7 +1768,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603030010"),
+                DataConverter.hexStringToByteArray("00000000000000011603030010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1785,23 +1777,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("f8349c55095baa9e953d9cbafa4c6dce2682ebf1"),
+                DataConverter.hexStringToByteArray("f8349c55095baa9e953d9cbafa4c6dce2682ebf1"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101f8349c55095baa9e953d9cbafa4c6dce2682ebf1"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "265c875f34c97ea7a57406296e9c1fa06a691b117949351ea9a3d91b0772f72f457454ff"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1825,39 +1817,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
+                DataConverter.hexStringToByteArray("00000000000000001603030010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("bdd777a2be5c827b520f27027a1a279b"),
+                DataConverter.hexStringToByteArray("bdd777a2be5c827b520f27027a1a279b"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101bdd777a2be5c827b520f27027a1a279b"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1869,7 +1861,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603030010"),
+                DataConverter.hexStringToByteArray("00000000000000011603030010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1878,24 +1870,24 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("5ce66135cf54d968a7cdca9b66eb87b7"),
+                DataConverter.hexStringToByteArray("5ce66135cf54d968a7cdca9b66eb87b7"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101015ce66135cf54d968a7cdca9b66eb87b7"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the ciphertext of the second record to ensure that the encryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629337b7f945d095e2cd7df551b5a75c216"),
                 record2.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629337b7f945d095e2cd7df551b5a75c216"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -1903,10 +1895,10 @@ public class RecordStreamCipherTest {
     @Test
     public void testDecryptTLSv12MD5() throws CryptoException {
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665");
         byte[] data2 =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629337b7f945d095e2cd7df551b5a75c216");
         TlsContext context =
                 setContext(
@@ -1925,38 +1917,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000001603030010"),
+                DataConverter.hexStringToByteArray("00000000000000001603030010"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("bdd777a2be5c827b520f27027a1a279b"),
+                DataConverter.hexStringToByteArray("bdd777a2be5c827b520f27027a1a279b"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "01010101010101010101010101010101bdd777a2be5c827b520f27027a1a279b"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef7d89ad2bbab1e26cc5bacd4b2d9b41665"),
                 record.getProtocolMessageBytes().getValue());
 
@@ -1968,7 +1960,7 @@ public class RecordStreamCipherTest {
          * tests the AuthenticatedMetaData Notice : Only the sequence number should have changed
          */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000000000011603030010"),
+                DataConverter.hexStringToByteArray("00000000000000011603030010"),
                 record2.getComputations().getAuthenticatedMetaData().getValue());
 
         /*
@@ -1977,23 +1969,23 @@ public class RecordStreamCipherTest {
 
         /* tests the mac of the second record only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("5ce66135cf54d968a7cdca9b66eb87b7"),
+                DataConverter.hexStringToByteArray("5ce66135cf54d968a7cdca9b66eb87b7"),
                 record2.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101015ce66135cf54d968a7cdca9b66eb87b7"),
                 record2.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the plaintext of the second record only to ensure that the decryption is not resetted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests protocol message bytes encrypted of the second record */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4492241d265c875f34c97ea7a5740629337b7f945d095e2cd7df551b5a75c216"),
                 record2.getProtocolMessageBytes().getValue());
     }
@@ -2022,39 +2014,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("1603040024"),
+                DataConverter.hexStringToByteArray("1603040024"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("5496933488aeecb5af1063b930724490dc6a10e2"),
+                DataConverter.hexStringToByteArray("5496933488aeecb5af1063b930724490dc6a10e2"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101015496933488aeecb5af1063b930724490dc6a10e2"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -2067,7 +2059,7 @@ public class RecordStreamCipherTest {
          */
 
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe");
         TlsContext context =
                 setContext(
@@ -2087,38 +2079,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("1603040024"),
+                DataConverter.hexStringToByteArray("1603040024"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("5496933488aeecb5af1063b930724490dc6a10e2"),
+                DataConverter.hexStringToByteArray("5496933488aeecb5af1063b930724490dc6a10e2"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101015496933488aeecb5af1063b930724490dc6a10e2"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef731db362d9dec4802a6b3900993dc756e99f935fe"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -2147,39 +2139,39 @@ public class RecordStreamCipherTest {
         cipher.encrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("1603040020"),
+                DataConverter.hexStringToByteArray("1603040020"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the encryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6287e1c26db9dc1c5a9d544572a729c6"),
+                DataConverter.hexStringToByteArray("6287e1c26db9dc1c5a9d544572a729c6"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101016287e1c26db9dc1c5a9d544572a729c6"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests the encryption */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838"),
                 record.getComputations().getCiphertext().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838"),
                 record.getProtocolMessageBytes().getValue());
     }
@@ -2191,7 +2183,7 @@ public class RecordStreamCipherTest {
          * the undefined behavior is working.
          */
         byte[] data =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838");
 
         TlsContext context =
@@ -2212,38 +2204,38 @@ public class RecordStreamCipherTest {
         plaintext.decrypt(record);
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("1603040020"),
+                DataConverter.hexStringToByteArray("1603040020"),
                 record.getComputations().getAuthenticatedMetaData().getValue());
 
         /* tests the decryption key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEF"),
                 record.getComputations().getCipherKey().getValue());
 
         /* tests the mac key */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
+                DataConverter.hexStringToByteArray("DEADBEEFC0FEDEADBEEFC0FEDEADBEEFC0FEDEAD"),
                 record.getComputations().getMacKey().getValue());
 
         /* tests the decryption only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"),
+                DataConverter.hexStringToByteArray("01010101010101010101010101010101"),
                 record.getCleanProtocolMessageBytes().getValue());
 
         /* tests the mac only */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6287e1c26db9dc1c5a9d544572a729c6"),
+                DataConverter.hexStringToByteArray("6287e1c26db9dc1c5a9d544572a729c6"),
                 record.getComputations().getMac().getValue());
 
         /* tests the given plaintext + mac of the plaintext */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "010101010101010101010101010101016287e1c26db9dc1c5a9d544572a729c6"),
                 record.getComputations().getPlainRecordBytes().getValue());
 
         /* tests protocol message bytes encrypted */
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "805264444f48ea5b98a0ceb3884c2ef707ca44db78fb78ab533ea7f5d1091838"),
                 record.getProtocolMessageBytes().getValue());
     }

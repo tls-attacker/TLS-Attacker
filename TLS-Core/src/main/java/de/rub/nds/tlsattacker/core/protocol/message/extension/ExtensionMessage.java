@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -81,10 +81,9 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
 
     protected ExtensionType extensionTypeConstant;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray extensionType;
+    @ModifiableVariableProperty private ModifiableByteArray extensionType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionLength;
 
     @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
@@ -144,7 +143,7 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
             sb.append("\n    Extension type: null");
         } else {
             sb.append("\n    Extension type: ")
-                    .append(ArrayConverter.bytesToHexString(extensionType.getValue()));
+                    .append(DataConverter.bytesToHexString(extensionType.getValue()));
         }
         if (extensionLength == null || extensionLength.getValue() == null) {
             sb.append("\n    Extension length: null");

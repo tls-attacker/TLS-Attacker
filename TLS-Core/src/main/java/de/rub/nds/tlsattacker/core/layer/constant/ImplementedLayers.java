@@ -35,7 +35,7 @@ public enum ImplementedLayers implements LayerType {
 
     private Class<?> baseContainerClass;
 
-    private ImplementedLayers(Class<?> baseContainerClass) {
+    ImplementedLayers(Class<?> baseContainerClass) {
         this.baseContainerClass = baseContainerClass;
     }
 

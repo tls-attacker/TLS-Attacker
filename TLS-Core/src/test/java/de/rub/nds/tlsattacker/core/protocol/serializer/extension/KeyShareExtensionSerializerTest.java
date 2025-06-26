@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -33,14 +33,14 @@ public class KeyShareExtensionSerializerTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "003300260024001d00206786b901eb52a2578a57195d897b8329cb630a19617352af9163c69e0f9a4204"),
                         List.of(),
                         ExtensionType.KEY_SHARE,
                         38,
                         Arrays.asList(
                                 36,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "001d00206786b901eb52a2578a57195d897b8329cb630a19617352af9163c69e0f9a4204"))));
     }
 }

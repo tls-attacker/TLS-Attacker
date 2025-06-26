@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import java.util.List;
@@ -36,14 +36,14 @@ public class EllipticCurvesExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "000a001c001a00170019001c001b0018001a0016000e000d000b000c0009000a"),
                         List.of(),
                         ExtensionType.ELLIPTIC_CURVES,
                         28,
                         List.of(
                                 26,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "00170019001c001b0018001a0016000e000d000b000c0009000a"))));
     }
 }

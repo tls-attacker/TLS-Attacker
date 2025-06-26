@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDhClientKeyExchangePreparator;
@@ -24,10 +24,9 @@ import java.io.InputStream;
 @XmlRootElement(name = "PskDhClientKeyExchange")
 public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskDhClientKeyExchangeMessage() {
@@ -46,7 +45,7 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
         }
         sb.append("\n  PSKIdentity: ");
         if (identity != null && identity.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+            sb.append(DataConverter.bytesToHexString(identity.getValue()));
         } else {
             sb.append("null");
         }

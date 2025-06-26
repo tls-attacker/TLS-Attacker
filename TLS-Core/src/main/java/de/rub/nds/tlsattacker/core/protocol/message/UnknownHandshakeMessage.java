@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
@@ -84,7 +84,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
         sb.append("UnknownHandshakeMessage:");
         sb.append("\n  Data: ");
         if (data != null && data.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(data.getValue()));
+            sb.append(DataConverter.bytesToHexString(data.getValue()));
         } else {
             sb.append("null");
         }
