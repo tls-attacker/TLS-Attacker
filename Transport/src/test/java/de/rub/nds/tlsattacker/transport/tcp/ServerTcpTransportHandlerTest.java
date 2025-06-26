@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.util.FreePortFinder;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,6 +90,28 @@ public class ServerTcpTransportHandlerTest {
             byte[] received = new byte[4];
             assertEquals(4, socket.getInputStream().read(received));
             assertArrayEquals(new byte[] {4, 3, 2, 1}, received);
+        }
+    }
+
+    /** Test that serverSocket.accept() timeout works correctly */
+    @Test
+    public void testAcceptTimeout() throws IOException {
+        // Create handler with short timeout
+        ServerTcpTransportHandler timeoutHandler =
+                new ServerTcpTransportHandler(500, 500, FreePortFinder.getPossiblyFreePort());
+        try {
+            timeoutHandler.preInitialize();
+            // Try to initialize without connecting - should timeout
+            assertThrows(
+                    SocketTimeoutException.class,
+                    () -> {
+                        timeoutHandler.initialize();
+                    });
+        } finally {
+            if (timeoutHandler.getServerSocket() != null
+                    && !timeoutHandler.getServerSocket().isClosed()) {
+                timeoutHandler.getServerSocket().close();
+            }
         }
     }
 }
