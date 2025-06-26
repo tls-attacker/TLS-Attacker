@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example workflow demonstrating TCP segmentation feature.
+  This example shows how to split TLS records across multiple TCP segments.
+-->
+<WorkflowTrace>
+    <!-- Send ClientHello with TCP segmentation -->
+    <Send>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>
+                    <EllipticCurves/>
+                    <SignatureAndHashAlgorithmsExtension/>
+                    <RenegotiationInfoExtension/>
+                </extensions>
+            </ClientHello>
+        </messages>
+        <records>
+            <Record>
+                <!-- Split record header across TCP segments -->
+                <!-- First segment: 3 bytes (content type + 2 bytes of version) -->
+                <!-- Second segment: remaining header + handshake message -->
+                <tcpSegmentation>
+                    <segment>
+                        <offset>0</offset>
+                        <length>3</length>
+                    </segment>
+                    <segment>
+                        <offset>3</offset>
+                    </segment>
+                    <segmentDelay>10</segmentDelay>
+                </tcpSegmentation>
+            </Record>
+        </records>
+    </Send>
+    
+    <!-- Receive ServerHello -->
+    <Receive>
+        <messages>
+            <ServerHello/>
+        </messages>
+    </Receive>
+    
+    <!-- Receive Certificate -->
+    <Receive>
+        <messages>
+            <Certificate/>
+        </messages>
+    </Receive>
+    
+    <!-- Receive ServerHelloDone -->
+    <Receive>
+        <messages>
+            <ServerHelloDone/>
+        </messages>
+    </Receive>
+    
+    <!-- Send ClientKeyExchange with different segmentation -->
+    <Send>
+        <messages>
+            <RSAClientKeyExchange/>
+        </messages>
+        <records>
+            <Record>
+                <!-- Split at different boundary -->
+                <!-- First segment: complete header (5 bytes) -->
+                <!-- Second segment: first 10 bytes of handshake message -->
+                <!-- Third segment: remaining handshake message -->
+                <tcpSegmentation>
+                    <segment>
+                        <offset>0</offset>
+                        <length>5</length>
+                    </segment>
+                    <segment>
+                        <offset>5</offset>
+                        <length>10</length>
+                    </segment>
+                    <segment>
+                        <offset>15</offset>
+                    </segment>
+                    <segmentDelay>5</segmentDelay>
+                </tcpSegmentation>
+            </Record>
+        </records>
+    </Send>
+    
+    <!-- Send ChangeCipherSpec as single segment -->
+    <Send>
+        <messages>
+            <ChangeCipherSpec/>
+        </messages>
+    </Send>
+    
+    <!-- Send Finished with header split exactly in middle -->
+    <Send>
+        <messages>
+            <Finished/>
+        </messages>
+        <records>
+            <Record>
+                <tcpSegmentation>
+                    <segment>
+                        <offset>0</offset>
+                        <length>2</length>
+                    </segment>
+                    <segment>
+                        <offset>2</offset>
+                    </segment>
+                    <segmentDelay>20</segmentDelay>
+                </tcpSegmentation>
+            </Record>
+        </records>
+    </Send>
+    
+    <!-- Receive ChangeCipherSpec and Finished -->
+    <Receive>
+        <messages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </messages>
+    </Receive>
+</WorkflowTrace>

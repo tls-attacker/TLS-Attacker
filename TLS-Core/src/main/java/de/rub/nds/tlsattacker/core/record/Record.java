@@ -30,8 +30,10 @@ import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.tcp.TcpSegmentConfiguration;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
@@ -91,6 +93,10 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @ModifiableVariableProperty private ModifiableByte unifiedHeader;
 
     private RecordCryptoComputations computations;
+
+    /** TCP segmentation configuration for this record */
+    @XmlElement(name = "tcpSegmentation")
+    private TcpSegmentConfiguration tcpSegmentConfiguration;
 
     public Record(Config config) {
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
@@ -311,6 +317,14 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
         if (computations == null) {
             this.computations = new RecordCryptoComputations();
         }
+    }
+
+    public TcpSegmentConfiguration getTcpSegmentConfiguration() {
+        return tcpSegmentConfiguration;
+    }
+
+    public void setTcpSegmentConfiguration(TcpSegmentConfiguration tcpSegmentConfiguration) {
+        this.tcpSegmentConfiguration = tcpSegmentConfiguration;
     }
 
     @Override
