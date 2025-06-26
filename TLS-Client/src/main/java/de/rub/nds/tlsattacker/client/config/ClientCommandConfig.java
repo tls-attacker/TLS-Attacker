@@ -36,6 +36,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate private ListDelegate listDelegate;
     @ParametersDelegate private StarttlsDelegate starttlsDelegate;
     @ParametersDelegate private ConnectionDelegate connectionDelegate;
+    @ParametersDelegate private CloseNotifyDelegate closeNotifyDelegate;
 
     @ParametersDelegate private EchDelegate echDelegate;
     @ParametersDelegate private QuicDelegate quicDelegate;
@@ -71,6 +72,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.echDelegate = new EchDelegate();
         this.quicDelegate = new QuicDelegate();
         this.connectionDelegate = new ConnectionDelegate();
+        this.closeNotifyDelegate = new CloseNotifyDelegate();
         addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -90,6 +92,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(echDelegate);
         addDelegate(quicDelegate);
         addDelegate(connectionDelegate);
+        addDelegate(closeNotifyDelegate);
     }
 
     @Override

@@ -35,6 +35,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate private ExecutorTypeDelegate executorTypeDelegate;
     @ParametersDelegate private StarttlsDelegate starttlsDelegate;
     @ParametersDelegate private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate private CloseNotifyDelegate closeNotifyDelegate;
 
     @Parameter(
             names = "-workflow_input",
@@ -64,6 +65,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.executorTypeDelegate = new ExecutorTypeDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
         this.timeoutDelegate = new TimeoutDelegate();
+        this.closeNotifyDelegate = new CloseNotifyDelegate();
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(ellipticCurveDelegate);
@@ -80,6 +82,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(executorTypeDelegate);
         addDelegate(starttlsDelegate);
         addDelegate(timeoutDelegate);
+        addDelegate(closeNotifyDelegate);
     }
 
     @Override
