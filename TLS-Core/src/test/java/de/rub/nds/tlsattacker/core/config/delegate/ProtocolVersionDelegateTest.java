@@ -91,4 +91,29 @@ public class ProtocolVersionDelegateTest extends AbstractDelegateTest<ProtocolVe
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
+
+    /** Test that DTLS version no longer overrides finishWithCloseNotify setting */
+    @Test
+    public void testDtlsDoesNotOverrideFinishWithCloseNotify() {
+        Config config = new Config();
+        // Set finishWithCloseNotify to false explicitly
+        config.setFinishWithCloseNotify(false);
+
+        String[] args = new String[2];
+        args[0] = "-version";
+        args[1] = "DTLS12";
+
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        // Verify that finishWithCloseNotify remains false and is not overridden
+        assertFalse(config.isFinishWithCloseNotify());
+        assertSame(ProtocolVersion.DTLS12, config.getHighestProtocolVersion());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultClientConnection().getTransportHandlerType());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultServerConnection().getTransportHandlerType());
+    }
 }
