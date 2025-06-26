@@ -45,7 +45,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         state.setStartTimestamp(System.currentTimeMillis());
         TlsAction lastExecutedAction = null;
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
-        for (TlsAction action : tlsActions) {
+        for (int i = 0; i < tlsActions.size(); i++) {
+            TlsAction action = tlsActions.get(i);
+
             if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.debug(
                         "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
@@ -67,8 +69,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 if (lastExecutedAction != null && lastExecutedAction instanceof SendingAction) {
                     LOGGER.debug(
                             "Received IO Exception with StopActionsAfterIOException active, skipping to next receive action to process pending message bytes.");
-                    processPendingReceiveBufferBytes(
-                            tlsActions.get(tlsActions.indexOf(action) - 1));
+                    processPendingReceiveBufferBytes(i - 1);
                 } else {
                     LOGGER.debug(
                             "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
@@ -88,7 +89,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 if (lastExecutedAction instanceof SendingAction) {
                     LOGGER.debug(
                             "SendingAction did not execute as planned, skipping to next receive action to process pending message bytes.");
-                    processPendingReceiveBufferBytes(action);
+                    processPendingReceiveBufferBytes(i);
                 } else {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 }
@@ -132,14 +133,14 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
      * triggers the other side to close with an alert. Otherwise, the IO Exception raised during
      * sending would cause us to abort the workflow trace without ever processing the alert.
      *
-     * @param lastActionExecuted The last action executed (successful or not)
+     * @param lastActionExecutedIndex The index of the last action executed (successful or not)
      */
-    private void processPendingReceiveBufferBytes(TlsAction lastActionExecuted) {
+    private void processPendingReceiveBufferBytes(int lastActionExecutedIndex) {
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         // execute next receiving action to ensure possibly remaining bytes of the TCP receive
         // buffer get parsed
         ReceivingAction nextReceiveAction = null;
-        for (int i = tlsActions.indexOf(lastActionExecuted) + 1; i < tlsActions.size(); i++) {
+        for (int i = lastActionExecutedIndex + 1; i < tlsActions.size(); i++) {
             if (tlsActions.get(i) instanceof ReceivingAction) {
                 nextReceiveAction = (ReceivingAction) tlsActions.get(i);
                 break;
