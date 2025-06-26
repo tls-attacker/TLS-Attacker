@@ -9,7 +9,10 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import de.rub.nds.protocol.crypto.signature.RsaSsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -17,9 +20,11 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -62,6 +67,45 @@ public class TlsSignatureUtilTest {
                     () ->
                             tlsSignatureUtil.computeSignature(
                                     chooser, algorithm, value, computations));
+        }
+    }
+
+    @Test
+    void testRsaPssSaltHandling() {
+        // Test with different salt lengths to ensure proper random salt generation
+        SignatureAndHashAlgorithm[] pssAlgorithms = {
+            SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256,
+            SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384,
+            SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512
+        };
+
+        for (SignatureAndHashAlgorithm algorithm : pssAlgorithms) {
+            // Test with incorrect salt length (should generate new random salt)
+            Config config = chooser.getConfig();
+            config.setDefaultRsaSsaPssSalt(new byte[10]); // Incorrect length
+
+            RsaSsaPssSignatureComputations computations = new RsaSsaPssSignatureComputations();
+            byte[] testData = new byte[] {0x01, 0x02, 0x03, 0x04};
+
+            assertDoesNotThrow(
+                    () ->
+                            tlsSignatureUtil.computeSignature(
+                                    chooser, algorithm, testData, computations));
+
+            // Verify that salt was generated with correct length
+            byte[] salt = computations.getSalt().getValue();
+            int expectedSaltLength = algorithm.getHashAlgorithm().getBitLength() / 8;
+            assertEquals(
+                    expectedSaltLength,
+                    salt.length,
+                    "Salt length should match hash algorithm output length for " + algorithm);
+
+            // Verify that salt is not all zeros (was properly randomized)
+            byte[] allZeros = new byte[expectedSaltLength];
+            assertNotEquals(
+                    Arrays.toString(allZeros),
+                    Arrays.toString(salt),
+                    "Salt should be randomized, not all zeros");
         }
     }
 }
