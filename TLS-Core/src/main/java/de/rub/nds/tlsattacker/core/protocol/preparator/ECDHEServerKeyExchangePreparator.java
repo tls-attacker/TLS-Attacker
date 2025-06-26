@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
@@ -108,7 +108,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                             curve.getBasePoint());
             publicKeyBytes =
                     PointFormatter.formatToByteArray(
-                            (namedGroup.getGroupParameters()), publicKey, pointFormat.getFormat());
+                            namedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
         } else {
             LOGGER.warn(
                     "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
@@ -192,7 +192,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         ecParams.write(msg.getPublicKeyLength().getValue());
         ecParams.write(msg.getPublicKey().getValue());
 
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getKeyExchangeComputations().getClientServerRandom().getValue(),
                 ecParams.toByteArray());
     }
@@ -206,7 +206,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     protected void prepareClientServerRandom(T msg) {
         msg.getKeyExchangeComputations()
                 .setClientServerRandom(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",

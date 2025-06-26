@@ -38,7 +38,7 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
      */
     private void parsePointFormatsLength(ECPointFormatExtensionMessage msg) {
         msg.setPointFormatsLength(parseIntField(ExtensionByteLength.EC_POINT_FORMATS));
-        LOGGER.debug("PointFormatsLength: " + msg.getPointFormatsLength().getValue());
+        LOGGER.debug("PointFormatsLength: {}", msg.getPointFormatsLength().getValue());
     }
 
     /**

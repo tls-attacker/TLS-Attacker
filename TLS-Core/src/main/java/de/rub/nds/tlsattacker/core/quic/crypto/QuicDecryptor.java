@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
@@ -100,7 +100,7 @@ public class QuicDecryptor {
                 headerProtectionMask = clientHeaderProtectionMask;
                 break;
             default:
-                LOGGER.error("Unknown connectionEndType" + connectionEndType);
+                LOGGER.error("Unknown connectionEndType: {}", connectionEndType);
                 return;
         }
 
@@ -157,14 +157,13 @@ public class QuicDecryptor {
                 break;
         }
 
-        int truncated_Pn =
-                ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue());
+        int truncated_Pn = DataConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue());
         int pn_nBits = packet.getPacketNumberLength().getValue();
         long decodedPn = packet.decodePacketNumber(truncated_Pn, largest_Pn, pn_nBits);
         LOGGER.debug(
                 "Decoded pktNumber: {}, raw pktNumber: {}",
                 decodedPn,
-                ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
+                DataConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
 
         packet.setRestoredPacketNumber((int) decodedPn);
         packet.setPlainPacketNumber((int) decodedPn);
@@ -173,7 +172,7 @@ public class QuicDecryptor {
                 >= packet.getRestoredPacketNumber().getValue().length) {
             packet.setRestoredPacketNumber(packet.getUnprotectedPacketNumber().getValue());
             packet.setPlainPacketNumber(
-                    ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
+                    DataConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
         }
     }
 
@@ -235,7 +234,7 @@ public class QuicDecryptor {
                 decryptionKey = clientKey;
                 break;
             default:
-                LOGGER.error("Unknown connectionEndType" + connectionEndType);
+                LOGGER.error("Unknown connectionEndType: {}", connectionEndType);
                 return;
         }
 

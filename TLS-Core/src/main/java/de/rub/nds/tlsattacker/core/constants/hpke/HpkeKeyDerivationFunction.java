@@ -26,8 +26,7 @@ public enum HpkeKeyDerivationFunction {
     private final int hashLength;
     private final HKDFAlgorithm hkdfAlgorithm;
 
-    private HpkeKeyDerivationFunction(
-            byte[] byteValue, int hashLength, HKDFAlgorithm hkdfAlgorithm) {
+    HpkeKeyDerivationFunction(byte[] byteValue, int hashLength, HKDFAlgorithm hkdfAlgorithm) {
         this.byteValue = byteValue;
         this.hashLength = hashLength;
         this.hkdfAlgorithm = hkdfAlgorithm;
@@ -47,7 +46,7 @@ public enum HpkeKeyDerivationFunction {
 
     static {
         MAP = new HashMap<>();
-        for (HpkeKeyDerivationFunction version : HpkeKeyDerivationFunction.values()) {
+        for (HpkeKeyDerivationFunction version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

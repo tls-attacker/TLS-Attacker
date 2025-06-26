@@ -22,13 +22,13 @@ public enum CertificateType {
     private final byte value;
     private static final Map<Byte, CertificateType> MAP;
 
-    private CertificateType(byte value) {
+    CertificateType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (CertificateType c : CertificateType.values()) {
+        for (CertificateType c : values()) {
             MAP.put(c.getValue(), c);
         }
     }

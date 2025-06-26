@@ -78,7 +78,7 @@ public class EncryptedServerNameIndicationExtensionSerializer
 
     private void writeRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {
         appendInt(msg.getRecordDigestLength().getValue(), ExtensionByteLength.RECORD_DIGEST_LENGTH);
-        LOGGER.debug("RecordDigestLength: " + msg.getRecordDigestLength().getValue());
+        LOGGER.debug("RecordDigestLength: {}", msg.getRecordDigestLength().getValue());
     }
 
     private void writeRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -88,7 +88,7 @@ public class EncryptedServerNameIndicationExtensionSerializer
 
     private void writeEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
         appendInt(msg.getEncryptedSniLength().getValue(), ExtensionByteLength.ENCRYPTED_SNI_LENGTH);
-        LOGGER.debug("EncryptedSniLength: " + msg.getEncryptedSniLength().getValue());
+        LOGGER.debug("EncryptedSniLength: {}", msg.getEncryptedSniLength().getValue());
     }
 
     private void writeEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
@@ -83,8 +83,7 @@ public class PWDComputations extends KeyExchangeComputations {
             context = chooser.getClientRandom();
         } else {
             context =
-                    ArrayConverter.concatenate(
-                            chooser.getClientRandom(), chooser.getServerRandom());
+                    DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         }
 
         Point createdPoint = null;
@@ -93,10 +92,10 @@ public class PWDComputations extends KeyExchangeComputations {
         do {
             counter++;
             byte[] seedInput =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             base,
-                            ArrayConverter.intToBytes(counter, 1),
-                            ArrayConverter.bigIntegerToByteArray(curve.getModulus()));
+                            DataConverter.intToBytes(counter, 1),
+                            DataConverter.bigIntegerToByteArray(curve.getModulus()));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
             BigInteger tmpX =
@@ -188,10 +187,9 @@ public class PWDComputations extends KeyExchangeComputations {
                         prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
                 LOGGER.warn(
-                        "Could not select prf for "
-                                + chooser.getSelectedProtocolVersion()
-                                + " and "
-                                + chooser.getSelectedCipherSuite());
+                        "Could not select prf for {} and {}",
+                        chooser.getSelectedProtocolVersion(),
+                        chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }

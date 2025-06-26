@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -53,8 +53,8 @@ public class EncryptedClientHelloExtensionHandler
                 LOGGER.warn("ECHConfig id's do not match");
             }
 
-            LOGGER.debug("Received ECH Config ID: " + message.getConfigId().getValue());
-            LOGGER.debug("Own ECH Config ID: " + echConfig.getConfigId());
+            LOGGER.debug("Received ECH Config ID: {}", message.getConfigId().getValue());
+            LOGGER.debug("Own ECH Config ID: {}", echConfig.getConfigId());
 
             HpkeUtil hpkeUtil = new HpkeUtil(echConfig);
             KeyShareEntry keyShareEntry = tlsContext.getChooser().getEchServerKeyShareEntry();
@@ -65,7 +65,7 @@ public class EncryptedClientHelloExtensionHandler
 
             // RFC 9180, Section 7.1
             byte[] info =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             "tls ech".getBytes(StandardCharsets.US_ASCII),
                             new byte[] {0x00},
                             echConfig.getEchConfigBytes());
@@ -114,12 +114,12 @@ public class EncryptedClientHelloExtensionHandler
                 // therefore, we have to overwrite the length here
                 int clientHelloMessageLength = clientHelloParser.getAlreadyParsed().length;
                 byte[] clientHelloLength =
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 clientHelloMessageLength,
                                 HandshakeByteLength.HANDSHAKE_MESSAGE_LENGTH_FIELD_LENGTH);
                 clientHelloMessage.setLength(clientHelloMessageLength);
                 clientHelloMessage.setCompleteResultingMessage(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 type, clientHelloLength, clientHelloParser.getAlreadyParsed()));
             } catch (ParserException e) {
                 LOGGER.warn("Could not parse decrypted ClientHello", e);

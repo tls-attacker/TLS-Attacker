@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -131,7 +131,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             digestAlgo.getJavaName(),
                             tlsContext.getChooser().getHandshakeSecret(),
                             HKDFunction.DERIVED,
-                            ArrayConverter.hexStringToByteArray(""),
+                            DataConverter.hexStringToByteArray(""),
                             tlsContext.getChooser().getSelectedProtocolVersion());
             byte[] masterSecret =
                     HKDFunction.extract(hkdfAlgorithm, saltMasterSecret, new byte[macLength]);

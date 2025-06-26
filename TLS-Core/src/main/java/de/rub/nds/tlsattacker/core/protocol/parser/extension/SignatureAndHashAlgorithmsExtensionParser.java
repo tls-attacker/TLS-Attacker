@@ -41,8 +41,8 @@ public class SignatureAndHashAlgorithmsExtensionParser
         msg.setSignatureAndHashAlgorithmsLength(
                 parseIntField(ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS));
         LOGGER.debug(
-                "SignatureAndHashAlgorithmsLength: "
-                        + msg.getSignatureAndHashAlgorithmsLength().getValue());
+                "SignatureAndHashAlgorithmsLength: {}",
+                msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 
     /**

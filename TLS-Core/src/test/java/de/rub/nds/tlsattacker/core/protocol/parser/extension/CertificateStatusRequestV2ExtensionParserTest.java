@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
+import static de.rub.nds.modifiablevariable.util.DataConverter.hexStringToByteArray;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

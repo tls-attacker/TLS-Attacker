@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -47,7 +47,7 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends Parser<T>
         } else {
             // Parse remaining bytes
             length =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             firstTwoBytes,
                             parseByteArrayField(
                                     SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
@@ -56,7 +56,7 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends Parser<T>
         }
         int intLength = ((length[0] & mask) << Bits.IN_A_BYTE) | (length[1] & 0xFF);
         message.setMessageLength(intLength);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
@@ -67,6 +67,6 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends Parser<T>
      */
     protected void parseType(T msg) {
         msg.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));
-        LOGGER.debug("Type: " + msg.getType().getValue());
+        LOGGER.debug("Type: {}", msg.getType().getValue());
     }
 }

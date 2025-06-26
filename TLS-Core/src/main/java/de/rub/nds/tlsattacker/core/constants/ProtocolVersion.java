@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
 import java.util.*;
 
@@ -61,13 +61,13 @@ public enum ProtocolVersion {
 
     private static final Map<Integer, ProtocolVersion> MAP;
 
-    private ProtocolVersion(byte[] value) {
+    ProtocolVersion(byte[] value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ProtocolVersion c : ProtocolVersion.values()) {
+        for (ProtocolVersion c : values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }
@@ -154,7 +154,7 @@ public enum ProtocolVersion {
     public static ProtocolVersion fromString(String protocolVersion) {
         protocolVersion = protocolVersion.replaceFirst("v", "");
         protocolVersion = protocolVersion.replaceFirst("\\.", "");
-        for (ProtocolVersion pv : ProtocolVersion.values()) {
+        for (ProtocolVersion pv : values()) {
             if (protocolVersion.equalsIgnoreCase(pv.toString())) {
                 return pv;
             }
@@ -164,7 +164,7 @@ public enum ProtocolVersion {
                         + protocolVersion
                         + " cannot be converted to a protocol version. "
                         + "Available values are: "
-                        + Arrays.toString(ProtocolVersion.values()));
+                        + Arrays.toString(values()));
     }
 
     /**
@@ -271,8 +271,8 @@ public enum ProtocolVersion {
             return 0;
         }
 
-        if (ArrayConverter.bytesToInt(protocolVersion1.getValue())
-                > ArrayConverter.bytesToInt(protocolVersion2.getValue())) {
+        if (DataConverter.bytesToInt(protocolVersion1.getValue())
+                > DataConverter.bytesToInt(protocolVersion2.getValue())) {
             return 1;
         }
 

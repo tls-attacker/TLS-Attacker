@@ -58,6 +58,6 @@ public class EllipticCurvesExtensionPreparator
 
     private void prepareSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroupsLength(msg.getSupportedGroups().getValue().length);
-        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
+        LOGGER.debug("SupportedGroupsLength: {}", msg.getSupportedGroupsLength().getValue());
     }
 }

@@ -30,7 +30,7 @@ public class PrintLastHandledApplicationDataActionTest
     @Override
     public void testExecute() throws Exception {
         super.testExecute();
-        String expectedAppDataHexString = "\n47 45 54 20 2F 74 68 65  54 65 73 74 44 61 74 61";
+        String expectedAppDataHexString = "474554202F7468655465737444617461";
         assertEquals(action.getLastHandledApplicationData(), expectedAppDataHexString);
     }
 

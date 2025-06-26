@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
@@ -44,11 +44,11 @@ public class PskClientKeyExchangePreparator
     public byte[] generatePremasterSecret() {
         byte[] psk = chooser.getConfig().getDefaultPSKKey();
         outputStream = new SilentByteArrayOutputStream();
-        outputStream.write(ArrayConverter.intToBytes(psk.length, HandshakeByteLength.PSK_LENGTH));
+        outputStream.write(DataConverter.intToBytes(psk.length, HandshakeByteLength.PSK_LENGTH));
         if (psk.length > 0) {
-            outputStream.write(ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, psk.length));
+            outputStream.write(DataConverter.intToBytes(HandshakeByteLength.PSK_ZERO, psk.length));
         }
-        outputStream.write(ArrayConverter.intToBytes(psk.length, HandshakeByteLength.PSK_LENGTH));
+        outputStream.write(DataConverter.intToBytes(psk.length, HandshakeByteLength.PSK_LENGTH));
         outputStream.write(psk);
         byte[] tempPremasterSecret = outputStream.toByteArray();
         return tempPremasterSecret;
@@ -61,7 +61,7 @@ public class PskClientKeyExchangePreparator
 
     private void prepareClientServerRandom(PskClientKeyExchangeMessage msg) {
         clientRandom =
-                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+                DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientRandom);
         LOGGER.debug(
                 "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());

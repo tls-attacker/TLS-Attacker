@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -48,17 +48,14 @@ public abstract class Serializer<T> {
      * @param length The number of bytes which should be reserved for this Integer
      */
     public final void appendInt(int i, int length) {
-        byte[] bytes = ArrayConverter.intToBytes(i, length);
-        int reconvertedInt = ArrayConverter.bytesToInt(bytes);
+        byte[] bytes = DataConverter.intToBytes(i, length);
+        int reconvertedInt = DataConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
             LOGGER.warn(
-                    "Int \""
-                            + i
-                            + "\" is too long to write in field of size "
-                            + length
-                            + ". Only using last "
-                            + length
-                            + " bytes.");
+                    "Int \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
+                    i,
+                    length,
+                    length);
         }
         appendBytes(bytes);
     }
@@ -74,10 +71,10 @@ public abstract class Serializer<T> {
         byte[] bytes;
         // special case for which bigIntegerToByteArray
         // wrongly returns an empty array
-        if (i.equals(new BigInteger("0"))) {
-            bytes = ArrayConverter.intToBytes(0, length);
+        if (i.equals(BigInteger.ZERO)) {
+            bytes = DataConverter.intToBytes(0, length);
         } else {
-            bytes = ArrayConverter.bigIntegerToByteArray(i, length, true);
+            bytes = DataConverter.bigIntegerToByteArray(i, length, true);
         }
         appendBytes(bytes);
     }

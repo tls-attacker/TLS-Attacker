@@ -36,13 +36,13 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage>
     /** Writes the Type of the HandshakeMessage into the final byte[] */
     protected void writeType() {
         appendByte(message.getType().getValue());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     /** Writes the message length of the HandshakeMessage into the final byte[] */
     protected void writeLength() {
         appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-        LOGGER.debug("Length: " + message.getLength().getValue());
+        LOGGER.debug("Length: {}", message.getLength().getValue());
     }
 
     private void writeContent() {
@@ -72,7 +72,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage>
     /** Writes the ExtensionLength field of the message into the final byte[] */
     protected void writeExtensionLength() {
         appendInt(message.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionLength: " + message.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", message.getExtensionsLength().getValue());
     }
 
     /**

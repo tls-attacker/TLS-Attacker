@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -75,19 +75,19 @@ public class PWDServerKeyExchangeParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "0c00008720963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da303001a410422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1202f704896699fc424d3cec33717644f5adf7f68483424ee51492bb96613fc4921"),
                         Arrays.asList(
                                 HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue(),
                                 135,
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3"),
                                 65,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1"),
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "2f704896699fc424d3cec33717644f5adf7f68483424ee51492bb96613fc4921"),
                                 EllipticCurveType.NAMED_CURVE.getValue(),
                                 NamedGroup.BRAINPOOLP256R1.getValue(),

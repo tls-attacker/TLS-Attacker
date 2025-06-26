@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
@@ -82,7 +82,7 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
         sb.append("\n  IdentityHint: ");
         if (identityHint != null && identityHint.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(identityHint.getValue()));
+            sb.append(DataConverter.bytesToHexString(identityHint.getValue()));
         } else {
             sb.append("null");
         }

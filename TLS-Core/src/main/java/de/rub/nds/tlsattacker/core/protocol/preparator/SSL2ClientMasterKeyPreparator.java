@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
@@ -67,12 +67,12 @@ public class SSL2ClientMasterKeyPreparator
      */
     private void prepareMessagePaddingLength(SSL2ClientMasterKeyMessage message) {
         message.setPaddingLength(0);
-        LOGGER.debug("MessagePaddingLength: " + message.getPaddingLength().getValue());
+        LOGGER.debug("MessagePaddingLength: {}", message.getPaddingLength().getValue());
     }
 
     private void prepareType(SSL2ClientMasterKeyMessage message) {
         message.setType(message.getSsl2MessageType().getType());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     private void prepareCipherKind(SSL2ClientMasterKeyMessage message) {
@@ -88,7 +88,7 @@ public class SSL2ClientMasterKeyPreparator
 
     private void prepareClearKeyLength(SSL2ClientMasterKeyMessage message) {
         message.setClearKeyLength(message.getClearKeyData().getValue().length);
-        LOGGER.debug("ClearKeyLength: " + message.getClearKeyLength().getValue());
+        LOGGER.debug("ClearKeyLength: {}", message.getClearKeyLength().getValue());
     }
 
     private void prepareKeyArg(SSL2ClientMasterKeyMessage message) {
@@ -101,12 +101,12 @@ public class SSL2ClientMasterKeyPreparator
 
     private void prepareKeyArgLength(SSL2ClientMasterKeyMessage message) {
         message.setKeyArgLength(message.getKeyArgData().getValue().length);
-        LOGGER.debug("KeyArgLength: " + message.getKeyArgLength().getValue());
+        LOGGER.debug("KeyArgLength: {}", message.getKeyArgLength().getValue());
     }
 
     private void prepareMessageLength(SSL2ClientMasterKeyMessage message, int length) {
         message.setMessageLength(length);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 
     protected void preparePadding(SSL2ClientMasterKeyMessage msg) {
@@ -133,7 +133,7 @@ public class SSL2ClientMasterKeyPreparator
     protected void preparePlainPaddedPremasterSecret(SSL2ClientMasterKeyMessage msg) {
         msg.getComputations()
                 .setPlainPaddedPremasterSecret(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 new byte[] {0x00, 0x02},
                                 padding,
                                 new byte[] {0x00},
@@ -150,7 +150,7 @@ public class SSL2ClientMasterKeyPreparator
 
     protected void prepareEncryptedKeyDataLength(SSL2ClientMasterKeyMessage msg) {
         msg.setEncryptedKeyLength(msg.getEncryptedKeyData().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getEncryptedKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getEncryptedKeyLength().getValue());
     }
 
     private void prepareRSACiphertext(SSL2ClientMasterKeyMessage message) {
@@ -175,7 +175,7 @@ public class SSL2ClientMasterKeyPreparator
             padding = new byte[0]; // randomByteLength could be negative
         }
         chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
-        ArrayConverter.makeArrayNonZero(padding);
+        DataConverter.makeArrayNonZero(padding);
         preparePadding(message);
 
         preparePlainPaddedPremasterSecret(message);
@@ -188,7 +188,7 @@ public class SSL2ClientMasterKeyPreparator
                         chooser.getServerX509Chooser().getSubjectRsaPublicExponent(),
                         chooser.getServerX509Chooser().getSubjectRsaModulus());
         encryptedPremasterSecret =
-                ArrayConverter.bigIntegerToByteArray(
+                DataConverter.bigIntegerToByteArray(
                         biEncrypted,
                         chooser.getServerX509Chooser().getSubjectRsaModulus().bitLength()
                                 / Bits.IN_A_BYTE,

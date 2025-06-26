@@ -81,7 +81,7 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
         int encryptedSniLength = this.parseIntField(ExtensionByteLength.ENCRYPTED_SNI_LENGTH);
         msg.setEncryptedSniLength(encryptedSniLength);
-        LOGGER.debug("encryptedSniLength: " + msg.getEncryptedSniLength());
+        LOGGER.debug("encryptedSniLength: {}", msg.getEncryptedSniLength());
     }
 
     private void parseEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
@@ -51,14 +50,12 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
             entry.setCertificateBytes(new byte[0]);
         }
 
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(entry.getCertificateBytes().getValue()));
+        LOGGER.debug("Certificate: {}", entry.getCertificateBytes().getValue());
     }
 
     private void prepareCertificateLength(CertificateEntry entry) {
         entry.setCertificateLength(entry.getCertificateBytes().getValue().length);
-        LOGGER.debug("CertificateLength: " + entry.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", entry.getCertificateLength().getValue());
     }
 
     private void prepareExtensions(CertificateEntry entry) {
@@ -70,13 +67,11 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
             }
             entry.setExtensionBytes(stream.toByteArray());
         }
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(entry.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", entry.getExtensionBytes().getValue());
     }
 
     private void prepareExtensionLength(CertificateEntry entry) {
         entry.setExtensionsLength(entry.getExtensionBytes().getValue().length);
-        LOGGER.debug("ExtensionLength: " + entry.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", entry.getExtensionsLength().getValue());
     }
 }

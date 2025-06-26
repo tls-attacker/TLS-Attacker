@@ -51,8 +51,7 @@ public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getContext().getTransportHandler().getTimeout();
         tlsContext.getContext().getTransportHandler().setTimeout(newValue);
-        LOGGER.info(
-                "Changed Timeout from " + oldValue == null ? oldValue : null + " to " + newValue);
+        LOGGER.info("Changed Timeout from {} to {}", oldValue, newValue);
         setExecuted(true);
     }
 

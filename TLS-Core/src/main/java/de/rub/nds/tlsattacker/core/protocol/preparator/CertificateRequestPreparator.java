@@ -87,7 +87,7 @@ public class CertificateRequestPreparator
 
     private void prepareDistinguishedNamesLength(CertificateRequestMessage msg) {
         msg.setDistinguishedNamesLength(msg.getDistinguishedNames().getValue().length);
-        LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
+        LOGGER.debug("DistinguishedNamesLength: {}", msg.getDistinguishedNamesLength().getValue());
     }
 
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {

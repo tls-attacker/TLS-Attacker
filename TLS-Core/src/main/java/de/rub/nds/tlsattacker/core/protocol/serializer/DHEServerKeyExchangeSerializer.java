@@ -62,7 +62,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the pLength of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writePLength(T msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.DH_MODULUS_LENGTH);
-        LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
+        LOGGER.debug("pLength: {}", msg.getModulusLength().getValue());
     }
 
     /** Writes the P of the DHEServerKeyExchangeMessage into the final byte[] */
@@ -74,7 +74,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the gLength of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writeGLength(T msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.DH_GENERATOR_LENGTH);
-        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("gLength: {}", msg.getGeneratorLength().getValue());
     }
 
     /** Writes the G of the DHEServerKeyExchangeMessage into the final byte[] */
@@ -88,7 +88,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /** Writes the SerializedPublicKey of the DHEServerKeyExchangeMessage into the final byte[] */
@@ -109,7 +109,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /** Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[] */

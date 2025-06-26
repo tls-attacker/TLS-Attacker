@@ -31,6 +31,6 @@ public class RequestConnectionIdPreperator
     private void prepareNumberOfConnectionIds() {
         message.setNumberOfConnectionIds(
                 chooser.getConfig().getDefaultNumberOfRequestedConnectionIds());
-        LOGGER.debug("NumberOfConnectionIds: " + message.getNumberOfConnectionIds().getValue());
+        LOGGER.debug("NumberOfConnectionIds: {}", message.getNumberOfConnectionIds().getValue());
     }
 }

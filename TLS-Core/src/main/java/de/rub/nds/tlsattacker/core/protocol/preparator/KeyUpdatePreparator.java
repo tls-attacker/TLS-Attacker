@@ -28,6 +28,7 @@ public class KeyUpdatePreparator extends HandshakeMessagePreparator<KeyUpdateMes
         if (msg.getRequestMode() == null || msg.getRequestMode().getValue() == null) {
             msg.setRequestMode(chooser.getConfig().getDefaultKeyUpdateRequestMode());
         }
-        LOGGER.debug("Preparing KeyUpdate - MessageContent is: " + msg.getRequestMode().getValue());
+        LOGGER.debug(
+                "Preparing KeyUpdate - MessageContent is: {}", msg.getRequestMode().getValue());
     }
 }

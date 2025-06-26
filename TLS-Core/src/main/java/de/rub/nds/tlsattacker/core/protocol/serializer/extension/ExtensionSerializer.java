@@ -44,7 +44,7 @@ public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Se
 
     private void writeLength() {
         appendInt(msg.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH);
-        LOGGER.debug("extensionLength: " + msg.getExtensionLength().getValue());
+        LOGGER.debug("extensionLength: {}", msg.getExtensionLength().getValue());
     }
 
     private void writeContent() {

@@ -91,12 +91,14 @@ public class TlsSignatureUtil {
                         || selectedProtocolVersion == ProtocolVersion.TLS10
                         || selectedProtocolVersion == ProtocolVersion.TLS11) {
                     hashAlgorithm = HashAlgorithm.NONE;
-                    SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
-                    outputStream.writeBytes(
-                            HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.MD5));
-                    outputStream.writeBytes(
-                            HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.SHA1));
-                    toBeHashedAndSigned = outputStream.toByteArray();
+                    try (SilentByteArrayOutputStream outputStream =
+                            new SilentByteArrayOutputStream()) {
+                        outputStream.writeBytes(
+                                HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.MD5));
+                        outputStream.writeBytes(
+                                HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.SHA1));
+                        toBeHashedAndSigned = outputStream.toByteArray();
+                    }
                 }
                 computeRsaPkcs1Signature(
                         chooser,

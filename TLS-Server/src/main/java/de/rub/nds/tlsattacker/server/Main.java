@@ -46,7 +46,7 @@ public class Main {
                 tlsConfig = config.createConfig();
                 WorkflowTrace trace = null;
                 if (config.getWorkflowInput() != null) {
-                    LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
+                    LOGGER.debug("Reading workflow trace from {}", config.getWorkflowInput());
                     try (FileInputStream fis = new FileInputStream(config.getWorkflowInput())) {
                         trace = WorkflowTraceSerializer.secureRead(fis);
                     }
@@ -55,7 +55,7 @@ public class Main {
                 State state = server.execute(tlsConfig, trace);
                 if (config.getWorkflowOutput() != null) {
                     trace = state.getWorkflowTrace();
-                    LOGGER.debug("Writing workflow trace to " + config.getWorkflowOutput());
+                    LOGGER.debug("Writing workflow trace to {}", config.getWorkflowOutput());
                     WorkflowTraceSerializer.write(new File(config.getWorkflowOutput()), trace);
                 }
             } catch (Exception e) {

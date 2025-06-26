@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.mac;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -31,7 +31,7 @@ public class MacWrapperTest {
 
         byte[] actual = mac.calculateMac("Test data".getBytes());
         byte[] expected =
-                ArrayConverter.hexStringToByteArray("2C667D86C1F63F00E86310B3A32F2D44DF34A316");
+                DataConverter.hexStringToByteArray("2C667D86C1F63F00E86310B3A32F2D44DF34A316");
         assertArrayEquals(expected, actual);
     }
 
@@ -46,13 +46,13 @@ public class MacWrapperTest {
 
         byte[] actual = mac.calculateMac("Test data".getBytes());
         byte[] expected =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "9E1A18525244994DF9D9006D057B4CA01093458D40DA788A91E6324278E575DF");
         assertArrayEquals(expected, actual);
 
         actual = mac.calculateMac(" extended".getBytes());
         expected =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "C0ECFFEA5D7021D84C74227D7A7E80C2C6BD5F3C5F298E904AF9A4BA5C5E5AEF");
         assertArrayEquals(expected, actual);
     }
@@ -67,11 +67,11 @@ public class MacWrapperTest {
         assertEquals(MacAlgorithm.IMIT_GOST28147.getMacLength(), mac.getMacLength());
 
         byte[] actual = mac.calculateMac("Test data".getBytes());
-        byte[] expected = ArrayConverter.hexStringToByteArray("2664CBA8");
+        byte[] expected = DataConverter.hexStringToByteArray("2664CBA8");
         assertArrayEquals(expected, actual);
 
         actual = mac.calculateMac(" extended".getBytes());
-        expected = ArrayConverter.hexStringToByteArray("9E80F481");
+        expected = DataConverter.hexStringToByteArray("9E80F481");
         assertArrayEquals(expected, actual);
     }
 }

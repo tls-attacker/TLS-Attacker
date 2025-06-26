@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.util.List;
@@ -39,14 +39,14 @@ public class SignatureAndHashAlgorithmsExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "000d0020001e060106020603050105020503040104020403030103020303020102020203"),
                         List.of(),
                         ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS,
                         32,
                         List.of(
                                 30,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "060106020603050105020503040104020403030103020303020102020203"))));
     }
 }

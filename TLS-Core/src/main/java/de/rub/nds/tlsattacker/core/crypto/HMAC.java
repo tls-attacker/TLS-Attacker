@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -112,9 +112,9 @@ public class HMAC {
         // hmac = hmac_<hash>(<hash>(secret XOR opad) || <hash>(secret XOR ipad || data))
         byte[] hash =
                 this.digest.digest(
-                        ArrayConverter.concatenate(xorBytes(this.secret, this.ipad), data));
+                        DataConverter.concatenate(xorBytes(this.secret, this.ipad), data));
         return this.digest.digest(
-                ArrayConverter.concatenate(xorBytes(this.secret, this.opad), hash));
+                DataConverter.concatenate(xorBytes(this.secret, this.opad), hash));
     }
 
     /*

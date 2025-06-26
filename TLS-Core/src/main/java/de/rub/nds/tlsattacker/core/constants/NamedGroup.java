@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.GroupParameters;
@@ -145,14 +144,14 @@ public enum NamedGroup {
                             SECP256R1_MLKEM768,
                             SECP384R1_MLKEM1024));
 
-    private NamedGroup(byte[] value, GroupParameters<?> group) {
+    NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
         this.groupParameters = group;
     }
 
     static {
         MAP = new HashMap<>();
-        for (NamedGroup group : NamedGroup.values()) {
+        for (NamedGroup group : values()) {
             MAP.put(ByteBuffer.wrap(group.value), group);
         }
     }
@@ -361,7 +360,7 @@ public enum NamedGroup {
     }
 
     public static NamedGroup convert(GroupParameters<?> parameters) {
-        for (NamedGroup group : NamedGroup.values()) {
+        for (NamedGroup group : values()) {
             if (group.getGroupParameters() == parameters) {
                 return group;
             }
@@ -391,12 +390,12 @@ public enum NamedGroup {
             return new byte[0];
         }
 
-        SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream();
-        for (NamedGroup i : groups) {
-            bytes.write(i.getValue());
+        try (SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream()) {
+            for (NamedGroup i : groups) {
+                bytes.write(i.getValue());
+            }
+            return bytes.toByteArray();
         }
-
-        return bytes.toByteArray();
     }
 
     public static List<NamedGroup> namedGroupsFromByteArray(byte[] sourceBytes) {
@@ -419,8 +418,7 @@ public enum NamedGroup {
                 if (group != null) {
                     groups.add(group);
                 } else {
-                    LOGGER.warn(
-                            "Unknown named group: {}", ArrayConverter.bytesToHexString(groupBytes));
+                    LOGGER.warn("Unknown named group: {}", groupBytes);
                 }
             } catch (IOException ex) {
                 LOGGER.error("Could not read from ByteArrayInputStream", ex);

@@ -186,9 +186,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         separator.parse(records);
         if (separator.getBytesLeft() > 0) {
             LOGGER.warn(
-                    "Unsent bytes for message "
-                            + hintedType
-                            + ". Not enough records specified and disabled dynamic record creation in config.");
+                    "Unsent bytes for message {}. Not enough records specified and disabled dynamic record creation in config.",
+                    hintedType);
         }
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
 

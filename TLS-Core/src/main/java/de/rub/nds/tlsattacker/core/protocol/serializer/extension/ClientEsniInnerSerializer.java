@@ -43,7 +43,7 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
         appendInt(
                 clientEsniInner.getServerNameListLength().getValue(),
                 ExtensionByteLength.SERVER_NAME_LIST);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 
     private void writeServerNameListBytes(ClientEsniInner msg) {

@@ -18,13 +18,13 @@ public enum TokenBindingType {
     private final byte tokenBindingTypeValue;
     private static final Map<Byte, TokenBindingType> MAP;
 
-    private TokenBindingType(byte tokenBindingTypeValue) {
+    TokenBindingType(byte tokenBindingTypeValue) {
         this.tokenBindingTypeValue = tokenBindingTypeValue;
     }
 
     static {
         MAP = new HashMap<>();
-        for (TokenBindingType c : TokenBindingType.values()) {
+        for (TokenBindingType c : values()) {
             MAP.put(c.tokenBindingTypeValue, c);
         }
     }

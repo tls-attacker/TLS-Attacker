@@ -22,7 +22,7 @@ public enum EsniDnsKeyRecordVersion {
     // DRAFT 04, 05, and 06
     FF03(new byte[] {(byte) 0xff, (byte) 0x03});
 
-    private EsniDnsKeyRecordVersion(byte[] byteValue) {
+    EsniDnsKeyRecordVersion(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 
@@ -35,7 +35,7 @@ public enum EsniDnsKeyRecordVersion {
 
     static {
         MAP = new HashMap<>();
-        for (EsniDnsKeyRecordVersion version : EsniDnsKeyRecordVersion.values()) {
+        for (EsniDnsKeyRecordVersion version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

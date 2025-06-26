@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.exception.ParserException;
@@ -167,7 +167,7 @@ public enum SignatureAndHashAlgorithm {
 
     private static final Map<Integer, SignatureAndHashAlgorithm> MAP;
 
-    private SignatureAndHashAlgorithm(
+    SignatureAndHashAlgorithm(
             int value, SignatureAlgorithm signatureAlgorithm, HashAlgorithm hashAlgorithm) {
         this.value = value;
         this.hashAlgorithm = hashAlgorithm;
@@ -176,7 +176,7 @@ public enum SignatureAndHashAlgorithm {
 
     static {
         MAP = new HashMap<>();
-        for (SignatureAndHashAlgorithm c : SignatureAndHashAlgorithm.values()) {
+        for (SignatureAndHashAlgorithm c : values()) {
             MAP.put(c.value, c);
         }
     }
@@ -237,7 +237,7 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public byte[] getByteValue() {
-        return ArrayConverter.intToBytes(value, 2);
+        return DataConverter.intToBytes(value, 2);
     }
 
     public int getValue() {

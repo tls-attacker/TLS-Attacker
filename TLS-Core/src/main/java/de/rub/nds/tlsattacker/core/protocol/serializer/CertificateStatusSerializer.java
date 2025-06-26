@@ -38,14 +38,14 @@ public class CertificateStatusSerializer
         appendInt(
                 msg.getCertificateStatusType().getValue(),
                 HandshakeByteLength.CERTIFICATE_STATUS_TYPE_LENGTH);
-        LOGGER.debug("CertificateStatusType: " + msg.getCertificateStatusType().getValue());
+        LOGGER.debug("CertificateStatusType: {}", msg.getCertificateStatusType().getValue());
     }
 
     private void writeOcspResponseLength(CertificateStatusMessage msg) {
         appendInt(
                 msg.getOcspResponseLength().getValue(),
                 HandshakeByteLength.CERTIFICATE_STATUS_RESPONSE_LENGTH);
-        LOGGER.debug("OCSP Response Length: " + msg.getOcspResponseLength().getValue());
+        LOGGER.debug("OCSP Response Length: {}", msg.getOcspResponseLength().getValue());
     }
 
     private void writeOcspResponse(CertificateStatusMessage msg) {

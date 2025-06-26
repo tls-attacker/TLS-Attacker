@@ -27,13 +27,13 @@ public enum EllipticCurveType {
 
     private static final Map<Byte, EllipticCurveType> MAP;
 
-    private EllipticCurveType(byte value) {
+    EllipticCurveType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (EllipticCurveType c : EllipticCurveType.values()) {
+        for (EllipticCurveType c : values()) {
             MAP.put(c.value, c);
         }
     }

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -28,13 +28,13 @@ public class SSLUtils {
                     "{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
 
     private static final byte[] MD5_PAD1 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
+            DataConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
     private static final byte[] MD5_PAD2 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
+            DataConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
     private static final byte[] SHA_PAD1 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
+            DataConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
     private static final byte[] SHA_PAD2 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
+            DataConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
      * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC', as stated in
@@ -195,9 +195,9 @@ public class SSLUtils {
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
-                    return MD5_PAD1;
+                    return MD5_PAD1.clone();
                 case SSLMAC_SHA1:
-                    return SHA_PAD1;
+                    return SHA_PAD1.clone();
                 default:
                     throw new CryptoException(
                             ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
@@ -217,9 +217,9 @@ public class SSLUtils {
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
-                    return MD5_PAD2;
+                    return MD5_PAD2.clone();
                 case SSLMAC_SHA1:
-                    return SHA_PAD2;
+                    return SHA_PAD2.clone();
                 default:
                     throw new CryptoException(
                             ILLEGAL_MAC_ALGORITHM.format(macAlgorithm.getJavaName()));
@@ -265,9 +265,9 @@ public class SSLUtils {
         try {
             final String hashName = getHashAlgorithm(macAlgorithm);
             final MessageDigest hashFunction = MessageDigest.getInstance(hashName);
-            final byte[] innerInput = ArrayConverter.concatenate(macWriteSecret, pad1, input);
+            final byte[] innerInput = DataConverter.concatenate(macWriteSecret, pad1, input);
             final byte[] innerHash = hashFunction.digest(innerInput);
-            final byte[] outerInput = ArrayConverter.concatenate(macWriteSecret, pad2, innerHash);
+            final byte[] outerInput = DataConverter.concatenate(macWriteSecret, pad2, innerHash);
             final byte[] outerHash = hashFunction.digest(outerInput);
             return outerHash;
         } catch (NoSuchAlgorithmException e) {
@@ -306,7 +306,7 @@ public class SSLUtils {
     public static byte[] calculateFinishedData(
             byte[] handshakeMessages, byte[] masterSecret, ConnectionEndType connectionEndType) {
         final byte[] input =
-                ArrayConverter.concatenate(handshakeMessages, getSenderConstant(connectionEndType));
+                DataConverter.concatenate(handshakeMessages, getSenderConstant(connectionEndType));
         return calculateSSLMd5SHASignature(input, masterSecret);
     }
 
@@ -322,19 +322,17 @@ public class SSLUtils {
         try {
             final MessageDigest md5 = MessageDigest.getInstance("MD5");
             final MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            final byte[] innerMD5Content =
-                    ArrayConverter.concatenate(input, masterSecret, MD5_PAD1);
-            final byte[] innerSHAContent =
-                    ArrayConverter.concatenate(input, masterSecret, SHA_PAD1);
+            final byte[] innerMD5Content = DataConverter.concatenate(input, masterSecret, MD5_PAD1);
+            final byte[] innerSHAContent = DataConverter.concatenate(input, masterSecret, SHA_PAD1);
             final byte[] innerMD5 = md5.digest(innerMD5Content);
             final byte[] innerSHA = sha.digest(innerSHAContent);
             final byte[] outerMD5Content =
-                    ArrayConverter.concatenate(masterSecret, MD5_PAD2, innerMD5);
+                    DataConverter.concatenate(masterSecret, MD5_PAD2, innerMD5);
             final byte[] outerSHAContent =
-                    ArrayConverter.concatenate(masterSecret, SHA_PAD2, innerSHA);
+                    DataConverter.concatenate(masterSecret, SHA_PAD2, innerSHA);
             final byte[] outerMD5 = md5.digest(outerMD5Content);
             final byte[] outerSHA = sha.digest(outerSHAContent);
-            return ArrayConverter.concatenate(outerMD5, outerSHA);
+            return DataConverter.concatenate(outerMD5, outerSHA);
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(
                     "Either MD5 or SHA-1 algorithm is not provided by the Execution-Environment, check your providers.",
@@ -363,7 +361,7 @@ public class SSLUtils {
         SERVER("53525652");
 
         Sender(String hex) {
-            value = ArrayConverter.hexStringToByteArray(hex);
+            value = DataConverter.hexStringToByteArray(hex);
         }
 
         private final byte[] value;

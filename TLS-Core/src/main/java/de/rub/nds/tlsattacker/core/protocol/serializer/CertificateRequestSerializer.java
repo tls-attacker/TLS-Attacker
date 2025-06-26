@@ -68,7 +68,7 @@ public class CertificateRequestSerializer
                 msg.getClientCertificateTypesCount().getValue(),
                 HandshakeByteLength.CERTIFICATES_TYPES_COUNT);
         LOGGER.debug(
-                "ClientCertificateTypesCount: " + msg.getClientCertificateTypesCount().getValue());
+                "ClientCertificateTypesCount: {}", msg.getClientCertificateTypesCount().getValue());
     }
 
     /** Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[] */
@@ -86,8 +86,8 @@ public class CertificateRequestSerializer
                 msg.getSignatureHashAlgorithmsLength().getValue(),
                 HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
         LOGGER.debug(
-                "SignatureHashAlgorithmsLength: "
-                        + msg.getSignatureHashAlgorithmsLength().getValue());
+                "SignatureHashAlgorithmsLength: {}",
+                msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
     /**
@@ -106,7 +106,7 @@ public class CertificateRequestSerializer
         appendInt(
                 msg.getDistinguishedNamesLength().getValue(),
                 HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
-        LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
+        LOGGER.debug("DistinguishedNamesLength: {}", msg.getDistinguishedNamesLength().getValue());
     }
 
     private boolean hasDistinguishedNames(CertificateRequestMessage msg) {
@@ -130,7 +130,7 @@ public class CertificateRequestSerializer
                 msg.getCertificateRequestContextLength().getValue(),
                 HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
         LOGGER.debug(
-                "CertificateRequestContextLength: "
-                        + msg.getCertificateRequestContextLength().getValue());
+                "CertificateRequestContextLength: {}",
+                msg.getCertificateRequestContextLength().getValue());
     }
 }

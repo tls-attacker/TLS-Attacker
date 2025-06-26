@@ -52,7 +52,7 @@ public class HelloVerifyRequestPreparator
 
     private void prepareCookieLength(HelloVerifyRequestMessage msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length); // TODO
-        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: {}", msg.getCookieLength().getValue());
     }
 
     private void prepareProtocolVersion(HelloVerifyRequestMessage msg) {

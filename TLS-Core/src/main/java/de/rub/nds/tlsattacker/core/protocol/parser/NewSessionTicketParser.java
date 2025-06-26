@@ -50,7 +50,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     private void parseLifetime(NewSessionTicketMessage msg) {
         msg.setTicketLifetimeHint(
                 parseIntField(HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
-        LOGGER.debug("TicketLifetimeHint: " + msg.getTicketLifetimeHint().getValue());
+        LOGGER.debug("TicketLifetimeHint: {}", msg.getTicketLifetimeHint().getValue());
     }
 
     private void parseAgeAdd(NewSessionTicketMessage msg) {
@@ -62,7 +62,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     private void parseNonceLength(NewSessionTicketMessage msg) {
         msg.getTicket()
                 .setTicketNonceLength(parseIntField(HandshakeByteLength.TICKET_NONCE_LENGTH));
-        LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
+        LOGGER.debug("TicketNonceLength: {}", msg.getTicket().getTicketNonceLength().getValue());
     }
 
     private void parseNonce(NewSessionTicketMessage msg) {
@@ -74,7 +74,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private void parseIdentityLength(NewSessionTicketMessage msg) {
         msg.getTicket().setIdentityLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("IdentityLength: " + msg.getTicket().getIdentityLength().getValue());
+        LOGGER.debug("IdentityLength: {}", msg.getTicket().getIdentityLength().getValue());
     }
 
     private void parseIdentity(NewSessionTicketMessage msg) {

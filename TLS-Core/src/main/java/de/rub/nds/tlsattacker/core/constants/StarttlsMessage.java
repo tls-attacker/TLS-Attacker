@@ -26,7 +26,7 @@ public enum StarttlsMessage {
 
     private final String starttlsMessage;
 
-    private StarttlsMessage(String starttlsMessage) {
+    StarttlsMessage(String starttlsMessage) {
         this.starttlsMessage = starttlsMessage;
     }
 

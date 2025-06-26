@@ -58,6 +58,6 @@ public class ECPointFormatExtensionPreparator
 
     private void preparePointFormatsLength(ECPointFormatExtensionMessage msg) {
         msg.setPointFormatsLength(msg.getPointFormats().getValue().length);
-        LOGGER.debug("PointFormatsLength: " + msg.getPointFormatsLength().getValue());
+        LOGGER.debug("PointFormatsLength: {}", msg.getPointFormatsLength().getValue());
     }
 }

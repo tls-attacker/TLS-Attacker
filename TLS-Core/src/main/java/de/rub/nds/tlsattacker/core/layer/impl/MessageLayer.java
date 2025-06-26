@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -353,7 +353,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             handshakeMessage.setType(type);
             byte[] lengthBytes =
                     handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-            length = ArrayConverter.bytesToInt(lengthBytes);
+            length = DataConverter.bytesToInt(lengthBytes);
             readBytesStream.write(lengthBytes);
             handshakeMessage.setLength(length);
             payload = handshakeStream.readChunk(length);
@@ -364,7 +364,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             // not being able to parse the header leaves us with unreadable bytes
             // append instead of replace because we can read multiple messages in one read action
             setUnreadBytes(
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             this.getUnreadBytes(), readBytesStream.toByteArray()));
             return;
         }
@@ -373,9 +373,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
         try {
             handshakeMessage.setCompleteResultingMessage(
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             new byte[] {type},
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                             payload));
             HandshakeMessageParser parser =

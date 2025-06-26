@@ -79,10 +79,9 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
                 .updateEncryptionCipher(
                         RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
         LOGGER.info(
-                "Changed CipherSuite from "
-                        + (oldValue == null ? null : oldValue.name())
-                        + " to "
-                        + newValue.name());
+                "Changed CipherSuite from {} to {}",
+                (oldValue == null ? null : oldValue.name()),
+                newValue.name());
         setExecuted(true);
     }
 

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -170,7 +170,7 @@ public abstract class RecordCipher {
             stream.write(record.getProtocolVersion().getValue());
             if (record.getLength() != null && record.getLength().getValue() != null) {
                 stream.write(
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
             } else {
                 // It may happen that the record does not have a length prepared - in that case
@@ -178,7 +178,7 @@ public abstract class RecordCipher {
                 // the length of the data content
                 // This is mostly interesting for fuzzing
                 stream.write(
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 record.getCleanProtocolMessageBytes().getValue().length,
                                 RecordByteLength.RECORD_LENGTH));
             }
@@ -194,7 +194,7 @@ public abstract class RecordCipher {
             }
             // Adding the sequence number
             byte[] sequenceNumberBytes =
-                    ArrayConverter.longToUint48Bytes(
+                    DataConverter.longToUint48Bytes(
                             record.getSequenceNumber().getValue().longValue());
             if (record.isUnifiedHeaderSqnLong()) {
                 stream.write(
@@ -213,11 +213,11 @@ public abstract class RecordCipher {
             if (record.isUnifiedHeaderLengthPresent()) {
                 if (record.getLength() != null && record.getLength().getValue() != null) {
                     stream.write(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
                 } else {
                     stream.write(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     record.getCleanProtocolMessageBytes().getValue().length,
                                     RecordByteLength.RECORD_LENGTH));
                 }
@@ -233,16 +233,16 @@ public abstract class RecordCipher {
                     stream.write(record.getConnectionId().getValue().length);
                 } else {
                     stream.write(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     record.getEpoch().getValue().shortValue(),
                                     RecordByteLength.DTLS_EPOCH));
                     stream.write(
-                            ArrayConverter.longToUint48Bytes(
+                            DataConverter.longToUint48Bytes(
                                     record.getSequenceNumber().getValue().longValue()));
                 }
             } else {
                 stream.write(
-                        ArrayConverter.longToUint64Bytes(
+                        DataConverter.longToUint64Bytes(
                                 record.getSequenceNumber().getValue().longValue()));
             }
             stream.write(record.getContentType().getValue());
@@ -257,11 +257,11 @@ public abstract class RecordCipher {
                     && ProtocolMessageType.getContentType(record.getContentType().getValue())
                             == ProtocolMessageType.TLS12_CID) {
                 stream.write(
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 record.getEpoch().getValue().shortValue(),
                                 RecordByteLength.DTLS_EPOCH));
                 stream.write(
-                        ArrayConverter.longToUint48Bytes(
+                        DataConverter.longToUint48Bytes(
                                 record.getSequenceNumber().getValue().longValue()));
                 stream.write(record.getConnectionId().getValue());
             }
@@ -274,7 +274,7 @@ public abstract class RecordCipher {
             } else {
                 length = record.getComputations().getAuthenticatedNonMetaData().getValue().length;
             }
-            stream.write(ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
+            stream.write(DataConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
             return stream.toByteArray();
         }
     }
@@ -310,7 +310,7 @@ public abstract class RecordCipher {
                 record.getComputations().getPadding() != null
                         ? record.getComputations().getPadding().getValue()
                         : new byte[0];
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 record.getCleanProtocolMessageBytes().getValue(),
                 new byte[] {record.getContentType().getValue()},
                 padding);
