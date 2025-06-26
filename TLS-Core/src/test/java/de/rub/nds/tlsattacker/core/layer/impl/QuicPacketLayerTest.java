@@ -136,6 +136,7 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
     public void testReceiveData() throws IOException {
         ArrayList<byte[]> quicPacketsBytes = getQuicPacketsBytes();
         ArrayList<QuicPacket> quicPackets = getQuicPackets();
+        tlsContext.getConfig().setDiscardPacketsWithMismatchedSCID(false);
         for (int i = 0; i < quicPacketsBytes.size(); i++) {
             transportHandler.setFetchableByte(quicPacketsBytes.get(i));
             tlsContext.getLayerStack().getLayer(QuicPacketLayer.class).receiveData();
@@ -153,6 +154,7 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
     public void testReceiveMoreDataForHint() {
         ArrayList<byte[]> quicPacketsBytes = getQuicPacketsBytes();
         ArrayList<QuicPacket> quicPackets = getQuicPackets();
+        tlsContext.getConfig().setDiscardPacketsWithMismatchedSCID(false);
         for (int i = 0; i < quicPacketsBytes.size(); i++) {
             transportHandler.setFetchableByte(quicPacketsBytes.get(i));
             tlsContext.getLayerStack().getLayer(QuicPacketLayer.class).receiveData();
