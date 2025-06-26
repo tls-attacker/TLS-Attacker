@@ -78,16 +78,37 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     @Override
     public boolean executedAsPlanned(List<Container> list) {
         // holds containers we expect
+        // System.out.println("Checking if received containers match expected ones.");
         List<Class<? extends DataContainer>> missingExpectedContainers =
                 getContainerList().stream()
                         .map(container -> (Class<? extends DataContainer>) container.getClass())
                         .collect(Collectors.toList());
+        // Printing the expected containers for debugging purposes
+        // if (getContainerList() != null) {
+        //    getContainerList().forEach(
+        //            container ->
+        //                    System.out.println(
+        //                            "Expected container: "
+        //                                    + container.getClass().getSimpleName()));
+        // }
         // for each container we received remove it from the expected ones to be left with any
+
         // additional containers
         if (list != null) {
             list.forEach(
                     receivedContainer ->
                             missingExpectedContainers.remove(receivedContainer.getClass()));
+            // printing the received containers for debugging purposes
+            // list.forEach(
+            //        container ->
+            //                System.out.println(
+            //                        "Received container (inside shoudlcontinueProcessing of
+            // ReceiveTillLayerConfiguration): "
+            //                                + container.getClass().getSimpleName()));
+        } //
+        // printint the if the list of missing expected containers is empty
+        if (!missingExpectedContainers.isEmpty()) {
+            System.out.println("All expected containers were NOT received.");
         }
         return missingExpectedContainers.isEmpty();
     }
@@ -95,10 +116,12 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     @Override
     public boolean shouldContinueProcessing(
             List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
-        if (!receivedTimeout) {
+        if (receivedTimeout) {
+            System.out.println(
+                    "Received timeout, not continuing processing in ReceiveTillLayerConfiguration.");
             return false;
         } else {
-            return executedAsPlanned(list);
+            return !executedAsPlanned(list);
         }
     }
 
