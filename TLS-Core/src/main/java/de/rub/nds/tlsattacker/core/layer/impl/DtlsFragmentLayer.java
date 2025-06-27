@@ -312,9 +312,8 @@ public class DtlsFragmentLayer
         }
         if (currentOffset != handshakeBytes.length) {
             LOGGER.warn(
-                    "Unsent bytes for message "
-                            + type
-                            + ". Not enough dtls fragments specified and disabled dynamic fragment creation in config.");
+                    "Unsent bytes for message {}. Not enough dtls fragments specified and disabled dynamic fragment creation in config.",
+                    type);
         }
         increaseWriteHandshakeMessageSequence();
 

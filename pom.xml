@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>7.4.2-SNAPSHOT</version>
+    <version>7.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>

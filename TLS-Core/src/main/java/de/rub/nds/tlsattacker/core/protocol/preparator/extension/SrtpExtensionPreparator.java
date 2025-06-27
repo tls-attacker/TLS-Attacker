@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
@@ -40,14 +39,12 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
             byteStream.write(chooser.getSelectedSrtpProtectionProfile().getByteValue());
         }
         msg.setSrtpProtectionProfiles(byteStream.toByteArray());
-        LOGGER.debug(
-                "ProtectionProfiles: {}",
-                DataConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
+        LOGGER.debug("ProtectionProfiles: {}", msg.getSrtpProtectionProfiles());
         msg.setSrtpProtectionProfilesLength(msg.getSrtpProtectionProfiles().getValue().length);
         LOGGER.debug(
                 "ProtectionProfile Length: {} ", msg.getSrtpProtectionProfilesLength().getValue());
         msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
-        LOGGER.debug("MKI: {}", DataConverter.bytesToHexString(msg.getSrtpMki()));
+        LOGGER.debug("MKI: {}", msg.getSrtpMki().getValue());
         msg.setSrtpMkiLength(msg.getSrtpMki().getValue().length);
         LOGGER.debug("MKI Length: {}", msg.getSrtpMkiLength().getValue());
     }

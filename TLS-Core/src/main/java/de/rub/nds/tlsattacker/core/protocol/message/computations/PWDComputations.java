@@ -187,10 +187,9 @@ public class PWDComputations extends KeyExchangeComputations {
                         prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
                 LOGGER.warn(
-                        "Could not select prf for "
-                                + chooser.getSelectedProtocolVersion()
-                                + " and "
-                                + chooser.getSelectedCipherSuite());
+                        "Could not select prf for {} and {}",
+                        chooser.getSelectedProtocolVersion(),
+                        chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }

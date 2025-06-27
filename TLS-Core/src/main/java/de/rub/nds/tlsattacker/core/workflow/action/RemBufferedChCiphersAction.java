@@ -148,7 +148,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         StringBuilder sb = new StringBuilder();
         sb.append("cipher suite bytes length: ").append(ch.getCipherSuites().getValue().length);
         sb.append("\ncipher suite bytes:");
-        sb.append(DataConverter.bytesToHexString(ch.getCipherSuites().getValue()));
+        sb.append(DataConverter.bytesToRawHexString(ch.getCipherSuites().getValue()));
         sb.append("\nreadable cipher suite list:\n");
         for (CipherSuite cs : CipherSuite.getCipherSuites(ch.getCipherSuites().getValue())) {
             sb.append(cs.name()).append("\n");
