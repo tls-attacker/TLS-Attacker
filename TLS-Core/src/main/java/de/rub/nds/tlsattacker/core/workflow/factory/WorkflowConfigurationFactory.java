@@ -662,6 +662,7 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHttpsDynamicWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createDynamicHandshakeWorkflow();
+
         appendHttpMessages(connection, trace);
         return trace;
     }
@@ -1293,9 +1294,11 @@ public class WorkflowConfigurationFactory {
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+
             if (config.getHighestProtocolVersion().is13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             } else {
+                System.out.println("Adding ServerHelloMessage + something else inside the if");
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             }
             return trace;
@@ -1373,19 +1376,28 @@ public class WorkflowConfigurationFactory {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
             } else {
+
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new CertificateVerifyMessage()));
                 } else {
+                    System.out.println(
+                            "Adding ClientKeyExchangeMessage without CertificateMessage");
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                 }
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+
+                // print existing TLS actions for debugging
+                for (TlsAction action : trace.getTlsActions()) {
+                    System.out.println("Action: " + action);
+                }
             }
             return trace;
         } else {
+            System.out.println("Adding ServerKeyExchangeMessage");
             trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             if (config.getHighestProtocolVersion().isDTLS13()) {
                 trace.addTlsAction(new SendAction(new AckMessage()));
