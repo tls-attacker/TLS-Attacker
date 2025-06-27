@@ -1454,7 +1454,7 @@ public class Config implements Serializable {
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
-        System.arraycopy(defaultRsaSsaPssSalt, 0, salt, 0, defaultRsaSsaPssSalt.length);
+        defaultRsaSsaPssSalt = salt;
     }
 
     public byte[] getDefaultRsaSsaPssSalt() {
