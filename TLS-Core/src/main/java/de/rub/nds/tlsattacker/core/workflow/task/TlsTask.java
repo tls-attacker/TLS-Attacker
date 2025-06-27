@@ -21,6 +21,12 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Default sleep time between retries in milliseconds */
+    private static final long DEFAULT_ADDITIONAL_SLEEP_TIME_MS = 1000;
+
+    /** Default additional TCP connection timeout in milliseconds */
+    private static final long DEFAULT_ADDITIONAL_TCP_TIMEOUT_MS = 5000;
+
     private boolean hasError = false;
 
     private final int reexecutions;
@@ -41,9 +47,9 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     public TlsTask(int reexecutions) {
         this.reexecutions = reexecutions;
-        additionalSleepTime = 1000;
+        additionalSleepTime = DEFAULT_ADDITIONAL_SLEEP_TIME_MS;
         increasingSleepTimes = true;
-        this.additionalTcpTimeout = 5000;
+        this.additionalTcpTimeout = DEFAULT_ADDITIONAL_TCP_TIMEOUT_MS;
     }
 
     public TlsTask(

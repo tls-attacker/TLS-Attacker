@@ -29,6 +29,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     protected int port;
 
+    /** Maximum UDP packet size (2^16 bytes) used for receive buffer */
     private static final int RECEIVE_BUFFER_SIZE = 65536;
 
     private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];

@@ -30,6 +30,9 @@ public class TlsAttackerSocket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Default size for internal buffer when sending data (16KB) */
+    private static final int DEFAULT_SEND_BUFFER_SIZE = 16384;
+
     private final State state;
 
     public TlsAttackerSocket(State state) {
@@ -73,7 +76,7 @@ public class TlsAttackerSocket {
     public void send(byte[] bytes) {
         ApplicationMessage message = new ApplicationMessage();
         ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
-        byte[] sendingBytes = new byte[16384];
+        byte[] sendingBytes = new byte[DEFAULT_SEND_BUFFER_SIZE];
         int actuallyRead;
         do {
             actuallyRead = 0;
