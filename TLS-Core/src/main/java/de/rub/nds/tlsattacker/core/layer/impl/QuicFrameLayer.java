@@ -62,8 +62,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     private final QuicContext quicContext;
 
     private final int MAX_FRAME_SIZE;
-    private final int DEFAULT_STREAM_ID = 2;
-    private final int MIN_FRAME_SIZE = 32;
+    private static final int DEFAULT_STREAM_ID = 2;
+    private static final int MIN_FRAME_SIZE = 32;
 
     private long initialPhaseExpectedCryptoFrameOffset = 0;
     private long handshakePhaseExpectedCryptoFrameOffset = 0;
