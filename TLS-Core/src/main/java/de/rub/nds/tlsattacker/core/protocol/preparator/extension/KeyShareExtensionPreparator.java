@@ -42,7 +42,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         if (msg.getKeyShareList() == null) {
-            msg.setKeyShareList(new LinkedList<KeyShareEntry>());
+            msg.setKeyShareList(new LinkedList<>());
         }
         stream = new SilentByteArrayOutputStream();
 
