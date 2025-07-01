@@ -385,7 +385,7 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                    || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                    || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
