@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
 
 public class WorkflowTraceSerializerTest {
 
@@ -238,5 +239,82 @@ public class WorkflowTraceSerializerTest {
         DefaultNormalizeFilter.normalizeAndFilter(trace, config);
         String actual = WorkflowTraceSerializer.write(trace);
         assertEquals(expected, actual);
+    }
+
+    /** Test that insecureReadFolder handles null from listFiles() without NullPointerException */
+    @Test
+    public void testInsecureReadFolderWithNullListFiles(@TempDir File tempDir) {
+        // Create a mock File that returns null from listFiles()
+        File mockDir = Mockito.mock(File.class);
+        Mockito.when(mockDir.isDirectory()).thenReturn(true);
+        Mockito.when(mockDir.listFiles()).thenReturn(null);
+
+        // This should not throw NullPointerException
+        List<WorkflowTrace> result = WorkflowTraceSerializer.insecureReadFolder(mockDir);
+
+        // Should return empty list
+        assertTrue(result.isEmpty());
+    }
+
+    /** Test that secureReadFolder handles null from listFiles() without NullPointerException */
+    @Test
+    public void testSecureReadFolderWithNullListFiles(@TempDir File tempDir) {
+        // Create a mock File that returns null from listFiles()
+        File mockDir = Mockito.mock(File.class);
+        Mockito.when(mockDir.isDirectory()).thenReturn(true);
+        Mockito.when(mockDir.listFiles()).thenReturn(null);
+        Mockito.when(mockDir.getAbsolutePath()).thenReturn("/mock/path");
+
+        // This should not throw NullPointerException
+        List<WorkflowTrace> result = WorkflowTraceSerializer.secureReadFolder(mockDir);
+
+        // Should return empty list
+        assertTrue(result.isEmpty());
+    }
+
+    /** Test that insecureReadFolder works correctly with normal directory */
+    @Test
+    public void testInsecureReadFolderWithFiles(@TempDir File tempDir) throws Exception {
+        // Create some test files
+        File testFile1 = new File(tempDir, "test1.xml");
+        File testFile2 = new File(tempDir, "test2.xml");
+        File gitignoreFile = new File(tempDir, ".gitignore");
+
+        // Write valid workflow traces to the files
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+
+        WorkflowTraceSerializer.write(testFile1, trace);
+        WorkflowTraceSerializer.write(testFile2, trace);
+        gitignoreFile.createNewFile(); // Create empty .gitignore
+
+        // Read the folder
+        List<WorkflowTrace> result = WorkflowTraceSerializer.insecureReadFolder(tempDir);
+
+        // Should have read 2 files (excluding .gitignore)
+        assertEquals(2, result.size());
+    }
+
+    /** Test that secureReadFolder works correctly with normal directory */
+    @Test
+    public void testSecureReadFolderWithFiles(@TempDir File tempDir) throws Exception {
+        // Create some test files
+        File testFile1 = new File(tempDir, "test1.xml");
+        File testFile2 = new File(tempDir, "test2.xml");
+        File gitignoreFile = new File(tempDir, ".gitignore");
+
+        // Write valid workflow traces to the files
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+
+        WorkflowTraceSerializer.write(testFile1, trace);
+        WorkflowTraceSerializer.write(testFile2, trace);
+        gitignoreFile.createNewFile(); // Create empty .gitignore
+
+        // Read the folder
+        List<WorkflowTrace> result = WorkflowTraceSerializer.secureReadFolder(tempDir);
+
+        // Should have read 2 files (excluding .gitignore)
+        assertEquals(2, result.size());
     }
 }
