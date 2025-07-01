@@ -456,7 +456,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.25.2</version>
+                            <version>${plugin.spotless-maven-plugin.google-java-format.version}</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>
