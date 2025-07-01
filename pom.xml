@@ -177,7 +177,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>modifiable-variable</artifactId>
-            <version>5.2.0</version>
+            <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
