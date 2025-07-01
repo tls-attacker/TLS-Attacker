@@ -133,10 +133,9 @@ public class CertificateDelegate extends Delegate {
                 LOGGER.warn("Certificate provided without private key");
             }
             LOGGER.debug("Loading certificate chain");
-            try {
+            try (FileInputStream inputStream = new FileInputStream(certificate)) {
                 List<CertificateBytes> byteList =
-                        CertificateIo.readPemCertificateByteList(
-                                new FileInputStream(new File(certificate)));
+                        CertificateIo.readPemCertificateByteList(inputStream);
                 config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
