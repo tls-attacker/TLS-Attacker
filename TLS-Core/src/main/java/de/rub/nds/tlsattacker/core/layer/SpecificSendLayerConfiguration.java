@@ -39,7 +39,9 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
         if (getContainerList() == null) {
             return true;
         }
-        return list.size() == getContainerList().size();
+        // sometimes more containers are sent than configured, if they are split up
+        // this should not fail the SendAction
+        return list.size() >= getContainerList().size();
     }
 
     @Override
