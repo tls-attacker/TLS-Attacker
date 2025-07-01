@@ -279,9 +279,7 @@
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-                        <compilerArgs>
-                            <compilerArg>-proc:full</compilerArg>
-                        </compilerArgs>
+                        <proc>full</proc>
                     </configuration>
                 </plugin>
                 <!-- Plugin to execute unit tests -->
