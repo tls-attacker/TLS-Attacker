@@ -109,7 +109,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         if (dataLeftToProcess) {
             return true;
         }
-        return !evaluateReceivedContainers(list, true);
+        return !executedAsPlanned(list);
     }
 
     @Override
