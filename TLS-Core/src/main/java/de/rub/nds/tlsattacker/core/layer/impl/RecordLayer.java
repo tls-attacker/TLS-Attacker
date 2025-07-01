@@ -144,11 +144,10 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
-        int maxDataSize;
-        if (context.getConfig().isRespectPeerRecordSizeLimitations()) {
+        int maxDataSize = context.getConfig().getDefaultMaxRecordData();
+        if (context.getConfig().isRespectPeerRecordSizeLimitations()
+                && context.getChooser().getPeerReceiveLimit() < maxDataSize) {
             maxDataSize = context.getChooser().getPeerReceiveLimit();
-        } else {
-            maxDataSize = context.getConfig().getDefaultMaxRecordData();
         }
         // Generate records
         CleanRecordByteSeperator separator =

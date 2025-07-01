@@ -34,7 +34,8 @@ public class MaxFragmentLengthExtensionHandler
                 MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
         if (length == null) {
             LOGGER.warn("Unknown MaxFragmentLength: {}", maxFragmentLengthBytes);
-        } else {
+        } else if (tlsContext.getTalkingConnectionEndType()
+                == tlsContext.getChooser().getMyConnectionPeer()) {
             LOGGER.debug("Setting MaxFragmentLength: {}", length.getValue());
             tlsContext.setMaxFragmentLength(length);
             tlsContext.setPeerReceiveLimit(length.getReceiveLimit());
