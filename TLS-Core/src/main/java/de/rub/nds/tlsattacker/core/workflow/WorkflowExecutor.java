@@ -148,17 +148,17 @@ public abstract class WorkflowExecutor {
         try {
             action.execute(state);
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Fatal error during action execution, stopping execution: ", ex);
+            LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
             state.setExecutionException(ex);
             throw ex;
         } catch (UnsupportedOperationException
                 | PreparationException
                 | ActionExecutionException ex) {
             state.setExecutionException(ex);
-            LOGGER.info("Not fatal error during action execution, skipping action: {}", action, ex);
+            LOGGER.warn("Not fatal error during action execution, skipping action: {}", action, ex);
             throw new SkipActionException(ex);
         } catch (Exception ex) {
-            LOGGER.info("Unexpected fatal error during action execution, stopping execution", ex);
+            LOGGER.error("Unexpected fatal error during action execution, stopping execution", ex);
             state.setExecutionException(ex);
             throw new WorkflowExecutionException(ex);
         } finally {

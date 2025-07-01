@@ -74,8 +74,7 @@ public class LayerStack {
 
     /**
      * Sends data over the protocol stack based on the layer configurations provided in
-     * layerConfigurationList. The reason why every layer needs a configuration is that the same
-     * layer type map potentially appear multiple times.
+     * layerConfigurationList.
      *
      * @param layerConfigurationList Contains {@link DataContainer} to be sent through the protocol
      *     stack.
