@@ -427,7 +427,6 @@ public class WorkflowConfigurationFactory {
         if (config.getExpectHandshakeDoneQuicFrame()) {
             workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
-
         return workflowTrace;
     }
 
@@ -1298,7 +1297,6 @@ public class WorkflowConfigurationFactory {
             if (config.getHighestProtocolVersion().is13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             } else {
-                System.out.println("Adding ServerHelloMessage + something else inside the if");
                 trace.addTlsAction(new ReceiveTillAction(new ServerHelloDoneMessage()));
             }
             return trace;
@@ -1382,22 +1380,14 @@ public class WorkflowConfigurationFactory {
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                     trace.addTlsAction(new SendAction(new CertificateVerifyMessage()));
                 } else {
-                    System.out.println(
-                            "Adding ClientKeyExchangeMessage without CertificateMessage");
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                 }
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-
-                // print existing TLS actions for debugging
-                for (TlsAction action : trace.getTlsActions()) {
-                    System.out.println("Action: " + action);
-                }
             }
             return trace;
         } else {
-            System.out.println("Adding ServerKeyExchangeMessage");
             trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             if (config.getHighestProtocolVersion().isDTLS13()) {
                 trace.addTlsAction(new SendAction(new AckMessage()));

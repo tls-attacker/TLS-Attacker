@@ -70,6 +70,7 @@ public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStr
         // There is nothing we can do here to fill up our stream, either there is data in it
         // or not
         byte[] receivedTcpData = getTransportHandler().fetchData();
+
         TcpStreamContainer tcpStreamContainer = new TcpStreamContainer();
         tcpStreamContainer
                 .getParser(context, new ByteArrayInputStream(receivedTcpData))

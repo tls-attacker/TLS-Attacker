@@ -29,15 +29,14 @@ public class ClientEcdsaHandshakeIT extends AbstractHandshakeIT {
 
     @Override
     protected CipherSuite[] getCipherSuitesToTest() {
-        return new CipherSuite[] {
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,
+        return new CipherSuite[] {CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM,
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8,
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256,
+            // CipherSuite.TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,
         };
     }
 

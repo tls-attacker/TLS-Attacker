@@ -125,7 +125,6 @@ public class LayerStack {
      */
     public LayerStackProcessingResult receiveData(
             List<LayerConfiguration<? extends DataContainer>> layerConfigurationList) {
-        LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
                     "Illegal LayerConfiguration list provided. Each layer needs a configuration entry. Expected "

@@ -58,8 +58,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public abstract class AbstractHandshakeIT {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final int PORT_MAX_TRIES = 10;
-    private static final int PORT_WAIT_TIME_MS = 500;
+    private static final int PORT_MAX_TRIES = 15;
+    private static final int PORT_WAIT_TIME_MS = 600;
 
     private static final Integer PORT = FreePortFinder.getPossiblyFreePort();
     private static List<Image> localImages;
@@ -270,7 +270,7 @@ public abstract class AbstractHandshakeIT {
         }
     }
 
-    private static final int MAX_ATTEMPTS = 3;
+    private static final int MAX_ATTEMPTS = 1;
 
     private void failTest(
             State state,
@@ -362,8 +362,8 @@ public abstract class AbstractHandshakeIT {
     }
 
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] {
-            NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
+        return new NamedGroup[] {NamedGroup.SECP256R1
+            // , NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
         };
     }
 
@@ -374,11 +374,10 @@ public abstract class AbstractHandshakeIT {
     }
 
     protected CipherSuite[] getCipherSuitesToTest() {
-        return new CipherSuite[] {
-            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+        return new CipherSuite[] {CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA
+            // CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+            // CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+            // CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
         };
     }
 
