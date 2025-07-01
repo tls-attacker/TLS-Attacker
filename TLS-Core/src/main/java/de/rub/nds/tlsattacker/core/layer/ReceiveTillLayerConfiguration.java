@@ -80,7 +80,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
         // holds containers we expect
         List<Class<? extends DataContainer>> missingExpectedContainers =
                 getContainerList().stream()
-                        .map(DataContainer::getClass)
+                        .map(container -> (Class<? extends DataContainer>) container.getClass())
                         .collect(Collectors.toList());
         // for each container we received remove it from the expected ones to be left with any
         // additional containers
@@ -93,13 +93,13 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
-        return false;
-    }
-
-    @Override
-    public boolean isProcessTrailingContainers() {
-        return processTrailingContainers;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        if (receivedTimeout) {
+            return false;
+        } else {
+            return !executedAsPlanned(list);
+        }
     }
 
     public int getMaxNumberOfQuicPacketsToReceive() {
