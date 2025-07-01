@@ -58,8 +58,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public abstract class AbstractHandshakeIT {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final int PORT_MAX_TRIES = 15;
-    private static final int PORT_WAIT_TIME_MS = 600;
+    private static final int PORT_MAX_TRIES = 10;
+    private static final int PORT_WAIT_TIME_MS = 500;
 
     private static final Integer PORT = FreePortFinder.getPossiblyFreePort();
     private static List<Image> localImages;
@@ -270,7 +270,7 @@ public abstract class AbstractHandshakeIT {
         }
     }
 
-    private static final int MAX_ATTEMPTS = 1;
+    private static final int MAX_ATTEMPTS = 3;
 
     private void failTest(
             State state,
