@@ -1113,6 +1113,8 @@ public class Config implements Serializable {
 
     private MacAlgorithm sessionTicketMacAlgorithm = MacAlgorithm.HMAC_SHA256;
 
+    private Boolean sessionTicketShouldParse = true;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSessionTicketAgeAdd = DataConverter.hexStringToByteArray("cb8dbe8e");
 
@@ -1693,6 +1695,14 @@ public class Config implements Serializable {
 
     public void setSessionTicketKeyName(byte[] sessionTicketKeyName) {
         this.sessionTicketKeyName = sessionTicketKeyName;
+    }
+
+    public Boolean isSessionTicketShouldParse() {
+        return sessionTicketShouldParse;
+    }
+
+    public void setSessionTicketShouldParse(Boolean sessionTicketShouldParse) {
+        this.sessionTicketShouldParse = sessionTicketShouldParse;
     }
 
     public ClientAuthenticationType getClientAuthenticationType() {
