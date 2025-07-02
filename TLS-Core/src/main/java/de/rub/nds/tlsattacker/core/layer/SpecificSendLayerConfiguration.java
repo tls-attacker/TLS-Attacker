@@ -31,6 +31,15 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
         super(layerType, containers);
     }
 
+    /**
+     * Tests if the SendConfiguration executed as planned. It compares the planned containers with
+     * the actually sent containers. It passes if the configured amount of containers has been sent,
+     * or if more than the configured amount has been sent. This is useful if the configured
+     * containers are split up due to fragmentation.
+     *
+     * @param list The list executed DataContainers
+     * @return true if at least all configured containers have been sent
+     */
     @Override
     public boolean executedAsPlanned(List<Container> list) {
         if (list == null) {
