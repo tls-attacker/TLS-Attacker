@@ -191,10 +191,11 @@ public class WorkflowTraceSerializer {
     public static List<WorkflowTrace> insecureReadFolder(File f) {
         if (f.isDirectory()) {
             ArrayList<WorkflowTrace> list = new ArrayList<>();
-            if (f.listFiles() == null) {
+            File[] files = f.listFiles();
+            if (files == null) {
                 return list;
             }
-            for (File file : f.listFiles()) {
+            for (File file : files) {
                 if (file.getName().startsWith(".")) {
                     // We ignore the .gitignore File
                     continue;
@@ -281,10 +282,11 @@ public class WorkflowTraceSerializer {
         if (f.isDirectory()) {
             LOGGER.debug("Reading WorkflowTraces from folder: {}", f.getAbsolutePath());
             ArrayList<WorkflowTrace> list = new ArrayList<>();
-            if (f.listFiles() == null) {
+            File[] files = f.listFiles();
+            if (files == null) {
                 return list;
             }
-            for (File file : f.listFiles()) {
+            for (File file : files) {
                 if (file.getName().startsWith(".")) {
                     // We ignore the .gitignore File
                     continue;
