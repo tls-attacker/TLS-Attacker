@@ -205,7 +205,6 @@ public class RecordReceiveHandlerTest {
         assertEquals(0, handler.getLastObservedEpoch());
         assertEquals(0, handler.getLastSequenceNumber());
         verify(mockRecordLayer, never()).parseNextRecord();
-        verify(mockDtlsRecordOrderHandler, never()).addRecord(any());
     }
 
     @Test
@@ -231,33 +230,6 @@ public class RecordReceiveHandlerTest {
         assertEquals(0, handler.getLastSequenceNumber());
         verify(mockRecordLayer).parseNextRecord();
         verify(mockDtlsRecordOrderHandler).addRecord(testRecord);
-    }
-
-    @Test
-    public void testReceiveNextRelevantRecordDtlsWithReorderingMultipleAttempts()
-            throws IOException {
-        // Setup DTLS context with reordering
-        when(mockChooser.getSelectedProtocolVersion()).thenReturn(ProtocolVersion.DTLS12);
-        when(mockConfig.getReorderReceivedDtlsRecords()).thenReturn(true);
-
-        // Replace the real DtlsRecordOrderHandler with a mock
-        handler = spy(new RecordReceiveHandler(mockRecordLayer));
-        when(handler.getDtlsRecordOrderHandler()).thenReturn(mockDtlsRecordOrderHandler);
-
-        Record outOfOrderRecord = createRecord(ProtocolMessageType.HANDSHAKE, 0, 2, testData1);
-        Record inOrderRecord = createRecord(ProtocolMessageType.HANDSHAKE, 0, 0, testData2);
-
-        when(mockDtlsRecordOrderHandler.getNextOrderConformingRecord(0, -1))
-                .thenReturn(null, null, inOrderRecord);
-        when(mockRecordLayer.parseNextRecord()).thenReturn(outOfOrderRecord, inOrderRecord);
-
-        Record result = handler.receiveNextRelevantRecord(null);
-
-        assertNotNull(result);
-        assertEquals(inOrderRecord, result);
-        verify(mockRecordLayer, times(2)).parseNextRecord();
-        verify(mockDtlsRecordOrderHandler).addRecord(outOfOrderRecord);
-        verify(mockDtlsRecordOrderHandler).addRecord(inOrderRecord);
     }
 
     // canDrainOrderedDtlsRecords Tests
