@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
@@ -129,14 +130,22 @@ public class RecordParserTest {
     public void testParseRecordWithConnectionId() throws IOException {
         // Test parsing with connection ID (TLS12_CID content type)
         byte[] cidRecordBytes =
-                ArrayConverter.hexStringToByteArray("19FEFD000000000000020012345678AB");
+                ArrayConverter.hexStringToByteArray("19FEFD000000000000020012340001AB");
+
+        // Mock connection ID setup - define the connectionId we expect to parse
+        byte[] connectionId = new byte[] {0x12, 0x34};
+
+        // Create mock state to return our connection ID
+        CipherState mockState = mock(CipherState.class);
+        when(mockState.getConnectionId()).thenReturn(connectionId);
+
+        // Setup the chain of mocks needed to return our state
+        when(recordCipher.getState()).thenReturn(mockState);
+        when(decryptor.getRecordCipher(anyInt())).thenReturn(recordCipher);
 
         InputStream inputStream = new ByteArrayInputStream(cidRecordBytes);
         ProtocolVersion version = ProtocolVersion.DTLS12;
         recordParser = new RecordParser(inputStream, version, tlsContext);
-
-        // Mock connection ID setup
-        byte[] connectionId = new byte[] {0x12, 0x34};
 
         Record record = new Record();
 
