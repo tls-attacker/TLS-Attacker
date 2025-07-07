@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.RecordReceiveHandler;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
@@ -62,6 +63,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private final RecordCompressor compressor;
     private final RecordDecompressor decompressor;
 
+    private final RecordReceiveHandler recordReceiveHandler;
+
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
@@ -73,6 +76,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
         compressor = new RecordCompressor(tlsContext);
         decompressor = new RecordDecompressor(tlsContext);
+        recordReceiveHandler = new RecordReceiveHandler(this);
     }
 
     /**
@@ -226,54 +230,45 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
      */
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
+
+        LOGGER.debug("Receiving more data for hint {}", desiredHint);
+
+        if (recordReceiveHandler.canDrainOrderedDtlsRecords()) {
+            // we have already parsed ordered DTLS records and just need to retrieve them
+            LOGGER.debug(
+                    "Ordered DTLS records drainable in sequence and already parsed. Retrieving the first in order.");
+            addProducedContainer(recordReceiveHandler.receiveNextRelevantRecord(desiredHint));
+            return;
+        }
+
+        Record desiredRecord = recordReceiveHandler.receiveNextRelevantRecord(desiredHint);
+        if (desiredRecord != null) {
+            // successfully parsed a record
+            addProducedContainer(desiredRecord);
+        }
+    }
+
+    /**
+     * Will read and parse a record from the stream of the lower layer. If parsing fails, null is
+     * returned. If an end of the stream is encountered, an EndOfStreamException if thrown.
+     */
+    public Record parseNextRecord() throws IOException {
+        // each record a new parser and a new stream, because the lower layer might switch out the
+        // stream at any point...
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
                 new RecordParser(
-                        dataStream, getDecryptorCipher().getState().getVersion(), tlsContext);
-        boolean receivedHintRecord = false;
+                        dataStream, getDecryptorCipher().getState().getVersion(), getTlsContext());
+
         try {
-            while (!receivedHintRecord) {
-                Record record = new Record();
-                parser.parse(record);
-                // TODO it would be good to have a record handler here
-                ProtocolVersion protocolVersion =
-                        ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
-                tlsContext.setLastRecordVersion(protocolVersion);
-                decryptor.decrypt(record);
-                decompressor.decompress(record);
-                addProducedContainer(record);
-                RecordLayerHint currentHint;
-                // extract the type of the message we just read
-                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                    currentHint =
-                            new RecordLayerHint(
-                                    record.getContentMessageType(),
-                                    record.getEpoch().getValue(),
-                                    record.getSequenceNumber().getValue().intValue());
-                } else {
-                    currentHint = new RecordLayerHint(record.getContentMessageType());
-                }
-                // only set the currentInputStream when we received the expected message
-                if (desiredHint == null || currentHint.equals(desiredHint)) {
-                    receivedHintRecord = true;
-                    if (currentInputStream == null) {
-                        // only set new input stream if necessary, extend current stream otherwise
-                        currentInputStream = new HintedLayerInputStream(currentHint, this);
-                    } else {
-                        currentInputStream.setHint(currentHint);
-                    }
-                    currentInputStream.extendStream(
-                            record.getCleanProtocolMessageBytes().getValue());
-                } else {
-                    if (nextInputStream == null) {
-                        // only set new input stream if necessary, extend current stream otherwise
-                        nextInputStream = new HintedLayerInputStream(currentHint, this);
-                    } else {
-                        nextInputStream.setHint(currentHint);
-                    }
-                    nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
-                }
-            }
+            Record record = new Record();
+            parser.parse(record);
+            ProtocolVersion protocolVersion =
+                    ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+            getTlsContext().setLastRecordVersion(protocolVersion);
+            getDecryptor().decrypt(record);
+            getDecompressor().decompress(record);
+            return record;
         } catch (ParserException e) {
             setUnreadBytes(parser.getAlreadyParsed());
             LOGGER.warn(
@@ -288,12 +283,33 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } else {
                 nextInputStream = tempStream;
             }
+            return null;
         } catch (EndOfStreamException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
             LOGGER.debug("Reached end of stream, cannot parse more records");
             LOGGER.trace(ex);
             throw ex;
         }
+    }
+
+    public void extendCurrentStream(RecordLayerHint currentHint, byte[] data) {
+        if (currentInputStream == null) {
+            // only set new input stream if necessary, extend current stream otherwise
+            currentInputStream = new HintedLayerInputStream(currentHint, this);
+        } else {
+            currentInputStream.setHint(currentHint);
+        }
+        currentInputStream.extendStream(data);
+    }
+
+    public void extendNextStream(RecordLayerHint currentHint, byte[] data) {
+        if (nextInputStream == null) {
+            // only set new input stream if necessary, extend next stream otherwise
+            nextInputStream = new HintedLayerInputStream(currentHint, this);
+        } else {
+            nextInputStream.setHint(currentHint);
+        }
+        nextInputStream.extendStream(data);
     }
 
     public RecordCipher getEncryptorCipher() {
@@ -317,7 +333,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 "Activating new EncryptionCipher ({})",
                 encryptionCipher.getClass().getSimpleName());
         encryptor.addNewRecordCipher(encryptionCipher);
-        writeEpoch++;
+        increaseWriteEpoch();
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
@@ -325,7 +341,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 "Activating new DecryptionCipher ({})",
                 decryptionCipher.getClass().getSimpleName());
         decryptor.addNewRecordCipher(decryptionCipher);
-        readEpoch++;
+        increaseReadEpoch();
     }
 
     /**
@@ -402,6 +418,14 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void setReadEpoch(int readEpoch) {
         this.readEpoch = readEpoch;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public TlsContext getTlsContext() {
+        return tlsContext;
     }
 
     @Override

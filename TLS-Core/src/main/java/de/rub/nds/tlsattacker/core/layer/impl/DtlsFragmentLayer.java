@@ -233,18 +233,22 @@ public class DtlsFragmentLayer
 
                     fragmentManager.addMessageFragment(fragment);
 
-                    List<DtlsHandshakeMessageFragment> completeMessages =
-                            fragmentManager.getOrderedCombinedCompleteMessageFragments(false);
+                    // Let's if the new fragment completes a new message
+                    List<DtlsHandshakeMessageFragment> completeAndFreshMessages =
+                            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
+                                    true, true);
 
-                    // call the fragment interpretation mechanism just because I am afraid to remove
-                    // this. This should not be needed, but who knows
-                    fragmentManager.getOrderedCombinedUninterpretedMessageFragments(true, false);
-
-                    if (fragmentManager.areAllMessageFragmentsComplete()) {
-                        LOGGER.debug("Message is complete");
+                    if (!completeAndFreshMessages.isEmpty()) {
+                        LOGGER.debug("Found a complete message");
                         // collected complete DTLS Message from the lower layer
                         // write latest received message to the stream for the upper layer
-                        DtlsHandshakeMessageFragment completeMessage = completeMessages.getLast();
+                        DtlsHandshakeMessageFragment completeMessage =
+                                completeAndFreshMessages.getLast();
+                        LOGGER.debug(
+                                "Complete is seq num {}, message length {}",
+                                completeMessage.getMessageSequence(),
+                                completeMessage.getCompleteResultingMessage().getValue().length);
+
                         addProducedContainer(completeMessage);
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(

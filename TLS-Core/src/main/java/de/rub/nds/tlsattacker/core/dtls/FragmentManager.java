@@ -126,7 +126,6 @@ public class FragmentManager {
                     continue;
                 }
             }
-
             if (!fragmentCollector.isMessageComplete()) {
                 continue;
             }

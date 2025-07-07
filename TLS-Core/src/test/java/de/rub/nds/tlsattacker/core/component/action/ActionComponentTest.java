@@ -67,6 +67,7 @@ public class ActionComponentTest {
         clientConnection.setTimeout(0);
         this.config.setDefaultServerConnection(serverConnection);
         this.config.setDefaultClientConnection(clientConnection);
+        this.config.setReorderReceivedDtlsRecords(false);
 
         connectionList = List.of(serverConnection, clientConnection);
     }

@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.core.component.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 
@@ -210,5 +213,154 @@ public class ReceiveMessagesActionTest extends ActionComponentTest {
                         .filter(m -> m instanceof ChangeCipherSpecMessage)
                         .count();
         assertEquals(1, ccsReceived);
+    }
+
+    @Test
+    public void testReceiveUnorderedServerFlight1() {
+        WorkflowTrace trace = createTrace();
+        trace.addTlsAction(
+                new ReceiveAction(
+                        SERVER_CTX_ALIAS,
+                        new ServerHelloMessage(),
+                        new CertificateMessage(),
+                        new ECDHEServerKeyExchangeMessage(),
+                        new ServerHelloDoneMessage()));
+
+        getConfig().setReorderReceivedDtlsRecords(true);
+
+        byte[] udpPayloads =
+                arrayJoin(
+                        List.of(
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_1,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_2,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_3,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_4));
+
+        initAndExecute(trace, new byte[0], udpPayloads);
+
+        getConfig().setReorderReceivedDtlsRecords(false);
+
+        assertTrue(trace.executedAsPlanned());
+        assertTrue(trace.allActionsExecuted());
+    }
+
+    @Test
+    public void testFailToParseReceiveUnorderedServerFlight1() {
+        WorkflowTrace trace = createTrace();
+        trace.addTlsAction(
+                new ReceiveAction(
+                        SERVER_CTX_ALIAS,
+                        new ServerHelloMessage(),
+                        new CertificateMessage(),
+                        new ECDHEServerKeyExchangeMessage(),
+                        new ServerHelloDoneMessage()));
+
+        getConfig().setReorderReceivedDtlsRecords(false);
+
+        byte[] udpPayloads =
+                arrayJoin(
+                        List.of(
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_1,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_2,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_3,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_3_4));
+
+        initAndExecute(trace, new byte[0], udpPayloads);
+
+        assertFalse(trace.executedAsPlanned());
+    }
+
+    @Test
+    public void testReceiveUnorderedServerFlight2() {
+        WorkflowTrace trace = createTrace();
+        trace.addTlsAction(
+                new ReceiveAction(
+                        SERVER_CTX_ALIAS,
+                        new ServerHelloMessage(),
+                        new CertificateMessage(),
+                        new ECDHEServerKeyExchangeMessage(),
+                        new ServerHelloDoneMessage()));
+
+        getConfig().setReorderReceivedDtlsRecords(true);
+
+        byte[] udpPayloads =
+                arrayJoin(
+                        List.of(
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_1,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_2,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_3,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_4));
+        initAndExecute(trace, new byte[0], udpPayloads);
+
+        getConfig().setReorderReceivedDtlsRecords(false);
+
+        assertTrue(trace.executedAsPlanned());
+        assertTrue(trace.allActionsExecuted());
+    }
+
+    @Test
+    public void testFailToParseReceiveUnorderedServerFlight2() {
+        WorkflowTrace trace = createTrace();
+        trace.addTlsAction(
+                new ReceiveAction(
+                        SERVER_CTX_ALIAS,
+                        new ServerHelloMessage(),
+                        new CertificateMessage(),
+                        new ECDHEServerKeyExchangeMessage(),
+                        new ServerHelloDoneMessage()));
+
+        getConfig().setReorderReceivedDtlsRecords(false);
+
+        byte[] udpPayloads =
+                arrayJoin(
+                        List.of(
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_1,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_2,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_3,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_4_4));
+
+        initAndExecute(trace, new byte[0], udpPayloads);
+
+        assertFalse(trace.executedAsPlanned());
+    }
+
+    @Test
+    public void testReceiveUnorderedServerFlight3() {
+        WorkflowTrace trace = createTrace();
+
+        List<ProtocolMessage> expectedMessages = new LinkedList<>();
+        expectedMessages.add(new ServerHelloMessage());
+        ProtocolMessage tempMessage = new CertificateMessage();
+        tempMessage.setRequired(false);
+        expectedMessages.add(tempMessage);
+        tempMessage = new ECDHEServerKeyExchangeMessage();
+        tempMessage.setRequired(false);
+        expectedMessages.add(tempMessage);
+        tempMessage = new DHEServerKeyExchangeMessage();
+        tempMessage.setRequired(false);
+        expectedMessages.add(tempMessage);
+        tempMessage = new CertificateRequestMessage();
+        tempMessage.setRequired(false);
+        expectedMessages.add(tempMessage);
+        expectedMessages.add(new ServerHelloDoneMessage());
+
+        trace.addTlsAction(
+                new ForwardMessagesAction(SERVER_CTX_ALIAS, CLIENT_CTX_ALIAS, expectedMessages));
+
+        getConfig().setReorderReceivedDtlsRecords(true);
+
+        byte[] udpPayloads =
+                arrayJoin(
+                        List.of(
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_7_1,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_7_2,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_7_3,
+                                PacketLibrary.SERVER_FLIGHT_TILL_SHD_7_4));
+        initAndExecute(trace, new byte[0], udpPayloads);
+
+        getConfig().setReorderReceivedDtlsRecords(false);
+
+        assertTrue(trace.executedAsPlanned());
+        assertTrue(trace.allActionsExecuted());
     }
 }

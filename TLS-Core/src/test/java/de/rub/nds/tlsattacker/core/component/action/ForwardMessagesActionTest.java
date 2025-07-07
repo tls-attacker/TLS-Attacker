@@ -96,4 +96,31 @@ public class ForwardMessagesActionTest extends ActionComponentTest {
         assertTrue(trace.allActionsExecuted());
         assertDataWrittenToClient();
     }
+
+    @Test
+    public void testForwardUnorderedServerFlight() {
+        WorkflowTrace trace = createTrace();
+        trace.addTlsAction(
+                new ForwardMessagesAction(
+                        SERVER_CTX_ALIAS, CLIENT_CTX_ALIAS, new ServerHelloMessage()));
+        trace.addTlsAction(
+                new ReceiveAction(
+                        SERVER_CTX_ALIAS,
+                        new CertificateMessage(),
+                        new ECDHEServerKeyExchangeMessage(),
+                        new CertificateRequestMessage(),
+                        new ServerHelloDoneMessage()));
+
+        initAndExecute(trace, new byte[0], PacketLibrary.FRAGMENTED_DTLS_SERVER_FLIGHT);
+
+        assertTrue(trace.executedAsPlanned());
+        assertTrue(trace.allActionsExecuted());
+        assertDataWrittenToClient();
+
+        initAndExecute(trace, new byte[0], PacketLibrary.WHOLE_DTLS_SERVER_FLIGHT);
+
+        assertTrue(trace.executedAsPlanned());
+        assertTrue(trace.allActionsExecuted());
+        assertDataWrittenToClient();
+    }
 }

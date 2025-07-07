@@ -196,7 +196,7 @@ public class Config implements Serializable {
     private Boolean filtersKeepUserSettings = true;
 
     /** If we receive records in the wrong order we will reorder them */
-    private Boolean reorderReceivedDtlsRecords = true;
+    private Boolean reorderReceivedDtlsRecords = false;
 
     /** Default value for ProtocolVersionFields */
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
