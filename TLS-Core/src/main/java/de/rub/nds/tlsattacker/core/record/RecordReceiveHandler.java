@@ -127,13 +127,6 @@ public class RecordReceiveHandler {
                 currentHint = new RecordLayerHint(record.getContentMessageType());
             }
 
-            LOGGER.trace(
-                    "need hint {}, got hint [{}, {}, {}]",
-                    desiredHint,
-                    record.getContentMessageType(),
-                    record.getEpoch().getValue(),
-                    record.getSequenceNumber().getValue().intValue());
-
             // only set the currentInputStream when we received the expected message
             if (desiredHint == null || currentHint.equals(desiredHint)) {
                 getRecordLayer()
