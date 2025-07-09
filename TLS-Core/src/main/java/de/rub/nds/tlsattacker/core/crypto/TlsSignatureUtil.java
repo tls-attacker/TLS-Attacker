@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.security.SecureRandom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -241,14 +241,16 @@ public class TlsSignatureUtil {
                         .getChooser()
                         .getSubjectRsaPrivateKey();
         byte[] salt = chooser.getConfig().getDefaultRsaSsaPssSalt();
-        if (salt.length > algorithm.getBitLength() / 8) {
-            LOGGER.debug("Default PSS salt is too long, truncating");
-            salt = Arrays.copyOfRange(salt, 0, algorithm.getBitLength() / 8);
-        } else if (salt.length < algorithm.getBitLength() / 8) {
-            LOGGER.debug("Default PSS salt is too short, padding");
-            byte[] newSalt = new byte[algorithm.getBitLength() / 8];
-            System.arraycopy(salt, 0, newSalt, 0, salt.length);
-            salt = newSalt;
+        int expectedSaltLength = algorithm.getBitLength() / 8;
+
+        if (salt.length != expectedSaltLength) {
+            LOGGER.debug(
+                    "PSS salt length does not match hash length. Generating new random salt of length: "
+                            + expectedSaltLength);
+            // Generate a new random salt with the correct length
+            salt = new byte[expectedSaltLength];
+            SecureRandom random = new SecureRandom();
+            random.nextBytes(salt);
         }
         calculator.computeRsaPssSignature(
                 computations,

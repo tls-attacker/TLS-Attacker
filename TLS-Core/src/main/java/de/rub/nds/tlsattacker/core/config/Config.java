@@ -1454,11 +1454,11 @@ public class Config implements Serializable {
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
-        System.arraycopy(defaultRsaSsaPssSalt, 0, salt, 0, defaultRsaSsaPssSalt.length);
+        this.defaultRsaSsaPssSalt = salt.clone();
     }
 
     public byte[] getDefaultRsaSsaPssSalt() {
-        return defaultRsaSsaPssSalt;
+        return defaultRsaSsaPssSalt.clone();
     }
 
     public Point getDefaultClientEphemeralEcPublicKey() {
