@@ -72,6 +72,7 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
             if (serverSocket == null || serverSocket.isClosed()) {
                 throw new IOException("TransportHandler not preinitialized");
             }
+            serverSocket.setSoTimeout((int) timeout);
             socket = serverSocket.accept();
             socket.setSoTimeout((int) timeout);
         }
