@@ -37,17 +37,19 @@ public class ReceiveTillHttpContentConfiguration
     }
 
     @Override
-    public boolean failedEarly(List<HttpResponseMessage> list) {
-        return false;
-    }
-
-    @Override
     public String toCompactString() {
         return "(" + getLayerType().getName() + ") ReceiveTillHttpContent: " + desiredContent;
     }
 
     @Override
-    public boolean isProcessTrailingContainers() {
+    public boolean shouldContinueProcessing(
+            List<HttpResponseMessage> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        // Continue processing if we haven't found the desired content yet
+        // and there's either more data to process or we haven't reached a timeout
+        if (!executedAsPlanned(list)) {
+            return !receivedTimeout || dataLeftToProcess;
+        }
+        // If we found the desired content, stop processing
         return false;
     }
 

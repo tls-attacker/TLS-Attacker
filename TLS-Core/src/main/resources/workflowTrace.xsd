@@ -812,7 +812,9 @@
   <xs:complexType name="message" abstract="true">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="shouldPrepare" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -1570,6 +1572,7 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
+          <xs:element name="shouldPrepare" type="xs:string" minOccurs="0"/>
           <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensionContent" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
@@ -3300,6 +3303,7 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
+          <xs:element name="shouldPrepare" type="xs:string" minOccurs="0"/>
           <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
@@ -7115,4 +7119,3 @@
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
-

@@ -13,3 +13,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 20
     registries: "*"
+    groups:
+      internal:
+        patterns:
+          - "de.rub.nds*"
