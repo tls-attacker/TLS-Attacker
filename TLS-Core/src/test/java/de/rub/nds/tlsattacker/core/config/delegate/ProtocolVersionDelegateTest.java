@@ -91,4 +91,69 @@ public class ProtocolVersionDelegateTest extends AbstractDelegateTest<ProtocolVe
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
+
+    @Test
+    public void testDTLSVersionDoesNotOverrideFinishWithCloseNotify() {
+        // Test that setting DTLS version does not override finishWithCloseNotify setting
+        Config config = new Config();
+
+        // Test with default false value
+        assertFalse(config.isFinishWithCloseNotify());
+
+        String[] args = new String[2];
+        args[0] = "-version";
+        args[1] = "DTLS12";
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        // Should remain false after applying DTLS version
+        assertFalse(config.isFinishWithCloseNotify());
+        assertSame(ProtocolVersion.DTLS12, config.getHighestProtocolVersion());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultClientConnection().getTransportHandlerType());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultServerConnection().getTransportHandlerType());
+    }
+
+    @Test
+    public void testDTLSVersionPreservesExplicitFinishWithCloseNotify() {
+        // Test that explicitly set finishWithCloseNotify is preserved
+        Config config = new Config();
+
+        // Explicitly set to true
+        config.setFinishWithCloseNotify(true);
+        assertTrue(config.isFinishWithCloseNotify());
+
+        String[] args = new String[2];
+        args[0] = "-version";
+        args[1] = "DTLS12";
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        // Should remain true
+        assertTrue(config.isFinishWithCloseNotify());
+        assertSame(ProtocolVersion.DTLS12, config.getHighestProtocolVersion());
+    }
+
+    @Test
+    public void testDTLS10VersionBehavior() {
+        // Test DTLS 1.0 as well
+        Config config = new Config();
+        config.setFinishWithCloseNotify(false);
+
+        String[] args = new String[2];
+        args[0] = "-version";
+        args[1] = "DTLS10";
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        // Should remain false
+        assertFalse(config.isFinishWithCloseNotify());
+        assertSame(ProtocolVersion.DTLS10, config.getHighestProtocolVersion());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultClientConnection().getTransportHandlerType());
+    }
 }
