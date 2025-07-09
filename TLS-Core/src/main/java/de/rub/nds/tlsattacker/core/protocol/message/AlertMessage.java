@@ -114,11 +114,23 @@ public class AlertMessage extends ProtocolMessage {
         StringBuilder sb = new StringBuilder();
         String levelString;
         String descriptionString;
+
+        // Determine level string
         if (level != null && level.getValue() != null) {
             levelString = AlertLevel.getAlertLevel(level.getValue()).name();
+        } else if (config != null && config.length == 2) {
+            // Use config as fallback for level
+            AlertLevel alertLevel = AlertLevel.getAlertLevel((byte) config[0]);
+            if (alertLevel != null) {
+                levelString = alertLevel.name();
+            } else {
+                levelString = "" + config[0];
+            }
         } else {
-            levelString = "null";
+            levelString = "not configured";
         }
+
+        // Determine description string
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
             if (desc != null) {
@@ -126,18 +138,18 @@ public class AlertMessage extends ProtocolMessage {
             } else {
                 descriptionString = "" + description.getValue();
             }
-        } else {
-            if (config != null && config.length == 2) {
-                AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
-                if (desc != null) {
-                    descriptionString = desc.name();
-                } else {
-                    descriptionString = "" + config[1];
-                }
+        } else if (config != null && config.length == 2) {
+            // Use config as fallback for description
+            AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
+            if (desc != null) {
+                descriptionString = desc.name();
             } else {
-                descriptionString = "null";
+                descriptionString = "" + config[1];
             }
+        } else {
+            descriptionString = "not configured";
         }
+
         sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();
     }
