@@ -14,11 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -31,6 +34,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -352,5 +356,76 @@ public class WorkflowConfigurationFactoryTest {
         assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
         assertEquals(
                 GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
+    }
+
+    /** Test that dynamic handshake workflow includes proper connection termination */
+    @Test
+    public void testDynamicHandshakeWorkflowIncludesCloseNotify() {
+        // Test for TLS 1.2
+        config.setHighestProtocolVersion(ProtocolVersion.TLS12);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+
+        // Find the close_notify send action (should be second to last)
+        MessageAction secondToLastAction =
+                trace.getMessageActions().get(trace.getMessageActions().size() - 2);
+        assertTrue(secondToLastAction instanceof SendAction);
+        SendAction closeNotifySendAction = (SendAction) secondToLastAction;
+        assertEquals(1, closeNotifySendAction.getConfiguredMessages().size());
+        ProtocolMessage closeNotifyMessage = closeNotifySendAction.getConfiguredMessages().get(0);
+        assertTrue(closeNotifyMessage instanceof AlertMessage);
+        AlertMessage closeNotifyAlert = (AlertMessage) closeNotifyMessage;
+        assertEquals(AlertLevel.WARNING.getValue(), closeNotifyAlert.getLevel().getValue());
+        assertEquals(
+                AlertDescription.CLOSE_NOTIFY.getValue(),
+                closeNotifyAlert.getDescription().getValue());
+
+        // Find the close_notify receive action (should be last)
+        MessageAction lastAction = trace.getLastMessageAction();
+        assertTrue(lastAction instanceof ReceiveTillAction);
+        ReceiveTillAction closeNotifyReceiveAction = (ReceiveTillAction) lastAction;
+        ProtocolMessage expectedCloseNotify = closeNotifyReceiveAction.getWaitTillMessage();
+        assertNotNull(expectedCloseNotify);
+        assertTrue(expectedCloseNotify instanceof AlertMessage);
+        AlertMessage expectedCloseNotifyAlert = (AlertMessage) expectedCloseNotify;
+        assertEquals(AlertLevel.WARNING.getValue(), expectedCloseNotifyAlert.getLevel().getValue());
+        assertEquals(
+                AlertDescription.CLOSE_NOTIFY.getValue(),
+                expectedCloseNotifyAlert.getDescription().getValue());
+
+        // Test for TLS 1.3
+        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        trace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+
+        // Find the close_notify send action (should be second to last)
+        secondToLastAction = trace.getMessageActions().get(trace.getMessageActions().size() - 2);
+        assertTrue(secondToLastAction instanceof SendAction);
+        closeNotifySendAction = (SendAction) secondToLastAction;
+        assertEquals(1, closeNotifySendAction.getConfiguredMessages().size());
+        closeNotifyMessage = closeNotifySendAction.getConfiguredMessages().get(0);
+        assertTrue(closeNotifyMessage instanceof AlertMessage);
+        closeNotifyAlert = (AlertMessage) closeNotifyMessage;
+        assertEquals(AlertLevel.WARNING.getValue(), closeNotifyAlert.getLevel().getValue());
+        assertEquals(
+                AlertDescription.CLOSE_NOTIFY.getValue(),
+                closeNotifyAlert.getDescription().getValue());
+
+        // Find the close_notify receive action (should be last)
+        lastAction = trace.getLastMessageAction();
+        assertTrue(lastAction instanceof ReceiveTillAction);
+        closeNotifyReceiveAction = (ReceiveTillAction) lastAction;
+        expectedCloseNotify = closeNotifyReceiveAction.getWaitTillMessage();
+        assertNotNull(expectedCloseNotify);
+        assertTrue(expectedCloseNotify instanceof AlertMessage);
+        expectedCloseNotifyAlert = (AlertMessage) expectedCloseNotify;
+        assertEquals(AlertLevel.WARNING.getValue(), expectedCloseNotifyAlert.getLevel().getValue());
+        assertEquals(
+                AlertDescription.CLOSE_NOTIFY.getValue(),
+                expectedCloseNotifyAlert.getDescription().getValue());
     }
 }
