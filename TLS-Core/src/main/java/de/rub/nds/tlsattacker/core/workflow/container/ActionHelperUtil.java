@@ -111,14 +111,8 @@ public class ActionHelperUtil {
         LayerConfiguration httpConfiguration =
                 new ReceiveTillHttpContentConfiguration(null, httpContent);
 
-        SpecificReceiveLayerConfiguration messageConfiguration =
-                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
-
-        // allow for additional application data to arrive unhandled
-        messageConfiguration.setAllowTrailingContainers(true);
-
-        return sortLayerConfigurations(
-                layerStack, false, List.of(httpConfiguration, messageConfiguration));
+        return ActionHelperUtil.sortLayerConfigurations(
+                layerStack, false, List.of(httpConfiguration));
     }
 
     private static List<LayerConfiguration<?>> sortLayerConfigurations(
@@ -140,9 +134,8 @@ public class ActionHelperUtil {
                 layer = (ImplementedLayers) layerType;
             } catch (ClassCastException e) {
                 LOGGER.warn(
-                        "Cannot assign layer "
-                                + layerType.getName()
-                                + "to current LayerStack. LayerType not implemented for TlsAction.");
+                        "Cannot assign layer {} to current LayerStack. LayerType not implemented for TlsAction.",
+                        layerType.getName());
                 continue;
             }
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();

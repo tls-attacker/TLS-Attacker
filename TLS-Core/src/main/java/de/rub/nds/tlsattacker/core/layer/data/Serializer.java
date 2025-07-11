@@ -52,13 +52,10 @@ public abstract class Serializer<T> {
         int reconvertedInt = DataConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
             LOGGER.warn(
-                    "Int \""
-                            + i
-                            + "\" is too long to write in field of size "
-                            + length
-                            + ". Only using last "
-                            + length
-                            + " bytes.");
+                    "Int \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
+                    i,
+                    length,
+                    length);
         }
         appendBytes(bytes);
     }

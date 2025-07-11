@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
 import java.util.Arrays;
@@ -36,7 +36,7 @@ public class UnknownSSL2MessageSerializerTest
                 // Test vector 1: Unknown message with type 0xFF
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "8010" // Message length (16 bytes) with MSB set
                                         + "ff" // Message type (0xFF - unknown)
                                         + "0123456789abcdef0123456789abcdef"), // 16-byte message
@@ -44,38 +44,35 @@ public class UnknownSSL2MessageSerializerTest
                         Arrays.asList(
                                 (byte) 0xff,
                                 16,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0123456789abcdef0123456789abcdef"),
                                 0)),
                 // Test vector 2: Unknown message with type 0x99 and longer data
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "8020" // Message length (32 bytes) with MSB set
                                         + "99" // Message type (0x99 - unknown)
                                         + "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"), // 32-byte message body
                         Arrays.asList(
                                 (byte) 0x99,
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"),
                                 0)),
                 // Test vector 3: Unknown message with minimal data
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "8004" // Message length (4 bytes) with MSB set
                                         + "aa" // Message type (0xAA - unknown)
                                         + "deadbeef"), // 4-byte message body
                         Arrays.asList(
-                                (byte) 0xaa,
-                                4,
-                                ArrayConverter.hexStringToByteArray("deadbeef"),
-                                0)),
+                                (byte) 0xaa, 4, DataConverter.hexStringToByteArray("deadbeef"), 0)),
                 // Test vector 4: Unknown message with empty body (just header)
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "8000" // Message length (0 bytes) with MSB set
                                         + "bb"), // Message type (0xBB - unknown)
                         Arrays.asList((byte) 0xbb, 0, new byte[0], 0)));

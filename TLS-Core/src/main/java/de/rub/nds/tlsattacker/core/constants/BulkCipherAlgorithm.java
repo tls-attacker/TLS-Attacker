@@ -71,9 +71,8 @@ public enum BulkCipherAlgorithm {
         }
 
         LOGGER.warn(
-                "The cipher algorithm from "
-                        + cipherSuite
-                        + " is not supported yet. Falling back to NULL.");
+                "The cipher algorithm from {} is not supported yet. Falling back to NULL.",
+                cipherSuite);
         return NULL;
     }
 

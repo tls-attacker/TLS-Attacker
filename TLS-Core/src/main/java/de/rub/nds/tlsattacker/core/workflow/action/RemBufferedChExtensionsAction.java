@@ -156,7 +156,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         sb.append("message length: ").append(ch.getLength().getValue());
         sb.append("\nextension bytes length: ").append(ch.getExtensionBytes().getValue().length);
         sb.append("\nextension bytes:");
-        sb.append(DataConverter.bytesToHexString(ch.getExtensionBytes().getValue()));
+        sb.append(DataConverter.bytesToRawHexString(ch.getExtensionBytes().getValue()));
         sb.append("\nreadable extension list:\n");
         for (ExtensionMessage ext : ch.getExtensions()) {
             sb.append(ext.getExtensionTypeConstant());

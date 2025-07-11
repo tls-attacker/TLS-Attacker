@@ -48,7 +48,7 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
         int serverNameListLength = parseIntField(ExtensionByteLength.SERVER_NAME_LIST);
         clientEsniInner.setServerNameListLength(serverNameListLength);
         LOGGER.debug(
-                "serverNameListLength: " + clientEsniInner.getServerNameListLength().getValue());
+                "serverNameListLength: {}", clientEsniInner.getServerNameListLength().getValue());
     }
 
     private void parseServerNameListByte(ClientEsniInner clientEsniInner) {

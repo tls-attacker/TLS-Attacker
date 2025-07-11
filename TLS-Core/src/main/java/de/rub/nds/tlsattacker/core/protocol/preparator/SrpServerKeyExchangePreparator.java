@@ -253,8 +253,7 @@ public class SrpServerKeyExchangePreparator
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",
-                DataConverter.bytesToHexString(
-                        msg.getKeyExchangeComputations().getClientServerRandom().getValue()));
+                msg.getKeyExchangeComputations().getClientServerRandom().getValue());
     }
 
     private void prepareSignature(SrpServerKeyExchangeMessage msg) {

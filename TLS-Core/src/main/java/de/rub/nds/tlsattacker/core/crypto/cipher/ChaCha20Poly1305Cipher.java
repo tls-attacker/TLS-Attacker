@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -54,9 +54,8 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
     public ChaCha20Poly1305Cipher(byte[] key, int ivLength) {
         if (key.length != 32) {
             LOGGER.warn(
-                    "Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: "
-                            + key.length
-                            + ". Padding/Trimming to 32 Byte.");
+                    "Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: {}. Padding/Trimming to 32 Byte.",
+                    key.length);
             if (key.length > 32) {
                 key = Arrays.copyOfRange(key, 0, 32);
             } else {
@@ -147,13 +146,10 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
             byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes) {
         if (iv.length != IV_LENGTH) {
             LOGGER.warn(
-                    "IV for ChaCha20Poly1305 has wrong size. Expected "
-                            + IV_LENGTH
-                            + " byte but found: "
-                            + iv.length
-                            + ". Padding/Trimming to "
-                            + IV_LENGTH
-                            + " Byte.");
+                    "IV for ChaCha20Poly1305 has wrong size. Expected {} byte but found: {}. Padding/Trimming to {} Byte.",
+                    IV_LENGTH,
+                    iv.length,
+                    IV_LENGTH);
             if (iv.length > IV_LENGTH) {
                 iv = Arrays.copyOfRange(iv, 0, IV_LENGTH);
             } else {

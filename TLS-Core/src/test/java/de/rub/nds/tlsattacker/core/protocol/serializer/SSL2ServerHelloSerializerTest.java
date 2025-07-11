@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
@@ -45,7 +45,7 @@ public class SSL2ServerHelloSerializerTest
                 // Test vector 1: Simple ServerHello without session ID hit
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "802e" // Message length (46 bytes) with MSB set
                                         + "04" // Message type (SERVER_HELLO)
                                         + "00" // Session ID hit (0 = false)
@@ -62,20 +62,20 @@ public class SSL2ServerHelloSerializerTest
                                 46,
                                 (byte) 0x00,
                                 (byte) 0x01,
-                                ArrayConverter.hexStringToByteArray("0002"),
+                                DataConverter.hexStringToByteArray("0002"),
                                 32,
                                 3,
                                 16,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"),
-                                ArrayConverter.hexStringToByteArray("010080"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray("010080"),
+                                DataConverter.hexStringToByteArray(
                                         "fedcba9876543210fedcba9876543210"),
                                 0)),
                 // Test vector 2: ServerHello with session ID hit (no certificate)
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "801a" // Message length (26 bytes) with MSB set
                                         + "04" // Message type (SERVER_HELLO)
                                         + "01" // Session ID hit (1 = true)
@@ -92,19 +92,19 @@ public class SSL2ServerHelloSerializerTest
                                 26,
                                 (byte) 0x01,
                                 (byte) 0x00,
-                                ArrayConverter.hexStringToByteArray("0002"),
+                                DataConverter.hexStringToByteArray("0002"),
                                 0,
                                 3,
                                 16,
                                 new byte[0],
-                                ArrayConverter.hexStringToByteArray("060040"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray("060040"),
+                                DataConverter.hexStringToByteArray(
                                         "1234567890abcdef1234567890abcdef"),
                                 0)),
                 // Test vector 3: ServerHello with multiple cipher suites
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "8023" // Message length (35 bytes) with MSB set
                                         + "04" // Message type (SERVER_HELLO)
                                         + "00" // Session ID hit (0 = false)
@@ -125,14 +125,14 @@ public class SSL2ServerHelloSerializerTest
                                 35,
                                 (byte) 0x00,
                                 (byte) 0x01,
-                                ArrayConverter.hexStringToByteArray("0002"),
+                                DataConverter.hexStringToByteArray("0002"),
                                 16,
                                 9,
                                 8,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0123456789abcdef0123456789abcdef"),
-                                ArrayConverter.hexStringToByteArray("010080020080030080"),
-                                ArrayConverter.hexStringToByteArray("fedcba9876543210"),
+                                DataConverter.hexStringToByteArray("010080020080030080"),
+                                DataConverter.hexStringToByteArray("fedcba9876543210"),
                                 0)));
     }
 }

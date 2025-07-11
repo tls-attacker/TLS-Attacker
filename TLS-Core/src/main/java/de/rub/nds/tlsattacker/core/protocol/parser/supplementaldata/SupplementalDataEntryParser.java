@@ -35,15 +35,15 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
         entry.setSupplementalDataEntryType(
                 parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH));
         LOGGER.debug(
-                "SupplementalDataEntryType: " + entry.getSupplementalDataEntryType().getValue());
+                "SupplementalDataEntryType: {}", entry.getSupplementalDataEntryType().getValue());
     }
 
     private void parseSupplementalDataEntryLength(SupplementalDataEntry entry) {
         entry.setSupplementalDataEntryLength(
                 parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_LENGTH));
         LOGGER.debug(
-                "SupplementalDataEntryLength: "
-                        + entry.getSupplementalDataEntryLength().getValue());
+                "SupplementalDataEntryLength: {}",
+                entry.getSupplementalDataEntryLength().getValue());
     }
 
     private void parseSupplementalDataEntry(SupplementalDataEntry entry) {

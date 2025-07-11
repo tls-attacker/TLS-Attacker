@@ -31,6 +31,15 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
         super(layerType, containers);
     }
 
+    /**
+     * Tests if the SendConfiguration executed as planned. It compares the planned containers with
+     * the actually sent containers. It passes if the configured amount of containers has been sent,
+     * or if more than the configured amount has been sent. This is useful if the configured
+     * containers are split up due to fragmentation.
+     *
+     * @param list The list executed DataContainers
+     * @return true if at least all configured containers have been sent
+     */
     @Override
     public boolean executedAsPlanned(List<Container> list) {
         if (list == null) {
@@ -39,12 +48,15 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
         if (getContainerList() == null) {
             return true;
         }
-        return list.size() == getContainerList().size();
+        // sometimes more containers are sent than configured, if they are split up
+        // this should not fail the SendAction
+        return list.size() >= getContainerList().size();
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
-        return false;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        throw new UnsupportedOperationException("This api does not make sense for send layers");
     }
 
     @Override

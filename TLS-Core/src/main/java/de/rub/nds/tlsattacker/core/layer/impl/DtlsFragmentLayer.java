@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -20,7 +21,6 @@ import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -42,7 +42,7 @@ import org.bouncycastle.util.Arrays;
 
 /** The DtlsFragmentLayer handles DTLS fragmentation between the message and record layer. */
 public class DtlsFragmentLayer
-        extends ProtocolLayer<RecordLayerHint, DtlsHandshakeMessageFragment> {
+        extends ProtocolLayer<Context, RecordLayerHint, DtlsHandshakeMessageFragment> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -312,9 +312,8 @@ public class DtlsFragmentLayer
         }
         if (currentOffset != handshakeBytes.length) {
             LOGGER.warn(
-                    "Unsent bytes for message "
-                            + type
-                            + ". Not enough dtls fragments specified and disabled dynamic fragment creation in config.");
+                    "Unsent bytes for message {}. Not enough dtls fragments specified and disabled dynamic fragment creation in config.",
+                    type);
         }
         increaseWriteHandshakeMessageSequence();
 

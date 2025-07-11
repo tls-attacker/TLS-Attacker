@@ -58,7 +58,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
             if (stringEncoding != null) {
                 lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));
             } else {
-                lastHandledApplicationData = DataConverter.bytesToHexString(rawBytes);
+                lastHandledApplicationData = DataConverter.bytesToRawHexString(rawBytes);
             }
             LOGGER.info("Last handled application data: {}", lastHandledApplicationData);
         } else {

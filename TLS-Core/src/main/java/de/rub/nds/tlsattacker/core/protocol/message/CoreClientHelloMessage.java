@@ -303,25 +303,25 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
         }
         sb.append("\n  Client Random: ");
         if (getRandom() != null && getRandom().getValue() != null) {
-            sb.append(DataConverter.bytesToHexString(getRandom().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getRandom().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Session ID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append(DataConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getSessionId().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Supported Cipher Suites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append(DataConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getCipherSuites().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Supported Compression Methods: ");
         if (getCompressions() != null && getCompressions().getValue() != null) {
-            sb.append(DataConverter.bytesToHexString(getCompressions().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getCompressions().getValue()));
         } else {
             sb.append("null");
         }

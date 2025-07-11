@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -43,7 +43,7 @@ public class SSL2ClientHelloSerializerTest
                 // Test vector 1: Simple ClientHello with 3 cipher suites and 16-byte challenge
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "801c" // Message length (28 bytes) with MSB set
                                         + "01" // Message type (CLIENT_HELLO)
                                         + "0002" // Protocol version (SSL 2.0)
@@ -59,19 +59,19 @@ public class SSL2ClientHelloSerializerTest
                         Arrays.asList(
                                 SSL2MessageType.SSL_CLIENT_HELLO.getType(),
                                 28,
-                                ArrayConverter.hexStringToByteArray("0002"),
+                                DataConverter.hexStringToByteArray("0002"),
                                 9,
                                 0,
                                 16,
-                                ArrayConverter.hexStringToByteArray("010080020080030080"),
+                                DataConverter.hexStringToByteArray("010080020080030080"),
                                 new byte[0],
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0123456789abcdef0123456789abcdef"),
                                 0)),
                 // Test vector 2: ClientHello with session ID and longer challenge
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "8034" // Message length (52 bytes) with MSB set
                                         + "01" // Message type (CLIENT_HELLO)
                                         + "0002" // Protocol version (SSL 2.0)
@@ -85,14 +85,14 @@ public class SSL2ClientHelloSerializerTest
                         Arrays.asList(
                                 SSL2MessageType.SSL_CLIENT_HELLO.getType(),
                                 52,
-                                ArrayConverter.hexStringToByteArray("0002"),
+                                DataConverter.hexStringToByteArray("0002"),
                                 6,
                                 16,
                                 32,
-                                ArrayConverter.hexStringToByteArray("010080060040"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray("010080060040"),
+                                DataConverter.hexStringToByteArray(
                                         "fedcba9876543210fedcba9876543210"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"),
                                 0)));
     }

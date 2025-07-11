@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -104,8 +104,8 @@ public class StaticTicketCrypto {
                 | NoSuchPaddingException
                 | NoSuchAlgorithmException ex) {
             LOGGER.warn(
-                    "Encountered exception while encrypting the StatePlaintext with "
-                            + cipherAlgorithm.name());
+                    "Encountered exception while encrypting the StatePlaintext with {}",
+                    cipherAlgorithm.name());
             LOGGER.debug(ex);
             throw new CryptoException(
                     "Error while StatePlaintext Decryption. See Debug-Log for more Information.");
@@ -126,9 +126,8 @@ public class StaticTicketCrypto {
             result = mac.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
             LOGGER.warn(
-                    "Encountered exception while generating the HMAC "
-                            + macAlgorithm.name()
-                            + " of an encryptedState.");
+                    "Encountered exception while generating the HMAC {} of an encryptedState.",
+                    macAlgorithm.name());
             LOGGER.debug(ex);
             throw new CryptoException(
                     "Error while HMAC generation. See Debug-Log for more Information.");

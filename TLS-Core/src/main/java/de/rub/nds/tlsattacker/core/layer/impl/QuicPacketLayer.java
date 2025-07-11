@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -46,7 +45,8 @@ import org.apache.logging.log4j.Logger;
  * The QuicPacketLayer encrypts and encapsulates QUIC frames into QUIC packets. It sends the packets
  * using the lower layer.
  */
-public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerHint, QuicPacket> {
+public class QuicPacketLayer
+        extends AcknowledgingProtocolLayer<Context, QuicPacketLayerHint, QuicPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -485,7 +485,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                                                             (InitialPacket) packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -514,7 +514,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                                                                     packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -542,7 +542,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                                                             (OneRTTPacket) packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
