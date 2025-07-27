@@ -168,7 +168,7 @@ public class DtlsRecordOrderHandler {
      *     {@code false} if no such record exists in the queue or if the queue is empty
      * @see #getNextOrderConformingRecord(int, int)
      */
-    public boolean hasOrderConformingRecord(int lastEpoch, int lastSeqNum) {
+    public synchronized boolean hasOrderConformingRecord(int lastEpoch, int lastSeqNum) {
         if (recordQueue.isEmpty()) {
             return false;
         }
@@ -197,23 +197,91 @@ public class DtlsRecordOrderHandler {
      * @see #hasOrderConformingRecord(int, int)
      * @see Record
      */
-    public Record getNextOrderConformingRecord(int lastEpoch, int lastSeqNum) {
+    public synchronized Record getNextOrderConformingRecord(int lastEpoch, int lastSeqNum) {
         if (recordQueue.isEmpty()) {
             return null;
         }
 
         Record head = recordQueue.peek();
-        int headEpoch = head.getEpoch().getValue();
-        int headSeqNum = head.getSequenceNumber().getValue().intValue();
 
         // Check if the head record is the next in sequence
-        // Either: same epoch and next sequence number, OR next epoch and sequence number 0
-        if ((headEpoch == lastEpoch && headSeqNum == lastSeqNum + 1)
-                || (headEpoch == lastEpoch + 1 && headSeqNum == 0)) {
-            return recordQueue.poll(); // Remove and return the head
+        if (isPastRecord(head, lastEpoch, lastSeqNum)) {
+            // not the next in the sequence but a retransmission to be dealt with
+            return recordQueue.poll();
+        }
+        if (isNextRecord(head, lastEpoch, lastSeqNum)) {
+            // next in sequence
+            return recordQueue.poll();
         }
 
         return null;
+    }
+
+    /**
+     * Determines whether the provided record is the next record in the expected DTLS ordering
+     * sequence given the last processed epoch and sequence number.
+     *
+     * <p>A record is considered the "next" record if it meets one of the following conditions: - It
+     * has the same epoch as the last processed record and its sequence number is exactly one
+     * greater than the last processed sequence number. - It has an epoch that is one greater than
+     * the last processed epoch, and its sequence number is zero (indicating the start of a new
+     * epoch).
+     *
+     * @param record The record to evaluate. This record must have epoch and sequence number
+     *     properties defined.
+     * @param lastEpoch The epoch of the last processed record.
+     * @param lastSeqNum The sequence number of the last processed record.
+     * @return {@code true} if the provided record is the next in the expected DTLS sequence, {@code
+     *     false} otherwise.
+     */
+    public static boolean isNextRecord(Record record, int lastEpoch, int lastSeqNum) {
+
+        int rEpoch = record.getEpoch().getValue();
+        int rSeqNum = record.getSequenceNumber().getValue().intValue();
+
+        if (rEpoch == lastEpoch && rSeqNum == lastSeqNum + 1) {
+            // next in sequence in the current epoch
+            return true;
+        }
+
+        if (rEpoch == lastEpoch + 1 && rSeqNum == 0) {
+            // starts a new epoch
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines whether a given record is considered a "past" record based on its epoch and
+     * sequence number relative to the given last processed epoch and sequence number.
+     *
+     * <p>A record is considered "past" if: - Its epoch is less than the last processed epoch, or -
+     * Its epoch is the same as the last processed epoch and its sequence number is less than or
+     * equal to the last processed sequence number.
+     *
+     * @param record The DTLS record to be checked. The record must have both epoch and sequence
+     *     number defined.
+     * @param lastEpoch The epoch of the last processed record.
+     * @param lastSeqNum The sequence number of the last processed record.
+     * @return {@code true} if the record is considered a past record, {@code false} otherwise.
+     */
+    public static boolean isPastRecord(Record record, int lastEpoch, int lastSeqNum) {
+
+        int rEpoch = record.getEpoch().getValue();
+        int rSeqNum = record.getSequenceNumber().getValue().intValue();
+
+        if (rEpoch < lastEpoch) {
+            // from previous epoch
+            return true;
+        }
+
+        if (rEpoch == lastEpoch && rSeqNum <= lastSeqNum) {
+            // from this epoch, but we have already seen the sequence num
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -232,7 +300,7 @@ public class DtlsRecordOrderHandler {
      * @return {@code true} if the queue can be entirely drained in order beginning from the
      *     specified sequence number and epoch, {@code false} otherwise.
      */
-    public boolean drainable(int startSequence, int startEpoch) {
+    public synchronized boolean drainable(int startSequence, int startEpoch) {
 
         if (this.isEmpty()) {
             return false;
