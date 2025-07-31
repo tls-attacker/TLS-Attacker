@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -277,49 +279,54 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
         if (getExpectedRecords() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.RECORD, getExpectedRecords()));
         }
         if (getExpectedMessages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.MESSAGE, getExpectedMessages()));
         }
 
         if (getExpectedSSL2Messages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.SSL2, getExpectedSSL2Messages()));
         }
 
         if (getExpectedRecords() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.RECORD, getExpectedRecords()));
         }
 
         if (getExpectedDtlsFragments() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.DTLS_FRAGMENT, getExpectedDtlsFragments()));
         }
         if (getExpectedHttpMessages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.HTTP, getExpectedHttpMessages()));
         }
         if (getExpectedQuicFrames() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.QUICFRAME, getExpectedQuicFrames()));
         }
         if (getExpectedQuicPackets() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    createReceiveLayerConfiguration(
                             ImplementedLayers.QUICPACKET, getExpectedQuicPackets()));
         }
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
+    }
+
+    protected <T extends DataContainer> LayerConfiguration<T> createReceiveLayerConfiguration(
+            LayerType type, List<T> containerList) {
+        return new SpecificReceiveLayerConfiguration<>(type, containerList);
     }
 
     @Override
