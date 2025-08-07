@@ -55,7 +55,8 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 int counter = wrapped.getInt();
                 byte[] nonce = Arrays.copyOfRange(sample, 4, 16);
                 ChaCha20ParameterSpec param = new ChaCha20ParameterSpec(nonce, counter);
-                SecretKeySpec keySpec = new SecretKeySpec(headerProtectionKey, "ChaCha20");
+                SecretKeySpec keySpec =
+                        new SecretKeySpec(headerProtectionKey, cipher.getAlgorithm());
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, param);
                 mask = cipher.doFinal(new byte[] {0, 0, 0, 0, 0});
             } else {
