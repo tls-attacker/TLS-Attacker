@@ -22,18 +22,14 @@ public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<
     }
 
     @Override
-    public boolean isProcessTrailingContainers() {
-        return true;
-    }
-
-    @Override
     public boolean executedAsPlanned(List<DataContainer> list) {
         return true;
     }
 
     @Override
-    public boolean failedEarly(List<DataContainer> list) {
-        return false;
+    public boolean shouldContinueProcessing(
+            List<DataContainer> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        return !receivedTimeout || dataLeftToProcess;
     }
 
     @Override

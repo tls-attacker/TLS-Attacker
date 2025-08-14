@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.crypto;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
