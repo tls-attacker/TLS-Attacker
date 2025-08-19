@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;

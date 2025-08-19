@@ -98,14 +98,8 @@ public class ActionHelperUtil {
         LayerConfiguration httpConfiguration =
                 new ReceiveTillHttpContentConfiguration(null, httpContent);
 
-        SpecificReceiveLayerConfiguration messageConfiguration =
-                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
-
-        // allow for additional application data to arrive unhandled
-        messageConfiguration.setAllowTrailingContainers(true);
-
-        return sortLayerConfigurations(
-                layerStack, false, List.of(httpConfiguration, messageConfiguration));
+        return ActionHelperUtil.sortLayerConfigurations(
+                layerStack, false, List.of(httpConfiguration));
     }
 
     private static List<LayerConfiguration<?>> sortLayerConfigurations(

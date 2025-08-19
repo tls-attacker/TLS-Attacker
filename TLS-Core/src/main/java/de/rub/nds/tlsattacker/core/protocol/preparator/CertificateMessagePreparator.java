@@ -118,9 +118,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     if (entryList == null) {
                         if (chooser.getConfig().getAutoAdjustCertificate()) {
                             X509PublicKeyType[] certificateKeyTypes =
-                                    AlgorithmResolver.getSuiteableLeafCertificateKeyType(
+                                    AlgorithmResolver.getSuitableLeafCertificateKeyType(
                                             chooser.getSelectedCipherSuite());
-                            if (certificateKeyTypes != null) {
+                            if (certificateKeyTypes.length > 0) {
                                 autoSelectCertificateKeyType(certificateKeyTypes);
                             } else {
                                 LOGGER.warn(

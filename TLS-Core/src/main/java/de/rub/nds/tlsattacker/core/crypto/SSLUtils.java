@@ -367,7 +367,7 @@ public class SSLUtils {
         private final byte[] value;
 
         public byte[] getValue() {
-            return value;
+            return value.clone();
         }
     }
 }

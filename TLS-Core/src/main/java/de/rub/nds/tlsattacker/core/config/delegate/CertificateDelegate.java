@@ -12,8 +12,8 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
@@ -133,10 +133,9 @@ public class CertificateDelegate extends Delegate {
                 LOGGER.warn("Certificate provided without private key");
             }
             LOGGER.debug("Loading certificate chain");
-            try {
+            try (FileInputStream inputStream = new FileInputStream(certificate)) {
                 List<CertificateBytes> byteList =
-                        CertificateIo.readPemCertificateByteList(
-                                new FileInputStream(new File(certificate)));
+                        CertificateIo.readPemCertificateByteList(inputStream);
                 config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
