@@ -179,7 +179,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
      * Check if we have any error conditions like IOException, Alert or Connection Close to abort
      */
     private boolean shouldStopDueToErrorCondition() {
-        if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseframe())) {
+        if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseFrame())) {
             LOGGER.debug(
                     "Skipping all Actions, received ConnectionCloseFrame, StopActionsAfterConnCloseFrame active");
             return true;
@@ -200,7 +200,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     }
 
     /** Check if a at least one QUIC context received a connection close frame. */
-    public boolean hasReceivedConnectionCloseframe() {
+    public boolean hasReceivedConnectionCloseFrame() {
         for (Context ctx : state.getAllContexts()) {
             if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
                 return true;
