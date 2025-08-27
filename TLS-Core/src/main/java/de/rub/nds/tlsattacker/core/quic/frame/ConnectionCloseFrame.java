@@ -191,9 +191,13 @@ public class ConnectionCloseFrame extends QuicFrame {
                                         .name());
 
             } else {
-                sb.append(
-                        QuicTransportErrorCodes.getErrorCode(errorCode.getValue().byteValue())
-                                .getName());
+                QuicTransportErrorCodes transportErrorCode =
+                        QuicTransportErrorCodes.getErrorCode(errorCode.getValue().byteValue());
+                if (transportErrorCode != null) {
+                    sb.append(transportErrorCode.getName());
+                } else {
+                    sb.append(errorCode.getValue());
+                }
             }
 
         } else {
