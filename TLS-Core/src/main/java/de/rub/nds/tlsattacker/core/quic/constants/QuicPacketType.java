@@ -19,7 +19,7 @@ public enum QuicPacketType {
     HANDSHAKE_PACKET(0xe0, 0xf0),
     RETRY_PACKET(0xf0, 0xc0),
     ONE_RTT_PACKET(0x80, 0x80),
-    VERSION_NEGOTIATION(0x20, 0x20),
+    VERSION_NEGOTIATION(0xc0, 0xc0),
     STATELESS_RESET(0xfe, 0xfe);
 
     private static final Map<Byte, QuicPacketType> QUIC1_MAP;
@@ -37,7 +37,7 @@ public enum QuicPacketType {
         QUIC1_MAP = new HashMap<>();
         QUIC2_MAP = new HashMap<>();
         for (QuicPacketType type : QuicPacketType.values()) {
-            if (type == UNKNOWN) {
+            if (type == UNKNOWN || type == VERSION_NEGOTIATION || type == STATELESS_RESET) {
                 continue;
             }
             QUIC1_MAP.put(type.headerQuic1, type);
@@ -46,6 +46,12 @@ public enum QuicPacketType {
     }
 
     public static QuicPacketType getPacketTypeFromFirstByte(QuicVersion version, int firstByte) {
+        if (version == QuicVersion.NULL_VERSION) {
+            return VERSION_NEGOTIATION;
+        }
+        if (version != QuicVersion.VERSION_1 && version != QuicVersion.VERSION_2) {
+            return UNKNOWN;
+        }
         if (isShortHeaderPacket(firstByte)) {
             // 1-RTT packets are the only short header packets
             return ONE_RTT_PACKET;
