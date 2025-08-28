@@ -231,13 +231,11 @@ public class QuicPacketLayer
                 QuicVersion quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
                 if (quicVersion == QuicVersion.NULL_VERSION) {
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
+                } else if (quicVersion != quicContext.getQuicVersion()) {
+                    LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
+                    return;
                 } else {
                     packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
-                    if (quicVersion != quicContext.getQuicVersion()
-                            && packetType != QuicPacketType.VERSION_NEGOTIATION) {
-                        LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
-                        packetType = QuicPacketType.UNKNOWN;
-                    }
                 }
             } else {
                 packetType =
