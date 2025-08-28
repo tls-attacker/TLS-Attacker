@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.quic.constants;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public enum QuicPacketType {
     UNKNOWN(255, 255),
@@ -51,11 +52,7 @@ public enum QuicPacketType {
         } else {
             QuicPacketType type =
                     getHeaderMap(version).get((byte) (firstByte & 0b1111_0000 | 0b0100_0000));
-            if (type != null) {
-                return type;
-            } else {
-                return UNKNOWN;
-            }
+            return Objects.requireNonNullElse(type, UNKNOWN);
         }
     }
 
@@ -75,25 +72,19 @@ public enum QuicPacketType {
     }
 
     public byte getHeader(QuicVersion version) {
-        switch (version) {
-            case VERSION_1:
-                return headerQuic1;
-            case VERSION_2:
-                return headerQuic2;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (version) {
+            case VERSION_1 -> headerQuic1;
+            case VERSION_2 -> headerQuic2;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     private static Map<Byte, QuicPacketType> getHeaderMap(QuicVersion version) {
-        switch (version) {
-            case VERSION_1:
-                return QUIC1_MAP;
-            case VERSION_2:
-                return QUIC2_MAP;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (version) {
+            case VERSION_1 -> QUIC1_MAP;
+            case VERSION_2 -> QUIC2_MAP;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     public String getName() {
