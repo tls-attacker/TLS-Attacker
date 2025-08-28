@@ -62,7 +62,7 @@ public enum QuicVersion {
             } else if (versionValue >= 0x51474f00 && versionValue <= 0x51474fff) {
                 return "QGO_" + versionBytes[3];
             } else if (versionValue >= 0x91c17000 && versionValue <= 0x91c170ff) {
-                return "QICLY0_" + versionBytes[3];
+                return "QUICLY0_" + versionBytes[3];
             } else if (versionValue >= 0xabcd0000 && versionValue <= 0xabcd000f) {
                 return "MSQUIC";
             } else if (versionValue >= 0xf123f0c0 && versionValue <= 0xf123f0cf) {
