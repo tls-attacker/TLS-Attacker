@@ -1125,6 +1125,7 @@
         <initialMaxStreamsBidi>2147745792</initialMaxStreamsBidi>
         <initialMaxStreamsUni>2147745792</initialMaxStreamsUni>
         <maxAckDelay>2000</maxAckDelay>
+        <maxDatagramFrameSize>65527</maxDatagramFrameSize>
         <maxIdleTimeout>60000</maxIdleTimeout>
         <maxUdpPayloadSize>65527</maxUdpPayloadSize>
     </defaultQuicTransportParameters>

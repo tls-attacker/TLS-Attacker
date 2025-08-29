@@ -47,7 +47,6 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             Cipher cipher, byte[] headerProtectionKey, byte[] sample) throws CryptoException {
         try {
             byte[] mask;
-            SecretKeySpec keySpec = new SecretKeySpec(headerProtectionKey, cipher.getAlgorithm());
             if (cipher.getAlgorithm().equals("ChaCha20")) {
                 // Based on RFC 9001 Section 5.4.4
                 // https://www.rfc-editor.org/rfc/rfc9001#name-chacha20-based-header-prote
@@ -56,11 +55,14 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 int counter = wrapped.getInt();
                 byte[] nonce = Arrays.copyOfRange(sample, 4, 16);
                 ChaCha20ParameterSpec param = new ChaCha20ParameterSpec(nonce, counter);
+                SecretKeySpec keySpec =
+                        new SecretKeySpec(headerProtectionKey, cipher.getAlgorithm());
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, param);
                 mask = cipher.doFinal(new byte[] {0, 0, 0, 0, 0});
             } else {
                 // Based on RFC 9001 Section 5.4.3
                 // https://www.rfc-editor.org/rfc/rfc9001#name-aes-based-header-protection
+                SecretKeySpec keySpec = new SecretKeySpec(headerProtectionKey, "AES");
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec);
                 mask = cipher.doFinal(sample);
             }
