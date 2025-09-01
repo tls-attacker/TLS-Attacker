@@ -17,17 +17,17 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 import org.apache.commons.lang3.NotImplementedException;
 
+/**
+ * Pseudo Packet class to include Stateless Resets in the Workflow Trace. We do not intend to
+ * send them. They are and have to be specially handled in the packet layer as the normal
+ * process of handling packets (e.g., decrypting and parsing) does not apply to them.
+ */
 public class StatelessResetPseudoPacket extends QuicPacket {
 
     public StatelessResetPseudoPacket() {
         super(QuicPacketType.STATELESS_RESET);
     }
 
-    /**
-     * Pseude Packet class to include Stateless Resets in the Workflow Trace. We do not intend to
-     * send them. They are and have to be specially handled in the packet layer as the normal
-     * process of handling packets (e.g., decrypting and parsing) does not apply to them.
-     */
     @Override
     public void buildUnprotectedPacketHeader() {
         throw new NotImplementedException();

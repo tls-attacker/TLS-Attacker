@@ -266,25 +266,25 @@ public class QuicPacketLayer
                         QuicPacketType.getPacketTypeFromFirstByte(
                                 quicContext.getQuicVersion(), firstByte);
             }
-            QuicPacket reatPacket;
+            QuicPacket readPacket;
             // Store the packet in the buffer for further processing.
             switch (packetType) {
                 case INITIAL_PACKET:
-                    reatPacket = readInitialPacket(firstByte, versionBytes, dataStream);
+                    readPacket = readInitialPacket(firstByte, versionBytes, dataStream);
                     break;
                 case HANDSHAKE_PACKET:
-                    reatPacket = readHandshakePacket(firstByte, versionBytes, dataStream);
+                    readPacket = readHandshakePacket(firstByte, versionBytes, dataStream);
                     break;
                 case ONE_RTT_PACKET:
-                    reatPacket = readOneRTTPacket(firstByte, dataStream);
+                    readPacket = readOneRTTPacket(firstByte, dataStream);
                     break;
                 case ZERO_RTT_PACKET:
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
                 case RETRY_PACKET:
-                    reatPacket = readRetryPacket(firstByte, dataStream);
+                    readPacket = readRetryPacket(firstByte, dataStream);
                     break;
                 case VERSION_NEGOTIATION:
-                    reatPacket = readVersionNegotiationPacket(dataStream);
+                    readPacket = readVersionNegotiationPacket(dataStream);
                     break;
                 case UNKNOWN:
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
@@ -292,18 +292,18 @@ public class QuicPacketLayer
                     throw new IllegalStateException("Received a Packet of Unknown Type");
             }
 
-            if (isStatelessResetPacket(reatPacket)) {
+            if (isStatelessResetPacket(readPacket)) {
                 quicContext.setReceivedStatelessResetToken(true);
                 addProducedContainer(new StatelessResetPseudoPacket());
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
             } else {
                 if (context.getConfig().discardPacketsWithMismatchedSCID()
                         && !Arrays.equals(
-                                reatPacket.getDestinationConnectionId().getValue(),
+                                readPacket.getDestinationConnectionId().getValue(),
                                 context.getQuicContext().getSourceConnectionId())) {
                     LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
                 } else {
-                    receivedPacketBuffer.get(packetType).add(reatPacket);
+                    receivedPacketBuffer.get(packetType).add(readPacket);
                 }
             }
         }
@@ -357,7 +357,7 @@ public class QuicPacketLayer
             case RETRY_PACKET:
                 throw new UnsupportedOperationException("Retry Packet - Not supported yet.");
             case VERSION_NEGOTIATION:
-                return writeVersionNegotiation((VersionNegotiationPacket) packet);
+                return writeVersionNegotiationPacket((VersionNegotiationPacket) packet);
             case UNKNOWN:
                 throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
             default:
@@ -397,7 +397,7 @@ public class QuicPacketLayer
         return packet.getSerializer(context).serialize();
     }
 
-    private byte[] writeVersionNegotiation(VersionNegotiationPacket packet) {
+    private byte[] writeVersionNegotiationPacket(VersionNegotiationPacket packet) {
         packet.getPreparator(context).prepare();
         return packet.getSerializer(context).serialize();
     }

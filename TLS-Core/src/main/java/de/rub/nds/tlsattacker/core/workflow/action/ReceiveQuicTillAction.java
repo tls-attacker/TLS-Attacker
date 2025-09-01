@@ -152,7 +152,7 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
                     sb.append(", ");
                 }
             } else {
-                sb.append(" (no frames receoved)");
+                sb.append(" (no frames received)");
             }
         }
         if (executedAsPlanned()) {

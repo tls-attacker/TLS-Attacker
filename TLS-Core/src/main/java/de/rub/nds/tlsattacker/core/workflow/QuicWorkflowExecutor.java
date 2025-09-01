@@ -209,7 +209,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
         return false;
     }
 
-    /** Check if a at least one QUIC context received a connection close frame. */
+    /** Check if a at least one QUIC context received a stateless reset packet. */
     public boolean hasReceivedStatelessReset() {
         for (Context ctx : state.getAllContexts()) {
             if (ctx.getQuicContext().hasReceivedStatelessResetToken()) {
