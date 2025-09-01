@@ -42,6 +42,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     protected ModifiableByteArray destinationConnectionId;
     protected ModifiableByte destinationConnectionIdLength;
 
+    protected ModifiableByteArray configuredDestinationConnectionId;
+
     protected ModifiableInteger packetLength;
     protected int packetLengthSize;
 
@@ -62,6 +64,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     protected QuicCryptoSecrets packetSecret;
     public int offsetToPacketNumber;
     protected int padding;
+
+    protected int configuredPadding = -1;
 
     public QuicPacket() {}
 
@@ -285,6 +289,17 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
         this.destinationConnectionId = destinationConnectionId;
     }
 
+    public void setConfiguredDestinationConnectionId(byte[] destinationConnectionId) {
+        this.configuredDestinationConnectionId =
+                ModifiableVariableFactory.safelySetValue(
+                        this.configuredDestinationConnectionId, destinationConnectionId);
+    }
+
+    public void setConfiguredDestinationConnectionId(
+            ModifiableByteArray configuredDestinationConnectionId) {
+        this.configuredDestinationConnectionId = configuredDestinationConnectionId;
+    }
+
     public void setDestinationConnectionIdLength(byte destinationConnectionIdLength) {
         this.destinationConnectionIdLength =
                 ModifiableVariableFactory.safelySetValue(
@@ -377,6 +392,10 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
         return destinationConnectionId;
     }
 
+    public ModifiableByteArray getConfiguredDestinationConnectionId() {
+        return configuredDestinationConnectionId;
+    }
+
     public ModifiableByte getDestinationConnectionIdLength() {
         return destinationConnectionIdLength;
     }
@@ -399,5 +418,13 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
 
     public int getPadding() {
         return padding;
+    }
+
+    public void setConfiguredPadding(int configuredPadding) {
+        this.configuredPadding = configuredPadding;
+    }
+
+    public int getConfiguredPadding() {
+        return configuredPadding;
     }
 }

@@ -12,8 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+@XmlRootElement
 public class UdpDataPacket implements DataContainer {
 
     private String sourceIp;
