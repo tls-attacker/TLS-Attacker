@@ -296,15 +296,13 @@ public class QuicPacketLayer
                 quicContext.setReceivedStatelessResetToken(true);
                 addProducedContainer(new StatelessResetPseudoPacket());
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
+            } else if (context.getConfig().discardPacketsWithMismatchedSCID()
+                    && !Arrays.equals(
+                            readPacket.getDestinationConnectionId().getValue(),
+                            context.getQuicContext().getSourceConnectionId())) {
+                LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
             } else {
-                if (context.getConfig().discardPacketsWithMismatchedSCID()
-                        && !Arrays.equals(
-                                readPacket.getDestinationConnectionId().getValue(),
-                                context.getQuicContext().getSourceConnectionId())) {
-                    LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
-                } else {
-                    receivedPacketBuffer.get(packetType).add(readPacket);
-                }
+                receivedPacketBuffer.get(packetType).add(readPacket);
             }
         }
 
