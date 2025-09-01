@@ -21,11 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @XmlRootElement
 public class ReceiveQuicTillAction extends CommonReceiveAction {
@@ -186,42 +182,41 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
         return sb.toString();
     }
 
+    private boolean matchByClassCount(List<?> expected, List<?> received) {
+        Map<Class<?>, Integer> expectedCount = new HashMap<>();
+        Map<Class<?>, Integer> receivedCount = new HashMap<>();
+        for (Object obj : expected) {
+            if (obj != null) {
+                expectedCount.merge(obj.getClass(), 1, Integer::sum);
+            }
+        }
+        for (Object obj : received) {
+            if (obj != null) {
+                receivedCount.merge(obj.getClass(), 1, Integer::sum);
+            }
+        }
+        for (Map.Entry<Class<?>, Integer> entry : expectedCount.entrySet()) {
+            if (receivedCount.getOrDefault(entry.getKey(), 0) < entry.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean executedAsPlanned() {
         if (expectedQuicPackets != null && !expectedQuicPackets.isEmpty()) {
             if (getReceivedQuicPackets() == null || getReceivedQuicPackets().isEmpty()) {
                 return false;
             }
-            boolean receivedAllQuicPackets = true;
-            for (QuicPacket packet : expectedQuicPackets) {
-                boolean receivedThisPacket = false;
-                for (QuicPacket receivedPacket : getReceivedQuicPackets()) {
-                    if (packet.getClass().equals(receivedPacket.getClass())) {
-                        receivedThisPacket = true;
-                        break;
-                    }
-                }
-                receivedAllQuicPackets &= receivedThisPacket;
-            }
-            if (!receivedAllQuicPackets) return false;
+            if (!matchByClassCount(expectedQuicPackets, getReceivedQuicPackets())) return false;
         }
 
         if (expectedQuicFrames != null && !expectedQuicFrames.isEmpty()) {
             if (getReceivedQuicFrames() == null || getReceivedQuicFrames().isEmpty()) {
                 return false;
             }
-            boolean receivedAllQuicFrames = true;
-            for (QuicFrame frame : expectedQuicFrames) {
-                boolean receivedThisFrame = false;
-                for (QuicFrame receivedFrame : getReceivedQuicFrames()) {
-                    if (frame.getClass().equals(receivedFrame.getClass())) {
-                        receivedThisFrame = true;
-                        break;
-                    }
-                }
-                receivedAllQuicFrames &= receivedThisFrame;
-            }
-            if (!receivedAllQuicFrames) return false;
+            if (!matchByClassCount(expectedQuicFrames, getReceivedQuicFrames())) return false;
         }
 
         return true;
