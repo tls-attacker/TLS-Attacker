@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.util.List;
@@ -66,7 +67,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
             if ((config.getStopActionsAfterIOException() && isIoException())) {
-                if (lastExecutedAction != null && lastExecutedAction instanceof SendingAction) {
+                if (lastExecutedAction instanceof SendingAction) {
                     LOGGER.debug(
                             "Received IO Exception with StopActionsAfterIOException active, skipping to next receive action to process pending message bytes.");
                     processPendingReceiveBufferBytes(i - 1);
@@ -85,7 +86,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 lastExecutedAction = action;
             }
 
-            if (config.isStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
+            if (config.isStopTraceAfterUnexpected()
+                    && !action.executedAsPlanned()
+                    && (action.getActionOptions() == null
+                            || !action.getActionOptions().contains(ActionOption.MAY_FAIL))) {
                 if (lastExecutedAction instanceof SendingAction) {
                     LOGGER.debug(
                             "SendingAction did not execute as planned, skipping to next receive action to process pending message bytes.");

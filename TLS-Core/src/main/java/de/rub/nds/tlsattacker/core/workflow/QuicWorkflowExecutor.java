@@ -94,7 +94,9 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
             layer.setTemporarilyDisabledAcks(false);
 
-            if (!action.executedAsPlanned()) {
+            if (!action.executedAsPlanned()
+                    && (action.getActionOptions() == null
+                            || !action.getActionOptions().contains(ActionOption.MAY_FAIL))) {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
