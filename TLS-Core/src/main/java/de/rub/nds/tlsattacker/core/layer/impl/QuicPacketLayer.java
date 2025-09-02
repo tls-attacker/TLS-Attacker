@@ -83,7 +83,7 @@ public class QuicPacketLayer
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
-                if (isEmptyPacket(packet)) {
+                if (packet.getPacketType().isFrameContainer() && isEmptyPacket(packet)) {
                     continue;
                 }
                 try {
@@ -353,7 +353,7 @@ public class QuicPacketLayer
             case ZERO_RTT_PACKET:
                 return writeZeroRTTPacket((ZeroRTTPacket) packet);
             case RETRY_PACKET:
-                throw new UnsupportedOperationException("Retry Packet - Not supported yet.");
+                return writeRetryPacket((RetryPacket) packet);
             case VERSION_NEGOTIATION:
                 return writeVersionNegotiationPacket((VersionNegotiationPacket) packet);
             case UNKNOWN:
@@ -392,6 +392,11 @@ public class QuicPacketLayer
         encryptor.encryptZeroRTTPacket(packet);
         packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionZeroRTT(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeRetryPacket(RetryPacket packet) {
+        packet.getPreparator(context).prepare();
         return packet.getSerializer(context).serialize();
     }
 

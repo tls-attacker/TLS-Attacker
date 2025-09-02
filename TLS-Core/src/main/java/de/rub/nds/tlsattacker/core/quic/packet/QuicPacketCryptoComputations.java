@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicRetryConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -23,12 +24,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
 import javax.crypto.spec.ChaCha20ParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -462,5 +460,68 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 new byte[0],
                 keyLength,
                 ProtocolVersion.TLS13);
+    }
+
+    /**
+     * Calculates the Integrity Tag for the given Retry Packet.
+     *
+     * @param context Current QUIC Context
+     * @param packet The Retry Packet
+     * @return Retry Integrity Tag for the packet
+     */
+    public static byte[] calculateRetryIntegrityTag(QuicContext context, RetryPacket packet) {
+        // For construction of QUIC Retry Packet Integrity Pseudo Packet, see 5.8, RFC 9001
+        byte[] pseudoPacket =
+                ByteBuffer.allocate(
+                                1 /* ODCID length field */
+                                        + context.getFirstDestinationConnectionId().length
+                                        + 1 /* Flags Byte */
+                                        + 4 /* Version Field */
+                                        + 1 /* DCID length field */
+                                        + packet.getDestinationConnectionIdLength().getValue()
+                                        + 1 /* SCID length field */
+                                        + packet.getSourceConnectionIdLength().getValue()
+                                        + packet.retryToken.getValue().length)
+                        .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
+                        .put(context.getFirstDestinationConnectionId())
+                        .put(packet.getUnprotectedFlags().getValue())
+                        .put(context.getQuicVersion().getByteValue())
+                        .put(packet.getDestinationConnectionIdLength().getValue())
+                        .put(packet.getDestinationConnectionId().getValue())
+                        .put(packet.getSourceConnectionIdLength().getValue())
+                        .put(packet.getSourceConnectionId().getValue())
+                        .put(packet.retryToken.getValue())
+                        .array();
+        LOGGER.trace("Build Integrity Check Pseudo Packet {}", pseudoPacket);
+
+        byte[] computedTag;
+        try {
+            // Secret Key is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
+            SecretKey secretKey =
+                    new SecretKeySpec(
+                            QuicRetryConstants.getRetryIntegrityTagKey(context.getQuicVersion()),
+                            "AES");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            // IV is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
+            GCMParameterSpec gcmParameterSpec =
+                    new GCMParameterSpec(
+                            128,
+                            QuicRetryConstants.getRetryIntegrityTagIv(context.getQuicVersion()));
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
+            cipher.updateAAD(pseudoPacket);
+            computedTag = cipher.doFinal();
+        } catch (NoSuchAlgorithmException
+                | NoSuchPaddingException
+                | InvalidKeyException
+                | InvalidAlgorithmParameterException
+                | IllegalBlockSizeException
+                | BadPaddingException e) {
+            throw new CryptoException("Error while computing Retry Integrity Tag", e);
+        }
+        if (computedTag.length == 0) {
+            throw new CryptoException(
+                    "Attempted to compute Retry Integrity Tag for verification but result is empty!");
+        }
+        return computedTag;
     }
 }
