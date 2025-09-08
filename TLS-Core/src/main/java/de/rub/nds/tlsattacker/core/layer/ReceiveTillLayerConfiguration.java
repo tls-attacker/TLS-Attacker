@@ -98,7 +98,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
         if (receivedTimeout) {
             return false;
         } else {
-            return !executedAsPlanned(list);
+            return !executedAsPlanned(list) || dataLeftToProcess && processTrailingContainers;
         }
     }
 
