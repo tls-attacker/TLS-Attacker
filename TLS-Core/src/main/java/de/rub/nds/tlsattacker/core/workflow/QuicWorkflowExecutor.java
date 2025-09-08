@@ -63,7 +63,17 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
 
             TlsAction action = tlsActions.get(i);
+            boolean notAcknowledgeReceiving = false;
+            if (action.getActionOptions() != null) {
+                notAcknowledgeReceiving =
+                        action.getActionOptions()
+                                .contains(ActionOption.QUIC_DO_NOT_ACK_RECEPTION_OF_PACKET);
+            }
+            QuicPacketLayer layer =
+                    (QuicPacketLayer)
+                            state.getContext().getLayerStack().getLayer(QuicPacketLayer.class);
 
+            layer.setTemporarilyDisabledAcks(notAcknowledgeReceiving);
             if (!action.isExecuted()) {
                 try {
                     this.executeAction(action, state);
@@ -82,6 +92,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     }
                 }
             }
+            layer.setTemporarilyDisabledAcks(false);
 
             if (!action.executedAsPlanned()) {
                 if (config.isStopTraceAfterUnexpected()) {
@@ -174,6 +185,12 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             return true;
         }
 
+        if (config.stopActionAfterQuicStatelessReset() && hasReceivedStatelessReset()) {
+            LOGGER.debug(
+                    "Skipping all Actions, received StatelessReset, StopActionsAfterStatelessReset active");
+            return true;
+        }
+
         if ((config.getStopActionsAfterIOException() && isIoException())) {
             LOGGER.debug(
                     "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
@@ -186,6 +203,16 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     public boolean hasReceivedConnectionCloseframe() {
         for (Context ctx : state.getAllContexts()) {
             if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Check if a at least one QUIC context received a stateless reset packet. */
+    public boolean hasReceivedStatelessReset() {
+        for (Context ctx : state.getAllContexts()) {
+            if (ctx.getQuicContext().hasReceivedStatelessResetToken()) {
                 return true;
             }
         }
