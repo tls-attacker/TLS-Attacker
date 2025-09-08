@@ -81,5 +81,10 @@ public enum ActionOption {
      * the correct order, but does not fail if additional unexpected messages are present. This is
      * less strict than the default behavior.
      */
-    CHECK_ONLY_EXPECTED;
+    CHECK_ONLY_EXPECTED,
+    QUIC_FRAMES_STRICT_PADDING,
+    QUIC_FRAMES_IGNORE_NT_NCID_RTCID,
+    QUIC_FRAMES_IGNORE_ACK,
+    QUIC_DO_NOT_ACK_RECEPTION_OF_PACKET;
+    ;
 }

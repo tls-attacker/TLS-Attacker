@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAl
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,6 +83,18 @@ public class ActionHelperUtil {
             }
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
                 containerFilters.add(new WarningAlertFilter());
+            }
+            if (!actionOptions.contains(ActionOption.QUIC_FRAMES_STRICT_PADDING)) {
+                containerFilters.add(new GenericDataContainerFilter(PaddingFrame.class));
+                containerFilters.add(new GenericDataContainerFilter(PingFrame.class));
+            }
+            if (actionOptions.contains(ActionOption.QUIC_FRAMES_IGNORE_NT_NCID_RTCID)) {
+                containerFilters.add(new GenericDataContainerFilter(NewTokenFrame.class));
+                containerFilters.add(new GenericDataContainerFilter(NewConnectionIdFrame.class));
+                containerFilters.add(new GenericDataContainerFilter(RetireConnectionIdFrame.class));
+            }
+            if (actionOptions.contains(ActionOption.QUIC_FRAMES_IGNORE_ACK)) {
+                containerFilters.add(new GenericDataContainerFilter(AckFrame.class));
             }
             if (messageLayerConfiguration instanceof SpecificReceiveLayerConfiguration) {
                 ((SpecificReceiveLayerConfiguration<?>) messageLayerConfiguration)
