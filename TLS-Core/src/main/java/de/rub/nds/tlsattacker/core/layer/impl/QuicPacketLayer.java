@@ -272,7 +272,7 @@ public class QuicPacketLayer
                 quicContext.setReceivedStatelessResetToken(true);
                 addProducedContainer(new StatelessResetPseudoPacket());
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
-            } else if (context.getConfig().discardPacketsWithMismatchedSCID()
+            } else if (context.getConfig().isDiscardPacketsWithMismatchedSCID()
                     && !Arrays.equals(
                             readPacket.getDestinationConnectionId().getValue(),
                             context.getQuicContext().getSourceConnectionId())) {

@@ -4365,7 +4365,7 @@ public class Config implements Serializable {
         this.quicDoNotPad = quicDoNotPad;
     }
 
-    public Boolean discardPacketsWithMismatchedSCID() {
+    public Boolean isDiscardPacketsWithMismatchedSCID() {
         return discardPacketsWithMismatchedSCID;
     }
 
