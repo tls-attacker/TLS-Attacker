@@ -127,50 +127,32 @@ public class QuicPacketLayer
 
         List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
         try {
-            if (getLayerConfiguration().getContainerList() != null && givenPackets.size() > 0) {
+            if (getLayerConfiguration().getContainerList() != null && !givenPackets.isEmpty()) {
                 // If a configuration is provided, the hint will be ignored.
-                QuicPacket packet = givenPackets.get(0);
+                QuicPacket packet = givenPackets.getFirst();
                 byte[] bytes = writePacket(data, packet);
                 addProducedContainer(packet);
                 getLowerLayer().sendData(null, bytes);
             } else {
-                switch (hintedType) {
-                    case INITIAL_PACKET:
-                        InitialPacket initialPacket = new InitialPacket();
-                        byte[] initialPacketBytes = writePacket(data, initialPacket);
-                        addProducedContainer(initialPacket);
-                        getLowerLayer().sendData(null, initialPacketBytes);
-                        break;
-                    case HANDSHAKE_PACKET:
-                        HandshakePacket handshakePacket = new HandshakePacket();
-                        byte[] handshakePacketBytes = writePacket(data, handshakePacket);
-                        addProducedContainer(handshakePacket);
-                        getLowerLayer().sendData(null, handshakePacketBytes);
-                        break;
-                    case ONE_RTT_PACKET:
-                        OneRTTPacket oneRTTPacket = new OneRTTPacket();
-                        byte[] oneRTTPacketBytes = writePacket(data, oneRTTPacket);
-                        addProducedContainer(oneRTTPacket);
-                        getLowerLayer().sendData(null, oneRTTPacketBytes);
-                        break;
-                    case ZERO_RTT_PACKET:
-                        ZeroRTTPacket zeroRTTPacket = new ZeroRTTPacket();
-                        byte[] zeroRTTPacketBytes = writePacket(data, zeroRTTPacket);
-                        addProducedContainer(zeroRTTPacket);
-                        getLowerLayer().sendData(null, zeroRTTPacketBytes);
-                        break;
-                    case RETRY_PACKET:
-                        throw new UnsupportedOperationException(
-                                "Retry Packet - Not supported yet.");
-                    case VERSION_NEGOTIATION:
-                        throw new UnsupportedOperationException(
-                                "Version Negotiation Packet - Not supported yet.");
-                    case UNKNOWN:
-                        throw new UnsupportedOperationException(
-                                "Unknown Packet - Not supported yet.");
-                    default:
-                        break;
-                }
+                QuicPacket packet =
+                        switch (hintedType) {
+                            case INITIAL_PACKET -> new InitialPacket();
+                            case HANDSHAKE_PACKET -> new HandshakePacket();
+                            case ONE_RTT_PACKET -> new OneRTTPacket();
+                            case ZERO_RTT_PACKET -> new ZeroRTTPacket();
+                            case RETRY_PACKET ->
+                                    throw new UnsupportedOperationException(
+                                            "Retry Packet - Not supported yet.");
+                            case VERSION_NEGOTIATION ->
+                                    throw new UnsupportedOperationException(
+                                            "Version Negotiation Packet - Not supported yet.");
+                            default ->
+                                    throw new UnsupportedOperationException(
+                                            "Unknown Packet - Not supported yet.");
+                        };
+                byte[] packetBytes = writePacket(data, packet);
+                addProducedContainer(packet);
+                getLowerLayer().sendData(null, packetBytes);
             }
         } catch (CryptoException ex) {
             LOGGER.error(ex);
