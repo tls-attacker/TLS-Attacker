@@ -94,7 +94,9 @@ public class QuicFrameLayer
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         QuicPacketLayerHint prevHint = null;
 
-        if (configuration != null && configuration.getContainerList() != null) {
+        if (configuration != null
+                && configuration.getContainerList() != null
+                && !configuration.getContainerList().isEmpty()) {
             for (QuicFrame frame : configuration.getContainerList()) {
                 byte[] bytes = writeFrame(frame);
                 QuicPacketLayerHint hint = getHintForFrame();
