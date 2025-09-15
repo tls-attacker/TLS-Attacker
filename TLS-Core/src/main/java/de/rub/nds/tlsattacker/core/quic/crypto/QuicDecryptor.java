@@ -158,7 +158,7 @@ public class QuicDecryptor {
         }
 
         int truncated_Pn = DataConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue());
-        int pn_nBits = packet.getPacketNumberLength().getValue();
+        int pn_nBits = packet.getPacketNumberLength().getValue() * 8;
         long decodedPn = packet.decodePacketNumber(truncated_Pn, largest_Pn, pn_nBits);
         LOGGER.debug(
                 "Decoded pktNumber: {}, raw pktNumber: {}",

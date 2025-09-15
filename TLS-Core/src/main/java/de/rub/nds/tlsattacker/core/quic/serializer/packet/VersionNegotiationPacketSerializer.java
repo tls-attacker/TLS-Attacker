@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.packet;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 
 public class VersionNegotiationPacketSerializer
@@ -19,7 +20,13 @@ public class VersionNegotiationPacketSerializer
 
     @Override
     protected byte[] serializeBytes() {
-        // TODO
-        throw new UnsupportedOperationException("Not supported yet.");
+        appendByte((byte) 0x80); // Header Format
+        appendBytes(new byte[] {0x00, 0x00, 0x00, 0x00});
+        writeDestinationConnectionIdLength(packet);
+        writeDestinationConnectionId(packet);
+        writeSourceConnectionIdLength(packet);
+        writeSourceConnectionId(packet);
+        appendBytes(QuicVersion.VERSION_1.getByteValue());
+        return getAlreadySerialized();
     }
 }
