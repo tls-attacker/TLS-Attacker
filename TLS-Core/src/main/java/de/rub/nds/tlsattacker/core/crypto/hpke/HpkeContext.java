@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.crypto.hpke;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 public abstract class HpkeContext {
 

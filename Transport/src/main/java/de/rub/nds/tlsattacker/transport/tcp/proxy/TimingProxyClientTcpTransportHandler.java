@@ -24,11 +24,18 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         implements ProxyableTransportHandler, TimeableTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    /** Default proxy data port */
+    private static final int DEFAULT_PROXY_DATA_PORT = 4444;
+
+    /** Default proxy control port */
+    private static final int DEFAULT_PROXY_CONTROL_PORT = 5555;
+
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";
-    protected int proxyDataPort = 4444;
+    protected int proxyDataPort = DEFAULT_PROXY_DATA_PORT;
     protected String proxyControlHostName = "127.0.0.1";
-    protected int proxyControlPort = 5555;
+    protected int proxyControlPort = DEFAULT_PROXY_CONTROL_PORT;
     protected Long measurement = null;
 
     public TimingProxyClientTcpTransportHandler(Connection connection) {

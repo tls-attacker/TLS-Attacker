@@ -24,7 +24,7 @@ import java.io.IOException;
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
  * for reading and sends any data over the UDP layer without modifications.
  */
-public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
+public class UdpLayer extends ProtocolLayer<Context, LayerProcessingHint, UdpDataPacket> {
 
     private final Context context;
 

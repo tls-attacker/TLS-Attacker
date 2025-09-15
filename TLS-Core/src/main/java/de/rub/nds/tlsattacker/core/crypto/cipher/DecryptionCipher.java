@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.protocol.exception.CryptoException;
 
-/** */
 public interface DecryptionCipher {
 
     public int getBlocksize();

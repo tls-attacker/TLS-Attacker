@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -115,7 +115,7 @@ public class PseudoRandomFunction {
      * @param seed The Seed
      * @param size The size
      * @return the Prf output
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] compute(
             PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)

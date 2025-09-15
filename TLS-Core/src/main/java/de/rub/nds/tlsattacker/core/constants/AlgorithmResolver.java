@@ -101,7 +101,7 @@ public class AlgorithmResolver {
      * @param suite
      * @return
      */
-    public static X509PublicKeyType[] getSuiteableLeafCertificateKeyType(CipherSuite suite) {
+    public static X509PublicKeyType[] getSuitableLeafCertificateKeyType(CipherSuite suite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = suite.getKeyExchangeAlgorithm();
         if (keyExchangeAlgorithm == null) {
             return X509PublicKeyType.values();
@@ -118,9 +118,7 @@ public class AlgorithmResolver {
             case DH_DSS:
                 return new X509PublicKeyType[] {X509PublicKeyType.DH};
             case ECDH_ECDSA:
-                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case ECDH_RSA:
-                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
@@ -142,7 +140,7 @@ public class AlgorithmResolver {
             case PSK:
             case SRP_SHA:
             case KRB5:
-                return null;
+                return new X509PublicKeyType[] {};
             case ECDH_ECNRA:
             case ECMQV_ECNRA:
                 throw new UnsupportedOperationException("Not Implemented");

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.protocol.exception.CryptoException;
 
 public abstract class BaseCipher implements EncryptionCipher, DecryptionCipher {
 

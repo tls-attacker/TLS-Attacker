@@ -63,6 +63,12 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     @Override
     protected int calculatePadding() {
+        if (context.getConfig().isQuicDoNotPad()) {
+            return 0;
+        }
+        if (packet.getConfiguredPadding() > -1) {
+            return packet.getConfiguredPadding();
+        }
         return Math.max(
                 0,
                 MiscRfcConstants.SMALLEST_MAX_DATAGRAM_SIZE
