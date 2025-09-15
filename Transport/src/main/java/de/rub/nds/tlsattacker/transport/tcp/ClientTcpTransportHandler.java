@@ -22,6 +22,12 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Retry delay in milliseconds when socket connection fails */
+    private static final int SOCKET_RETRY_DELAY_MS = 1000;
+
+    /** Maximum TLS record size (2^16 bytes) used for send buffer */
+    private static final int MAX_TLS_RECORD_SIZE = 65536;
+
     protected String hostname;
     protected long connectionTimeout;
     private boolean retryFailedSocketInitialization = false;
@@ -102,7 +108,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 }
                 LOGGER.warn("Server @{}:{} is not available yet", hostname, dstPort);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(SOCKET_RETRY_DELAY_MS);
                 } catch (InterruptedException ignored) {
                     // Ignore interruption during retry sleep
                 }
@@ -119,8 +125,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         dstPort = socket.getPort();
         LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         socket.setSoTimeout((int) timeout);
-        // 2^16 max record size
-        socket.setSendBufferSize(65536);
+        socket.setSendBufferSize(MAX_TLS_RECORD_SIZE);
     }
 
     @Override
