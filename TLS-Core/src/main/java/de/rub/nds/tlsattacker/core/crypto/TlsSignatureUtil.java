@@ -109,7 +109,7 @@ public class TlsSignatureUtil {
             case RSA_SSA_PSS:
                 if (!(computations instanceof RsaSsaPssSignatureComputations)) {
                     throw new IllegalArgumentException(
-                            "Computations must be of type RsaPssSignatureComputations for "
+                            "Computations must be of type RsaSsaPssSignatureComputations for "
                                     + algorithm);
                 }
                 computeRsaPssSignature(

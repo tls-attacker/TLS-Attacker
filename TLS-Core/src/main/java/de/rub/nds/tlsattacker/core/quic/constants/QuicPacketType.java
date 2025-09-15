@@ -18,7 +18,8 @@ public enum QuicPacketType {
     HANDSHAKE_PACKET(0xe0, 0xf0),
     RETRY_PACKET(0xf0, 0xc0),
     ONE_RTT_PACKET(0x80, 0x80),
-    VERSION_NEGOTIATION(0x20, 0x20);
+    VERSION_NEGOTIATION(0x20, 0x20),
+    STATELESS_RESET(0xfe, 0xfe);
 
     private static final Map<Byte, QuicPacketType> QUIC1_MAP;
     private static final Map<Byte, QuicPacketType> QUIC2_MAP;

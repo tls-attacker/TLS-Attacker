@@ -126,7 +126,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 byte[] pms = wrap(false, wrapped, sboxName);
                 msg.getComputations().setPremasterSecret(pms);
             }
-        } catch (Exception e) {
+        } catch (IOException | GeneralSecurityException e) {
             throw new UnsupportedOperationException("Could not prepare the key agreement!", e);
         }
     }
@@ -237,10 +237,7 @@ public abstract class GOSTClientKeyExchangePreparator
             }
             LOGGER.debug("Wrap result: {}", result);
             return result;
-        } catch (Exception E) {
-            if (E instanceof UnsupportedOperationException) {
-                throw E;
-            }
+        } catch (IllegalArgumentException e) {
             LOGGER.warn("Could not wrap. Using byte[0]");
             return new byte[0];
         }
@@ -307,7 +304,7 @@ public abstract class GOSTClientKeyExchangePreparator
             TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
             msg.setKeyTransportBlob(blob.getEncoded());
             LOGGER.debug("GOST key blob: {}", ASN1Dump.dumpAsString(blob, true));
-        } catch (Exception e) {
+        } catch (IOException e) {
             msg.setKeyTransportBlob(new byte[0]);
             LOGGER.warn("Could not compute correct GOST key blob: using byte[0]");
         }

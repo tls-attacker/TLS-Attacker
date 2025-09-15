@@ -24,7 +24,7 @@ import java.io.IOException;
  * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
  * for reading and sends any data over the TCP socket without modifications.
  */
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContainer> {
+public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStreamContainer> {
 
     private final Context context;
 
@@ -70,6 +70,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
         // There is nothing we can do here to fill up our stream, either there is data in it
         // or not
         byte[] receivedTcpData = getTransportHandler().fetchData();
+
         TcpStreamContainer tcpStreamContainer = new TcpStreamContainer();
         tcpStreamContainer
                 .getParser(context, new ByteArrayInputStream(receivedTcpData))

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
@@ -47,7 +48,7 @@ import org.apache.logging.log4j.Logger;
  * The record layer encrypts and encapsulates payload or handshake messages into TLS records. It
  * sends the records using the lower layer.
  */
-public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
+public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -143,11 +144,10 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
-        int maxDataSize;
-        if (context.getConfig().isRespectPeerRecordSizeLimitations()) {
+        int maxDataSize = context.getConfig().getDefaultMaxRecordData();
+        if (context.getConfig().isRespectPeerRecordSizeLimitations()
+                && context.getChooser().getPeerReceiveLimit() < maxDataSize) {
             maxDataSize = context.getChooser().getPeerReceiveLimit();
-        } else {
-            maxDataSize = context.getConfig().getDefaultMaxRecordData();
         }
         // Generate records
         CleanRecordByteSeperator separator =
@@ -282,6 +282,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } else {
                 nextInputStream = tempStream;
             }
+        } catch (TimeoutException e) {
+            LOGGER.warn(e);
+            setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
             LOGGER.debug("Reached end of stream, cannot parse more records");
@@ -403,6 +406,11 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public LayerProcessingResult<Record> receiveData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            receiveMoreDataForHint(null);
+        } catch (Exception E) {
+            LOGGER.error(E);
+        }
+        return getLayerResult();
     }
 }
