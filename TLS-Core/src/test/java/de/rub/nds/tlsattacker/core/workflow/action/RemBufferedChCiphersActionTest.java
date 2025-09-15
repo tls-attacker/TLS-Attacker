@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -40,7 +40,7 @@ public class RemBufferedChCiphersActionTest extends AbstractActionTest<RemBuffer
         expected.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         expected.add(CipherSuite.SSL_FORTEZZA_KEA_WITH_NULL_SHA);
         expected.add(CipherSuite.TLS_PSK_WITH_RC4_128_SHA);
-        expectedBytes = ArrayConverter.hexStringToByteArray("13041302001C008A");
+        expectedBytes = DataConverter.hexStringToByteArray("13041302001C008A");
         expectedLength = 8;
         TlsContext context = state.getTlsContext();
         context.getConfig().setDefaultClientSupportedCipherSuites(expected);
@@ -62,7 +62,7 @@ public class RemBufferedChCiphersActionTest extends AbstractActionTest<RemBuffer
     }
 
     private void setExpectedFields(String ciphersBytes) {
-        expectedBytes = ArrayConverter.hexStringToByteArray(ciphersBytes);
+        expectedBytes = DataConverter.hexStringToByteArray(ciphersBytes);
         int diff = expectedLength;
         expectedLength = ciphersBytes.length() / 2;
         diff -= expectedLength;

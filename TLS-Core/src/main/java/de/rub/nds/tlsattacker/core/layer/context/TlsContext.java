@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
@@ -156,12 +156,12 @@ public class TlsContext extends LayerContext {
     private byte[] serverRandom;
 
     /** Selected cipher suite. */
-    private CipherSuite selectedCipherSuite = null;
+    private CipherSuite selectedCipherSuite;
 
     /*
      * (Preferred) cipher suite for SSLv2.
      */
-    private SSL2CipherSuite ssl2CipherSuite = null;
+    private SSL2CipherSuite ssl2CipherSuite;
 
     /** Selected compression algorithm. */
     private CompressionMethod selectedCompressionMethod;
@@ -1157,7 +1157,7 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getClientServerRandom() {
-        return ArrayConverter.concatenate(clientRandom, serverRandom);
+        return DataConverter.concatenate(clientRandom, serverRandom);
     }
 
     public byte[] getClearKey() {

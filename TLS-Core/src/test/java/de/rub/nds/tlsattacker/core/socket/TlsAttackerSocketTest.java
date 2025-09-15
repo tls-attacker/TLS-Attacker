@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.socket;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -75,7 +75,7 @@ public class TlsAttackerSocketTest {
         byte[] sentBytes = transportHandler.getSentBytes();
         assertArrayEquals(
                 sentBytes,
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         new byte[] {0x17, 0x03, 0x03, 0x00, 0x04},
                         "test".getBytes(StandardCharsets.US_ASCII)));
     }
@@ -108,7 +108,7 @@ public class TlsAttackerSocketTest {
     @Test
     public void testReceiveString() throws IOException {
         transportHandler.setFetchableByte(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         new byte[] {0x17, 0x03, 0x03, 0x00, 0x04},
                         "test".getBytes(StandardCharsets.US_ASCII)));
         String receivedString = socket.receiveString();

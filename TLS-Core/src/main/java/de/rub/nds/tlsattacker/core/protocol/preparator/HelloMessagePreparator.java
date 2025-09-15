@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -45,8 +45,8 @@ public abstract class HelloMessagePreparator<T extends HelloMessage>
             } else {
                 random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
                 chooser.getContext().getTlsContext().getRandom().nextBytes(random);
-                msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
-                random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
+                msg.setUnixTime(DataConverter.longToUint32Bytes(TimeHelper.getTime()));
+                random = DataConverter.concatenate(msg.getUnixTime().getValue(), random);
                 chooser.getContext().getTlsContext().setServerRandom(random);
             }
         } else {

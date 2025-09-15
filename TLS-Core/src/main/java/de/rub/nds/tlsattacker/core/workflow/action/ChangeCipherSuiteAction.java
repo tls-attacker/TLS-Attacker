@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
@@ -79,10 +79,9 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
                 .updateEncryptionCipher(
                         RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
         LOGGER.info(
-                "Changed CipherSuite from "
-                        + (oldValue == null ? null : oldValue.name())
-                        + " to "
-                        + newValue.name());
+                "Changed CipherSuite from {} to {}",
+                (oldValue == null ? null : oldValue.name()),
+                newValue.name());
         setExecuted(true);
     }
 

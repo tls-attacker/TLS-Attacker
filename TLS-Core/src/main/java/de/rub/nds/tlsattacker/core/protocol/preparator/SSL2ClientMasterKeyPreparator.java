@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
@@ -133,7 +133,7 @@ public class SSL2ClientMasterKeyPreparator
     protected void preparePlainPaddedPremasterSecret(SSL2ClientMasterKeyMessage msg) {
         msg.getComputations()
                 .setPlainPaddedPremasterSecret(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 new byte[] {0x00, 0x02},
                                 padding,
                                 new byte[] {0x00},
@@ -175,7 +175,7 @@ public class SSL2ClientMasterKeyPreparator
             padding = new byte[0]; // randomByteLength could be negative
         }
         chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
-        ArrayConverter.makeArrayNonZero(padding);
+        DataConverter.makeArrayNonZero(padding);
         preparePadding(message);
 
         preparePlainPaddedPremasterSecret(message);
@@ -188,7 +188,7 @@ public class SSL2ClientMasterKeyPreparator
                         chooser.getServerX509Chooser().getSubjectRsaPublicExponent(),
                         chooser.getServerX509Chooser().getSubjectRsaModulus());
         encryptedPremasterSecret =
-                ArrayConverter.bigIntegerToByteArray(
+                DataConverter.bigIntegerToByteArray(
                         biEncrypted,
                         chooser.getServerX509Chooser().getSubjectRsaModulus().bitLength()
                                 / Bits.IN_A_BYTE,

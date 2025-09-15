@@ -26,16 +26,16 @@ public class ChangeCipherSuiteActionTest extends AbstractChangeActionTest<Change
     @Test
     @Override
     public void testGetNewValue() {
-        assertEquals(action.getNewValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
+        assertEquals(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256, action.getNewValue());
     }
 
     /** Test of setNewValue method, of class ChangeCipherSuiteAction. */
     @Test
     @Override
     public void testSetNewValue() {
-        assertEquals(action.getNewValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
+        assertEquals(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256, action.getNewValue());
         action.setNewValue(CipherSuite.TLS_FALLBACK_SCSV);
-        assertEquals(action.getNewValue(), CipherSuite.TLS_FALLBACK_SCSV);
+        assertEquals(CipherSuite.TLS_FALLBACK_SCSV, action.getNewValue());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ChangeCipherSuiteActionTest extends AbstractChangeActionTest<Change
     @Override
     public void testGetOldValue() {
         action.execute(state);
-        assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        assertEquals(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA, action.getOldValue());
     }
 
     /** Test of execute method, of class ChangeCipherSuiteAction. */

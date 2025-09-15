@@ -54,16 +54,16 @@ public class ChangeContextValueActionTest
     @Test
     @Override
     public void testSetNewValue() {
-        assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
+        assertEquals(ProtocolVersion.SSL2, action.getNewValue());
         action.setNewValue(ProtocolVersion.TLS11);
-        assertEquals(action.getNewValue(), ProtocolVersion.TLS11);
+        assertEquals(ProtocolVersion.TLS11, action.getNewValue());
     }
 
     /** Test of getNewValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testGetNewValue() {
-        assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
+        assertEquals(ProtocolVersion.SSL2, action.getNewValue());
     }
 
     /** Test of getOldValue method, of class ChangeCompressionAction. */
@@ -72,7 +72,7 @@ public class ChangeContextValueActionTest
     public void testGetOldValue() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         action.execute(state);
-        assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
+        assertEquals(ProtocolVersion.TLS12, action.getOldValue());
     }
 
     /** Test of execute method, of class ChangeCompressionAction. */
@@ -80,9 +80,9 @@ public class ChangeContextValueActionTest
     public void testExecute() throws Exception {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         super.testExecute();
-        assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
-        assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
-        assertEquals(context.getSelectedProtocolVersion(), ProtocolVersion.SSL2);
+        assertEquals(ProtocolVersion.TLS12, action.getOldValue());
+        assertEquals(ProtocolVersion.SSL2, action.getNewValue());
+        assertEquals(ProtocolVersion.SSL2, context.getSelectedProtocolVersion());
     }
 
     @Test

@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.SuppressingFalseBooleanAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -88,7 +88,7 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
         asPlanned = true;
         if (Boolean.TRUE.equals(updateMasterSecret)) {
             byte[] clientServerRandom =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             tlsContext.getChooser().getClientRandom(),
                             tlsContext.getChooser().getServerRandom());
             try {

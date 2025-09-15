@@ -12,14 +12,19 @@ import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "GenericReceive")
 public class GenericReceiveAction extends CommonReceiveAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public GenericReceiveAction() {
         super();
@@ -42,5 +47,18 @@ public class GenericReceiveAction extends CommonReceiveAction {
         configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.MESSAGE));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
+    }
+
+    @Override
+    public String toString() {
+        String string =
+                getClass().getSimpleName() + ": " + (isExecuted() ? "\n" : "(not executed)\n");
+        if (isExecuted()) {
+            string +=
+                    "\n\tReceived: "
+                            + LogPrinter.toHumanReadableMultiLine(
+                                    getLayerStackProcessingResult(), LOGGER.getLevel());
+        }
+        return string;
     }
 }

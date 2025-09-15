@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -47,7 +47,7 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends Parser<T>
         } else {
             // Parse remaining bytes
             length =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             firstTwoBytes,
                             parseByteArrayField(
                                     SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));

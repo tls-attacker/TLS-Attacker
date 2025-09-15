@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -89,20 +89,20 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected byte[] generateToBeSigned() {
         byte[] dhParams =
-                ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(
+                DataConverter.concatenate(
+                        DataConverter.intToBytes(
                                 msg.getModulusLength().getValue(),
                                 HandshakeByteLength.DH_MODULUS_LENGTH),
                         msg.getModulus().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getGeneratorLength().getValue(),
                                 HandshakeByteLength.DH_GENERATOR_LENGTH),
                         msg.getGenerator().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getPublicKeyLength().getValue(),
                                 HandshakeByteLength.DH_PUBLICKEY_LENGTH),
                         msg.getPublicKey().getValue());
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getKeyExchangeComputations().getClientServerRandom().getValue(), dhParams);
     }
 
@@ -138,7 +138,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         } catch (Exception e) {
             LOGGER.warn("Could not compute public key", e);
         }
-        msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(publicKey));
+        msg.setPublicKey(DataConverter.bigIntegerToByteArray(publicKey));
         LOGGER.debug("PublicKey: {}", msg.getPublicKey().getValue());
     }
 
@@ -174,7 +174,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     protected void prepareClientServerRandom(T msg) {
         msg.getKeyExchangeComputations()
                 .setClientServerRandom(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",

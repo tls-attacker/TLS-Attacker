@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.exception.ParserException;
@@ -237,7 +237,7 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public byte[] getByteValue() {
-        return ArrayConverter.intToBytes(value, 2);
+        return DataConverter.intToBytes(value, 2);
     }
 
     public int getValue() {

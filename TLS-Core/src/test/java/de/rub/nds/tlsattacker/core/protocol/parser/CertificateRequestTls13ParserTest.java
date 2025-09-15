@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -44,12 +44,12 @@ public class CertificateRequestTls13ParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("0d00000401020000"),
+                        DataConverter.hexStringToByteArray("0d00000401020000"),
                         List.of(
                                 HandshakeMessageType.CERTIFICATE_REQUEST.getValue(),
                                 4,
                                 1,
-                                ArrayConverter.hexStringToByteArray("02"),
+                                DataConverter.hexStringToByteArray("02"),
                                 0,
                                 new byte[0])));
     }

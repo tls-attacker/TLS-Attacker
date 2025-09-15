@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
@@ -78,7 +78,7 @@ public class HKDFunction {
      * @param salt The Salt
      * @param ikm The IKM
      * @return The HKDF-Extracted output
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] extract(HKDFAlgorithm hkdfAlgorithm, byte[] salt, byte[] ikm)
             throws CryptoException {
@@ -121,7 +121,7 @@ public class HKDFunction {
      * @param info The info
      * @param outLen The output Length
      * @return The expanded bytes
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] expand(HKDFAlgorithm hkdfAlgorithm, byte[] prk, byte[] info, int outLen)
             throws CryptoException {
@@ -141,13 +141,13 @@ public class HKDFunction {
                         hmac.update(info, 0, info.length);
                         if (Integer.toHexString(i).length() % 2 != 0) {
                             hmac.update(
-                                    ArrayConverter.hexStringToByteArray(
+                                    DataConverter.hexStringToByteArray(
                                             "0" + Integer.toHexString(i)),
                                     0,
                                     Integer.toHexString(i).length());
                         } else {
                             hmac.update(
-                                    ArrayConverter.hexStringToByteArray(Integer.toHexString(i)),
+                                    DataConverter.hexStringToByteArray(Integer.toHexString(i)),
                                     0,
                                     Integer.toHexString(i).length());
                         }
@@ -169,10 +169,10 @@ public class HKDFunction {
                         mac.update(info);
                         if (Integer.toHexString(i).length() % 2 != 0) {
                             mac.update(
-                                    ArrayConverter.hexStringToByteArray(
+                                    DataConverter.hexStringToByteArray(
                                             "0" + Integer.toHexString(i)));
                         } else {
-                            mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
+                            mac.update(DataConverter.hexStringToByteArray(Integer.toHexString(i)));
                         }
                         ti = mac.doFinal();
                         if (ti.length == 0) {
@@ -206,11 +206,11 @@ public class HKDFunction {
         int labelLength = label.getBytes(StandardCharsets.US_ASCII).length;
         int hashValueLength = hashValue.length;
         byte[] result =
-                ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(outLen, 2),
-                        ArrayConverter.intToBytes(labelLength, 1),
+                DataConverter.concatenate(
+                        DataConverter.intToBytes(outLen, 2),
+                        DataConverter.intToBytes(labelLength, 1),
                         label.getBytes(StandardCharsets.US_ASCII),
-                        ArrayConverter.intToBytes(hashValueLength, 1),
+                        DataConverter.intToBytes(hashValueLength, 1),
                         hashValue);
         return result;
     }
@@ -225,7 +225,7 @@ public class HKDFunction {
      * @param toHash The data to hash
      * @param protocolVersion The protocol version
      * @return The derivedSecret
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] deriveSecret(
             HKDFAlgorithm hkdfAlgorithm,
@@ -280,7 +280,7 @@ public class HKDFunction {
      * @param outLen The output length
      * @param protocolVersion The protocol version
      * @return The expanded Label bytes
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] expandLabel(
             HKDFAlgorithm hkdfAlgorithm,

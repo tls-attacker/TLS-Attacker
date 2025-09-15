@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
@@ -169,7 +169,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
         setFetchableData(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         new byte[] {
                             (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x20
                         },

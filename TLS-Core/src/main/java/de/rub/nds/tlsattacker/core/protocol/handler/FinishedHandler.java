@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.AdjustmentException;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
@@ -131,7 +131,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             digestAlgo.getJavaName(),
                             tlsContext.getChooser().getHandshakeSecret(),
                             HKDFunction.DERIVED,
-                            ArrayConverter.hexStringToByteArray(""),
+                            DataConverter.hexStringToByteArray(""),
                             tlsContext.getChooser().getSelectedProtocolVersion());
             byte[] masterSecret =
                     HKDFunction.extract(hkdfAlgorithm, saltMasterSecret, new byte[macLength]);

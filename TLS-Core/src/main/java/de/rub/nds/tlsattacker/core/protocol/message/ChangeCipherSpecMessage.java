@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
@@ -51,7 +51,7 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
         sb.append("ChangeCipherSpecMessage:");
         sb.append("\n  CCS ProtocolType: ");
         if (ccsProtocolType != null && ccsProtocolType.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(ccsProtocolType.getValue()));
+            sb.append(DataConverter.bytesToHexString(ccsProtocolType.getValue()));
         } else {
             sb.append("null");
         }

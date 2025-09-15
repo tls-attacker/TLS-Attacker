@@ -13,7 +13,8 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.modifiablevariable.util.SuppressingTrueBooleanAdapter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
 
 @XmlSeeAlso({
@@ -90,10 +92,21 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
 
     @ModifiableVariableProperty private ModifiableByteArray extensionContent;
 
+    @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
+    private Boolean shouldPrepare = null;
+
     public ExtensionMessage() {}
 
     public ExtensionMessage(ExtensionType type) {
         this.extensionTypeConstant = type;
+    }
+
+    public boolean shouldPrepare() {
+        return shouldPrepare;
+    }
+
+    public void setShouldPrepare(boolean shouldPrepare) {
+        this.shouldPrepare = shouldPrepare;
     }
 
     public ModifiableByteArray getExtensionType() {
@@ -143,7 +156,7 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
             sb.append("\n    Extension type: null");
         } else {
             sb.append("\n    Extension type: ")
-                    .append(ArrayConverter.bytesToHexString(extensionType.getValue()));
+                    .append(DataConverter.bytesToHexString(extensionType.getValue()));
         }
         if (extensionLength == null || extensionLength.getValue() == null) {
             sb.append("\n    Extension length: null");

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension.quic;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameterEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
@@ -45,12 +45,11 @@ public class QuicTransportParametersExtensionsPreparator
         quicTransportEntrys.add(
                 new QuicTransportParameterEntry(
                         QuicTransportParameterEntryTypes.INITIAL_SOURCE_CONNECTION_ID,
-                        ArrayConverter.bytesToHexString(
+                        DataConverter.bytesToRawHexString(
                                         chooser.getContext()
                                                 .getQuicContext()
                                                 .getSourceConnectionId())
-                                .toLowerCase()
-                                .replaceAll("\\s", "")));
+                                .toLowerCase()));
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
 
         for (QuicTransportParameterEntry parameterEntry : quicTransportEntrys) {

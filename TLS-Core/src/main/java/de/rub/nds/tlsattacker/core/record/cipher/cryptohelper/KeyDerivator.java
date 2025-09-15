@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -22,7 +23,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
@@ -203,7 +203,7 @@ public class KeyDerivator {
         CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
         byte[] seed =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         tlsContext.getChooser().getServerRandom(),
                         tlsContext.getChooser().getClientRandom());
 
@@ -245,7 +245,7 @@ public class KeyDerivator {
             return;
         }
 
-        byte[] clientAndServerRandom = ArrayConverter.concatenate(clientRandom, serverRandom);
+        byte[] clientAndServerRandom = DataConverter.concatenate(clientRandom, serverRandom);
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
         int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
 

@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
     public QuicTransportParameterEntry(
             QuicTransportParameterEntryTypes entryType, String entryValue) {
         this.entryType = entryType;
-        this.setEntryValue(ArrayConverter.hexStringToByteArray(entryValue));
+        this.setEntryValue(DataConverter.hexStringToByteArray(entryValue));
         this.setEntryLength((byte) this.entryValue.getValue().length);
     }
 
@@ -85,7 +85,7 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
             case ORIGINAL_DESTINATION_CONNECTION_ID:
             case INITIAL_SOURCE_CONNECTION_ID:
             case RETRY_SOURCE_CONNECTION_ID:
-                return ArrayConverter.bytesToHexString(this.entryValue, false);
+                return DataConverter.bytesToHexString(this.entryValue, false);
             case MAX_IDLE_TIMEOUT:
             case MAX_UDP_PAYLOAD_SIZE:
             case INITIAL_MAX_DATA:
@@ -107,7 +107,7 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
                                 this.entryValue.getValue()))
                         .toString();
             default:
-                return ArrayConverter.bytesToHexString(this.entryValue, false);
+                return DataConverter.bytesToHexString(this.entryValue, false);
         }
     }
 

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import java.util.List;
@@ -37,13 +37,13 @@ public class PSKKeyExchangeModesExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("002D0003020001"),
+                        DataConverter.hexStringToByteArray("002D0003020001"),
                         List.of(),
                         ExtensionType.PSK_KEY_EXCHANGE_MODES,
                         3,
                         List.of(2, new byte[] {0x00, 0x01})),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("002D000100"),
+                        DataConverter.hexStringToByteArray("002D000100"),
                         List.of(),
                         ExtensionType.PSK_KEY_EXCHANGE_MODES,
                         1,

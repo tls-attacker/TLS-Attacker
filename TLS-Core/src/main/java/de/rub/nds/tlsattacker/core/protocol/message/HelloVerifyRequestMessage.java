@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
@@ -102,7 +102,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         sb.append("HelloVerifyRequestMessage:");
         sb.append("\n  ProtocolVersion: ");
         if (protocolVersion != null && protocolVersion.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
+            sb.append(DataConverter.bytesToHexString(protocolVersion.getValue()));
         } else {
             sb.append("null");
         }
@@ -114,7 +114,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         }
         sb.append("\n  Cookie: ");
         if (cookie != null && cookie.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(cookie.getValue()));
+            sb.append(DataConverter.bytesToHexString(cookie.getValue()));
         } else {
             sb.append("null");
         }

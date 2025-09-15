@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -18,7 +19,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -157,101 +157,101 @@ public class RecordAEADCipherTest {
                         Mode.ENCRYPT_CLIENT,
                         CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray("FFEEDDCC"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray("FFEEDDCC"),
+                        DataConverter.hexStringToByteArray(
                                 "1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
                         new BigInteger("0"),
-                        ArrayConverter.hexStringToByteArray("0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("0000000000000000"),
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray(
                                 "11223344556677889900AABB0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
-                        ArrayConverter.hexStringToByteArray("00000000000000001603030028"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
+                        DataConverter.hexStringToByteArray("00000000000000001603030028"),
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0")),
                 Arguments.of(
                         Mode.ENCRYPT_SERVER,
                         CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray("FFEEDDCC"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray("FFEEDDCC"),
+                        DataConverter.hexStringToByteArray(
                                 "1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
                         new BigInteger("0"),
-                        ArrayConverter.hexStringToByteArray("0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("0000000000000000"),
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray(
                                 "11223344556677889900AABB0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
-                        ArrayConverter.hexStringToByteArray("00000000000000001603030028"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
+                        DataConverter.hexStringToByteArray("00000000000000001603030028"),
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0")),
                 Arguments.of(
                         Mode.DECRYPT_CLIENT,
                         CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray("FFEEDDCC"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray("FFEEDDCC"),
+                        DataConverter.hexStringToByteArray(
                                 "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0"),
                         new BigInteger("0"),
-                        ArrayConverter.hexStringToByteArray("0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("0000000000000000"),
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray(
                                 "11223344556677889900AABB0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
-                        ArrayConverter.hexStringToByteArray("00000000000000001603030028"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
+                        DataConverter.hexStringToByteArray("00000000000000001603030028"),
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0")),
                 Arguments.of(
                         Mode.DECRYPT_SERVER,
                         CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray("FFEEDDCC"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray("FFEEDDCC"),
+                        DataConverter.hexStringToByteArray(
                                 "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0"),
                         new BigInteger("0"),
-                        ArrayConverter.hexStringToByteArray("0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("11223344556677889900AABB"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("0000000000000000"),
+                        DataConverter.hexStringToByteArray("11223344556677889900AABB"),
+                        DataConverter.hexStringToByteArray(
                                 "11223344556677889900AABB0000000000000000"),
-                        ArrayConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
-                        ArrayConverter.hexStringToByteArray("00000000000000001603030028"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("DEA10FBB5AF87DF49E75EA206892A1A0"),
+                        DataConverter.hexStringToByteArray("00000000000000001603030028"),
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "77D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "000000000000000077D85417660273BBA5F220778CC117ECB7AAC7F46B0E07A8679215363031E912DA4494F0E8BEA216DEA10FBB5AF87DF49E75EA206892A1A0")),
                 // Tests for TLS 1.3
 
@@ -262,93 +262,93 @@ public class RecordAEADCipherTest {
                         Mode.ENCRYPT_CLIENT,
                         CipherSuite.TLS_AES_128_CCM_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F3031323334353637"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7")),
                 Arguments.of(
                         Mode.ENCRYPT_SERVER,
                         CipherSuite.TLS_AES_128_CCM_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F3031323334353637"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7")),
                 Arguments.of(
                         Mode.DECRYPT_CLIENT,
                         CipherSuite.TLS_AES_128_CCM_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7")),
                 Arguments.of(
                         Mode.DECRYPT_SERVER,
                         CipherSuite.TLS_AES_128_CCM_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("60E12062EC2E1A6D828D8048ECBFD0E7"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7")),
 
                 // Ciphersuite TLS_AES_128_CCM_8_SHA256
@@ -357,93 +357,93 @@ public class RecordAEADCipherTest {
                         Mode.ENCRYPT_SERVER,
                         CipherSuite.TLS_AES_128_CCM_8_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F3031323334353637"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("5C2F7623859ABBD3"),
-                        ArrayConverter.hexStringToByteArray("1703030021"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("5C2F7623859ABBD3"),
+                        DataConverter.hexStringToByteArray("1703030021"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A5C2F7623859ABBD3")),
                 Arguments.of(
                         Mode.ENCRYPT_CLIENT,
                         CipherSuite.TLS_AES_128_CCM_8_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F3031323334353637"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("5C2F7623859ABBD3"),
-                        ArrayConverter.hexStringToByteArray("1703030021"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("5C2F7623859ABBD3"),
+                        DataConverter.hexStringToByteArray("1703030021"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A5C2F7623859ABBD3")),
                 Arguments.of(
                         Mode.DECRYPT_SERVER,
                         CipherSuite.TLS_AES_128_CCM_8_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A5C2F7623859ABBD3"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("5C2F7623859ABBD3"),
-                        ArrayConverter.hexStringToByteArray("1703030021"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("5C2F7623859ABBD3"),
+                        DataConverter.hexStringToByteArray("1703030021"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A5C2F7623859ABBD3")),
                 Arguments.of(
                         Mode.DECRYPT_CLIENT,
                         CipherSuite.TLS_AES_128_CCM_8_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("1122334455667788"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("1122334455667788"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A5C2F7623859ABBD3"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("5C2F7623859ABBD3"),
-                        ArrayConverter.hexStringToByteArray("1703030021"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("5C2F7623859ABBD3"),
+                        DataConverter.hexStringToByteArray("1703030021"),
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A5C2F7623859ABBD3")),
 
                 // Ciphersuite TLS_CHACHA20_POLY1305_SHA256
@@ -452,93 +452,93 @@ public class RecordAEADCipherTest {
                         Mode.ENCRYPT_CLIENT,
                         CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F3031323334353637"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE576CC64629BC0C69028083D74747AF636")),
                 Arguments.of(
                         Mode.ENCRYPT_SERVER,
                         CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F3031323334353637"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE576CC64629BC0C69028083D74747AF636")),
                 Arguments.of(
                         Mode.DECRYPT_CLIENT,
                         CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE576CC64629BC0C69028083D74747AF636"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE576CC64629BC0C69028083D74747AF636")),
                 Arguments.of(
                         Mode.DECRYPT_SERVER,
                         CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
                         ProtocolVersion.TLS13,
-                        ArrayConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray("404142434445464748494A4B4C4D4E4F"),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE576CC64629BC0C69028083D74747AF636"),
                         new BigInteger("1447087143713839643"),
-                        ArrayConverter.hexStringToByteArray(""),
-                        ArrayConverter.hexStringToByteArray("10111213"),
-                        ArrayConverter.hexStringToByteArray("101112131415161718191A1B"),
-                        ArrayConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
-                        ArrayConverter.hexStringToByteArray("1703030029"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(""),
+                        DataConverter.hexStringToByteArray("10111213"),
+                        DataConverter.hexStringToByteArray("101112131415161718191A1B"),
+                        DataConverter.hexStringToByteArray("76CC64629BC0C69028083D74747AF636"),
+                        DataConverter.hexStringToByteArray("1703030029"),
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "202122232425262728292A2B2C2D2E2F303132333435363716"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE5"),
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "20F8A7B1DE3717873FD84E55F0F6F827D300F5D6BD72135BE576CC64629BC0C69028083D74747AF636")));
     }
 
@@ -622,7 +622,7 @@ public class RecordAEADCipherTest {
             assertNull(record.getComputations().getMacValid());
 
             assertArrayEquals(
-                    ArrayConverter.hexStringToByteArray(""),
+                    DataConverter.hexStringToByteArray(""),
                     record.getComputations().getPadding().getValue());
             assertNull(record.getComputations().getPaddingValid());
 

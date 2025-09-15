@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
@@ -156,7 +156,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         sb.append("message length: ").append(ch.getLength().getValue());
         sb.append("\nextension bytes length: ").append(ch.getExtensionBytes().getValue().length);
         sb.append("\nextension bytes:");
-        sb.append(ArrayConverter.bytesToHexString(ch.getExtensionBytes().getValue()));
+        sb.append(DataConverter.bytesToRawHexString(ch.getExtensionBytes().getValue()));
         sb.append("\nreadable extension list:\n");
         for (ExtensionMessage ext : ch.getExtensions()) {
             sb.append(ext.getExtensionTypeConstant());
@@ -196,9 +196,6 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
     }
 
     private void initEmptyLists() {
-        if (removeExtensions == null) {
-            removeExtensions = new ArrayList<>();
-        }
         if (removeExtensions == null) {
             removeExtensions = new ArrayList<>();
         }

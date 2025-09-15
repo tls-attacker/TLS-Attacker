@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
@@ -34,19 +34,19 @@ public class PskClientKeyExchangePreparatorTest
         // prepare context
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setClientRandom(DataConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(DataConverter.hexStringToByteArray(RANDOM));
         preparator.prepareHandshakeMessageContents();
 
         // Tests
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00040000000000041a2b3c4d"),
+                DataConverter.hexStringToByteArray("00040000000000041a2b3c4d"),
                 message.getComputations().getPremasterSecret().getValue());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
     }
 
@@ -59,19 +59,19 @@ public class PskClientKeyExchangePreparatorTest
         // prepare context
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-        tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
-        tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setClientRandom(DataConverter.hexStringToByteArray(RANDOM));
+        tlsContext.setServerRandom(DataConverter.hexStringToByteArray(RANDOM));
         preparator.prepareHandshakeMessageContents();
 
         // Tests
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("00000000"),
+                DataConverter.hexStringToByteArray("00000000"),
                 message.getComputations().getPremasterSecret().getValue());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-                ArrayConverter.concatenate(
-                        ArrayConverter.hexStringToByteArray(RANDOM),
-                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                DataConverter.concatenate(
+                        DataConverter.hexStringToByteArray(RANDOM),
+                        DataConverter.hexStringToByteArray(RANDOM)),
                 message.getComputations().getClientServerRandom().getValue());
     }
 }

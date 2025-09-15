@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeSenderContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
@@ -151,7 +151,7 @@ public class EncryptedClientHelloPreparator
                         echConfig.getKem());
         // RFC 9180, Section 6.1
         byte[] info =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         "tls ech".getBytes(),
                         new byte[] {0x00},
                         chooser.getEchConfig().getEchConfigBytes());
@@ -253,7 +253,7 @@ public class EncryptedClientHelloPreparator
         LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         clientHelloInnerValue, msg.getEncodedClientHelloInnerPadding().getValue());
         LOGGER.debug("Plaintext: {}", plaintext);
         try {

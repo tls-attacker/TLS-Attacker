@@ -32,7 +32,8 @@ public class IgnoreLayerConfiguration<Container extends DataContainer>
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
         return false;
     }
 

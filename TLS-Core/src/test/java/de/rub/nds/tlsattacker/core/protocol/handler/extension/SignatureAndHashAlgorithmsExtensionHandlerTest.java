@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -35,7 +35,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest
         SignatureAndHashAlgorithmsExtensionMessage msg =
                 new SignatureAndHashAlgorithmsExtensionMessage();
         byte[] algoBytes =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         SignatureAndHashAlgorithm.DSA_SHA1.getByteValue(),
                         SignatureAndHashAlgorithm.RSA_SHA512.getByteValue());
         msg.setSignatureAndHashAlgorithms(algoBytes);

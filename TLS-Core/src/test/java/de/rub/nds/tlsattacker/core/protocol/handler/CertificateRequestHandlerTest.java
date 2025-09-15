@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -40,8 +40,7 @@ public class CertificateRequestHandlerTest
         message.setSignatureHashAlgorithms(new byte[] {0x03, 0x01, 0x01, 0x03});
         handler.adjustContext(message);
         assertArrayEquals(
-                tlsContext.getDistinguishedNames(),
-                ArrayConverter.hexStringToByteArray("00010203"));
+                tlsContext.getDistinguishedNames(), DataConverter.hexStringToByteArray("00010203"));
         assertEquals(6, tlsContext.getClientCertificateTypes().size());
         assertTrue(
                 tlsContext
@@ -80,7 +79,7 @@ public class CertificateRequestHandlerTest
         handler.adjustContext(message);
         assertArrayEquals(
                 tlsContext.getCertificateRequestContext(),
-                ArrayConverter.hexStringToByteArray("010203040506"));
+                DataConverter.hexStringToByteArray("010203040506"));
         assertEquals(2, tlsContext.getServerSupportedSignatureAndHashAlgorithms().size());
     }
 

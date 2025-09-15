@@ -8,11 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.exception.AdjustmentException;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -28,8 +30,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -366,13 +366,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             .mod(curve.getBasePointOrder());
         }
         LOGGER.debug("Element: {}", () -> PointFormatter.toRawFormat(keySharePoint));
-        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
+        LOGGER.debug("Scalar: {}", () -> DataConverter.bigIntegerToByteArray(scalar));
 
         Point sharedSecret =
                 curve.mult(
                         privateKeyScalar,
                         curve.add(curve.mult(scalar, passwordElement), keySharePoint));
-        return ArrayConverter.bigIntegerToByteArray(
+        return DataConverter.bigIntegerToByteArray(
                 sharedSecret.getFieldX().getData(), curveSize / Bits.IN_A_BYTE, true);
     }
 
@@ -552,7 +552,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             tlsContext
                     .getDigest()
                     .append(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     clientHelloHash.length,
                                     HandshakeByteLength.MESSAGE_LENGTH_FIELD));
             tlsContext.getDigest().append(clientHelloHash);

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -52,16 +52,16 @@ public class PWDClientKeyExchangeParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "100000634104a0c69b450b85aee39f646b6e64d3c108395f4ba1192dbfebf0dec5b189131f595dd4bacdbdd6838d9219fd542991b2c0b0e4c446bfe58f3c0339f756e89efda020669244aa67cb00ea72c09b84a9db5bb824fc3982428fcd406963ae080e677a48"),
                         Arrays.asList(
                                 HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(),
                                 99,
                                 65,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "04a0c69b450b85aee39f646b6e64d3c108395f4ba1192dbfebf0dec5b189131f595dd4bacdbdd6838d9219fd542991b2c0b0e4c446bfe58f3c0339f756e89efda0"),
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "669244aa67cb00ea72c09b84a9db5bb824fc3982428fcd406963ae080e677a48"),
                                 null,
                                 null)));

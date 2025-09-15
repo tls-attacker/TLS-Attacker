@@ -25,6 +25,11 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
 
     private Boolean opened = false;
 
+    private boolean throwExceptionOnSend = false;
+    private boolean throwExceptionOnReceive = false;
+    private IOException sendException = new IOException("Simulated send failure");
+    private IOException receiveException = new IOException("Simulated receive failure");
+
     public FakeTcpTransportHandler(ConnectionEndType type) {
         super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
@@ -46,6 +51,9 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
 
     @Override
     public byte[] fetchData() throws IOException {
+        if (throwExceptionOnReceive) {
+            throw receiveException;
+        }
         byte[] data = new byte[inputStream.available()];
         inputStream.read(data);
         return data;
@@ -53,6 +61,9 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
 
     @Override
     public void sendData(byte[] data) throws IOException {
+        if (throwExceptionOnSend) {
+            throw sendException;
+        }
         outputStream.write(data);
     }
 
@@ -114,5 +125,21 @@ public class FakeTcpTransportHandler extends TcpTransportHandler implements Fake
     @Override
     public void resetOutputStream() {
         outputStream = new SilentByteArrayOutputStream();
+    }
+
+    public void setThrowExceptionOnSend(boolean throwException) {
+        this.throwExceptionOnSend = throwException;
+    }
+
+    public void setThrowExceptionOnReceive(boolean throwException) {
+        this.throwExceptionOnReceive = throwException;
+    }
+
+    public void setSendException(IOException exception) {
+        this.sendException = exception;
+    }
+
+    public void setReceiveException(IOException exception) {
+        this.receiveException = exception;
     }
 }

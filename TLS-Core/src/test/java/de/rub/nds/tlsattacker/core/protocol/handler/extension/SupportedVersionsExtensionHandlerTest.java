@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public class SupportedVersionsExtensionHandlerTest
     public void testadjustTLSExtensionContext() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
         handler.adjustTLSExtensionContext(msg);
         assertEquals(2, tlsContext.getClientSupportedProtocolVersions().size());

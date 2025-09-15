@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,19 +30,19 @@ public class CipherSuiteTest {
     /** Test of getCipherSuites method, of class CipherSuite. size of Array % 2 == 0 */
     @Test
     public void testPrepareEvenLength() {
-        byte[] values = ArrayConverter.hexStringToByteArray("00010002");
+        byte[] values = DataConverter.hexStringToByteArray("00010002");
         List<CipherSuite> cipherSuites = CipherSuite.getCipherSuites(values);
         assertEquals(2, cipherSuites.size());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0001"), cipherSuites.get(0).getByteValue());
+                DataConverter.hexStringToByteArray("0001"), cipherSuites.get(0).getByteValue());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("0002"), cipherSuites.get(1).getByteValue());
+                DataConverter.hexStringToByteArray("0002"), cipherSuites.get(1).getByteValue());
     }
 
     /** Test of getCipherSuites method, of class CipherSuite. size of Array % 2 != 0 */
     @Test
     public void testPrepareOddLengthThrows() {
-        byte[] values = ArrayConverter.hexStringToByteArray("0001000200");
+        byte[] values = DataConverter.hexStringToByteArray("0001000200");
         assertThrows(UnknownCipherSuiteException.class, () -> CipherSuite.getCipherSuites(values));
     }
 
