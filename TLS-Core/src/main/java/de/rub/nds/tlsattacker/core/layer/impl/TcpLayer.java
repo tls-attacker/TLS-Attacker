@@ -88,7 +88,7 @@ public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStr
 
     @Override
     public LayerProcessingResult<TcpStreamContainer> receiveData() {
-        return new LayerProcessingResult<TcpStreamContainer>(null, getLayerType(), true);
+        return new LayerProcessingResult<>(null, getLayerType(), true);
     }
 
     private TcpTransportHandler getTransportHandler() {
