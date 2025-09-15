@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.crypto;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +39,7 @@ public class PseudoRandomFunctionTest {
     /**
      * Test of compute method, of class PseudoRandomFunction.
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testComputeForTls12() throws CryptoException {
@@ -94,7 +94,7 @@ public class PseudoRandomFunctionTest {
     /**
      * Test of compute method, of class PseudoRandomFunction.
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testComputeForTls11() throws CryptoException {

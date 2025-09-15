@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.task;
 
-import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.protocol.exception.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;

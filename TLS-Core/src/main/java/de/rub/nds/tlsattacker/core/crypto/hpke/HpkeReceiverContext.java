@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.hpke;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 

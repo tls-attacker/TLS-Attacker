@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.handler.packet;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -15,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;

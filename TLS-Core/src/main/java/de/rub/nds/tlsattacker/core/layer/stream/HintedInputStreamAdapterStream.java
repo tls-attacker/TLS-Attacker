@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.layer.stream;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * HintedInputStream, that wraps around another Stream (used in the {@link
@@ -18,6 +20,8 @@ import java.io.InputStream;
  * de.rub.nds.tlsattacker.core.layer.impl.UdpLayer}
  */
 public class HintedInputStreamAdapterStream extends HintedInputStream {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private InputStream stream;
 
@@ -38,6 +42,7 @@ public class HintedInputStreamAdapterStream extends HintedInputStream {
 
     @Override
     public int available() throws IOException {
+        LOGGER.trace("Checking available bytes in stream");
         return stream.available();
     }
 

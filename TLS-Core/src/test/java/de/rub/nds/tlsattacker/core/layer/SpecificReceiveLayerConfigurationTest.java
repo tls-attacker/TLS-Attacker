@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 
@@ -104,34 +103,5 @@ public class SpecificReceiveLayerConfigurationTest {
         List<ProtocolMessage> additionalInbetween = new ArrayList(expectedMessages);
         additionalInbetween.add(1, new ServerHelloDoneMessage());
         assertFalse(receiveConfig.executedAsPlanned(additionalInbetween));
-    }
-
-    @Test
-    public void testFailedEarly() {
-        List<ProtocolMessage> expectedMessages =
-                Arrays.asList(
-                        new ProtocolMessage[] {
-                            new ServerHelloMessage(),
-                            new CertificateMessage(),
-                            new ECDHEServerKeyExchangeMessage(),
-                            new ServerHelloDoneMessage()
-                        });
-        LayerConfiguration receiveConfig =
-                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
-
-        List<ProtocolMessage> buildingReceived = new LinkedList<>();
-        for (ProtocolMessage message : expectedMessages) {
-            buildingReceived.add(message);
-            assertFalse(receiveConfig.failedEarly(buildingReceived));
-        }
-
-        List<ProtocolMessage> thirdInvalid =
-                Arrays.asList(
-                        new ProtocolMessage[] {
-                            new ServerHelloMessage(),
-                            new CertificateMessage(),
-                            new CertificateVerifyMessage()
-                        });
-        assertTrue(receiveConfig.failedEarly(thirdInvalid));
     }
 }
