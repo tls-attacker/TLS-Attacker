@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.modifiablevariable.util.SuppressingTrueBooleanAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -34,6 +35,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
@@ -91,6 +93,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer {
     @ModifiableVariableProperty private ModifiableByte unifiedHeader;
 
     private RecordCryptoComputations computations;
+
+    @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
+    private Boolean shouldPrepare = null;
 
     public Record(Config config) {
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();

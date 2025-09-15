@@ -21,8 +21,6 @@ public class ProxyConnection implements Runnable {
 
     private final Socket incomingSocket;
 
-    private TlsAttackerSslSocket socket;
-
     private boolean initialized = false;
     private final Config config;
     private final ProxyConfig proxyConfig;
@@ -66,7 +64,7 @@ public class ProxyConnection implements Runnable {
                             if (method.equals("CONNECT")) {
                                 String hostname = destinationhostport.split(":")[0];
                                 int port = Integer.parseInt(destinationhostport.split(":")[1]);
-                                socket =
+                                TlsAttackerSslSocket socket =
                                         new TlsAttackerSslSocket(
                                                 config,
                                                 hostname,
@@ -85,9 +83,5 @@ public class ProxyConnection implements Runnable {
                 LOGGER.debug("Error in proxy connection loop", e);
             }
         }
-    }
-
-    public void setSocket(TlsAttackerSslSocket socket) {
-        this.socket = socket;
     }
 }

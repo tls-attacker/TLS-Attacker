@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.state;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
+import de.rub.nds.protocol.exception.ContextHandlingException;
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.ContextHandlingException;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
