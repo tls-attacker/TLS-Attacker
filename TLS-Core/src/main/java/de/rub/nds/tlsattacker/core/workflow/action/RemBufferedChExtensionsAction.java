@@ -199,9 +199,6 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         if (removeExtensions == null) {
             removeExtensions = new ArrayList<>();
         }
-        if (removeExtensions == null) {
-            removeExtensions = new ArrayList<>();
-        }
     }
 
     @Override
