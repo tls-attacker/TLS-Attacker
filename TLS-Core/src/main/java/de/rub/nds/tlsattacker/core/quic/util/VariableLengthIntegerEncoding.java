@@ -21,7 +21,8 @@ public class VariableLengthIntegerEncoding {
      */
     public static byte[] encodeVariableLengthInteger(long value) {
         if (value > EncodingLength.SIXTY_BITS.maxValue) {
-            return null;
+            throw new IllegalArgumentException(
+                    "Value is too long to encode in variable length integer: " + value);
         }
         byte[] result;
         if (value <= EncodingLength.SIX_BITS.maxValue) {
