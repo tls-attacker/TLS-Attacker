@@ -140,12 +140,8 @@ public class QuicPacketLayer
                             case HANDSHAKE_PACKET -> new HandshakePacket();
                             case ONE_RTT_PACKET -> new OneRTTPacket();
                             case ZERO_RTT_PACKET -> new ZeroRTTPacket();
-                            case RETRY_PACKET ->
-                                    throw new UnsupportedOperationException(
-                                            "Retry Packet - Not supported yet.");
-                            case VERSION_NEGOTIATION ->
-                                    throw new UnsupportedOperationException(
-                                            "Version Negotiation Packet - Not supported yet.");
+                            case RETRY_PACKET -> new RetryPacket();
+                            case VERSION_NEGOTIATION -> new VersionNegotiationPacket();
                             default ->
                                     throw new UnsupportedOperationException(
                                             "Unknown Packet - Not supported yet.");
