@@ -54,9 +54,9 @@ public class ChangeProtocolVersionAction extends ConnectionBoundAction {
         oldValue = tlsContext.getSelectedProtocolVersion();
         tlsContext.setSelectedProtocolVersion(newValue);
         LOGGER.info(
-                "Changed ProtocolVersion from " + oldValue == null
-                        ? oldValue.name()
-                        : null + " to " + newValue.name());
+                "Changed ProtocolVersion from {} to {}",
+                (oldValue == null ? "null" : oldValue.name()),
+                newValue.name());
         setExecuted(true);
     }
 

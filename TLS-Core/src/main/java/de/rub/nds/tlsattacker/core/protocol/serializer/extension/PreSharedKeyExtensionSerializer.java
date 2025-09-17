@@ -36,7 +36,7 @@ public class PreSharedKeyExtensionSerializer
                     msg.getIdentityListLength().getValue(),
                     ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH);
             LOGGER.debug(
-                    "PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
+                    "PreSharedKeyIdentityListLength: {}", msg.getIdentityListLength().getValue());
             writeIdentities();
 
             appendInt(
