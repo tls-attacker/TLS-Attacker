@@ -63,6 +63,9 @@ public class InitialPacket extends LongHeaderPacket {
     /** In comparison to the {@link LongHeaderPacket}, we add the token here. */
     @Override
     public void buildUnprotectedPacketHeader() {
+        offsetToPacketNumber = 0;
+        unprotectedHeaderHelper.reset();
+
         unprotectedHeaderHelper.write(unprotectedFlags.getValue());
         offsetToPacketNumber++;
 
