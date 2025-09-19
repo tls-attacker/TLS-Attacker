@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.handler.packet;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -15,8 +16,9 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicPacketLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
@@ -45,6 +47,14 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
         quicContext.setInitialPacketToken(packet.getRetryToken().getValue());
         quicContext.setFirstDestinationConnectionId(packet.getSourceConnectionId().getValue());
         quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+
+        LOGGER.debug("Resetting QUIC frame and packet buffers");
+        QuicPacketLayer quicPacketLayer =
+                (QuicPacketLayer) quicContext.getLayerStack().getLayer(QuicPacketLayer.class);
+        QuicFrameLayer frameLayer =
+                (QuicFrameLayer) quicContext.getLayerStack().getLayer(QuicFrameLayer.class);
+        quicPacketLayer.clearReceivedPacketBuffer();
+        frameLayer.clearCryptoFrameBuffer();
 
         // reset tls context to state prior the first client hello
         TlsContext tlsContext = quicContext.getContext().getTlsContext();

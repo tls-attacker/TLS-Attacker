@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeSenderContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;

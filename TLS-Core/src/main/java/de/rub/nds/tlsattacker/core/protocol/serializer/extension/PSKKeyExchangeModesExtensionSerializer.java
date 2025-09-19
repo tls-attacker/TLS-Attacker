@@ -39,7 +39,7 @@ public class PSKKeyExchangeModesExtensionSerializer
                 msg.getKeyExchangeModesListLength().getValue(),
                 ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH);
         LOGGER.debug(
-                "KeyExchangeModesListLength: " + msg.getKeyExchangeModesListLength().getValue());
+                "KeyExchangeModesListLength: {}", msg.getKeyExchangeModesListLength().getValue());
     }
 
     private void writeKeyExchangeModesListBytes(PSKKeyExchangeModesExtensionMessage msg) {

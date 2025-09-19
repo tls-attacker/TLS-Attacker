@@ -53,6 +53,19 @@ public class ProtocolVersionDelegate extends Delegate {
             config.setIgnoreRetransmittedCssInDtls(true);
         }
 
+        // Configure TLS 1.3 specific settings
+        if (protocolVersion.isTLS13()) {
+            // Enable required TLS 1.3 extensions
+            config.setAddSupportedVersionsExtension(true);
+            config.setAddKeyShareExtension(true);
+            config.setAddSignatureAndHashAlgorithmsExtension(true);
+
+            // Ensure the supported versions list includes TLS 1.3
+            if (!config.getSupportedVersions().contains(ProtocolVersion.TLS13)) {
+                config.getSupportedVersions().add(ProtocolVersion.TLS13);
+            }
+        }
+
         if (config.getDefaultClientConnection() == null) {
             config.setDefaultClientConnection(new OutboundConnection());
         }

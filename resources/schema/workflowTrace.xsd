@@ -884,7 +884,9 @@
   <xs:complexType name="message" abstract="true">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="shouldPrepare" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -1651,6 +1653,7 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
+          <xs:element name="shouldPrepare" type="xs:string" minOccurs="0"/>
           <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensionContent" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
@@ -3630,6 +3633,7 @@
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
         <xs:sequence>
+          <xs:element name="shouldPrepare" type="xs:string" minOccurs="0"/>
           <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
@@ -6547,8 +6551,18 @@
 
   <xs:complexType name="tightReceiveAction">
     <xs:complexContent>
-      <xs:extension base="receiveAction">
+      <xs:extension base="commonReceiveAction">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="multiReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="genericReceiveAction">
+        <xs:sequence>
+          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -6625,16 +6639,6 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="multiReceiveAction">
-    <xs:complexContent>
-      <xs:extension base="genericReceiveAction">
-        <xs:sequence>
-          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

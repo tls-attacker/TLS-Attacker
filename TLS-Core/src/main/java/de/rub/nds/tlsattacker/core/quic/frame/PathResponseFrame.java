@@ -28,8 +28,21 @@ public class PathResponseFrame extends QuicFrame {
 
     public static final int PATH_CHALLENGE_LENGTH = 8;
 
+    private boolean overwritePathChallengeData = false;
+
     public PathResponseFrame() {
         super(QuicFrameType.PATH_RESPONSE_FRAME);
+    }
+
+    public PathResponseFrame(boolean overwritePathChallengeData) {
+        super(QuicFrameType.PATH_RESPONSE_FRAME);
+        this.overwritePathChallengeData = overwritePathChallengeData;
+    }
+
+    public PathResponseFrame(ModifiableByteArray defaultData, boolean overwritePathChallengeData) {
+        super(QuicFrameType.PATH_RESPONSE_FRAME);
+        this.data = data;
+        this.overwritePathChallengeData = overwritePathChallengeData;
     }
 
     @Override
@@ -58,5 +71,13 @@ public class PathResponseFrame extends QuicFrame {
 
     public void setData(byte[] data) {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+    }
+
+    public void setData(ModifiableByteArray data) {
+        this.data = data;
+    }
+
+    public boolean isOverwritePathChallengeData() {
+        return overwritePathChallengeData;
     }
 }

@@ -53,13 +53,13 @@ public class RecordLayerHint implements LayerProcessingHint {
             if (this.type == otherHint.type) {
                 return true;
             }
-            if (this.epoch == otherHint.epoch) {
+            if (Objects.equals(this.epoch, otherHint.epoch)) {
                 return false;
             }
-            if (this.sequenceNumber == otherHint.sequenceNumber) {
+            if (Objects.equals(this.sequenceNumber, otherHint.sequenceNumber)) {
                 return true;
             }
-            if (this.messageSequence == otherHint.messageSequence) {
+            if (Objects.equals(this.messageSequence, otherHint.messageSequence)) {
                 return true;
             }
         }
