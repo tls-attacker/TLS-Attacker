@@ -206,6 +206,15 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Tests if the SendAction executed as planned. Trickles down to {@link
+     * de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration} which compares the planned
+     * containers with the actually sent containers. This method passes if the configured amount of
+     * containers has been sent, or if more than the configured amount has been sent. This is useful
+     * if the configured containers are split up due to fragmentation.
+     *
+     * @return true if at least all configured containers have been sent
+     */
     @Override
     public boolean executedAsPlanned() {
         if (getLayerStackProcessingResult() != null) {

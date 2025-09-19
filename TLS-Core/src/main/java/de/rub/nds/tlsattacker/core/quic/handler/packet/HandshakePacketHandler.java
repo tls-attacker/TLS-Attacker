@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.handler.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;

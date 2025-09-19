@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.quic.constants;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
-import java.util.Arrays;
 
 public class QuicRetryConstants {
 
@@ -22,21 +21,19 @@ public class QuicRetryConstants {
     private static final byte[] QUIC2_RETRY_INTEGRITY_TAG_IV =
             DataConverter.hexStringToByteArray("d86969bc2d7c6d9990efb04a");
 
-    public static byte[] getQuic1RetryIntegrityTagKey() {
-        return Arrays.copyOf(QUIC1_RETRY_INTEGRITY_TAG_KEY, QUIC1_RETRY_INTEGRITY_TAG_KEY.length);
+    public static byte[] getRetryIntegrityTagKey(QuicVersion version) {
+        return switch (version) {
+            case VERSION_1 -> QUIC1_RETRY_INTEGRITY_TAG_KEY;
+            case VERSION_2 -> QUIC2_RETRY_INTEGRITY_TAG_KEY;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
-    public static byte[] getQuic2RetryIntegrityTagKey() {
-        return Arrays.copyOf(QUIC2_RETRY_INTEGRITY_TAG_KEY, QUIC2_RETRY_INTEGRITY_TAG_KEY.length);
+    public static byte[] getRetryIntegrityTagIv(QuicVersion version) {
+        return switch (version) {
+            case VERSION_1 -> QUIC1_RETRY_INTEGRITY_TAG_IV;
+            case VERSION_2 -> QUIC2_RETRY_INTEGRITY_TAG_IV;
+            default -> throw new UnsupportedOperationException();
+        };
     }
-
-    public static byte[] getQuic1RetryIntegrityTagIv() {
-        return Arrays.copyOf(QUIC1_RETRY_INTEGRITY_TAG_IV, QUIC1_RETRY_INTEGRITY_TAG_IV.length);
-    }
-
-    public static byte[] getQuic2RetryIntegrityTagIv() {
-        return Arrays.copyOf(QUIC2_RETRY_INTEGRITY_TAG_IV, QUIC2_RETRY_INTEGRITY_TAG_IV.length);
-    }
-
-    private QuicRetryConstants() {}
 }

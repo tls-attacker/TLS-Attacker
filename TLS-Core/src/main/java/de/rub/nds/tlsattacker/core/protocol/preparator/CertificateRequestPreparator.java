@@ -77,7 +77,7 @@ public class CertificateRequestPreparator
     private void prepareClientCertificateTypesCount(CertificateRequestMessage msg) {
         msg.setClientCertificateTypesCount(msg.getClientCertificateTypes().getValue().length);
         LOGGER.debug(
-                "ClientCertificateTypesCount: " + msg.getClientCertificateTypesCount().getValue());
+                "ClientCertificateTypesCount: {}", msg.getClientCertificateTypesCount().getValue());
     }
 
     private void prepareDistinguishedNames(CertificateRequestMessage msg) {
@@ -98,8 +98,8 @@ public class CertificateRequestPreparator
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithmsLength(msg.getSignatureHashAlgorithms().getValue().length);
         LOGGER.debug(
-                "SignatureHashAlgorithmsLength: "
-                        + msg.getSignatureHashAlgorithmsLength().getValue());
+                "SignatureHashAlgorithmsLength: {}",
+                msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
     private void prepareCertificateRequestContext(CertificateRequestMessage msg) {
@@ -112,7 +112,7 @@ public class CertificateRequestPreparator
         msg.setCertificateRequestContextLength(
                 msg.getCertificateRequestContext().getValue().length);
         LOGGER.debug(
-                "CertificateRequestContextLength: "
-                        + msg.getCertificateRequestContextLength().getValue());
+                "CertificateRequestContextLength: {}",
+                msg.getCertificateRequestContextLength().getValue());
     }
 }

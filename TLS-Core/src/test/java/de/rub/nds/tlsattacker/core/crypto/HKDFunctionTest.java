@@ -11,10 +11,10 @@ package de.rub.nds.tlsattacker.core.crypto;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import org.junit.jupiter.api.Test;
 
 public class HKDFunctionTest {
@@ -84,7 +84,7 @@ public class HKDFunctionTest {
     /**
      * Test of extract method, of class HKDFunction
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testExtractNoSalt() throws CryptoException {
@@ -104,7 +104,7 @@ public class HKDFunctionTest {
     /**
      * Test of extract method, of class HKDFunction
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testExtractWithSalt() throws CryptoException {
@@ -126,7 +126,7 @@ public class HKDFunctionTest {
     /**
      * Test of deriveSecret method, of class HKDFunction in TLS 1.3
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testDeriveSecretTls13() throws CryptoException {
@@ -150,7 +150,7 @@ public class HKDFunctionTest {
     /**
      * Test of deriveSecret method, of class HKDFunction in DTLS 1.3
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testDeriveSecretDtls13() throws CryptoException {
@@ -174,7 +174,7 @@ public class HKDFunctionTest {
     /**
      * Test of expandLabel method, of class HKDFunction for TLS 1.3
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testExpandLabelTls13() throws CryptoException {
@@ -197,7 +197,7 @@ public class HKDFunctionTest {
     /**
      * Test of expandLabel method, of class HKDFunction for DTLS 1.3
      *
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     @Test
     public void testExpandLabelDtls13() throws CryptoException {

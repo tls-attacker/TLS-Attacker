@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.protocol.exception.AdjustmentException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;

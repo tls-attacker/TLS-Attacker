@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;

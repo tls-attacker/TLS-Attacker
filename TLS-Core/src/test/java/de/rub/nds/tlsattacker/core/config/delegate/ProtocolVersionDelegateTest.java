@@ -91,4 +91,45 @@ public class ProtocolVersionDelegateTest extends AbstractDelegateTest<ProtocolVe
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
+
+    @Test
+    public void testApplyDelegateTls13() {
+        Config config = new Config();
+        // Initial state
+        assertFalse(config.isAddSupportedVersionsExtension());
+        assertFalse(config.isAddKeyShareExtension());
+
+        String[] args = new String[2];
+        args[0] = "-version";
+        args[1] = "TLS13";
+
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        // Verify TLS 1.3 specific settings
+        assertSame(ProtocolVersion.TLS13, config.getHighestProtocolVersion());
+        assertSame(ProtocolVersion.TLS13, config.getDefaultSelectedProtocolVersion());
+        assertTrue(config.isAddSupportedVersionsExtension());
+        assertTrue(config.isAddKeyShareExtension());
+        assertTrue(config.isAddSignatureAndHashAlgorithmsExtension());
+        assertTrue(config.getSupportedVersions().contains(ProtocolVersion.TLS13));
+    }
+
+    @Test
+    public void testApplyDelegateTls13PreservesExistingSupportedVersions() {
+        Config config = new Config();
+        config.getSupportedVersions().clear();
+        config.getSupportedVersions().add(ProtocolVersion.TLS12);
+
+        String[] args = new String[2];
+        args[0] = "-version";
+        args[1] = "TLS13";
+
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        // Should preserve existing versions and add TLS 1.3
+        assertTrue(config.getSupportedVersions().contains(ProtocolVersion.TLS12));
+        assertTrue(config.getSupportedVersions().contains(ProtocolVersion.TLS13));
+    }
 }
