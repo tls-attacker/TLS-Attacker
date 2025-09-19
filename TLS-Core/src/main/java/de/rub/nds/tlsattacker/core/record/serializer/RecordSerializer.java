@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -63,8 +62,7 @@ public class RecordSerializer extends Serializer<Record> {
     private void writeEncryptedSequenceNumber(Record record) {
         appendBytes(record.getEncryptedSequenceNumber().getValue());
         LOGGER.debug(
-                "Encrypted SequenceNumber: {}",
-                ArrayConverter.bytesToHexString(record.getEncryptedSequenceNumber().getValue()));
+                "Encrypted SequenceNumber: {}", record.getEncryptedSequenceNumber().getValue());
     }
 
     private void writeContentType(Record record) {

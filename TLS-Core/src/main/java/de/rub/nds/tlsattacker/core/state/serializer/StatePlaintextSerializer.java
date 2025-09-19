@@ -39,27 +39,25 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
     private void writeProtocolVersion(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getProtocolVersion().getValue());
         LOGGER.debug(
-                "ProtocolVersion: "
-                        + ProtocolVersion.getProtocolVersion(
-                                        statePlaintext.getProtocolVersion().getValue())
-                                .name());
+                "ProtocolVersion: {}",
+                ProtocolVersion.getProtocolVersion(statePlaintext.getProtocolVersion().getValue())
+                        .name());
     }
 
     private void writeCipherSuite(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getCipherSuite().getValue());
         LOGGER.debug(
-                "CipherSuite: "
-                        + CipherSuite.getCipherSuite(statePlaintext.getCipherSuite().getValue())
-                                .name());
+                "CipherSuite: {}",
+                CipherSuite.getCipherSuite(statePlaintext.getCipherSuite().getValue()).name());
     }
 
     private void writeCompressionMethod(StatePlaintext statePlaintext) {
         appendByte(statePlaintext.getCompressionMethod().getValue());
         LOGGER.debug(
-                "CompressionMethod: "
-                        + CompressionMethod.getCompressionMethod(
-                                        statePlaintext.getCompressionMethod().getValue())
-                                .name());
+                "CompressionMethod: {}",
+                CompressionMethod.getCompressionMethod(
+                                statePlaintext.getCompressionMethod().getValue())
+                        .name());
     }
 
     private void writeMasterSecret(StatePlaintext statePlaintext) {
@@ -72,10 +70,9 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
         if (clientAuthenticationType == ClientAuthenticationType.ANONYMOUS.getValue()) {
             appendByte(clientAuthenticationType);
             LOGGER.debug(
-                    "ClientAuthenticationType: "
-                            + ClientAuthenticationType.getClientAuthenticationType(
-                                            clientAuthenticationType)
-                                    .name());
+                    "ClientAuthenticationType: {}",
+                    ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType)
+                            .name());
         } else if (clientAuthenticationType
                 == ClientAuthenticationType.CERTIFICATE_BASED.getValue()) {
             appendByte(clientAuthenticationType);
@@ -85,13 +82,12 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
                             .getByteArray(HandshakeByteLength.CERTIFICATES_LENGTH));
             appendBytes(statePlaintext.getClientAuthenticationData().getValue());
             LOGGER.debug(
-                    "ClientAuthenticationType: "
-                            + ClientAuthenticationType.getClientAuthenticationType(
-                                            clientAuthenticationType)
-                                    .name());
+                    "ClientAuthenticationType: {}",
+                    ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType)
+                            .name());
             LOGGER.debug(
-                    "ClientAuthenticationDataLength: "
-                            + statePlaintext.getClientAuthenticationDataLength().getValue());
+                    "ClientAuthenticationDataLength: {}",
+                    statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug(
                     "ClientAuthenticationData: {}",
                     statePlaintext.getClientAuthenticationData().getValue());
@@ -103,13 +99,12 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
                             .getByteArray(HandshakeByteLength.PSK_IDENTITY_LENGTH));
             appendBytes(statePlaintext.getClientAuthenticationData().getValue());
             LOGGER.debug(
-                    "ClientAuthenticationType: "
-                            + ClientAuthenticationType.getClientAuthenticationType(
-                                            clientAuthenticationType)
-                                    .name());
+                    "ClientAuthenticationType: {}",
+                    ClientAuthenticationType.getClientAuthenticationType(clientAuthenticationType)
+                            .name());
             LOGGER.debug(
-                    "ClientAuthenticationDataLength: "
-                            + statePlaintext.getClientAuthenticationDataLength().getValue());
+                    "ClientAuthenticationDataLength: {}",
+                    statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug(
                     "ClientAuthenticationData: {}",
                     statePlaintext.getClientAuthenticationData().getValue());

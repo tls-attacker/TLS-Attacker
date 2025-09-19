@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -17,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
@@ -178,7 +178,7 @@ public class PreSharedKeyExtensionPreparator
                                         digestAlgo.getJavaName(),
                                         earlySecret,
                                         HKDFunction.BINDER_KEY_RES,
-                                        ArrayConverter.hexStringToByteArray(""),
+                                        DataConverter.hexStringToByteArray(""),
                                         tlsContext.getChooser().getSelectedProtocolVersion());
                         byte[] binderFinKey =
                                 HKDFunction.expandLabel(
@@ -191,7 +191,7 @@ public class PreSharedKeyExtensionPreparator
                         byte[] hashBefore = tlsContext.getDigest().getRawBytes();
                         tlsContext
                                 .getDigest()
-                                .setRawBytes(ArrayConverter.concatenate(hashBefore, relevantBytes));
+                                .setRawBytes(DataConverter.concatenate(hashBefore, relevantBytes));
                         SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                         mac.init(keySpec);
                         mac.update(

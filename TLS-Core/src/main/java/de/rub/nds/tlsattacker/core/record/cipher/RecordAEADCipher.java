@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Arrays;
@@ -73,7 +73,7 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private byte[] prepareEncryptionGcmNonce(byte[] aeadSalt, byte[] explicitNonce, Record record) {
-        byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
+        byte[] gcmNonce = DataConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
         if (getState().getVersion().is13()) {
@@ -92,14 +92,14 @@ public class RecordAEADCipher extends RecordCipher {
         } else if (getState().getCipherAlg() == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
                 gcmNonce =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.intToBytes(
+                        DataConverter.concatenate(
+                                DataConverter.intToBytes(
                                         record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
-                                ArrayConverter.longToUint48Bytes(
+                                DataConverter.longToUint48Bytes(
                                         record.getSequenceNumber().getValue().longValue()));
             } else {
                 gcmNonce =
-                        ArrayConverter.longToUint64Bytes(
+                        DataConverter.longToUint64Bytes(
                                 record.getSequenceNumber().getValue().longValue());
             }
         }
@@ -126,7 +126,7 @@ public class RecordAEADCipher extends RecordCipher {
     private byte[] createExplicitNonce(long sequenceNumber) {
         byte[] explicitNonce;
         if (aeadExplicitLength > 0) {
-            explicitNonce = ArrayConverter.longToBytes(sequenceNumber, aeadExplicitLength);
+            explicitNonce = DataConverter.longToBytes(sequenceNumber, aeadExplicitLength);
         } else {
             explicitNonce = new byte[aeadExplicitLength];
         }
@@ -207,7 +207,7 @@ public class RecordAEADCipher extends RecordCipher {
         onlyCiphertext = record.getComputations().getCiphertext().getValue();
 
         record.setProtocolMessageBytes(
-                ArrayConverter.concatenate(explicitNonce, onlyCiphertext, authenticationTag));
+                DataConverter.concatenate(explicitNonce, onlyCiphertext, authenticationTag));
         // TODO our own authentication tags are always valid
         record.getComputations().setAuthenticationTagValid(true);
     }
@@ -244,7 +244,7 @@ public class RecordAEADCipher extends RecordCipher {
 
             LOGGER.debug("Decrypting AEAD with the following AAD: {}", additionalAuthenticatedData);
 
-            byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
+            byte[] gcmNonce = DataConverter.concatenate(salt, explicitNonce);
 
             // Nonce construction is different for chacha & tls1.3
             if (getState().getVersion().is13()) {
@@ -265,15 +265,15 @@ public class RecordAEADCipher extends RecordCipher {
             } else if (getState().getCipherAlg() == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
                 if (getState().getVersion().isDTLS()) {
                     gcmNonce =
-                            ArrayConverter.concatenate(
-                                    ArrayConverter.intToBytes(
+                            DataConverter.concatenate(
+                                    DataConverter.intToBytes(
                                             record.getEpoch().getValue(),
                                             RecordByteLength.DTLS_EPOCH),
-                                    ArrayConverter.longToUint48Bytes(
+                                    DataConverter.longToUint48Bytes(
                                             record.getSequenceNumber().getValue().longValue()));
                 } else {
                     gcmNonce =
-                            ArrayConverter.longToUint64Bytes(
+                            DataConverter.longToUint64Bytes(
                                     record.getSequenceNumber().getValue().longValue());
                 }
             }
@@ -295,7 +295,7 @@ public class RecordAEADCipher extends RecordCipher {
                                 gcmNonce,
                                 aeadTagLength * Bits.IN_A_BYTE,
                                 additionalAuthenticatedData,
-                                ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+                                DataConverter.concatenate(cipherTextOnly, authenticationTag));
 
                 record.getComputations().setAuthenticationTagValid(true);
                 record.getComputations().setPlainRecordBytes(plainRecordBytes);
@@ -326,8 +326,7 @@ public class RecordAEADCipher extends RecordCipher {
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
         byte[] padding = new byte[] {0x00, 0x00, 0x00, 0x00};
         byte[] temp =
-                ArrayConverter.concatenate(
-                        padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
+                DataConverter.concatenate(padding, DataConverter.longToUint64Bytes(sequenceNumber));
         for (int i = 0; i < iv.length; ++i) {
             temp[i] ^= iv[i];
         }
@@ -337,10 +336,10 @@ public class RecordAEADCipher extends RecordCipher {
     public byte[] preprocessIvforDtls(int epoch, long sequenceNumber, byte[] iv) {
         byte[] padding = new byte[] {0x00, 0x00, 0x00, 0x00};
         byte[] temp =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         padding,
-                        ArrayConverter.intToBytes(epoch, RecordByteLength.DTLS_EPOCH),
-                        ArrayConverter.longToUint48Bytes(sequenceNumber));
+                        DataConverter.intToBytes(epoch, RecordByteLength.DTLS_EPOCH),
+                        DataConverter.longToUint48Bytes(sequenceNumber));
         for (int i = 0; i < iv.length; ++i) {
             temp[i] ^= iv[i];
         }

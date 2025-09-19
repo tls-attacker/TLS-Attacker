@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -65,8 +65,8 @@ public class PrintSecretsAction extends ConnectionBoundAction {
         } else {
             builder.append("\n  ServerRsaModulus (chooser): ");
             builder.append(
-                    toIndentedString(
-                            ArrayConverter.bigIntegerToByteArray(
+                    toHex(
+                            DataConverter.bigIntegerToByteArray(
                                     context.getChooser()
                                             .getContext()
                                             .getTlsContext()
@@ -75,30 +75,29 @@ public class PrintSecretsAction extends ConnectionBoundAction {
         }
 
         builder.append("\n\n  (Handshake) ");
-        builder.append("\n  Client Random: ").append(toIndentedString(context.getClientRandom()));
-        builder.append("\n  Server Random: ").append(toIndentedString(context.getServerRandom()));
-        builder.append("\n  PreMasterSecret: ")
-                .append(toIndentedString(context.getPreMasterSecret()));
-        builder.append("\n  MasterSecret: ").append(toIndentedString(context.getMasterSecret()));
+        builder.append("\n  Client Random: ").append(toHex(context.getClientRandom()));
+        builder.append("\n  Server Random: ").append(toHex(context.getServerRandom()));
+        builder.append("\n  PreMasterSecret: ").append(toHex(context.getPreMasterSecret()));
+        builder.append("\n  MasterSecret: ").append(toHex(context.getMasterSecret()));
 
         if (context.getLastClientVerifyData() == null) {
             builder.append("\n  LastClientVerifyData: null");
         } else {
             builder.append("\n  LastClientVerifyData: ")
-                    .append(toIndentedString(context.getLastClientVerifyData()));
+                    .append(toHex(context.getLastClientVerifyData()));
         }
         if (context.getLastServerVerifyData() == null) {
             builder.append("\n  LastServerVerifyData: null");
         } else {
             builder.append("\n  LastServerVerifyData: ")
-                    .append(toIndentedString(context.getLastServerVerifyData()));
+                    .append(toHex(context.getLastServerVerifyData()));
         }
 
         LOGGER.info(builder.append("\n").toString());
     }
 
-    private String toIndentedString(byte[] bytes) {
-        return ArrayConverter.bytesToHexString(bytes).replace("\n", "\n  ");
+    private String toHex(byte[] bytes) {
+        return DataConverter.bytesToRawHexString(bytes);
     }
 
     @Override

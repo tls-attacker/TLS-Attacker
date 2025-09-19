@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -86,20 +86,20 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         byte[] publicNameLen =
                 this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_PUBLIC_NAME);
         record.setPublicNameLength(publicNameLen);
-        byte[] publicName = this.parseByteArrayField(ArrayConverter.bytesToInt(publicNameLen));
+        byte[] publicName = this.parseByteArrayField(DataConverter.bytesToInt(publicNameLen));
         record.setPublicName(publicName);
-        LOGGER.debug("Public Name Length: {}", ArrayConverter.bytesToInt(publicNameLen));
+        LOGGER.debug("Public Name Length: {}", DataConverter.bytesToInt(publicNameLen));
         LOGGER.debug("Public Name: {}", Arrays.toString(record.getPublicName()));
     }
 
     private void parseKeys(EsniKeyRecord record) {
         byte[] keysLen = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         record.setKeysLength(keysLen);
-        LOGGER.debug("KeysLength: {}", ArrayConverter.bytesToInt(keysLen));
+        LOGGER.debug("KeysLength: {}", DataConverter.bytesToInt(keysLen));
         KeyShareStoreEntry entry;
         // TODO this should use streams
         int i = 0;
-        while (i < ArrayConverter.bytesToInt(keysLen)) {
+        while (i < DataConverter.bytesToInt(keysLen)) {
             byte[] namedGroup = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP);
             int keyExchangeLen = this.parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH);
             byte[] keyExchange = this.parseByteArrayField(keyExchangeLen);
@@ -119,9 +119,9 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private void parseCipherSuites(EsniKeyRecord record) {
         byte[] cipherSuitesLen = this.parseByteArrayField(HandshakeByteLength.CIPHER_SUITES_LENGTH);
         record.setCipherSuitesLength(cipherSuitesLen);
-        LOGGER.debug("CipherSuitesLength: {}", ArrayConverter.bytesToInt(cipherSuitesLen));
+        LOGGER.debug("CipherSuitesLength: {}", DataConverter.bytesToInt(cipherSuitesLen));
         byte[] cipherSuitesBytes =
-                this.parseByteArrayField(ArrayConverter.bytesToInt(cipherSuitesLen));
+                this.parseByteArrayField(DataConverter.bytesToInt(cipherSuitesLen));
         List<CipherSuite> cipherSuites = CipherSuite.getCipherSuites(cipherSuitesBytes);
         record.setCipherSuiteList(cipherSuites);
     }
@@ -134,13 +134,13 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private void parseNotBefore(EsniKeyRecord record) {
         byte[] notBefore = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_NOT_BEFORE);
-        record.setNotBefore(ArrayConverter.bytesToLong(notBefore));
+        record.setNotBefore(DataConverter.bytesToLong(notBefore));
         LOGGER.debug("notBefore: {}", record.getNotBefore());
     }
 
     private void parseNotAfter(EsniKeyRecord record) {
         byte[] notAfter = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_NOT_AFTER);
-        record.setNotAfter(ArrayConverter.bytesToLong(notAfter));
+        record.setNotAfter(DataConverter.bytesToLong(notAfter));
         LOGGER.debug("notAfter: {}", record.getNotAfter());
     }
 
@@ -148,8 +148,8 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         byte[] extensionsLengthBytes =
                 this.parseByteArrayField(HandshakeByteLength.EXTENSION_LENGTH);
         record.setExtensionsLength(extensionsLengthBytes);
-        LOGGER.debug("ExtensionsLength: {}", ArrayConverter.bytesToInt(extensionsLengthBytes));
-        int extensionsLength = ArrayConverter.bytesToInt(extensionsLengthBytes);
+        LOGGER.debug("ExtensionsLength: {}", DataConverter.bytesToInt(extensionsLengthBytes));
+        int extensionsLength = DataConverter.bytesToInt(extensionsLengthBytes);
 
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
         ExtensionListParser extensionListParser =

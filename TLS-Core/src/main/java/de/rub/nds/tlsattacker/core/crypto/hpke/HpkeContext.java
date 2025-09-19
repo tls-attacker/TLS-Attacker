@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.hpke;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 public abstract class HpkeContext {
 
@@ -40,7 +40,7 @@ public abstract class HpkeContext {
     protected byte[] computeNonce() {
         // base_nonce ^ seq_number
         byte[] sequenceBytes =
-                ArrayConverter.intToBytes(sequenceNumber, hpkeAeadFunction.getNonceLength());
+                DataConverter.intToBytes(sequenceNumber, hpkeAeadFunction.getNonceLength());
         byte[] nonce = new byte[sequenceBytes.length];
         for (int i = 0; i < sequenceBytes.length; i++) {
             nonce[i] = (byte) (sequenceBytes[i] ^ baseNonce[i]);

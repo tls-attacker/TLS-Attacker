@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -45,29 +45,29 @@ public class PskEcDhClientKeyExchangeParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "10000032000f436c69656e745f6964656e7469747920f73171f4379e1897f443a82bcc06d79368f96aad699f10d21505c661fe80655b"),
                         List.of(
                                 HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(),
                                 50,
                                 15,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "436c69656e745f6964656e74697479"),
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "f73171f4379e1897f443a82bcc06d79368f96aad699f10d21505c661fe80655b"))),
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "10000032000f436c69656e745f6964656e746974792073f7cf3676cef0cf08b800519732540c8a16062aa5e24fc2360007c265b83f1b"),
                         List.of(
                                 HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue(),
                                 50,
                                 15,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "436c69656e745f6964656e74697479"),
                                 32,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "73f7cf3676cef0cf08b800519732540c8a16062aa5e24fc2360007c265b83f1b"))));
     }
 }

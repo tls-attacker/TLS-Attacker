@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -225,7 +225,7 @@ public class CyclicParserSerializerTest {
         serializer = message.getSerializer(tlsContext.getContext());
         if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             assertArrayEquals(
-                    ArrayConverter.concatenate(messageHeader, serializedMessage),
+                    DataConverter.concatenate(messageHeader, serializedMessage),
                     serializer.serialize());
         } else {
             assertArrayEquals(serializedMessage, serializer.serialize());

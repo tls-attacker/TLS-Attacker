@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -88,7 +88,7 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                             HKDFunction.extract(
                                     hkdfAlgorithm,
                                     null,
-                                    ArrayConverter.bigIntegerToByteArray(sharedSecret)),
+                                    DataConverter.bigIntegerToByteArray(sharedSecret)),
                             new byte[0],
                             parameters.getElementSizeBytes());
 

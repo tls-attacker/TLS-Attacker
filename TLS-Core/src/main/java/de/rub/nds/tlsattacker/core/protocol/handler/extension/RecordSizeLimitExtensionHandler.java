@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.AdjustmentException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +32,7 @@ public class RecordSizeLimitExtensionHandler
         if (recordSizeLimitBytes.length != ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH) {
             throw new AdjustmentException("Cannot adjust RecordSizeLimit to a reasonable value");
         }
-        Integer recordSizeLimit = ArrayConverter.bytesToInt(recordSizeLimitBytes);
+        Integer recordSizeLimit = DataConverter.bytesToInt(recordSizeLimitBytes);
         if (recordSizeLimit < RecordSizeLimit.MIN_RECORD_SIZE_LIMIT) {
             LOGGER.warn(
                     "RecordSizeLimit is smaller than allowed ({}), resuming anyway",

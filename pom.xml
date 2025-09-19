@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>6.0.1</version>
+        <version>6.2.2</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>7.4.2-SNAPSHOT</version>
+    <version>7.5.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -172,12 +172,12 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>asn1-attacker</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.1</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>modifiable-variable</artifactId>
-            <version>5.2.0</version>
+            <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
@@ -187,7 +187,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>x509-attacker</artifactId>
-            <version>4.3.0</version>
+            <version>4.3.2</version>
         </dependency>
         <dependency>
             <groupId>dnsjava</groupId>
@@ -279,9 +279,7 @@
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-                        <compilerArgs>
-                            <compilerArg>-proc:full</compilerArg>
-                        </compilerArgs>
+                        <proc>full</proc>
                     </configuration>
                 </plugin>
                 <!-- Plugin to execute unit tests -->
@@ -458,7 +456,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.25.2</version>
+                            <version>${plugin.spotless-maven-plugin.google-java-format.version}</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.config;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
@@ -343,6 +343,12 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultQuicTransportParameters")
     private QuicTransportParameters defaultQuicTransportParameters;
 
+    /** Default Retry Tag to send as a server */
+    @XmlElement(name = "defaultQuicServerRetryToken")
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultQuicServerRetryToken =
+            DataConverter.hexStringToByteArray("1234567890abcedf1234567890abcedf");
+
     /** If true tries to decrypt the initial QUIC packets with own keys */
     private Boolean echoQuic = false;
 
@@ -641,7 +647,7 @@ public class Config implements Serializable {
 
     /** Early data to be sent. */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] earlyData = ArrayConverter.hexStringToByteArray("544c532d41747461636b65720a");
+    private byte[] earlyData = DataConverter.hexStringToByteArray("544c532d41747461636b65720a");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
@@ -687,14 +693,13 @@ public class Config implements Serializable {
     private BigInteger defaultEcdsaNonce =
             new BigInteger(
                     1,
-                    ArrayConverter.hexStringToByteArray(
+                    DataConverter.hexStringToByteArray(
                             "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E98AF8725385586B41FEFF205B4E05A000823F78B5F8F5C02439CE8F67A781D90CBE6BF1AE7F2BC40A49709A06C0E31499BF02969CA42D203E566BCC696DE08FA0102A0FD2E2330B0964ABB7C443020DE1CAD09BFD6381FFB94DAAFBB90C4ED91A0613AD1DC4B4703AF84C1D63B1A876921C6D5869D61CCB98ED13AE6C09A13FC91E14922F301CF8BCF934315A6049D2F07D983FAA91B8F4E7265ECB815A7CBAB"));
 
     private BigInteger defaultDsaNonce =
             new BigInteger(
                     1,
-                    ArrayConverter.hexStringToByteArray(
-                            "349C55648DCF992F3F33E8026CFAC87C1D2BA075"));
+                    DataConverter.hexStringToByteArray("349C55648DCF992F3F33E8026CFAC87C1D2BA075"));
 
     private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
@@ -767,6 +772,8 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterQuicConnectionClose = true;
 
+    private Boolean stopActionsAfterQuicStatelessReset = true;
+
     /**
      * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal,
      * close_notify) message
@@ -797,10 +804,10 @@ public class Config implements Serializable {
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
     private byte[] defaultQuicNewToken =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
 
-    private byte[] defaultQuicPathChallange = ArrayConverter.hexStringToByteArray("AABBCCDD");
+    private byte[] defaultQuicPathChallange = DataConverter.hexStringToByteArray("AABBCCDD");
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -871,22 +878,22 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientExtendedRandom =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerExtendedRandom =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientRandom =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerRandom =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -894,7 +901,7 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientTicketResumptionSessionId =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -947,7 +954,7 @@ public class Config implements Serializable {
                     16);
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultPSKKey = ArrayConverter.hexStringToByteArray("1a2b3c4d");
+    private byte[] defaultPSKKey = DataConverter.hexStringToByteArray("1a2b3c4d");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPSKIdentity = "Client_Identity".getBytes(Charset.forName("UTF-8"));
@@ -958,7 +965,7 @@ public class Config implements Serializable {
     private BigInteger defaultSRPModulus =
             new BigInteger(
                     1,
-                    ArrayConverter.hexStringToByteArray(
+                    DataConverter.hexStringToByteArray(
                             "EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3"));
 
     private BigInteger defaultSRPGenerator = BigInteger.valueOf(2);
@@ -970,14 +977,14 @@ public class Config implements Serializable {
     private BigInteger defaultSRPServerPublicKey =
             new BigInteger(
                     1,
-                    ArrayConverter.hexStringToByteArray(
+                    DataConverter.hexStringToByteArray(
                             "AC47983DEB1698D9A9029E8F7B39092F441DDD72C56D3A63F236E1CF6CEE839937AB5FD69F8CEBBA64C210170A59B2526ED34B9DD83EF86DF7899DF68297844B15E6F2D1BD2448640D32A48220E6343875976A268F28D25174C37D8DC19F2BA5A35301CEED689206FA91CE7A172D908B821DF8C760918E6A5D1C0CFA76AF503B"));
 
     private BigInteger defaultSRPClientPublicKey =
-            new BigInteger(1, ArrayConverter.hexStringToByteArray("25C843"));
+            new BigInteger(1, DataConverter.hexStringToByteArray("25C843"));
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
+    private byte[] defaultSRPServerSalt = DataConverter.hexStringToByteArray("AABBCCDD");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSRPIdentity = "UserName".getBytes(Charset.forName("UTF-8"));
@@ -1051,6 +1058,14 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedQuicPackets = false;
 
+    private Boolean quicDoNotPad = false;
+
+    /**
+     * QUIC Packets with mismatching SCID are most likely stray packets from previous connection
+     * etc. The default use case should be to discard them
+     */
+    private Boolean discardPacketsWithMismatchedSCID = true;
+
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
      * HttpRequestMessage or httpParsing is disabled
@@ -1082,31 +1097,31 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketEncryptionKey =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "536563757265535469636b65744b6579"); // SecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyHMAC =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] sessionTicketKeyName =
-            ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
+            DataConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
 
     private CipherAlgorithm sessionTicketCipherAlgorithm = CipherAlgorithm.AES_128_CBC;
 
     private MacAlgorithm sessionTicketMacAlgorithm = MacAlgorithm.HMAC_SHA256;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
+    private byte[] defaultSessionTicketAgeAdd = DataConverter.hexStringToByteArray("cb8dbe8e");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultSessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
+    private byte[] defaultSessionTicketNonce = DataConverter.hexStringToByteArray("00");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSessionTicketIdentity =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1147,28 +1162,28 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDPrivate =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDMask =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientPWDPrivate =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientPWDMask =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDSalt =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
@@ -1199,22 +1214,22 @@ public class Config implements Serializable {
     /** Default values for EncryptedServerNameIndication extension. */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultEsniClientNonce =
-            ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
+            DataConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultEsniServerNonce =
-            ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
+            DataConverter.hexStringToByteArray("00000000000000000000000000000000");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultEsniRecordBytes =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
 
     private EsniDnsKeyRecordVersion defaultEsniRecordVersion =
             EsniVersion.DRAFT_2.getDnsKeyRecordVersion();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultEsniRecordChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
+    private byte[] defaultEsniRecordChecksum = DataConverter.hexStringToByteArray("00124b2a");
 
     @XmlElement(name = "defaultEsniServerKeyShareEntry")
     @XmlElementWrapper
@@ -1275,7 +1290,7 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultRsaSsaPssSalt =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     public Config() {
@@ -1290,7 +1305,7 @@ public class Config implements Serializable {
         caConfig.setIssuer(rdn);
         caConfig.setSubject(rdn);
         byte[] serialNumber =
-                ArrayConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
+                DataConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
         caConfig.setSerialNumber(new BigInteger(serialNumber));
 
         X509CertificateConfig leafConfig = new X509CertificateConfig();
@@ -1301,7 +1316,7 @@ public class Config implements Serializable {
 
         leafConfig.setSubject(rdn);
         serialNumber =
-                ArrayConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
+                DataConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
         leafConfig.setSerialNumber(new BigInteger(serialNumber));
 
         certificateChainConfig.add(leafConfig);
@@ -1361,7 +1376,7 @@ public class Config implements Serializable {
         defaultEsniServerKeyShareEntries.add(
                 new KeyShareStoreEntry(
                         NamedGroup.ECDH_X25519,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412")));
         defaultEsniServerCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         defaultClientSupportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -1435,14 +1450,14 @@ public class Config implements Serializable {
         defaultClientKeyStoreEntries.add(
                 new KeyShareStoreEntry(
                         NamedGroup.ECDH_X25519,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C")));
         defaultClientKeyShareNamedGroups = new LinkedList<>();
         defaultClientKeyShareNamedGroups.add(NamedGroup.ECDH_X25519);
         defaultServerKeyShareEntry =
                 new KeyShareStoreEntry(
                         NamedGroup.ECDH_X25519,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
         defaultEchConfig = EchConfig.createDefaultEchConfig();
         pskKeyExchangeModes = new LinkedList<>();
@@ -1455,7 +1470,7 @@ public class Config implements Serializable {
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
-        System.arraycopy(defaultRsaSsaPssSalt, 0, salt, 0, defaultRsaSsaPssSalt.length);
+        defaultRsaSsaPssSalt = salt;
     }
 
     public byte[] getDefaultRsaSsaPssSalt() {
@@ -4320,5 +4335,37 @@ public class Config implements Serializable {
 
     public void setDefaultQuicNewToken(byte[] defaultQuicNewToken) {
         this.defaultQuicNewToken = defaultQuicNewToken;
+    }
+
+    public boolean stopActionAfterQuicStatelessReset() {
+        return stopActionsAfterQuicStatelessReset;
+    }
+
+    public void setStopActionsAfterQuicStatelessReset(boolean stopActionsAfterQuicStatelessReset) {
+        this.stopActionsAfterQuicStatelessReset = stopActionsAfterQuicStatelessReset;
+    }
+
+    public Boolean isQuicDoNotPad() {
+        return quicDoNotPad;
+    }
+
+    public void setQuicDoNotPad(boolean quicDoNotPad) {
+        this.quicDoNotPad = quicDoNotPad;
+    }
+
+    public Boolean discardPacketsWithMismatchedSCID() {
+        return discardPacketsWithMismatchedSCID;
+    }
+
+    public void setDiscardPacketsWithMismatchedSCID(Boolean discardPacketsWithMismatchedSCID) {
+        this.discardPacketsWithMismatchedSCID = discardPacketsWithMismatchedSCID;
+    }
+
+    public byte[] getDefaultQuicServerRetryToken() {
+        return defaultQuicServerRetryToken;
+    }
+
+    public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
+        this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
     }
 }

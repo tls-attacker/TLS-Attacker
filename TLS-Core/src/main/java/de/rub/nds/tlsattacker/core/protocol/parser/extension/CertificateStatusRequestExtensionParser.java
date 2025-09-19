@@ -48,7 +48,7 @@ public class CertificateStatusRequestExtensionParser
             msg.setCertificateStatusRequestType(
                     parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
             LOGGER.debug(
-                    "Parsed the status type " + msg.getCertificateStatusRequestType().getValue());
+                    "Parsed the status type {}", msg.getCertificateStatusRequestType().getValue());
             msg.setResponderIDListLength(
                     parseIntField(
                             ExtensionByteLength

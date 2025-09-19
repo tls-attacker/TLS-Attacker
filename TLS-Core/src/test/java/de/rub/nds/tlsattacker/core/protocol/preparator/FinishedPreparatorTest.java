@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -25,7 +25,7 @@ public class FinishedPreparatorTest
     private static void registerPreviousMessages(
             TlsContext context, String... handshakeMessageHex) {
         for (String hex : handshakeMessageHex) {
-            byte[] bytes = ArrayConverter.hexStringToByteArray(hex);
+            byte[] bytes = DataConverter.hexStringToByteArray(hex);
             context.getDigest().append(bytes);
         }
     }
@@ -39,14 +39,14 @@ public class FinishedPreparatorTest
     public void testPrepare() {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        tlsContext.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
+        tlsContext.setMasterSecret(DataConverter.hexStringToByteArray("AABBCCDDEEFF"));
         tlsContext.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
         preparator.prepare();
 
         // TODO Did not check if this is calculated correctly, just made sure it
         // is set
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"),
+                DataConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"),
                 message.getVerifyData().getValue());
     }
 
@@ -66,7 +66,7 @@ public class FinishedPreparatorTest
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_SHA256);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setMasterSecret(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "E9BBE684A991D223F49A3CBB675B32355A671C8DA5620291FF911D88C0456DC539BEE2C51FA69F1D1C76EF9875E6DA6C"));
         tlsContext.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
 
@@ -81,7 +81,7 @@ public class FinishedPreparatorTest
         preparator.prepare();
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(finishedHex),
+                DataConverter.hexStringToByteArray(finishedHex),
                 message.getVerifyData().getValue());
     }
 
@@ -102,7 +102,7 @@ public class FinishedPreparatorTest
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.SSL3);
         tlsContext.setMasterSecret(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "91709DA9667796D3B0EFB3C0E920279A5F2EB76F4B9C84E2E89A2A4BF236CB8BE64AAA53CA30A3CF29B563B246DF7FFC"));
 
         registerPreviousMessages(
@@ -116,7 +116,7 @@ public class FinishedPreparatorTest
         preparator.prepare();
 
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(finishedHex),
+                DataConverter.hexStringToByteArray(finishedHex),
                 message.getVerifyData().getValue());
     }
 
@@ -127,16 +127,16 @@ public class FinishedPreparatorTest
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         tlsContext.setConnection(new OutboundConnection());
         tlsContext.setClientHandshakeTrafficSecret(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
         tlsContext
                 .getDigest()
                 .setRawBytes(
-                        ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"));
+                        DataConverter.hexStringToByteArray("01010101010101010101010101010101"));
         preparator.prepare();
         assertArrayEquals(
                 message.getVerifyData().getValue(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "B4AB5C21316FD38E3605D62C9022062DA84D83214EBC7BCD4BE6B3DB1971AFCA"));
     }
 }

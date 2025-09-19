@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class SignedCertificateTimestampExtensionHandlerTest
     private final int lengthFirstPackage = 0;
     private final byte[] firstTimestamp = new byte[0];
     private final byte[] secondTimestamp =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "00ef007500ee4bbdb775ce60"
                             + "bae142691fabe19e66a30f7e5fb072d8"
                             + "8300c47b897aa8fdcb0000015b8fdb11"

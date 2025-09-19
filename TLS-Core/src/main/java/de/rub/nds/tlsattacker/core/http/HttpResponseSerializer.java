@@ -35,7 +35,7 @@ public class HttpResponseSerializer extends HttpMessageSerializer<HttpResponseMe
                 .append("\r\n");
         for (HttpHeader header : message.getHeader()) {
             HttpHeaderSerializer serializer = new HttpHeaderSerializer(header);
-            builder.append(new String(serializer.serialize()));
+            builder.append(new String(serializer.serialize(), StandardCharsets.ISO_8859_1));
         }
         builder.append("\r\n");
         builder.append(message.getResponseContent().getValue());

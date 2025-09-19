@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import java.util.Collections;
 import java.util.List;
@@ -32,27 +32,27 @@ public class UnknownExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("00230000"),
+                        DataConverter.hexStringToByteArray("00230000"),
                         List.of(),
-                        ArrayConverter.hexStringToByteArray("0023"),
+                        DataConverter.hexStringToByteArray("0023"),
                         0,
                         Collections.singletonList(new byte[0])),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("000f000101"),
+                        DataConverter.hexStringToByteArray("000f000101"),
                         List.of(),
-                        ArrayConverter.hexStringToByteArray("000f"),
+                        DataConverter.hexStringToByteArray("000f"),
                         1,
-                        List.of(ArrayConverter.hexStringToByteArray("01"))),
+                        List.of(DataConverter.hexStringToByteArray("01"))),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("00000000"),
+                        DataConverter.hexStringToByteArray("00000000"),
                         List.of(),
-                        ArrayConverter.hexStringToByteArray("0000"),
+                        DataConverter.hexStringToByteArray("0000"),
                         0,
                         Collections.singletonList(new byte[0])),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0000FFFF"),
+                        DataConverter.hexStringToByteArray("0000FFFF"),
                         List.of(),
-                        ArrayConverter.hexStringToByteArray("0000"),
+                        DataConverter.hexStringToByteArray("0000"),
                         0xFFFF,
                         Collections.singletonList(new byte[0])));
     }

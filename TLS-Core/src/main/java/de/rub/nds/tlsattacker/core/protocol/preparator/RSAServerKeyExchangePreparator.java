@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
@@ -66,16 +66,16 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     protected byte[] generateToBeSigned() {
         byte[] rsaParams =
-                ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(
+                DataConverter.concatenate(
+                        DataConverter.intToBytes(
                                 msg.getModulusLength().getValue(),
                                 HandshakeByteLength.RSA_MODULUS_LENGTH),
                         msg.getModulus().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getPublicKeyLength().getValue(),
                                 HandshakeByteLength.RSA_MODULUS_LENGTH),
                         msg.getPublicKey().getValue());
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getKeyExchangeComputations().getClientServerRandom().getValue(), rsaParams);
     }
 
@@ -87,7 +87,7 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
     protected void prepareClientServerRandom(T msg) {
         msg.getKeyExchangeComputations()
                 .setClientServerRandom(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",

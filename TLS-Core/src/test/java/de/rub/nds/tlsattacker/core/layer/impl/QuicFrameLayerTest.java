@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import static junit.framework.Assert.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -36,15 +36,15 @@ import org.junit.jupiter.api.Test;
 public class QuicFrameLayerTest extends AbstractLayerTest {
 
     private QuicContext quicContext;
-    private final byte[] handshakeDoneFrame = ArrayConverter.hexStringToByteArray("1E");
-    private final byte[] pingFrame = ArrayConverter.hexStringToByteArray("01");
-    private final byte[] paddingFrame = ArrayConverter.hexStringToByteArray("0000000000");
-    private final byte[] cryptoFrame = ArrayConverter.hexStringToByteArray("060005AABBCCDDEE");
+    private final byte[] handshakeDoneFrame = DataConverter.hexStringToByteArray("1E");
+    private final byte[] pingFrame = DataConverter.hexStringToByteArray("01");
+    private final byte[] paddingFrame = DataConverter.hexStringToByteArray("0000000000");
+    private final byte[] cryptoFrame = DataConverter.hexStringToByteArray("060005AABBCCDDEE");
 
     private final byte[] sourceConnectionId =
-            ArrayConverter.hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
+            DataConverter.hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
     private final byte[] destinationConnectionId =
-            ArrayConverter.hexStringToByteArray("8bf5abc395aa5e36e8c0b304a1352aa5");
+            DataConverter.hexStringToByteArray("8bf5abc395aa5e36e8c0b304a1352aa5");
 
     @Override
     public void setUpLayerSpecific() {
@@ -80,7 +80,7 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
         frames.add(new HandshakeDoneFrame());
         frames.add(new PingFrame());
         frames.add(new PaddingFrame(5));
-        frames.add(new CryptoFrame(ArrayConverter.hexStringToByteArray("AABBCCDDEE"), 0, 5));
+        frames.add(new CryptoFrame(DataConverter.hexStringToByteArray("AABBCCDDEE"), 0, 5));
         return frames;
     }
 
@@ -114,8 +114,8 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
     @Test
     public void testSendData() throws IOException {
         // CRYPTO Frame
-        byte[] quicFramePayload = ArrayConverter.hexStringToByteArray("AABBCCDDEE");
-        byte[] quicFrameBytes = ArrayConverter.hexStringToByteArray("060005AABBCCDDEE");
+        byte[] quicFramePayload = DataConverter.hexStringToByteArray("AABBCCDDEE");
+        byte[] quicFrameBytes = DataConverter.hexStringToByteArray("060005AABBCCDDEE");
         tlsContext
                 .getLayerStack()
                 .getLayer(QuicFrameLayer.class)
@@ -133,9 +133,9 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
         transportHandler.resetOutputStream();
 
         // STREAM Frame
-        quicFramePayload = ArrayConverter.hexStringToByteArray("AABBCCDDEE");
+        quicFramePayload = DataConverter.hexStringToByteArray("AABBCCDDEE");
         quicFrameBytes =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0E020005AABBCCDDEE000000000000000000000000000000000000000000000000000000");
         tlsContext
                 .getLayerStack()

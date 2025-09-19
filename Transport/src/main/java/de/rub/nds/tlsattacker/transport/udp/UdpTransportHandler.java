@@ -12,6 +12,7 @@ import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.PacketbasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -29,6 +30,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     protected int port;
 
+    /** Maximum UDP packet size (2^16 bytes) used for receive buffer */
     private static final int RECEIVE_BUFFER_SIZE = 65536;
 
     private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
@@ -114,6 +116,22 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Checks the current SocketState.
+     *
+     * @return The current SocketState
+     */
+    public SocketState getSocketState() {
+        if (socket.isClosed()) {
+            return SocketState.CLOSED;
+        } else if (socket.isConnected()) {
+            return SocketState.UP;
+        } else if (socket.isBound()) {
+            return SocketState.BOUND;
+        }
+        return SocketState.UNAVAILABLE;
     }
 
     public int getSrcPort() {

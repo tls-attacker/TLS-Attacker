@@ -9,14 +9,17 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -32,7 +35,7 @@ public class SSLUtilsTest {
         byte[] masterSecret = {0, 1};
         byte[] clientRdm = {1};
         byte[] serverRdm = {0};
-        byte[] seed = ArrayConverter.concatenate(serverRdm, clientRdm);
+        byte[] seed = DataConverter.concatenate(serverRdm, clientRdm);
         int secretSetSize = 64;
         Mac digest = Mac.getInstance(providedMacAlgorithm.getJavaName());
         byte[] keyBlock = SSLUtils.calculateKeyBlockSSL3(masterSecret, seed, secretSetSize);
@@ -42,5 +45,33 @@ public class SSLUtilsTest {
         byte[] jceResult = digest.doFinal();
         byte[] utilsResult = SSLUtils.calculateSSLMac(input, macSecret, providedMacAlgorithm);
         assertArrayEquals(jceResult, utilsResult);
+    }
+
+    @Test
+    public void testGetSenderConstantReturnsDefensiveCopy() {
+        // Test that getSenderConstant returns a defensive copy (not the same array instance)
+        byte[] serverConstant1 = SSLUtils.getSenderConstant(ConnectionEndType.SERVER);
+        byte[] serverConstant2 = SSLUtils.getSenderConstant(ConnectionEndType.SERVER);
+
+        // Verify they have the same content
+        assertArrayEquals(serverConstant1, serverConstant2);
+
+        // Verify they are different instances (defensive copy)
+        assertNotSame(serverConstant1, serverConstant2);
+
+        // Test the same for CLIENT
+        byte[] clientConstant1 = SSLUtils.getSenderConstant(ConnectionEndType.CLIENT);
+        byte[] clientConstant2 = SSLUtils.getSenderConstant(ConnectionEndType.CLIENT);
+
+        assertArrayEquals(clientConstant1, clientConstant2);
+        assertNotSame(clientConstant1, clientConstant2);
+
+        // Verify that modifying the returned array doesn't affect the original
+        byte[] serverConstant3 = SSLUtils.getSenderConstant(ConnectionEndType.SERVER);
+        byte originalValue = serverConstant3[0];
+        serverConstant3[0] = (byte) (serverConstant3[0] + 1);
+
+        byte[] serverConstant4 = SSLUtils.getSenderConstant(ConnectionEndType.SERVER);
+        assertArrayEquals(serverConstant1, serverConstant4); // Should still be equal to original
     }
 }

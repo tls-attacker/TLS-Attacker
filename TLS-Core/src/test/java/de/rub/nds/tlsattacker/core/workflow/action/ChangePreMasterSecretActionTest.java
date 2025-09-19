@@ -25,16 +25,16 @@ public class ChangePreMasterSecretActionTest
     @Test
     @Override
     public void testSetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
+        assertArrayEquals(new byte[] {0, 1}, action.getNewValue());
         action.setNewValue(new byte[] {0});
-        assertArrayEquals(action.getNewValue(), new byte[] {0});
+        assertArrayEquals(new byte[] {0}, action.getNewValue());
     }
 
     /** Test of getNewValue method, of class ChangeClientRandomAction. */
     @Test
     @Override
     public void testGetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
+        assertArrayEquals(new byte[] {0, 1}, action.getNewValue());
     }
 
     /** Test of getOldValue method, of class ChangeClientRandomAction. */
@@ -43,7 +43,7 @@ public class ChangePreMasterSecretActionTest
     public void testGetOldValue() {
         context.setPreMasterSecret(new byte[] {3});
         action.execute(state);
-        assertArrayEquals(action.getOldValue(), new byte[] {3});
+        assertArrayEquals(new byte[] {3}, action.getOldValue());
     }
 
     /** Test of execute method, of class ChangeClientRandomAction. */
@@ -52,8 +52,8 @@ public class ChangePreMasterSecretActionTest
     public void testExecute() throws Exception {
         context.setPreMasterSecret(new byte[] {3});
         super.testExecute();
-        assertArrayEquals(action.getOldValue(), new byte[] {3});
-        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
-        assertArrayEquals(context.getPreMasterSecret(), new byte[] {0, 1});
+        assertArrayEquals(new byte[] {3}, action.getOldValue());
+        assertArrayEquals(new byte[] {0, 1}, action.getNewValue());
+        assertArrayEquals(new byte[] {0, 1}, context.getPreMasterSecret());
     }
 }

@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -33,7 +33,16 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -48,7 +57,7 @@ import org.apache.logging.log4j.Logger;
  * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the
  * {@link RecordLayer}.
  */
-public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -264,6 +273,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         } catch (TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
+            setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
@@ -353,7 +363,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             handshakeMessage.setType(type);
             byte[] lengthBytes =
                     handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-            length = ArrayConverter.bytesToInt(lengthBytes);
+            length = DataConverter.bytesToInt(lengthBytes);
             readBytesStream.write(lengthBytes);
             handshakeMessage.setLength(length);
             payload = handshakeStream.readChunk(length);
@@ -364,7 +374,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             // not being able to parse the header leaves us with unreadable bytes
             // append instead of replace because we can read multiple messages in one read action
             setUnreadBytes(
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             this.getUnreadBytes(), readBytesStream.toByteArray()));
             return;
         }
@@ -373,9 +383,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
         try {
             handshakeMessage.setCompleteResultingMessage(
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             new byte[] {type},
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                             payload));
             HandshakeMessageParser parser =

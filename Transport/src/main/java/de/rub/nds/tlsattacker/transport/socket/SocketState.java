@@ -16,5 +16,6 @@ public enum SocketState {
     TIMEOUT,
     SOCKET_EXCEPTION,
     IO_EXCEPTION,
-    UNAVAILABLE
+    UNAVAILABLE,
+    BOUND,
 }

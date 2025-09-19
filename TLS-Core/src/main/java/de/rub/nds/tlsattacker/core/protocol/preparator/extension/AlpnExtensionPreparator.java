@@ -44,8 +44,8 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
                 alpnEntryList.add(
                         new AlpnEntry(chooser.getConfig().getDefaultSelectedAlpnProtocol()));
                 LOGGER.debug(
-                        "Enforce settings is active: Selected ALPN protocol is "
-                                + chooser.getConfig().getDefaultSelectedAlpnProtocol());
+                        "Enforce settings is active: Selected ALPN protocol is {}",
+                        chooser.getConfig().getDefaultSelectedAlpnProtocol());
             } else {
                 List<String> proposedAlpnProtocols = chooser.getProposedAlpnProtocols();
                 if (proposedAlpnProtocols.contains(
@@ -53,14 +53,15 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
                     alpnEntryList.add(
                             new AlpnEntry(chooser.getConfig().getDefaultSelectedAlpnProtocol()));
                     LOGGER.debug(
-                            "ALPN selected protocol:"
-                                    + chooser.getConfig().getDefaultSelectedAlpnProtocol());
+                            "ALPN selected protocol: {}",
+                            chooser.getConfig().getDefaultSelectedAlpnProtocol());
                 } else if (chooser.getProposedAlpnProtocols().size() > 0) {
                     alpnEntryList.add(new AlpnEntry(chooser.getProposedAlpnProtocols().get(0)));
                     LOGGER.debug(
                             "Default ALPN selected protocol is not supported by peer. Respecting client protocols.");
                     LOGGER.debug(
-                            "ALPN selected protocol:" + chooser.getProposedAlpnProtocols().get(0));
+                            "ALPN selected protocol: {}",
+                            chooser.getProposedAlpnProtocols().get(0));
                 } else {
                     alpnEntryList.add(
                             new AlpnEntry(chooser.getConfig().getDefaultSelectedAlpnProtocol()));
@@ -76,8 +77,8 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
                 msg.getProposedAlpnProtocols());
         msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
         LOGGER.debug(
-                "Prepared the ALPN Extension with announced protocols length "
-                        + msg.getProposedAlpnProtocolsLength().getValue());
+                "Prepared the ALPN Extension with announced protocols length {}",
+                msg.getProposedAlpnProtocolsLength().getValue());
     }
 
     private void setEntryListBytes(List<AlpnEntry> alpnEntryList) {

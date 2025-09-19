@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tracetool.main;
 
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.protocol.exception.ConfigurationException;
 
 public class Main {
 

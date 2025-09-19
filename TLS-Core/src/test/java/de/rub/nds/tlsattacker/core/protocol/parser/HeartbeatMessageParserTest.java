@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import java.util.List;
@@ -38,25 +38,25 @@ public class HeartbeatMessageParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "010012000075a6d1d422693ea31584902266171b14ee376d595f5c65aeba8d04b0378faeda"),
                         List.of(
                                 (byte) 0x01,
                                 18,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "000075a6d1d422693ea31584902266171b14"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "ee376d595f5c65aeba8d04b0378faeda"))),
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "020012000075a6d1d422693ea31584902266171b1429ee15bbaa07f19c012dc29e2449e1e1"),
                         List.of(
                                 (byte) 0x02,
                                 18,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "000075a6d1d422693ea31584902266171b14"),
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "29ee15bbaa07f19c012dc29e2449e1e1"))));
     }
 }

@@ -19,7 +19,7 @@ public class TimeoutableInputStream extends InputStream {
 
     private InputStream stream;
 
-    private long timeout;
+    private volatile long timeout;
 
     public TimeoutableInputStream(InputStream stream, long timeout) {
         this.stream = stream;

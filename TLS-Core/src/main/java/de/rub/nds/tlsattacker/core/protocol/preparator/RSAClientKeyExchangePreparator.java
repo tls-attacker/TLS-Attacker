@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -51,7 +51,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         if (randomByteLength > 0) {
             padding = new byte[randomByteLength];
             chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
-            ArrayConverter.makeArrayNonZero(padding);
+            DataConverter.makeArrayNonZero(padding);
         } else {
             padding = new byte[0];
         }
@@ -74,8 +74,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                 biPaddedPremasterSecret.modPow(
                         msg.getComputations().getPublicExponent().getValue().abs(),
                         msg.getComputations().getModulus().getValue().abs());
-        encrypted =
-                ArrayConverter.bigIntegerToByteArray(biEncrypted, ceiledModulusByteLength, true);
+        encrypted = DataConverter.bigIntegerToByteArray(biEncrypted, ceiledModulusByteLength, true);
         prepareSerializedPublicKey(msg);
         premasterSecret = manipulatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
@@ -91,7 +90,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         byte[] tempPremasterSecret =
                 new byte[HandshakeByteLength.PREMASTER_SECRET - HandshakeByteLength.VERSION];
         chooser.getContext().getTlsContext().getRandom().nextBytes(tempPremasterSecret);
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getComputations().getPremasterSecretProtocolVersion().getValue(),
                 tempPremasterSecret);
     }
@@ -109,7 +108,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected void preparePlainPaddedPremasterSecret(T msg) {
         msg.getComputations()
                 .setPlainPaddedPremasterSecret(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 new byte[] {0x00, 0x02},
                                 padding,
                                 new byte[] {0x00},
@@ -121,7 +120,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected void prepareClientServerRandom(T msg) {
         clientServerRandom =
-                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+                DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientServerRandom);
         LOGGER.debug(
                 "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
@@ -174,7 +173,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
         // decrypt premasterSecret
         byte[] paddedPremasterSecret = decryptPremasterSecret();
-        LOGGER.debug("PaddedPremaster: {}", ArrayConverter.bytesToHexString(paddedPremasterSecret));
+        LOGGER.debug("PaddedPremaster: {}", paddedPremasterSecret);
         if (randomByteLength < paddedPremasterSecret.length && randomByteLength > 0) {
             premasterSecret =
                     Arrays.copyOfRange(

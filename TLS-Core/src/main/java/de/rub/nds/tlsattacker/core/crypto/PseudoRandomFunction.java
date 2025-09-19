@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -88,14 +88,14 @@ public class PseudoRandomFunction {
 
                     outputSha.write(
                             sha1.digest(
-                                    ArrayConverter.concatenate(
+                                    DataConverter.concatenate(
                                             salt.toByteArray(),
                                             master_secret,
                                             server_random,
                                             client_random)));
                     outputMd5.write(
                             md5.digest(
-                                    ArrayConverter.concatenate(
+                                    DataConverter.concatenate(
                                             master_secret, outputSha.toByteArray())));
 
                     pseudoRandomBitStream.write(outputMd5.toByteArray());
@@ -115,7 +115,7 @@ public class PseudoRandomFunction {
      * @param seed The Seed
      * @param size The size
      * @return the Prf output
-     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     * @throws de.rub.nds.protocol.exception.CryptoException
      */
     public static byte[] compute(
             PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
@@ -158,7 +158,7 @@ public class PseudoRandomFunction {
             throws CryptoException {
         try {
             byte[] labelSeed =
-                    ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
+                    DataConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             byte[] pseudoRandomBitStream = new byte[size];
 
             HMAC hmacMd5 = new HMAC(MacAlgorithm.HMAC_MD5);
@@ -214,7 +214,7 @@ public class PseudoRandomFunction {
             throws CryptoException {
         try {
             byte[] labelSeed =
-                    ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
+                    DataConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             HMAC hmac = new HMAC(macAlgorithm);
             hmac.init(secret);
 
@@ -266,7 +266,7 @@ public class PseudoRandomFunction {
              */
             while (extendedSecret.size() < size) {
                 hmacIteration = hmac.doFinal(hmacIteration);
-                extendedSecret.write(hmac.doFinal(ArrayConverter.concatenate(hmacIteration, data)));
+                extendedSecret.write(hmac.doFinal(DataConverter.concatenate(hmacIteration, data)));
             }
             return Arrays.copyOf(extendedSecret.toByteArray(), size);
         }

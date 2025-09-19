@@ -8,17 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,11 +59,12 @@ public class CertificateVerifyPreparator
         if (chooser.getSelectedProtocolVersion().is13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray(
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray(
                                         "2020202020202020202020202020202020202020202020202020"
                                                 + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                                CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
+                                CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(
+                                        StandardCharsets.US_ASCII),
                                 new byte[] {(byte) 0x00},
                                 chooser.getContext()
                                         .getTlsContext()
@@ -72,11 +74,12 @@ public class CertificateVerifyPreparator
                                                 chooser.getSelectedCipherSuite()));
             } else {
                 toBeSigned =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray(
+                        DataConverter.concatenate(
+                                DataConverter.hexStringToByteArray(
                                         "2020202020202020202020202020202020202020202020202020"
                                                 + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                                CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
+                                CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(
+                                        StandardCharsets.US_ASCII),
                                 new byte[] {(byte) 0x00},
                                 chooser.getContext()
                                         .getTlsContext()

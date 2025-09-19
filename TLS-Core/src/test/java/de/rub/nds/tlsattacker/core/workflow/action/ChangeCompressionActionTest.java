@@ -23,16 +23,16 @@ public class ChangeCompressionActionTest extends AbstractChangeActionTest<Change
     @Test
     @Override
     public void testSetNewValue() {
-        assertEquals(action.getNewValue(), CompressionMethod.LZS);
+        assertEquals(CompressionMethod.LZS, action.getNewValue());
         action.setNewValue(CompressionMethod.DEFLATE);
-        assertEquals(action.getNewValue(), CompressionMethod.DEFLATE);
+        assertEquals(CompressionMethod.DEFLATE, action.getNewValue());
     }
 
     /** Test of getNewValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testGetNewValue() {
-        assertEquals(action.getNewValue(), CompressionMethod.LZS);
+        assertEquals(CompressionMethod.LZS, action.getNewValue());
     }
 
     /** Test of getOldValue method, of class ChangeCompressionAction. */
@@ -41,7 +41,7 @@ public class ChangeCompressionActionTest extends AbstractChangeActionTest<Change
     public void testGetOldValue() {
         context.setSelectedCompressionMethod(CompressionMethod.NULL);
         action.execute(state);
-        assertEquals(action.getOldValue(), CompressionMethod.NULL);
+        assertEquals(CompressionMethod.NULL, action.getOldValue());
     }
 
     /** Test of execute method, of class ChangeCompressionAction. */
@@ -50,8 +50,8 @@ public class ChangeCompressionActionTest extends AbstractChangeActionTest<Change
     public void testExecute() throws Exception {
         context.setSelectedCompressionMethod(CompressionMethod.NULL);
         super.testExecute();
-        assertEquals(action.getOldValue(), CompressionMethod.NULL);
-        assertEquals(action.getNewValue(), CompressionMethod.LZS);
-        assertEquals(context.getSelectedCompressionMethod(), CompressionMethod.LZS);
+        assertEquals(CompressionMethod.NULL, action.getOldValue());
+        assertEquals(CompressionMethod.LZS, action.getNewValue());
+        assertEquals(CompressionMethod.LZS, context.getSelectedCompressionMethod());
     }
 }

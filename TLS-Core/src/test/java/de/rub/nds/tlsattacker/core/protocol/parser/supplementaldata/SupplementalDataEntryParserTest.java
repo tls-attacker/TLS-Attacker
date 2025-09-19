@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
@@ -24,10 +24,10 @@ public class SupplementalDataEntryParserTest {
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa"),
+                        DataConverter.hexStringToByteArray("4002000a0008010005aaaaaaaaaa"),
                         16386,
                         10,
-                        ArrayConverter.hexStringToByteArray("0008010005aaaaaaaaaa")));
+                        DataConverter.hexStringToByteArray("0008010005aaaaaaaaaa")));
     }
 
     @ParameterizedTest

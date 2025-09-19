@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -58,16 +58,16 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(group, passwordElement, chooser);
         entry.setPrivateKey(keyMaterial.privateKeyScalar);
-        byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
+        byte[] serializedScalar = DataConverter.bigIntegerToByteArray(keyMaterial.scalar);
         entry.setPublicKey(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         PointFormatter.toRawFormat(keyMaterial.element),
-                        ArrayConverter.intToBytes(serializedScalar.length, 1),
+                        DataConverter.intToBytes(serializedScalar.length, 1),
                         serializedScalar));
         LOGGER.debug("KeyShare: {}", entry.getPublicKey().getValue());
         LOGGER.debug(
                 "PasswordElement.x: {}",
-                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+                DataConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     private void prepareKeyShare() {

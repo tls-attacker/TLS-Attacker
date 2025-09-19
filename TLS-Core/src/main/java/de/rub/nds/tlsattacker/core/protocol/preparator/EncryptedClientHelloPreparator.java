@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeSenderContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedClientHelloExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -151,8 +152,8 @@ public class EncryptedClientHelloPreparator
                         echConfig.getKem());
         // RFC 9180, Section 6.1
         byte[] info =
-                ArrayConverter.concatenate(
-                        "tls ech".getBytes(),
+                DataConverter.concatenate(
+                        "tls ech".getBytes(StandardCharsets.US_ASCII),
                         new byte[] {0x00},
                         chooser.getEchConfig().getEchConfigBytes());
         LOGGER.debug("Info: {}", info);
@@ -253,7 +254,7 @@ public class EncryptedClientHelloPreparator
         LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         clientHelloInnerValue, msg.getEncodedClientHelloInnerPadding().getValue());
         LOGGER.debug("Plaintext: {}", plaintext);
         try {

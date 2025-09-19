@@ -1125,9 +1125,11 @@
         <initialMaxStreamsBidi>2147745792</initialMaxStreamsBidi>
         <initialMaxStreamsUni>2147745792</initialMaxStreamsUni>
         <maxAckDelay>2000</maxAckDelay>
+        <maxDatagramFrameSize>65527</maxDatagramFrameSize>
         <maxIdleTimeout>60000</maxIdleTimeout>
         <maxUdpPayloadSize>65527</maxUdpPayloadSize>
     </defaultQuicTransportParameters>
+    <defaultQuicServerRetryToken>12 34 56 78 90 AB CE DF 12 34 56 78 90 AB CE DF</defaultQuicServerRetryToken>
     <echoQuic>false</echoQuic>
     <defaultSelectedAlpnProtocol>h2</defaultSelectedAlpnProtocol>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
@@ -1305,6 +1307,7 @@
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <stopActionsAfterQuicConnectionClose>true</stopActionsAfterQuicConnectionClose>
+    <stopActionsAfterQuicStatelessReset>true</stopActionsAfterQuicStatelessReset>
     <finishWithCloseNotify>false</finishWithCloseNotify>
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
@@ -1467,6 +1470,8 @@
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
+    <quicDoNotPad>false</quicDoNotPad>
+    <discardPacketsWithMismatchedSCID>true</discardPacketsWithMismatchedSCID>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>
