@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -38,7 +38,14 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Poly1305 authentication tag length in bytes */
     private static final int TAG_LENGTH = 16;
+
+    /** ChaCha20 key size in bytes */
+    private static final int KEY_SIZE = 32;
+
+    /** ChaCha20 block size in bytes */
+    private static final int BLOCK_SIZE = 64;
 
     private static final byte[] ZEROES = new byte[TAG_LENGTH - 1];
     private final byte[] key;
@@ -52,14 +59,16 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
     protected final int IV_LENGTH;
 
     public ChaCha20Poly1305Cipher(byte[] key, int ivLength) {
-        if (key.length != 32) {
+        if (key.length != KEY_SIZE) {
             LOGGER.warn(
-                    "Key for ChaCha20Poly1305 has wrong size. Expected 32 byte but found: {}. Padding/Trimming to 32 Byte.",
-                    key.length);
-            if (key.length > 32) {
-                key = Arrays.copyOfRange(key, 0, 32);
+                    "Key for ChaCha20Poly1305 has wrong size. Expected {} byte but found: {}. Padding/Trimming to {} Byte.",
+                    KEY_SIZE,
+                    key.length,
+                    KEY_SIZE);
+            if (key.length > KEY_SIZE) {
+                key = Arrays.copyOfRange(key, 0, KEY_SIZE);
             } else {
-                byte[] tempKey = new byte[32];
+                byte[] tempKey = new byte[KEY_SIZE];
                 for (int i = 0; i < key.length; i++) {
                     tempKey[i] = key[i];
                 }
@@ -112,7 +121,7 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
         this.cipher.init(false, new ParametersWithIV(null, iv));
         initMAC();
-        byte[] calculatedMAC = new byte[16];
+        byte[] calculatedMAC = new byte[TAG_LENGTH];
 
         if (draftStructure) {
             byte[] macInput =
@@ -233,9 +242,9 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
     }
 
     private void initMAC() {
-        byte[] firstBlock = new byte[64];
-        this.cipher.processBytes(firstBlock, 0, 64, firstBlock, 0);
-        this.mac.init(new KeyParameter(firstBlock, 0, 32));
+        byte[] firstBlock = new byte[BLOCK_SIZE];
+        this.cipher.processBytes(firstBlock, 0, BLOCK_SIZE, firstBlock, 0);
+        this.mac.init(new KeyParameter(firstBlock, 0, KEY_SIZE));
     }
 
     @Override
@@ -288,7 +297,7 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
                     new ChaCha20ParameterSpec(nonce, new BigInteger(counter).intValue());
             SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
             recordNumberCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
-            byte[] toEncrypt = new byte[64];
+            byte[] toEncrypt = new byte[BLOCK_SIZE];
             return recordNumberCipher.doFinal(toEncrypt);
         } catch (NoSuchAlgorithmException
                 | NoSuchPaddingException

@@ -55,8 +55,7 @@ public class MessageActionResult {
      * @param other
      */
     public MessageActionResult merge(MessageActionResult... other) {
-        LinkedList<MessageActionResult> results =
-                new LinkedList<MessageActionResult>(Arrays.asList(other));
+        LinkedList<MessageActionResult> results = new LinkedList<>(Arrays.asList(other));
         results.add(0, this);
         List<Record> recordList = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragmentList = null;

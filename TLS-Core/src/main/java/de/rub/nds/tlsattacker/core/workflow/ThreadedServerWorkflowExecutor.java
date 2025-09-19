@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
@@ -37,8 +37,8 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     private ServerSocket serverSocket;
     private final int bindPort;
     private List<Socket> sockets = new ArrayList<>();
-    private boolean killed = true;
-    private boolean shutdown = true;
+    private volatile boolean killed = true;
+    private volatile boolean shutdown = true;
     protected final ExecutorService pool;
 
     public ThreadedServerWorkflowExecutor(State state, ExecutorService pool) {

@@ -69,9 +69,8 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
             return obfTicketAge;
         } catch (Exception e) {
             LOGGER.warn(
-                    "Could not parse ticketAge: "
-                            + ticketAge
-                            + " - Using empty obfuscated ticket age instead",
+                    "Could not parse ticketAge: {} - Using empty obfuscated ticket age instead",
+                    ticketAge,
                     e);
             return new byte[0];
         }

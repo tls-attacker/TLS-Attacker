@@ -31,13 +31,14 @@ public class MissingSendLayerConfiguration<Container extends DataContainer>
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
-        return false;
+    public String toCompactString() {
+        return "(" + getLayerType().getName() + ") Not configured";
     }
 
     @Override
-    public String toCompactString() {
-        return "(" + getLayerType().getName() + ") Not configured";
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        return false;
     }
 
     @Override

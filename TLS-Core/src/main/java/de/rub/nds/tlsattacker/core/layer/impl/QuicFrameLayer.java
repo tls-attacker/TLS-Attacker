@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -54,7 +54,8 @@ import org.apache.logging.log4j.Logger;
  * The QuicFrameLayer handles QUIC frames. The encapsulation into QUIC packets happens in the {@link
  * QuicPacketLayer}.
  */
-public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHint, QuicFrame> {
+public class QuicFrameLayer
+        extends AcknowledgingProtocolLayer<Context, QuicFrameLayerHint, QuicFrame> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -62,8 +63,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     private final QuicContext quicContext;
 
     private final int MAX_FRAME_SIZE;
-    private final int DEFAULT_STREAM_ID = 2;
-    private final int MIN_FRAME_SIZE = 32;
+    private static final int DEFAULT_STREAM_ID = 2;
+    private static final int MIN_FRAME_SIZE = 32;
 
     private long initialPhaseExpectedCryptoFrameOffset = 0;
     private long handshakePhaseExpectedCryptoFrameOffset = 0;

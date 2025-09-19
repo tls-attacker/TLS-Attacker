@@ -156,12 +156,12 @@ public class TlsContext extends LayerContext {
     private byte[] serverRandom;
 
     /** Selected cipher suite. */
-    private CipherSuite selectedCipherSuite = null;
+    private CipherSuite selectedCipherSuite;
 
     /*
      * (Preferred) cipher suite for SSLv2.
      */
-    private SSL2CipherSuite ssl2CipherSuite = null;
+    private SSL2CipherSuite ssl2CipherSuite;
 
     /** Selected compression algorithm. */
     private CompressionMethod selectedCompressionMethod;

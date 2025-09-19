@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.protocol.exception.CryptoException;
 import org.junit.jupiter.api.Test;
 
 public class ChaCha20Poly1305CipherTest {
