@@ -78,7 +78,9 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
             receiveQuicTillAction.setConnectionAlias(getConnectionAlias());
             action = executeAction(state, receiveQuicTillAction);
             if (action.executedAsPlanned()) {
-                action = executeAction(state, new SendAction(new PathResponseFrame()));
+                SendAction sendAction = new SendAction(new PathResponseFrame());
+                sendAction.setConnectionAlias(getConnectionAlias());
+                action = executeAction(state, sendAction);
                 if (!action.executedAsPlanned()) {
                     executedAsPlanned = false;
                     return;

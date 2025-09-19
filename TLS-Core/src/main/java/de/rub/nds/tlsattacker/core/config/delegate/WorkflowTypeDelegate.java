@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 public class WorkflowTypeDelegate extends Delegate {
@@ -31,6 +32,12 @@ public class WorkflowTypeDelegate extends Delegate {
     public void applyDelegate(Config config) {
         if (workflowTraceType != null) {
             config.setWorkflowTraceType(workflowTraceType);
+
+            // Set appropriate layer configuration for HTTPS workflow types
+            if (workflowTraceType == WorkflowTraceType.HTTPS
+                    || workflowTraceType == WorkflowTraceType.DYNAMIC_HTTPS) {
+                config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
+            }
         }
     }
 }

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -27,7 +27,7 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ActivateEncryptionAction && super.equals(o);
+        return o instanceof ActivateCryptoAction && super.equals(o);
     }
 
     @Override
@@ -52,7 +52,8 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
         RecordCipher recordCipher =
-                RecordCipherFactory.getRecordCipher(tlsContext, keySet, equals(this));
+                RecordCipherFactory.getRecordCipher(
+                        tlsContext, keySet, this instanceof ActivateEncryptionAction);
         activateCrypto(tlsContext, recordCipher);
         setExecuted(true);
     }

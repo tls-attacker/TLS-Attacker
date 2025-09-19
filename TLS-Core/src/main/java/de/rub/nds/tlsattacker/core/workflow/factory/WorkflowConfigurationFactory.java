@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -385,7 +385,7 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                    || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                    || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
@@ -427,7 +427,6 @@ public class WorkflowConfigurationFactory {
         if (config.getExpectHandshakeDoneQuicFrame()) {
             workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
-
         return workflowTrace;
     }
 
@@ -662,6 +661,7 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHttpsDynamicWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createDynamicHandshakeWorkflow();
+
         appendHttpMessages(connection, trace);
         return trace;
     }
@@ -1293,6 +1293,7 @@ public class WorkflowConfigurationFactory {
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+
             if (config.getHighestProtocolVersion().is13()) {
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             } else {
@@ -1373,6 +1374,7 @@ public class WorkflowConfigurationFactory {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
             } else {
+
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());

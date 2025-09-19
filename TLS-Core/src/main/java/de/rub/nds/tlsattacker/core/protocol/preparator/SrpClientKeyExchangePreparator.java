@@ -276,15 +276,15 @@ public class SrpClientKeyExchangePreparator
     private void setComputationPrivateKey(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setPrivateKey(chooser.getSRPClientPrivateKey());
         LOGGER.debug(
-                "Computation PrivateKey: "
-                        + msg.getComputations().getPrivateKey().getValue().toString());
+                "Computation PrivateKey: {}",
+                msg.getComputations().getPrivateKey().getValue().toString());
     }
 
     private void setComputationServerPublicKey(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setServerPublicKey(chooser.getSRPServerPublicKey());
         LOGGER.debug(
-                "Computation PublicKey: "
-                        + msg.getComputations().getServerPublicKey().getValue().toString());
+                "Computation PublicKey: {}",
+                msg.getComputations().getServerPublicKey().getValue().toString());
     }
 
     private void prepareSalt(SrpClientKeyExchangeMessage msg) {
@@ -300,13 +300,13 @@ public class SrpClientKeyExchangePreparator
     private void setSRPIdentity(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setSRPIdentity(chooser.getSRPIdentity());
         LOGGER.debug(
-                "SRP Identity used for Computations: " + msg.getComputations().getSRPIdentity());
+                "SRP Identity used for Computations: {}", msg.getComputations().getSRPIdentity());
     }
 
     private void setSRPPassword(SrpClientKeyExchangeMessage msg) {
         msg.getComputations().setSRPPassword(chooser.getSRPPassword());
         LOGGER.debug(
-                "SRP Password used for Computations: " + msg.getComputations().getSRPPassword());
+                "SRP Password used for Computations: {}", msg.getComputations().getSRPPassword());
     }
 
     private void setComputationSalt(SrpClientKeyExchangeMessage msg) {

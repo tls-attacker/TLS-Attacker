@@ -66,7 +66,6 @@ public class SSL2ServerHelloPreparator extends SSL2MessagePreparator<SSL2ServerH
     private void prepareCertificate(SSL2ServerHelloMessage message) {
         CertificateMessage certificateMessage = new CertificateMessage();
         certificateMessage.getPreparator(chooser.getContext()).prepare();
-        certificateMessage.getCertificatesListBytes();
         message.setCertificate(certificateMessage.getCertificatesListBytes());
         LOGGER.debug("Certificate: {}", message.getCertificate());
     }

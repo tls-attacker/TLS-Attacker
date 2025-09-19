@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -25,13 +24,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicDecryptor;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicEncryptor;
-import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
-import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.IOException;
@@ -52,7 +45,8 @@ import org.apache.logging.log4j.Logger;
  * The QuicPacketLayer encrypts and encapsulates QUIC frames into QUIC packets. It sends the packets
  * using the lower layer.
  */
-public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerHint, QuicPacket> {
+public class QuicPacketLayer
+        extends AcknowledgingProtocolLayer<Context, QuicPacketLayerHint, QuicPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -63,6 +57,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     private final QuicEncryptor encryptor;
 
     private final Map<QuicPacketType, ArrayList<QuicPacket>> receivedPacketBuffer = new HashMap<>();
+
+    private boolean temporarilyDisabledAcks = false;
 
     public QuicPacketLayer(Context context) {
         super(ImplementedLayers.QUICPACKET);
@@ -87,7 +83,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
-                if (isEmptyPacket(packet)) {
+                if (packet.getPacketType().isFrameContainer() && isEmptyPacket(packet)) {
                     continue;
                 }
                 try {
@@ -122,52 +118,37 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     "Sending packet without a LayerProcessing hint. Using UNKNOWN as the type.");
         }
 
+        if (hintedType == QuicPacketType.HANDSHAKE_PACKET
+                && !quicContext.isHandshakeSecretsInitialized()) {
+            LOGGER.debug(
+                    "Processing Hint was Handshake Packet, but Handshake Secrets are not initialized yet. Downgrading to Initial Packet.");
+            hintedType = QuicPacketType.INITIAL_PACKET;
+        }
+
         List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
         try {
-            if (getLayerConfiguration().getContainerList() != null && givenPackets.size() > 0) {
+            if (getLayerConfiguration().getContainerList() != null && !givenPackets.isEmpty()) {
                 // If a configuration is provided, the hint will be ignored.
-                QuicPacket packet = givenPackets.get(0);
+                QuicPacket packet = givenPackets.getFirst();
                 byte[] bytes = writePacket(data, packet);
                 addProducedContainer(packet);
                 getLowerLayer().sendData(null, bytes);
             } else {
-                switch (hintedType) {
-                    case INITIAL_PACKET:
-                        InitialPacket initialPacket = new InitialPacket();
-                        byte[] initialPacketBytes = writePacket(data, initialPacket);
-                        addProducedContainer(initialPacket);
-                        getLowerLayer().sendData(null, initialPacketBytes);
-                        break;
-                    case HANDSHAKE_PACKET:
-                        HandshakePacket handshakePacket = new HandshakePacket();
-                        byte[] handshakePacketBytes = writePacket(data, handshakePacket);
-                        addProducedContainer(handshakePacket);
-                        getLowerLayer().sendData(null, handshakePacketBytes);
-                        break;
-                    case ONE_RTT_PACKET:
-                        OneRTTPacket oneRTTPacket = new OneRTTPacket();
-                        byte[] oneRTTPacketBytes = writePacket(data, oneRTTPacket);
-                        addProducedContainer(oneRTTPacket);
-                        getLowerLayer().sendData(null, oneRTTPacketBytes);
-                        break;
-                    case ZERO_RTT_PACKET:
-                        ZeroRTTPacket zeroRTTPacket = new ZeroRTTPacket();
-                        byte[] zeroRTTPacketBytes = writePacket(data, zeroRTTPacket);
-                        addProducedContainer(zeroRTTPacket);
-                        getLowerLayer().sendData(null, zeroRTTPacketBytes);
-                        break;
-                    case RETRY_PACKET:
-                        throw new UnsupportedOperationException(
-                                "Retry Packet - Not supported yet.");
-                    case VERSION_NEGOTIATION:
-                        throw new UnsupportedOperationException(
-                                "Version Negotiation Packet - Not supported yet.");
-                    case UNKNOWN:
-                        throw new UnsupportedOperationException(
-                                "Unknown Packet - Not supported yet.");
-                    default:
-                        break;
-                }
+                QuicPacket packet =
+                        switch (hintedType) {
+                            case INITIAL_PACKET -> new InitialPacket();
+                            case HANDSHAKE_PACKET -> new HandshakePacket();
+                            case ONE_RTT_PACKET -> new OneRTTPacket();
+                            case ZERO_RTT_PACKET -> new ZeroRTTPacket();
+                            case RETRY_PACKET -> new RetryPacket();
+                            case VERSION_NEGOTIATION -> new VersionNegotiationPacket();
+                            default ->
+                                    throw new UnsupportedOperationException(
+                                            "Unknown Packet - Not supported yet.");
+                        };
+                byte[] packetBytes = writePacket(data, packet);
+                addProducedContainer(packet);
+                getLowerLayer().sendData(null, packetBytes);
             }
         } catch (CryptoException ex) {
             LOGGER.error(ex);
@@ -263,41 +244,43 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                         QuicPacketType.getPacketTypeFromFirstByte(
                                 quicContext.getQuicVersion(), firstByte);
             }
-
+            QuicPacket readPacket;
             // Store the packet in the buffer for further processing.
             switch (packetType) {
                 case INITIAL_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readInitialPacket(firstByte, versionBytes, dataStream));
+                    readPacket = readInitialPacket(firstByte, versionBytes, dataStream);
                     break;
                 case HANDSHAKE_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readHandshakePacket(firstByte, versionBytes, dataStream));
+                    readPacket = readHandshakePacket(firstByte, versionBytes, dataStream);
                     break;
                 case ONE_RTT_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readOneRTTPacket(firstByte, dataStream));
+                    readPacket = readOneRTTPacket(firstByte, dataStream);
                     break;
                 case ZERO_RTT_PACKET:
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
-
                 case RETRY_PACKET:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readRetryPacket(firstByte, dataStream));
+                    readPacket = readRetryPacket(firstByte, dataStream);
                     break;
                 case VERSION_NEGOTIATION:
-                    receivedPacketBuffer
-                            .get(packetType)
-                            .add(readVersionNegotiationPacket(dataStream));
+                    readPacket = readVersionNegotiationPacket(dataStream);
                     break;
                 case UNKNOWN:
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
                 default:
-                    break;
+                    throw new IllegalStateException("Received a Packet of Unknown Type");
+            }
+
+            if (isStatelessResetPacket(readPacket)) {
+                quicContext.setReceivedStatelessResetToken(true);
+                addProducedContainer(new StatelessResetPseudoPacket());
+                quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
+            } else if (context.getConfig().discardPacketsWithMismatchedSCID()
+                    && !Arrays.equals(
+                            readPacket.getDestinationConnectionId().getValue(),
+                            context.getQuicContext().getSourceConnectionId())) {
+                LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
+            } else {
+                receivedPacketBuffer.get(packetType).add(readPacket);
             }
         }
 
@@ -348,10 +331,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             case ZERO_RTT_PACKET:
                 return writeZeroRTTPacket((ZeroRTTPacket) packet);
             case RETRY_PACKET:
-                throw new UnsupportedOperationException("Retry Packet - Not supported yet.");
+                return writeRetryPacket((RetryPacket) packet);
             case VERSION_NEGOTIATION:
-                throw new UnsupportedOperationException(
-                        "Version Negotiation Packet - Not supported yet.");
+                return writeVersionNegotiationPacket((VersionNegotiationPacket) packet);
             case UNKNOWN:
                 throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
             default:
@@ -388,6 +370,16 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         encryptor.encryptZeroRTTPacket(packet);
         packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionZeroRTT(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeRetryPacket(RetryPacket packet) {
+        packet.getPreparator(context).prepare();
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeVersionNegotiationPacket(VersionNegotiationPacket packet) {
+        packet.getPreparator(context).prepare();
         return packet.getSerializer(context).serialize();
     }
 
@@ -474,7 +466,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                                                             (InitialPacket) packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -503,7 +495,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                                                                     packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -531,7 +523,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                                                             (OneRTTPacket) packet)
                                                                     : packet;
                                                         } catch (CryptoException ex) {
-                                                            throw new CryptoRuntimeException(
+                                                            throw new CryptoException(
                                                                     "Could not decrypt packet", ex);
                                                         }
                                                     })
@@ -567,6 +559,10 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     @Override
     public void sendAck(byte[] data) {
+        if (temporarilyDisabledAcks) {
+            return;
+        }
+
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         try {
             if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
@@ -588,5 +584,30 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     /** Clears the packet buffer. This function is typically used when resetting the connection. */
     public void clearReceivedPacketBuffer() {
         receivedPacketBuffer.values().forEach(ArrayList::clear);
+    }
+
+    private boolean isStatelessResetPacket(QuicPacket packet) {
+        if (packet.getPacketType() != QuicPacketType.RETRY_PACKET
+                && packet.getPacketType() != QuicPacketType.VERSION_NEGOTIATION) {
+            byte[] protectedPacketNumberAndPayload =
+                    packet.getProtectedPacketNumberAndPayload().getValue();
+            if (protectedPacketNumberAndPayload.length < 16) {
+                return false;
+            }
+            byte[] lastSixteenBytes =
+                    Arrays.copyOfRange(
+                            protectedPacketNumberAndPayload,
+                            protectedPacketNumberAndPayload.length - 16,
+                            protectedPacketNumberAndPayload.length);
+            if (quicContext.isStatelessResetToken(lastSixteenBytes)) {
+                LOGGER.debug("Received a Stateless Reset Packet with Token {}", lastSixteenBytes);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
+        this.temporarilyDisabledAcks = temporarilyDisabledAcks;
     }
 }

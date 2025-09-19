@@ -65,7 +65,7 @@ public class SignatureAlgorithmsCertExtensionPreparator
         msg.setSignatureAndHashAlgorithmsLength(
                 msg.getSignatureAndHashAlgorithms().getValue().length);
         LOGGER.debug(
-                "SignatureAndHashAlgorithmsLength: "
-                        + msg.getSignatureAndHashAlgorithmsLength().getValue());
+                "SignatureAndHashAlgorithmsLength: {}",
+                msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 }

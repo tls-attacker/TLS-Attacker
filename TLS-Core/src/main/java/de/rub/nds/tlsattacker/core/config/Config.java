@@ -343,6 +343,12 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultQuicTransportParameters")
     private QuicTransportParameters defaultQuicTransportParameters;
 
+    /** Default Retry Tag to send as a server */
+    @XmlElement(name = "defaultQuicServerRetryToken")
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultQuicServerRetryToken =
+            DataConverter.hexStringToByteArray("1234567890abcedf1234567890abcedf");
+
     /** If true tries to decrypt the initial QUIC packets with own keys */
     private Boolean echoQuic = false;
 
@@ -766,6 +772,8 @@ public class Config implements Serializable {
 
     private Boolean stopActionsAfterQuicConnectionClose = true;
 
+    private Boolean stopActionsAfterQuicStatelessReset = true;
+
     /**
      * If the WorkflowExecutor should take care of terminating the connection with a Alert(fatal,
      * close_notify) message
@@ -1049,6 +1057,14 @@ public class Config implements Serializable {
     private Boolean useAllProvidedRecords = false;
 
     private Boolean useAllProvidedQuicPackets = false;
+
+    private Boolean quicDoNotPad = false;
+
+    /**
+     * QUIC Packets with mismatching SCID are most likely stray packets from previous connection
+     * etc. The default use case should be to discard them
+     */
+    private Boolean discardPacketsWithMismatchedSCID = true;
 
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
@@ -1454,7 +1470,7 @@ public class Config implements Serializable {
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
-        System.arraycopy(defaultRsaSsaPssSalt, 0, salt, 0, defaultRsaSsaPssSalt.length);
+        defaultRsaSsaPssSalt = salt;
     }
 
     public byte[] getDefaultRsaSsaPssSalt() {
@@ -4319,5 +4335,37 @@ public class Config implements Serializable {
 
     public void setDefaultQuicNewToken(byte[] defaultQuicNewToken) {
         this.defaultQuicNewToken = defaultQuicNewToken;
+    }
+
+    public boolean stopActionAfterQuicStatelessReset() {
+        return stopActionsAfterQuicStatelessReset;
+    }
+
+    public void setStopActionsAfterQuicStatelessReset(boolean stopActionsAfterQuicStatelessReset) {
+        this.stopActionsAfterQuicStatelessReset = stopActionsAfterQuicStatelessReset;
+    }
+
+    public Boolean isQuicDoNotPad() {
+        return quicDoNotPad;
+    }
+
+    public void setQuicDoNotPad(boolean quicDoNotPad) {
+        this.quicDoNotPad = quicDoNotPad;
+    }
+
+    public Boolean discardPacketsWithMismatchedSCID() {
+        return discardPacketsWithMismatchedSCID;
+    }
+
+    public void setDiscardPacketsWithMismatchedSCID(Boolean discardPacketsWithMismatchedSCID) {
+        this.discardPacketsWithMismatchedSCID = discardPacketsWithMismatchedSCID;
+    }
+
+    public byte[] getDefaultQuicServerRetryToken() {
+        return defaultQuicServerRetryToken;
+    }
+
+    public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
+        this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
     }
 }

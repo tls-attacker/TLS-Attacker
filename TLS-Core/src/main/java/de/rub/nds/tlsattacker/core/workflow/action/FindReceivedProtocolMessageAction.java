@@ -50,11 +50,7 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
                         state.getWorkflowTrace(), protocolMessageType);
         if (found) {
             LOGGER.info(
-                    "Found "
-                            + protocolMessageType.name()
-                            + " ("
-                            + protocolMessageType.getValue()
-                            + ")");
+                    "Found {} ({})", protocolMessageType.name(), protocolMessageType.getValue());
         }
         setExecuted(Boolean.TRUE);
     }

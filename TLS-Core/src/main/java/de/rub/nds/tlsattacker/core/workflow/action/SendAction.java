@@ -167,6 +167,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         this.configuredRecords = configuredRecords;
     }
 
+    public void setConfiguredRecords(Record... configuredRecords) {
+        this.configuredRecords = new ArrayList<>(Arrays.asList(configuredRecords));
+    }
+
     public List<HttpMessage> getConfiguredHttpMessages() {
         return configuredHttpMessages;
     }
