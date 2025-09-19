@@ -35,7 +35,7 @@ public class RetryPacketPreparator extends LongHeaderPacketPreparator<RetryPacke
     }
 
     private void prepareRetryToken() {
-        packet.setRetryToken(context.getConfig().getDefaultQuicServerRetryTag());
+        packet.setRetryToken(context.getConfig().getDefaultQuicServerRetryToken());
         LOGGER.debug("Token: {}", packet.getRetryToken().getValue());
     }
 

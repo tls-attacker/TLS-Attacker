@@ -344,9 +344,9 @@ public class Config implements Serializable {
     private QuicTransportParameters defaultQuicTransportParameters;
 
     /** Default Retry Tag to send as a server */
-    @XmlElement(name = "defaultQuicServerRetryTag")
+    @XmlElement(name = "defaultQuicServerRetryToken")
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultQuicServerRetryTag =
+    private byte[] defaultQuicServerRetryToken =
             DataConverter.hexStringToByteArray("1234567890abcedf1234567890abcedf");
 
     /** If true tries to decrypt the initial QUIC packets with own keys */
@@ -4361,11 +4361,11 @@ public class Config implements Serializable {
         this.discardPacketsWithMismatchedSCID = discardPacketsWithMismatchedSCID;
     }
 
-    public byte[] getDefaultQuicServerRetryTag() {
-        return defaultQuicServerRetryTag;
+    public byte[] getDefaultQuicServerRetryToken() {
+        return defaultQuicServerRetryToken;
     }
 
-    public void setDefaultQuicServerRetryTag(byte[] defaultQuicServerRetryTag) {
-        this.defaultQuicServerRetryTag = defaultQuicServerRetryTag;
+    public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
+        this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
     }
 }

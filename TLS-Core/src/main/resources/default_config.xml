@@ -1129,7 +1129,7 @@
         <maxIdleTimeout>60000</maxIdleTimeout>
         <maxUdpPayloadSize>65527</maxUdpPayloadSize>
     </defaultQuicTransportParameters>
-    <defaultQuicServerRetryTag>12 34 56 78 90 AB CE DF 12 34 56 78 90 AB CE DF</defaultQuicServerRetryTag>
+    <defaultQuicServerRetryToken>12 34 56 78 90 AB CE DF 12 34 56 78 90 AB CE DF</defaultQuicServerRetryToken>
     <echoQuic>false</echoQuic>
     <defaultSelectedAlpnProtocol>h2</defaultSelectedAlpnProtocol>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
