@@ -38,8 +38,8 @@ public class SessionTicketTLSExtensionSerializer
     public byte[] serializeExtensionContent() {
         appendBytes(message.getSessionTicket().getIdentity().getValue());
         LOGGER.debug(
-                "Serialized SessionTicketTLSExtension with SessionTicket of length "
-                        + message.getSessionTicket().getIdentity().getValue().length);
+                "Serialized SessionTicketTLSExtension with SessionTicket of length {}",
+                message.getSessionTicket().getIdentity().getValue().length);
         return getAlreadySerialized();
     }
 }

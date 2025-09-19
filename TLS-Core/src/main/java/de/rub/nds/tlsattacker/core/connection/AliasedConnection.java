@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.connection;
 
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;

@@ -36,17 +36,21 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+        ContextType extends Context,
+        Hint extends LayerProcessingHint,
+        Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<Hint, Container> higherLayer = null;
+    private ProtocolLayer<ContextType, Hint, Container> higherLayer = null;
 
-    private ProtocolLayer<Hint, Container> lowerLayer = null;
+    private ProtocolLayer<ContextType, Hint, Container> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
     private List<Container> producedDataContainers;
+
+    private boolean reachedTimeout = false;
 
     protected HintedInputStream currentInputStream = null;
 
@@ -62,19 +66,19 @@ public abstract class ProtocolLayer<
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer<Hint, Container> getHigherLayer() {
+    public ProtocolLayer<ContextType, Hint, Container> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer<Hint, Container> getLowerLayer() {
+    public ProtocolLayer<ContextType, Hint, Container> getLowerLayer() {
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer<Hint, Container> higherLayer) {
+    public void setHigherLayer(ProtocolLayer<ContextType, Hint, Container> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer<Hint, Container> lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<ContextType, Hint, Container> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
@@ -87,8 +91,9 @@ public abstract class ProtocolLayer<
         return layerConfiguration;
     }
 
-    public void setLayerConfiguration(LayerConfiguration<Container> layerConfiguration) {
-        this.layerConfiguration = layerConfiguration;
+    @SuppressWarnings("unchecked")
+    public void setLayerConfiguration(LayerConfiguration<?> layerConfiguration) {
+        this.layerConfiguration = (LayerConfiguration<Container>) layerConfiguration;
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
@@ -114,7 +119,7 @@ public abstract class ProtocolLayer<
                 currentInputStream = null;
             }
         } catch (IOException ex) {
-            LOGGER.error("Could not evaluate Stream availability. Removing Stream anyways");
+            LOGGER.error("Could not evaluate Stream availability. Removing Stream anyways", ex);
             currentInputStream = null;
         }
     }
@@ -124,6 +129,7 @@ public abstract class ProtocolLayer<
         layerConfiguration = null;
         currentInputStream = null;
         nextInputStream = null;
+        reachedTimeout = false;
     }
 
     protected void addProducedContainer(Container container) {
@@ -194,33 +200,34 @@ public abstract class ProtocolLayer<
      * @return true if more data is available in any receive buffer
      */
     public boolean isDataBuffered() {
+        LOGGER.debug("Checking if data is buffered: {}", getLayerType());
         try {
             if ((currentInputStream != null && currentInputStream.available() > 0)
                     || nextInputStream != null && nextInputStream.available() > 0) {
+                LOGGER.debug("Data buffered in current stream");
                 return true;
             } else if (getLowerLayer() != null) {
+                LOGGER.debug("Checking if lower layer has data buffered");
                 return getLowerLayer().isDataBuffered();
             }
+            LOGGER.debug("No data is buffered in this layer or lower layers");
             return false;
         } catch (IOException e) {
             // with exceptions on reading our inputStreams we can not read more data
-            LOGGER.error("No more data can be read from the inputStreams with Exception: ", e);
+            LOGGER.error("No more data can be read from the inputStreams", e);
             return false;
         }
     }
 
     public boolean shouldContinueProcessing() {
+        LOGGER.debug(
+                "Deciding if we should continue...: {} type: {}", layerConfiguration, layerType);
         if (layerConfiguration != null) {
-            if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
-                return true;
-            } else {
-                return layerConfiguration.successRequiresMoreContainers(
-                                getLayerResult().getUsedContainers())
-                        || (isDataBuffered()
-                                && ((ReceiveLayerConfiguration) layerConfiguration)
-                                        .isProcessTrailingContainers());
-            }
+            return layerConfiguration.shouldContinueProcessing(
+                    getLayerResult().getUsedContainers(), reachedTimeout, isDataBuffered());
+
         } else {
+            LOGGER.debug("Checking if data is buffered since no layer configuration exists");
             return isDataBuffered();
         }
     }
@@ -240,7 +247,7 @@ public abstract class ProtocolLayer<
         try {
             inputStream = getLowerLayer().getDataStream();
         } catch (IOException e) {
-            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            LOGGER.warn("The lower layer did not produce a data stream", e);
             return;
         }
 
@@ -254,13 +261,15 @@ public abstract class ProtocolLayer<
      * @param context The context of the connection. Keeps parsed and handled values.
      */
     protected void readDataContainer(
-            DataContainer container, Context context, InputStream inputStream) {
+            Container container, Context context, InputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
 
         try {
             parser.parse(container);
-            Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse();
+            if (container.shouldPrepare()) {
+                Preparator preparator = container.getPreparator(context);
+                preparator.prepareAfterParse();
+            }
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer((Container) container);
@@ -279,7 +288,7 @@ public abstract class ProtocolLayer<
 
     public boolean prepareDataContainer(DataContainer dataContainer, Context context) {
         if (dataContainer.shouldPrepare()) {
-            Preparator<?> preparator = dataContainer.getPreparator(context);
+            Preparator preparator = dataContainer.getPreparator(context);
             try {
                 preparator.prepare();
                 preparator.afterPrepare();
@@ -301,5 +310,13 @@ public abstract class ProtocolLayer<
         return getLayerConfiguration().getContainerList().stream()
                 .filter(Predicate.not(producedDataContainers::contains))
                 .collect(Collectors.toList());
+    }
+
+    public void setReachedTimeout(boolean reachedTimeout) {
+        this.reachedTimeout = reachedTimeout;
+    }
+
+    public boolean hasReachedTimeout() {
+        return reachedTimeout;
     }
 }

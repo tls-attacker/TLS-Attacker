@@ -40,11 +40,10 @@ public class DatagramFrame extends QuicFrame {
         } else {
             setFrameType(QuicFrameType.DATAGRAM_FRAME);
         }
-        ackEliciting = false;
     }
 
-    public DatagramFrame(boolean isBidirectional, int length, byte[] dataConfig) {
-        this(isBidirectional);
+    public DatagramFrame(boolean isLengthField, int length, byte[] dataConfig) {
+        this(isLengthField);
         this.lengthConfig = dataConfig.length;
         this.dataConfig = dataConfig;
     }

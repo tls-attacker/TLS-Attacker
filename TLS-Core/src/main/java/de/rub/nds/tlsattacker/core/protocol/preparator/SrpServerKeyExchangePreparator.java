@@ -53,7 +53,7 @@ public class SrpServerKeyExchangePreparator
 
         // Compute PublicKey
         publicKey = generatePublicKey(modulus, generator, privateKey, identity, password, salt);
-        publicKey.mod(modulus);
+        publicKey = publicKey.mod(modulus);
         prepareModulus(msg);
         prepareModulusLength(msg);
         prepareGenerator(msg);

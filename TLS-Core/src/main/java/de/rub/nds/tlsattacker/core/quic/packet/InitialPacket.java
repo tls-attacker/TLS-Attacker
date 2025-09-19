@@ -40,7 +40,7 @@ public class InitialPacket extends LongHeaderPacket {
 
     @ModifiableVariableProperty protected ModifiableByteArray token;
 
-    public int tokenLengthSize;
+    private int tokenLengthSize;
 
     public InitialPacket() {
         super(QuicPacketType.INITIAL_PACKET);

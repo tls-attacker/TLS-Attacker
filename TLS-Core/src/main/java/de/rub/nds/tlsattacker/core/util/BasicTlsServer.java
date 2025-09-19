@@ -30,8 +30,8 @@ public class BasicTlsServer extends Thread {
     private final int port;
     private final SSLContext sslContext;
     private SSLServerSocket serverSocket;
-    private boolean shutdown;
-    boolean closed = true;
+    private volatile boolean shutdown;
+    private volatile boolean closed = true;
 
     /** Very dirty but ok for testing purposes */
     private volatile boolean initialized;
