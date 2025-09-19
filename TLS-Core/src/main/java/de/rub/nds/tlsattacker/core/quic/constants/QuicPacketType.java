@@ -66,6 +66,13 @@ public enum QuicPacketType {
         return (firstByte & 0b10000000) == 0b00000000;
     }
 
+    public boolean isFrameContainer() {
+        return switch (this) {
+            case INITIAL_PACKET, ZERO_RTT_PACKET, HANDSHAKE_PACKET, ONE_RTT_PACKET -> true;
+            case UNKNOWN, VERSION_NEGOTIATION, RETRY_PACKET, STATELESS_RESET -> false;
+        };
+    }
+
     public byte getHeader(QuicVersion version) {
         switch (version) {
             case VERSION_1:

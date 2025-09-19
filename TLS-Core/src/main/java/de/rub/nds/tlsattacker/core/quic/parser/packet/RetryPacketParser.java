@@ -32,6 +32,8 @@ public class RetryPacketParser extends LongHeaderPacketParser<RetryPacket> {
         parseSourceConnectionId(packet);
         parseRetryToken(packet);
         determinePacketLength(packet);
+
+        packet.setUnprotectedPayload(new byte[0]);
     }
 
     private void determinePacketLength(RetryPacket packet) {

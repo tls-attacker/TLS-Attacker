@@ -83,7 +83,7 @@ public class QuicPacketLayer
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
-                if (isEmptyPacket(packet)) {
+                if (packet.getPacketType().isFrameContainer() && isEmptyPacket(packet)) {
                     continue;
                 }
                 try {
@@ -127,50 +127,28 @@ public class QuicPacketLayer
 
         List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
         try {
-            if (getLayerConfiguration().getContainerList() != null && givenPackets.size() > 0) {
+            if (getLayerConfiguration().getContainerList() != null && !givenPackets.isEmpty()) {
                 // If a configuration is provided, the hint will be ignored.
-                QuicPacket packet = givenPackets.get(0);
+                QuicPacket packet = givenPackets.getFirst();
                 byte[] bytes = writePacket(data, packet);
                 addProducedContainer(packet);
                 getLowerLayer().sendData(null, bytes);
             } else {
-                switch (hintedType) {
-                    case INITIAL_PACKET:
-                        InitialPacket initialPacket = new InitialPacket();
-                        byte[] initialPacketBytes = writePacket(data, initialPacket);
-                        addProducedContainer(initialPacket);
-                        getLowerLayer().sendData(null, initialPacketBytes);
-                        break;
-                    case HANDSHAKE_PACKET:
-                        HandshakePacket handshakePacket = new HandshakePacket();
-                        byte[] handshakePacketBytes = writePacket(data, handshakePacket);
-                        addProducedContainer(handshakePacket);
-                        getLowerLayer().sendData(null, handshakePacketBytes);
-                        break;
-                    case ONE_RTT_PACKET:
-                        OneRTTPacket oneRTTPacket = new OneRTTPacket();
-                        byte[] oneRTTPacketBytes = writePacket(data, oneRTTPacket);
-                        addProducedContainer(oneRTTPacket);
-                        getLowerLayer().sendData(null, oneRTTPacketBytes);
-                        break;
-                    case ZERO_RTT_PACKET:
-                        ZeroRTTPacket zeroRTTPacket = new ZeroRTTPacket();
-                        byte[] zeroRTTPacketBytes = writePacket(data, zeroRTTPacket);
-                        addProducedContainer(zeroRTTPacket);
-                        getLowerLayer().sendData(null, zeroRTTPacketBytes);
-                        break;
-                    case RETRY_PACKET:
-                        throw new UnsupportedOperationException(
-                                "Retry Packet - Not supported yet.");
-                    case VERSION_NEGOTIATION:
-                        throw new UnsupportedOperationException(
-                                "Version Negotiation Packet - Not supported yet.");
-                    case UNKNOWN:
-                        throw new UnsupportedOperationException(
-                                "Unknown Packet - Not supported yet.");
-                    default:
-                        break;
-                }
+                QuicPacket packet =
+                        switch (hintedType) {
+                            case INITIAL_PACKET -> new InitialPacket();
+                            case HANDSHAKE_PACKET -> new HandshakePacket();
+                            case ONE_RTT_PACKET -> new OneRTTPacket();
+                            case ZERO_RTT_PACKET -> new ZeroRTTPacket();
+                            case RETRY_PACKET -> new RetryPacket();
+                            case VERSION_NEGOTIATION -> new VersionNegotiationPacket();
+                            default ->
+                                    throw new UnsupportedOperationException(
+                                            "Unknown Packet - Not supported yet.");
+                        };
+                byte[] packetBytes = writePacket(data, packet);
+                addProducedContainer(packet);
+                getLowerLayer().sendData(null, packetBytes);
             }
         } catch (CryptoException ex) {
             LOGGER.error(ex);
@@ -353,7 +331,7 @@ public class QuicPacketLayer
             case ZERO_RTT_PACKET:
                 return writeZeroRTTPacket((ZeroRTTPacket) packet);
             case RETRY_PACKET:
-                throw new UnsupportedOperationException("Retry Packet - Not supported yet.");
+                return writeRetryPacket((RetryPacket) packet);
             case VERSION_NEGOTIATION:
                 return writeVersionNegotiationPacket((VersionNegotiationPacket) packet);
             case UNKNOWN:
@@ -392,6 +370,11 @@ public class QuicPacketLayer
         encryptor.encryptZeroRTTPacket(packet);
         packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionZeroRTT(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeRetryPacket(RetryPacket packet) {
+        packet.getPreparator(context).prepare();
         return packet.getSerializer(context).serialize();
     }
 
