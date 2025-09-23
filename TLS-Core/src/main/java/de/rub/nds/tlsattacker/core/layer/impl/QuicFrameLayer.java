@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.IOException;
@@ -292,8 +293,9 @@ public class QuicFrameLayer
             throw new EndOfStreamException();
         }
         while (inputStream.available() > 0) {
-            int firstByte = inputStream.read();
-            QuicFrameType frameType = QuicFrameType.getFrameType((byte) firstByte);
+            long frameTypeNumber =
+                    VariableLengthIntegerEncoding.readVariableLengthInteger(inputStream);
+            QuicFrameType frameType = QuicFrameType.getFrameType((byte) frameTypeNumber);
             switch (frameType) {
                 case ACK_FRAME:
                     readDataContainer(new AckFrame(false), context, inputStream);
@@ -353,7 +355,7 @@ public class QuicFrameLayer
                     isAckEliciting = true;
                     break;
                 default:
-                    LOGGER.error("Undefined QUIC frame type: {}", firstByte);
+                    LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
                     break;
             }
         }
