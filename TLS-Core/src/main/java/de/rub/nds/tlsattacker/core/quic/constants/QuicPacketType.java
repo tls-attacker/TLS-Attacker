@@ -18,7 +18,7 @@ public enum QuicPacketType {
     ZERO_RTT_PACKET(0xd0, 0xe0),
     HANDSHAKE_PACKET(0xe0, 0xf0),
     RETRY_PACKET(0xf0, 0xc0),
-    ONE_RTT_PACKET(0x80, 0x80),
+    ONE_RTT_PACKET(0x40, 0x40),
     VERSION_NEGOTIATION(0xc0, 0xc0),
     STATELESS_RESET(0xfe, 0xfe);
 

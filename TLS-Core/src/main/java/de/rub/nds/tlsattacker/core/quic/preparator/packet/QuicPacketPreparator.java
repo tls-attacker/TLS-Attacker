@@ -34,7 +34,6 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
     protected void prepareQuicPacket() {
         prepareDestinationConnectionId();
         prepareDestinationConnectionIdLength();
-        preparePacketNumberLength();
         preparePadding();
         prepareUnprotectedPayload();
         preparePacketLength();
@@ -78,7 +77,7 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
                 packet.getDestinationConnectionIdLength().getValue());
     }
 
-    private void preparePacketNumberLength() {
+    protected void preparePacketNumberLength() {
         packet.setPacketNumberLength(packet.getUnprotectedPacketNumber().getValue().length);
         LOGGER.debug("Packet Number Length: {}", packet.getPacketNumberLength().getValue());
     }
