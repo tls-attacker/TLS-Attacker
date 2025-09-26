@@ -125,6 +125,13 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
     protected abstract void prepareHandshakeMessageContents();
 
     protected void prepareExtensions() {
+
+        if ((message.getExtensions() == null || message.getExtensions().isEmpty())
+                && message instanceof ClientHelloMessage) {
+            // apply extensions if any specified by config
+            ((ClientHelloMessage) message).applyInitialExtensions(chooser.getConfig());
+        }
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {

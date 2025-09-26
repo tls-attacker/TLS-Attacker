@@ -57,6 +57,15 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
 
     public CoreClientHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.CLIENT_HELLO);
+        applyInitialExtensions(tlsConfig);
+    }
+
+    public void applyInitialExtensions(Config tlsConfig) {
+
+        if (getExtensions() != null && !getExtensions().isEmpty()) {
+            throw new RuntimeException("Already have extensions. Not applying any.");
+        }
+
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
                 || (tlsConfig.getHighestProtocolVersion().isSSL()
                         && tlsConfig.isAddExtensionsInSSL())) {

@@ -107,13 +107,19 @@ public class ReceiveTillAction extends CommonReceiveAction {
         this.waitTillMessage = waitTillMessage;
     }
 
+    protected boolean shouldProcessTrailingContainers() {
+        return true;
+    }
+
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new ReceiveTillLayerConfiguration<ProtocolMessage>(
-                        ImplementedLayers.MESSAGE, waitTillMessage));
+                        ImplementedLayers.MESSAGE,
+                        shouldProcessTrailingContainers(),
+                        waitTillMessage));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }

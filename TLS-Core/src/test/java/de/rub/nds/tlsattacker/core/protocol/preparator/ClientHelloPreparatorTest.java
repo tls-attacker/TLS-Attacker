@@ -34,7 +34,6 @@ public class ClientHelloPreparatorTest
         super(ClientHelloMessage::new, ClientHelloMessage::new, ClientHelloPreparator::new);
     }
 
-    // TODO Test with extensions
     /** Test of prepareHandshakeMessageContents method, of class ClientHelloPreparator. */
     @Test
     @Override
@@ -66,8 +65,8 @@ public class ClientHelloPreparatorTest
         assertEquals(4, message.getSessionIdLength().getValue());
         assertArrayEquals(
                 ArrayConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
-        assertEquals(0, message.getExtensionsLength().getValue());
-        assertEquals(0, message.getExtensionBytes().getValue().length);
+        assertEquals(135, message.getExtensionsLength().getValue());
+        assertEquals(135, message.getExtensionBytes().getValue().length);
     }
 
     @Test
@@ -107,8 +106,8 @@ public class ClientHelloPreparatorTest
         assertEquals(4, message.getSessionIdLength().getValue());
         assertArrayEquals(
                 ArrayConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
-        assertEquals(0, message.getExtensionsLength().getValue());
-        assertEquals(0, message.getExtensionBytes().getValue().length);
+        assertEquals(135, message.getExtensionsLength().getValue());
+        assertEquals(135, message.getExtensionBytes().getValue().length);
     }
 
     @Test
@@ -142,8 +141,8 @@ public class ClientHelloPreparatorTest
         assertEquals(4, message.getSessionIdLength().getValue());
         assertArrayEquals(
                 ArrayConverter.longToUint32Bytes(12345678L), message.getUnixTime().getValue());
-        assertEquals(0, message.getExtensionsLength().getValue());
-        assertEquals(0, message.getExtensionBytes().getValue().length);
+        assertEquals(135, message.getExtensionsLength().getValue());
+        assertEquals(135, message.getExtensionBytes().getValue().length);
     }
 
     @Test
