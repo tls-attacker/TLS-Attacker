@@ -200,7 +200,7 @@ public class QuicEncryptor {
             nonce[i] = (byte) (encryptionIv[i] ^ paddedPacketNumber[i]);
         }
 
-        byte[] associatedData = packet.unprotectedHeaderHelper.toByteArray();
+        byte[] associatedData = packet.completeUnprotectedHeader.getValue();
 
         try {
             byte[] encryptedPayload =
