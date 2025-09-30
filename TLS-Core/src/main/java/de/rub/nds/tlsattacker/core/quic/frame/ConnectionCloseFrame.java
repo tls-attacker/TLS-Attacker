@@ -208,7 +208,7 @@ public class ConnectionCloseFrame extends QuicFrame {
             if (triggerFrameType.getValue() == 0) {
                 sb.append("unknown");
             } else {
-                sb.append(QuicFrameType.getFrameType(triggerFrameType.getValue().byteValue()));
+                sb.append(QuicFrameType.getFrameType(triggerFrameType.getValue()));
             }
         } else {
             sb.append("null");

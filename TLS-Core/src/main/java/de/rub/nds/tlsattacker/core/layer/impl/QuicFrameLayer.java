@@ -295,7 +295,7 @@ public class QuicFrameLayer
         while (inputStream.available() > 0) {
             long frameTypeNumber =
                     VariableLengthIntegerEncoding.readVariableLengthInteger(inputStream);
-            QuicFrameType frameType = QuicFrameType.getFrameType((byte) frameTypeNumber);
+            QuicFrameType frameType = QuicFrameType.getFrameType(frameTypeNumber);
             switch (frameType) {
                 case ACK_FRAME:
                     readDataContainer(new AckFrame(false), context, inputStream);
