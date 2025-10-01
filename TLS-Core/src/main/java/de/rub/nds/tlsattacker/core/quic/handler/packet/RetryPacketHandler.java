@@ -45,8 +45,10 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
         }
         // update quic context
         quicContext.setInitialPacketToken(packet.getRetryToken().getValue());
-        quicContext.setFirstDestinationConnectionId(packet.getSourceConnectionId().getValue());
-        quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+        if (!quicContext.getConfig().isEchoQuic()) {
+            quicContext.setFirstDestinationConnectionId(packet.getSourceConnectionId().getValue());
+            quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+        }
 
         LOGGER.debug("Resetting QUIC frame and packet buffers");
         QuicPacketLayer quicPacketLayer =

@@ -28,7 +28,9 @@ public class ZeroRTTPacketHandler extends LongHeaderPacketHandler<ZeroRTTPacket>
     @Override
     public void adjustContext(ZeroRTTPacket packet) {
         // update quic context
-        quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+        if (!quicContext.getConfig().isEchoQuic()) {
+            quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+        }
 
         // update quic keys
         try {

@@ -803,6 +803,8 @@ public class Config implements Serializable {
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
+    private Boolean quicImmediateCloseOnTlsError = false;
+
     private byte[] defaultQuicNewToken =
             DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
@@ -1112,6 +1114,8 @@ public class Config implements Serializable {
     private CipherAlgorithm sessionTicketCipherAlgorithm = CipherAlgorithm.AES_128_CBC;
 
     private MacAlgorithm sessionTicketMacAlgorithm = MacAlgorithm.HMAC_SHA256;
+
+    private Boolean sessionTicketShouldParse = true;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSessionTicketAgeAdd = DataConverter.hexStringToByteArray("cb8dbe8e");
@@ -1693,6 +1697,14 @@ public class Config implements Serializable {
 
     public void setSessionTicketKeyName(byte[] sessionTicketKeyName) {
         this.sessionTicketKeyName = sessionTicketKeyName;
+    }
+
+    public Boolean isSessionTicketShouldParse() {
+        return sessionTicketShouldParse;
+    }
+
+    public void setSessionTicketShouldParse(Boolean sessionTicketShouldParse) {
+        this.sessionTicketShouldParse = sessionTicketShouldParse;
     }
 
     public ClientAuthenticationType getClientAuthenticationType() {
@@ -4353,7 +4365,7 @@ public class Config implements Serializable {
         this.quicDoNotPad = quicDoNotPad;
     }
 
-    public Boolean discardPacketsWithMismatchedSCID() {
+    public Boolean isDiscardPacketsWithMismatchedSCID() {
         return discardPacketsWithMismatchedSCID;
     }
 
@@ -4367,5 +4379,13 @@ public class Config implements Serializable {
 
     public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
         this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
+    }
+
+    public Boolean getQuicImmediateCloseOnTlsError() {
+        return quicImmediateCloseOnTlsError;
+    }
+
+    public void setQuicImmediateCloseOnTlsError(Boolean quicImmediateCloseOnTlsError) {
+        this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
     }
 }

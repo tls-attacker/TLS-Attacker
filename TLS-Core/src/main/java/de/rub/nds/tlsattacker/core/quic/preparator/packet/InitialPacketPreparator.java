@@ -26,9 +26,10 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     @Override
     public void prepare() {
-        LOGGER.debug("Preparing Inital Packet");
-        prepareUnprotectedFlags();
+        LOGGER.debug("Preparing Initial Packet");
         prepareUnprotectedPacketNumber();
+        preparePacketNumberLength();
+        prepareUnprotectedFlags();
         prepareToken();
         prepareLongHeaderPacket();
     }
@@ -56,8 +57,9 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
     }
 
     private void prepareUnprotectedFlags() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.INITIAL_PACKET.getHeader(context.getQuicVersion()));
+        byte packetType = QuicPacketType.INITIAL_PACKET.getHeader(context.getQuicVersion());
+        int packetNumber = packet.getPacketNumberLength().getValue();
+        packet.setUnprotectedFlags((byte) (packetType ^ (packetNumber - 1)));
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 
