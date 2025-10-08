@@ -101,8 +101,8 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
     private ArrayList<byte[]> getQuicPacketsPayload() {
         ArrayList<byte[]> payloads = new ArrayList<>();
         payloads.add(clientHelloInStreamFrame);
-        payloads.add(new byte[] {});
-        payloads.add(new byte[] {});
+        payloads.add(null);
+        payloads.add(null);
         return payloads;
     }
 
@@ -162,7 +162,7 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
         // correct CID values for an incoming packet, but this requires complex
         // QUIC encryption setup. For now, we disable SCID matching for this test.
         // See issue #1504
-        tlsContext.getConfig().setDiscardPacketsWithMismatchedSCID(false);
+        tlsContext.getConfig().setDiscardQuicPacketsWithMismatchedSCID(false);
         QuicPacketLayer quicPacketLayer =
                 (QuicPacketLayer) tlsContext.getLayerStack().getLayer(QuicPacketLayer.class);
         for (int i = 0; i < quicPacketsBytes.size(); i++) {
@@ -171,11 +171,15 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
             List<QuicPacket> usedContainers = quicPacketLayer.getLayerResult().getUsedContainers();
             assertEquals(quicPackets.get(i).getClass(), usedContainers.get(i).getClass());
 
-            byte[] payloadBeginning =
-                    Arrays.copyOf(
-                            usedContainers.get(i).getUnprotectedPayload().getValue(),
-                            quicPacketsPayload.get(i).length);
-            assertArrayEquals(quicPacketsPayload.get(i), payloadBeginning);
+            if (quicPacketsPayload.get(i) != null) {
+                byte[] payloadBeginning =
+                        Arrays.copyOf(
+                                usedContainers.get(i).getUnprotectedPayload().getValue(),
+                                quicPacketsPayload.get(i).length);
+                assertArrayEquals(quicPacketsPayload.get(i), payloadBeginning);
+            } else {
+                assertEquals(null, usedContainers.get(i).getUnprotectedPayload());
+            }
         }
     }
 
@@ -190,7 +194,7 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
         // correct CID values for an incoming packet, but this requires complex
         // QUIC encryption setup. For now, we disable SCID matching for this test.
         // See issue #1504
-        tlsContext.getConfig().setDiscardPacketsWithMismatchedSCID(false);
+        tlsContext.getConfig().setDiscardQuicPacketsWithMismatchedSCID(false);
         QuicPacketLayer quicPacketLayer =
                 (QuicPacketLayer) tlsContext.getLayerStack().getLayer(QuicPacketLayer.class);
         for (int i = 0; i < quicPacketsBytes.size(); i++) {
@@ -199,11 +203,15 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
             List<QuicPacket> usedContainers = quicPacketLayer.getLayerResult().getUsedContainers();
             assertEquals(quicPackets.get(i).getClass(), usedContainers.get(i).getClass());
 
-            byte[] payloadBeginning =
-                    Arrays.copyOf(
-                            usedContainers.get(i).getUnprotectedPayload().getValue(),
-                            quicPacketsPayload.get(i).length);
-            assertArrayEquals(quicPacketsPayload.get(i), payloadBeginning);
+            if (quicPacketsPayload.get(i) != null) {
+                byte[] payloadBeginning =
+                        Arrays.copyOf(
+                                usedContainers.get(i).getUnprotectedPayload().getValue(),
+                                quicPacketsPayload.get(i).length);
+                assertArrayEquals(quicPacketsPayload.get(i), payloadBeginning);
+            } else {
+                assertEquals(null, usedContainers.get(i).getUnprotectedPayload());
+            }
         }
     }
 }

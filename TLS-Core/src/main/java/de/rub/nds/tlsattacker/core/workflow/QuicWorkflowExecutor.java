@@ -63,17 +63,12 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
 
             TlsAction action = tlsActions.get(i);
-            boolean notAcknowledgeReceiving = false;
-            if (action.getActionOptions() != null) {
-                notAcknowledgeReceiving =
-                        action.getActionOptions()
-                                .contains(ActionOption.QUIC_DO_NOT_ACK_RECEPTION_OF_PACKET);
-            }
-            QuicPacketLayer layer =
-                    (QuicPacketLayer)
-                            state.getContext().getLayerStack().getLayer(QuicPacketLayer.class);
 
-            layer.setTemporarilyDisabledAcks(notAcknowledgeReceiving);
+            setTemporarilyDisabledAcks(
+                    action.getActionOptions() != null
+                            && action.getActionOptions()
+                                    .contains(ActionOption.QUIC_DO_NOT_ACK_RECEPTION_OF_PACKET));
+
             if (!action.isExecuted()) {
                 try {
                     this.executeAction(action, state);
@@ -92,7 +87,8 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                     }
                 }
             }
-            layer.setTemporarilyDisabledAcks(false);
+
+            setTemporarilyDisabledAcks(false);
 
             if (!action.executedAsPlanned()) {
                 if (config.isStopTraceAfterUnexpected()) {
@@ -181,13 +177,13 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     private boolean shouldStopDueToErrorCondition() {
         if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseframe())) {
             LOGGER.debug(
-                    "Skipping all Actions, received ConnectionCloseFrame, StopActionsAfterConnCloseFrame active");
+                    "Skipping all Actions, received ConnectionCloseFrame, StopActionsAfterQuicConnectionClose active");
             return true;
         }
 
-        if (config.stopActionAfterQuicStatelessReset() && hasReceivedStatelessReset()) {
+        if (config.isStopActionAfterQuicStatelessReset() && hasReceivedStatelessReset()) {
             LOGGER.debug(
-                    "Skipping all Actions, received StatelessReset, StopActionsAfterStatelessReset active");
+                    "Skipping all Actions, received StatelessReset, StopActionsAfterQuicStatelessReset active");
             return true;
         }
 
@@ -202,7 +198,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     /** Check if a at least one QUIC context received a connection close frame. */
     public boolean hasReceivedConnectionCloseframe() {
         for (Context ctx : state.getAllContexts()) {
-            if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
+            if (ctx.getQuicContext().hasReceivedConnectionCloseFrame() != null) {
                 return true;
             }
         }
@@ -217,5 +213,9 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             }
         }
         return false;
+    }
+
+    public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
+        state.getContext().getQuicContext().setTemporarilyDisabledAcks(temporarilyDisabledAcks);
     }
 }

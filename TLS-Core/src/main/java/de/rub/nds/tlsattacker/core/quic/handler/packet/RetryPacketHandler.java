@@ -43,18 +43,19 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
                     "Retry Integrity Tag is not verified, therefore we abort adjusting our context accordingly");
             return;
         }
+
         // update quic context
         quicContext.setInitialPacketToken(packet.getRetryToken().getValue());
         quicContext.setFirstDestinationConnectionId(packet.getSourceConnectionId().getValue());
         quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
 
-        LOGGER.debug("Resetting QUIC frame and packet buffers");
+        // resetting frame and packet buffers
         QuicPacketLayer quicPacketLayer =
                 (QuicPacketLayer) quicContext.getLayerStack().getLayer(QuicPacketLayer.class);
-        QuicFrameLayer frameLayer =
+        QuicFrameLayer quicFrameLayer =
                 (QuicFrameLayer) quicContext.getLayerStack().getLayer(QuicFrameLayer.class);
         quicPacketLayer.clearReceivedPacketBuffer();
-        frameLayer.clearCryptoFrameBuffer();
+        quicFrameLayer.clearCryptoFrameBuffer();
 
         // reset tls context to state prior the first client hello
         TlsContext tlsContext = quicContext.getContext().getTlsContext();

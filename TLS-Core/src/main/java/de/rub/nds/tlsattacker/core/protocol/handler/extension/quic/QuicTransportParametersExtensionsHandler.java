@@ -28,10 +28,12 @@ public class QuicTransportParametersExtensionsHandler
     @Override
     public void adjustTLSExtensionContext(QuicTransportParametersExtensionMessage message) {
         LOGGER.debug("Adjust Quic Transport Parameters in Context to:\n{}", message);
+        // Write all transport parameters
         tlsContext
                 .getContext()
                 .getQuicContext()
                 .setReceivedTransportParameters(message.getQuicTransportParameters());
+        // Collect all stateless reset tokens
         message.getTransportParameterEntries()
                 .forEach(
                         (entry) -> {

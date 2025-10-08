@@ -21,7 +21,11 @@ import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
@@ -125,14 +129,20 @@ public class QuicContext extends LayerContext {
     private final LinkedList<Integer> receivedHandshakePacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedOneRTTPacketNumbers = new LinkedList<>();
 
-    private final List<byte[]> receivedStatelessResetTokens = new ArrayList<>();
-
     private List<byte[]> supportedVersions = new ArrayList<>();
 
     private ConnectionCloseFrame receivedConnectionCloseFrame;
-    private boolean receivedStatelessResetToken = false;
 
     private byte[] pathChallengeData;
+
+    // Indicates whether sending of acknowledgments is temporarily disabled
+    private boolean temporarilyDisabledAcks;
+
+    // Received stateless reset tokens to detect stateless reset packets
+    private final List<byte[]> receivedStatelessResetTokens = new ArrayList<>();
+
+    // Indicates whether a stateless reset packet was received
+    private boolean receivedStatelessResetToken;
 
     public QuicContext(Context context) {
         super(context);
@@ -158,6 +168,8 @@ public class QuicContext extends LayerContext {
         } catch (NoSuchAlgorithmException | CryptoException e) {
             LOGGER.error("Could not initialize initial secrets: ", e);
         }
+        this.receivedStatelessResetToken = false;
+        this.temporarilyDisabledAcks = false;
     }
 
     private byte[] generateRandomConnectionId(int length) {
@@ -210,11 +222,13 @@ public class QuicContext extends LayerContext {
         this.receivedInitialPacketNumbers.clear();
         this.receivedHandshakePacketNumbers.clear();
         this.receivedOneRTTPacketNumbers.clear();
+        this.receivedStatelessResetTokens.clear();
 
         this.supportedVersions.clear();
         this.receivedConnectionCloseFrame = null;
+
         this.receivedStatelessResetToken = false;
-        this.receivedStatelessResetTokens.clear();
+        this.temporarilyDisabledAcks = false;
     }
 
     public int getOneRTTPacketPacketNumber() {
@@ -683,7 +697,7 @@ public class QuicContext extends LayerContext {
         this.supportedVersions.addAll(supportedVersions);
     }
 
-    public ConnectionCloseFrame getReceivedConnectionCloseFrame() {
+    public ConnectionCloseFrame hasReceivedConnectionCloseFrame() {
         return receivedConnectionCloseFrame;
     }
 
@@ -732,13 +746,12 @@ public class QuicContext extends LayerContext {
     }
 
     public void addStatelessResetToken(byte[] token) {
-        LOGGER.debug("Adding new Stateless Reset Token: {}", token);
         receivedStatelessResetTokens.add(token);
     }
 
     public boolean isStatelessResetToken(byte[] token) {
         for (byte[] tokenToTest : receivedStatelessResetTokens) {
-            if (Arrays.equals(tokenToTest, token)) {
+            if (tokenToTest.equals(token)) {
                 return true;
             }
         }
@@ -751,5 +764,13 @@ public class QuicContext extends LayerContext {
 
     public boolean hasReceivedStatelessResetToken() {
         return receivedStatelessResetToken;
+    }
+
+    public boolean isTemporarilyDisabledAcks() {
+        return temporarilyDisabledAcks;
+    }
+
+    public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
+        this.temporarilyDisabledAcks = temporarilyDisabledAcks;
     }
 }

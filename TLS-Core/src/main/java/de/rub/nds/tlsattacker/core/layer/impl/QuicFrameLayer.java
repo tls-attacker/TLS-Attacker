@@ -34,6 +34,8 @@ import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.ResetStreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.StopSendingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -70,6 +72,10 @@ public class QuicFrameLayer
     private long handshakePhaseExpectedCryptoFrameOffset = 0;
     private long applicationPhaseExpectedCryptoFrameOffset = 0;
 
+    private long initialPhaseWriteCryptoFrameOffset = 0;
+    private long handshakePhaseWriteCryptoFrameOffset = 0;
+    private long applicationPhaseWriteCryptoFrameOffset = 0;
+
     private List<CryptoFrame> cryptoFrameBuffer = new ArrayList<>();
 
     private boolean hasExperiencedTimeout = false;
@@ -91,12 +97,7 @@ public class QuicFrameLayer
     public LayerProcessingResult<QuicFrame> sendConfiguration() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (QuicFrame frame : configuration.getContainerList()) {
-                byte[] bytes = writeFrame(frame);
-                QuicPacketLayerHint hint = getHintForFrame();
-                addProducedContainer(frame);
-                getLowerLayer().sendData(hint, bytes);
-            }
+            sendFrames(getUnprocessedConfiguredContainers(), getHintForFrame());
         }
         return getLayerResult();
     }
@@ -123,7 +124,6 @@ public class QuicFrameLayer
             hintedFirstMessage = true;
         }
         if (hint != null && hintedType != null) {
-            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             QuicPacketLayerHint packetLayerHint;
             switch (hintedType) {
                 case HANDSHAKE:
@@ -135,7 +135,7 @@ public class QuicFrameLayer
                     List<QuicFrame> givenFrames = getUnprocessedConfiguredContainers();
                     if (getLayerConfiguration().getContainerList() != null
                             && givenFrames.size() > 0) {
-                        givenFrames =
+                        List<CryptoFrame> givenCryptoFrames =
                                 givenFrames.stream()
                                         .filter(
                                                 frame ->
@@ -143,57 +143,18 @@ public class QuicFrameLayer
                                                                         frame.getFrameType()
                                                                                 .getValue())
                                                                 == QuicFrameType.CRYPTO_FRAME)
+                                        .map(frame -> (CryptoFrame) frame)
                                         .collect(Collectors.toList());
-                        int offset = 0;
-                        for (QuicFrame frame : givenFrames) {
-                            int toCopy =
-                                    ((CryptoFrame) frame).getMaxFrameLengthConfig() != 0
-                                            ? ((CryptoFrame) frame).getMaxFrameLengthConfig()
-                                            : MAX_FRAME_SIZE;
-                            byte[] payload = Arrays.copyOfRange(data, offset, offset + toCopy);
-                            ((CryptoFrame) frame).setCryptoDataConfig(payload);
-                            ((CryptoFrame) frame).setOffsetConfig(offset);
-                            ((CryptoFrame) frame).setLengthConfig(payload.length);
-                            stream = new SilentByteArrayOutputStream();
-                            stream.writeBytes(writeFrame(frame));
-                            addProducedContainer(frame);
-                            // TODO: Add option to pass everything together to the next layer
-                            getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
-
-                            offset += toCopy;
-                            if (offset >= data.length) {
-                                break;
-                            }
-                        }
-                        // Not enough crypto frames
-                        for (; offset < data.length; offset += MAX_FRAME_SIZE) {
-                            byte[] payload =
-                                    Arrays.copyOfRange(
-                                            data,
-                                            offset,
-                                            Math.min(offset + MAX_FRAME_SIZE, data.length));
-                            CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
-                            stream = new SilentByteArrayOutputStream();
-                            stream.writeBytes(writeFrame(frame));
-                            addProducedContainer(frame);
-                            // TODO: Add option to pass everything together to the next layer
-                            getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
-                        }
+                        List<CryptoFrame> frames =
+                                getEnoughCryptoFrames(
+                                        packetLayerHint.getQuicPacketType(),
+                                        data,
+                                        givenCryptoFrames);
+                        sendFrames(frames, packetLayerHint);
                     } else {
-                        // produce enough crypto frames
-                        for (int offset = 0; offset < data.length; offset += MAX_FRAME_SIZE) {
-                            byte[] payload =
-                                    Arrays.copyOfRange(
-                                            data,
-                                            offset,
-                                            Math.min(offset + MAX_FRAME_SIZE, data.length));
-                            CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
-                            stream = new SilentByteArrayOutputStream();
-                            stream.writeBytes(writeFrame(frame));
-                            addProducedContainer(frame);
-                            // TODO: Add option to pass everything together to the next layer
-                            getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
-                        }
+                        List<CryptoFrame> frames =
+                                getEnoughCryptoFrames(packetLayerHint.getQuicPacketType(), data);
+                        sendFrames(frames, packetLayerHint);
                     }
                     break;
                 case APPLICATION_DATA:
@@ -206,6 +167,7 @@ public class QuicFrameLayer
                     }
                     // prepare bytes
                     StreamFrame frame = new StreamFrame(data, DEFAULT_STREAM_ID);
+                    SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
                     stream.writeBytes(writeFrame(frame));
                     addProducedContainer(frame);
                     if (data.length < MIN_FRAME_SIZE) {
@@ -316,6 +278,14 @@ public class QuicFrameLayer
                     cryptoFrameBuffer.add(frame);
                     isAckEliciting = true;
                     break;
+                case STOP_SENDING_FRAME:
+                    readDataContainer(new StopSendingFrame(), context, inputStream);
+                    isAckEliciting = true;
+                    break;
+                case RESET_STREAM_FRAME:
+                    readDataContainer(new ResetStreamFrame(), context, inputStream);
+                    isAckEliciting = true;
+                    break;
                 case HANDSHAKE_DONE_FRAME:
                     readDataContainer(new HandshakeDoneFrame(), context, inputStream);
                     isAckEliciting = true;
@@ -384,7 +354,7 @@ public class QuicFrameLayer
             }
         }
 
-        if (isAckEliciting) {
+        if (!quicContext.isTemporarilyDisabledAcks() && isAckEliciting) {
             sendAck(null);
         } else {
             if (!quicContext.getReceivedPackets().isEmpty()) {
@@ -498,5 +468,95 @@ public class QuicFrameLayer
 
     public boolean hasExperiencedTimeout() {
         return hasExperiencedTimeout;
+    }
+
+    private void sendFrames(List<? extends QuicFrame> frames, QuicPacketLayerHint hint)
+            throws IOException {
+        if (context.getConfig().isQuicFrameLayerAllConfigurationsOnePacket()) {
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
+            for (QuicFrame frame : frames) {
+                stream.writeBytes(writeFrame(frame));
+                addProducedContainer(frame);
+            }
+            getLowerLayer().sendData(hint, stream.toByteArray());
+        } else {
+            for (QuicFrame frame : frames) {
+                byte[] bytes = writeFrame(frame);
+                addProducedContainer(frame);
+                getLowerLayer().sendData(hint, bytes);
+            }
+        }
+    }
+
+    private List<CryptoFrame> getEnoughCryptoFrames(QuicPacketType type, byte[] data) {
+        List<CryptoFrame> frames = new ArrayList<>();
+        for (int offset = 0; offset < data.length; offset += MAX_FRAME_SIZE) {
+            byte[] payload =
+                    Arrays.copyOfRange(
+                            data, offset, Math.min(offset + MAX_FRAME_SIZE, data.length));
+            CryptoFrame frame =
+                    new CryptoFrame(payload, getWriteCryptoFrameOffset(type), payload.length);
+            increaseWriteCryptoFrameOffset(type, payload.length);
+            frames.add(frame);
+        }
+        return frames;
+    }
+
+    private List<CryptoFrame> getEnoughCryptoFrames(
+            QuicPacketType type, byte[] data, List<CryptoFrame> frames) {
+        int offset = 0;
+        for (CryptoFrame frame : frames) {
+            int maxSize =
+                    frame.getMaxFrameLengthConfig() != 0
+                            ? frame.getMaxFrameLengthConfig()
+                            : MAX_FRAME_SIZE;
+            byte[] payload =
+                    Arrays.copyOfRange(data, offset, Math.min(offset + maxSize, data.length));
+            frame.setCryptoDataConfig(payload);
+            frame.setOffsetConfig(getWriteCryptoFrameOffset(type));
+            frame.setLengthConfig(payload.length);
+            offset += payload.length;
+            increaseWriteCryptoFrameOffset(type, payload.length);
+            if (offset >= data.length) {
+                return frames;
+            }
+        }
+        // Not enough crypto frames
+        byte[] remainingPayload = Arrays.copyOfRange(data, offset, data.length);
+        frames.addAll(getEnoughCryptoFrames(type, remainingPayload));
+        return frames;
+    }
+
+    private long getWriteCryptoFrameOffset(QuicPacketType type) {
+        switch (type) {
+            case INITIAL_PACKET:
+                return initialPhaseWriteCryptoFrameOffset;
+            case HANDSHAKE_PACKET:
+                return handshakePhaseWriteCryptoFrameOffset;
+            case ONE_RTT_PACKET:
+            case ZERO_RTT_PACKET:
+                return applicationPhaseWriteCryptoFrameOffset;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported packet type for WriteCryptoFrameOffset");
+        }
+    }
+
+    private void increaseWriteCryptoFrameOffset(QuicPacketType type, int value) {
+        switch (type) {
+            case INITIAL_PACKET:
+                initialPhaseWriteCryptoFrameOffset += value;
+                break;
+            case HANDSHAKE_PACKET:
+                handshakePhaseWriteCryptoFrameOffset += value;
+                break;
+            case ONE_RTT_PACKET:
+            case ZERO_RTT_PACKET:
+                applicationPhaseWriteCryptoFrameOffset += value;
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported packet type for WriteCryptoFrameOffset");
+        }
     }
 }

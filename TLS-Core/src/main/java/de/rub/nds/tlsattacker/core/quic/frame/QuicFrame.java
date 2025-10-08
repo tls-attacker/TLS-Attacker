@@ -62,7 +62,7 @@ public abstract class QuicFrame extends ModifiableVariableHolder implements Data
             // After an Exception occured, the frameType can be null in certain circumstances
             // This yielded secondary Exceptions in the toString() method and can result in uncaught
             // Exceptions
-            return "";
+            return "NULL";
         }
         return QuicFrameType.getFrameType(frameType.getValue()).getName();
     }

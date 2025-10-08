@@ -1177,4 +1177,13 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultSelectedSrtpProtectionProfile();
         }
     }
+
+    @Override
+    public byte[] getQuicPathChallengeData() {
+        if (context.getQuicContext().getPathChallengeData() != null) {
+            return context.getQuicContext().getPathChallengeData();
+        } else {
+            return config.getDefaultQuicPathChallange();
+        }
+    }
 }

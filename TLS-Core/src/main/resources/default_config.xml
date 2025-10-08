@@ -35,6 +35,7 @@
                     <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">TLS-Attacker</rightElement>
                 </attributeField>
             </subject>
+            <fixIssuer>false</fixIssuer>
             <attributeField>UTF8_STRING</attributeField>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
@@ -155,6 +156,7 @@
                     <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">TLS-Attacker</rightElement>
                 </attributeField>
             </subject>
+            <fixIssuer>false</fixIssuer>
             <attributeField>UTF8_STRING</attributeField>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
@@ -1312,6 +1314,8 @@
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
     <maxUDPRetransmissions>3</maxUDPRetransmissions>
+    <quicFrameLayerAllConfigurationsOnePacket>true</quicFrameLayerAllConfigurationsOnePacket>
+    <quicPacketLayerAllConfigurationsOnePacket>true</quicPacketLayerAllConfigurationsOnePacket>
     <expectHandshakeDoneQuicFrame>false</expectHandshakeDoneQuicFrame>
     <isQuic>false</isQuic>
     <quicRetryFlowRequired>false</quicRetryFlowRequired>
@@ -1470,8 +1474,8 @@
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
-    <quicDoNotPad>false</quicDoNotPad>
-    <discardPacketsWithMismatchedSCID>true</discardPacketsWithMismatchedSCID>
+    <quicDoNotPadPackets>false</quicDoNotPadPackets>
+    <discardQuicPacketsWithMismatchedSCID>true</discardQuicPacketsWithMismatchedSCID>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>

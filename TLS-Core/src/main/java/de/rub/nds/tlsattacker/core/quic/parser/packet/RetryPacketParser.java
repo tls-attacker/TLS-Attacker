@@ -31,9 +31,8 @@ public class RetryPacketParser extends LongHeaderPacketParser<RetryPacket> {
         parseSourceConnectionIdLength(packet);
         parseSourceConnectionId(packet);
         parseRetryToken(packet);
+        // TODO: Why?
         determinePacketLength(packet);
-
-        packet.setUnprotectedPayload(new byte[0]);
     }
 
     private void determinePacketLength(RetryPacket packet) {
@@ -55,6 +54,7 @@ public class RetryPacketParser extends LongHeaderPacketParser<RetryPacket> {
                         tokenAndIntegrityTag.length
                                 - MiscRfcConstants.RETRY_TOKEN_INTEGRITY_TAG_LENGTH));
         LOGGER.debug("Retry Token: {}", packet.getRetryToken().getValue());
+
         packet.setRetryIntegrityTag(
                 Arrays.copyOfRange(
                         tokenAndIntegrityTag,

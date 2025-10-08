@@ -28,12 +28,7 @@ public class PathResponseFramePreparator extends QuicFramePreparator<PathRespons
     }
 
     protected void prepareData(PathResponseFrame frame) {
-        if (!frame.isOverwritePathChallengeData()
-                && chooser.getContext().getQuicContext().getPathChallengeData() != null) {
-            frame.setData(chooser.getContext().getQuicContext().getPathChallengeData());
-        } else if (frame.getData() == null) {
-            frame.setData(chooser.getConfig().getDefaultQuicPathChallange());
-        }
+        frame.setData(chooser.getQuicPathChallengeData());
         LOGGER.debug("Data: {}", frame.getData().getValue());
     }
 }

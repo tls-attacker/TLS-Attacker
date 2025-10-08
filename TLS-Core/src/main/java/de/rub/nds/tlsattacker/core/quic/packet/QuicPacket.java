@@ -42,8 +42,6 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     protected ModifiableByteArray destinationConnectionId;
     protected ModifiableByte destinationConnectionIdLength;
 
-    protected ModifiableByteArray configuredDestinationConnectionId;
-
     protected ModifiableInteger packetLength;
     protected int packetLengthSize;
 
@@ -63,16 +61,16 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
 
     protected QuicCryptoSecrets packetSecret;
     public int offsetToPacketNumber;
-    protected int padding;
+    protected ModifiableInteger padding;
 
-    protected int configuredPadding = -1;
+    protected byte[] destinationConnectionIdConfig;
+    protected Integer padddingConfig;
 
     public QuicPacket() {}
 
     public QuicPacket(QuicPacketType packetType) {
         this.packetType = packetType;
         this.offsetToPacketNumber = 0;
-        this.padding = 0;
     }
 
     public abstract void buildUnprotectedPacketHeader();
@@ -289,17 +287,6 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
         this.destinationConnectionId = destinationConnectionId;
     }
 
-    public void setConfiguredDestinationConnectionId(byte[] destinationConnectionId) {
-        this.configuredDestinationConnectionId =
-                ModifiableVariableFactory.safelySetValue(
-                        this.configuredDestinationConnectionId, destinationConnectionId);
-    }
-
-    public void setConfiguredDestinationConnectionId(
-            ModifiableByteArray configuredDestinationConnectionId) {
-        this.configuredDestinationConnectionId = configuredDestinationConnectionId;
-    }
-
     public void setDestinationConnectionIdLength(byte destinationConnectionIdLength) {
         this.destinationConnectionIdLength =
                 ModifiableVariableFactory.safelySetValue(
@@ -345,6 +332,10 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     }
 
     public void setPadding(int padding) {
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+    }
+
+    public void setPadding(ModifiableInteger padding) {
         this.padding = padding;
     }
 
@@ -392,10 +383,6 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
         return destinationConnectionId;
     }
 
-    public ModifiableByteArray getConfiguredDestinationConnectionId() {
-        return configuredDestinationConnectionId;
-    }
-
     public ModifiableByte getDestinationConnectionIdLength() {
         return destinationConnectionIdLength;
     }
@@ -416,15 +403,23 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
         return plainPacketNumber;
     }
 
-    public int getPadding() {
+    public ModifiableInteger getPadding() {
         return padding;
     }
 
-    public void setConfiguredPadding(int configuredPadding) {
-        this.configuredPadding = configuredPadding;
+    public byte[] getDestinationConnectionIdConfig() {
+        return destinationConnectionIdConfig;
     }
 
-    public int getConfiguredPadding() {
-        return configuredPadding;
+    public void setDestinationConnectionIdConfig(byte[] destinationConnectionIdConfig) {
+        this.destinationConnectionIdConfig = destinationConnectionIdConfig;
+    }
+
+    public Integer getPadddingConfig() {
+        return padddingConfig;
+    }
+
+    public void setPadddingConfig(int padddingConfig) {
+        this.padddingConfig = padddingConfig;
     }
 }

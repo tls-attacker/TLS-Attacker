@@ -343,7 +343,7 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultQuicTransportParameters")
     private QuicTransportParameters defaultQuicTransportParameters;
 
-    /** Default Retry Tag to send as a server */
+    /** Default retry token to send as a server */
     @XmlElement(name = "defaultQuicServerRetryToken")
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultQuicServerRetryToken =
@@ -795,6 +795,12 @@ public class Config implements Serializable {
      */
     private Integer maxUDPRetransmissions = 3;
 
+    /** Every QUIC frame will be sent in one individual QUIC packet */
+    private boolean quicFrameLayerAllConfigurationsOnePacket = true;
+
+    /** Every QUIC packet will be sent in one individual UDP datagram */
+    private boolean quicPacketLayerAllConfigurationsOnePacket = true;
+
     private Boolean expectHandshakeDoneQuicFrame = false;
 
     private Boolean isQuic = false;
@@ -1058,13 +1064,14 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedQuicPackets = false;
 
-    private Boolean quicDoNotPad = false;
+    /** QUIC Packets will not be padded */
+    private Boolean quicDoNotPadPackets = false;
 
     /**
      * QUIC Packets with mismatching SCID are most likely stray packets from previous connection
      * etc. The default use case should be to discard them
      */
-    private Boolean discardPacketsWithMismatchedSCID = true;
+    private Boolean discardQuicPacketsWithMismatchedSCID = false;
 
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
@@ -1467,6 +1474,24 @@ public class Config implements Serializable {
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
         defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
+    }
+
+    public boolean isQuicPacketLayerAllConfigurationsOnePacket() {
+        return quicPacketLayerAllConfigurationsOnePacket;
+    }
+
+    public void setQuicPacketLayerAllConfigurationsOnePacket(
+            boolean quicPacketLayerAllConfigurationsOnePacket) {
+        this.quicPacketLayerAllConfigurationsOnePacket = quicPacketLayerAllConfigurationsOnePacket;
+    }
+
+    public boolean isQuicFrameLayerAllConfigurationsOnePacket() {
+        return quicFrameLayerAllConfigurationsOnePacket;
+    }
+
+    public void setQuicFrameLayerAllConfigurationsOnePacket(
+            boolean quicFrameLayerAllConfigurationsOnePacket) {
+        this.quicFrameLayerAllConfigurationsOnePacket = quicFrameLayerAllConfigurationsOnePacket;
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
@@ -4337,7 +4362,7 @@ public class Config implements Serializable {
         this.defaultQuicNewToken = defaultQuicNewToken;
     }
 
-    public boolean stopActionAfterQuicStatelessReset() {
+    public boolean isStopActionAfterQuicStatelessReset() {
         return stopActionsAfterQuicStatelessReset;
     }
 
@@ -4345,20 +4370,21 @@ public class Config implements Serializable {
         this.stopActionsAfterQuicStatelessReset = stopActionsAfterQuicStatelessReset;
     }
 
-    public Boolean isQuicDoNotPad() {
-        return quicDoNotPad;
+    public Boolean isQuicDoNotPadPackets() {
+        return quicDoNotPadPackets;
     }
 
-    public void setQuicDoNotPad(boolean quicDoNotPad) {
-        this.quicDoNotPad = quicDoNotPad;
+    public void setQuicDoNotPadPackets(boolean quicDoNotPadPackets) {
+        this.quicDoNotPadPackets = quicDoNotPadPackets;
     }
 
-    public Boolean discardPacketsWithMismatchedSCID() {
-        return discardPacketsWithMismatchedSCID;
+    public Boolean discardQuicPacketsWithMismatchedSCID() {
+        return discardQuicPacketsWithMismatchedSCID;
     }
 
-    public void setDiscardPacketsWithMismatchedSCID(Boolean discardPacketsWithMismatchedSCID) {
-        this.discardPacketsWithMismatchedSCID = discardPacketsWithMismatchedSCID;
+    public void setDiscardQuicPacketsWithMismatchedSCID(
+            Boolean discardQuicPacketsWithMismatchedSCID) {
+        this.discardQuicPacketsWithMismatchedSCID = discardQuicPacketsWithMismatchedSCID;
     }
 
     public byte[] getDefaultQuicServerRetryToken() {
