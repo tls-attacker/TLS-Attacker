@@ -35,6 +35,7 @@
                     <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">TLS-Attacker</rightElement>
                 </attributeField>
             </subject>
+            <fixIssuer>false</fixIssuer>
             <attributeField>UTF8_STRING</attributeField>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
@@ -57,6 +58,7 @@
             <includeValidity>true</includeValidity>
             <includeIssuer>true</includeIssuer>
             <includeSubject>true</includeSubject>
+            <includeVersion>true</includeVersion>
             <shuffleIssuer>false</shuffleIssuer>
             <removeFirstRdnIssuer>false</removeFirstRdnIssuer>
             <duplicateFirstRdnIssuer>false</duplicateFirstRdnIssuer>
@@ -155,6 +157,7 @@
                     <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">TLS-Attacker</rightElement>
                 </attributeField>
             </subject>
+            <fixIssuer>false</fixIssuer>
             <attributeField>UTF8_STRING</attributeField>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
@@ -177,6 +180,7 @@
             <includeValidity>true</includeValidity>
             <includeIssuer>true</includeIssuer>
             <includeSubject>true</includeSubject>
+            <includeVersion>true</includeVersion>
             <shuffleIssuer>false</shuffleIssuer>
             <removeFirstRdnIssuer>false</removeFirstRdnIssuer>
             <duplicateFirstRdnIssuer>false</duplicateFirstRdnIssuer>
