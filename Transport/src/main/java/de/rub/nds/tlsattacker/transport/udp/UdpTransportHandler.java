@@ -62,7 +62,13 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         } else {
             setTimeout(timeout);
             DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
-            socket.receive(packet);
+            try {
+                socket.receive(packet);
+            } catch (SocketException ex) {
+                if (!isClosed()) {
+                    LOGGER.error("Could not receive on socket", ex);
+                }
+            }
             if (!socket.isConnected()) {
                 socket.connect(packet.getSocketAddress());
             }
@@ -75,7 +81,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         try (SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream()) {
             outputStream.write(dataBufferInputStream.readAllBytes());
             setTimeout(timeout);
-            // Read packets till we got atleast amountOfData bytes
+            // Read packets till we got at least amountOfData bytes
             while (outputStream.size() < amountOfData) {
                 DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
                 socket.receive(packet);
@@ -84,7 +90,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
                 }
                 outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
             }
-            // Now we got atleast amount of data bytes. If we got more, cache them
+            // Now we got at least amount of data bytes. If we got more, cache them
             dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
             return dataBufferInputStream.readNBytes(amountOfData);
         }
@@ -98,7 +104,10 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
                 socket.setSoTimeout((int) timeout);
             }
         } catch (SocketException ex) {
-            LOGGER.error("Could not adjust socket timeout", ex);
+            if (!isClosed()) {
+                // Suppress for Quic fast connection stops
+                LOGGER.error("Could not adjust socket timeout", ex);
+            }
         }
     }
 
@@ -110,7 +119,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
     }
 
     @Override
-    public boolean isClosed() throws IOException {
+    public boolean isClosed() {
         if (socket != null) {
             return socket.isClosed();
         } else {

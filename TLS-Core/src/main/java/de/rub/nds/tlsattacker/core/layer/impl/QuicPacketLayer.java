@@ -231,50 +231,40 @@ public class QuicPacketLayer
                 QuicVersion quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
                 if (quicVersion == QuicVersion.NULL_VERSION) {
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
+                } else if (quicVersion != quicContext.getQuicVersion()) {
+                    LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
+                    return;
                 } else {
                     packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
-                    if (quicVersion != quicContext.getQuicVersion()
-                            && packetType != QuicPacketType.VERSION_NEGOTIATION) {
-                        LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
-                        packetType = QuicPacketType.UNKNOWN;
-                    }
                 }
             } else {
                 packetType =
                         QuicPacketType.getPacketTypeFromFirstByte(
                                 quicContext.getQuicVersion(), firstByte);
             }
-            QuicPacket readPacket;
-            // Store the packet in the buffer for further processing.
-            switch (packetType) {
-                case INITIAL_PACKET:
-                    readPacket = readInitialPacket(firstByte, versionBytes, dataStream);
-                    break;
-                case HANDSHAKE_PACKET:
-                    readPacket = readHandshakePacket(firstByte, versionBytes, dataStream);
-                    break;
-                case ONE_RTT_PACKET:
-                    readPacket = readOneRTTPacket(firstByte, dataStream);
-                    break;
-                case ZERO_RTT_PACKET:
-                    throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
-                case RETRY_PACKET:
-                    readPacket = readRetryPacket(firstByte, dataStream);
-                    break;
-                case VERSION_NEGOTIATION:
-                    readPacket = readVersionNegotiationPacket(dataStream);
-                    break;
-                case UNKNOWN:
-                    throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
-                default:
-                    throw new IllegalStateException("Received a Packet of Unknown Type");
-            }
+            QuicPacket readPacket =
+                    switch (packetType) {
+                        case INITIAL_PACKET ->
+                                readInitialPacket(firstByte, versionBytes, dataStream);
+                        case HANDSHAKE_PACKET ->
+                                readHandshakePacket(firstByte, versionBytes, dataStream);
+                        case ONE_RTT_PACKET -> readOneRTTPacket(firstByte, dataStream);
+                        case RETRY_PACKET -> readRetryPacket(firstByte, dataStream);
+                        case VERSION_NEGOTIATION -> readVersionNegotiationPacket(dataStream);
+                        case ZERO_RTT_PACKET, UNKNOWN ->
+                                throw new UnsupportedOperationException(
+                                        "Unknown Packet - Not supported yet.");
+                        default ->
+                                throw new IllegalStateException(
+                                        "Received a Packet of Unknown Type");
+                    };
 
+            // Store the packet in the buffer for further processing.
             if (isStatelessResetPacket(readPacket)) {
                 quicContext.setReceivedStatelessResetToken(true);
                 addProducedContainer(new StatelessResetPseudoPacket());
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
-            } else if (context.getConfig().discardPacketsWithMismatchedSCID()
+            } else if (context.getConfig().isDiscardPacketsWithMismatchedSCID()
                     && !Arrays.equals(
                             readPacket.getDestinationConnectionId().getValue(),
                             context.getQuicContext().getSourceConnectionId())) {
@@ -321,24 +311,17 @@ public class QuicPacketLayer
     }
 
     private byte[] writePacket(QuicPacket packet) throws CryptoException {
-        switch (packet.getPacketType()) {
-            case INITIAL_PACKET:
-                return writeInitialPacket((InitialPacket) packet);
-            case HANDSHAKE_PACKET:
-                return writeHandshakePacket((HandshakePacket) packet);
-            case ONE_RTT_PACKET:
-                return writeOneRTTPacket((OneRTTPacket) packet);
-            case ZERO_RTT_PACKET:
-                return writeZeroRTTPacket((ZeroRTTPacket) packet);
-            case RETRY_PACKET:
-                return writeRetryPacket((RetryPacket) packet);
-            case VERSION_NEGOTIATION:
-                return writeVersionNegotiationPacket((VersionNegotiationPacket) packet);
-            case UNKNOWN:
-                throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
-            default:
-                return null;
-        }
+        return switch (packet.getPacketType()) {
+            case INITIAL_PACKET -> writeInitialPacket((InitialPacket) packet);
+            case HANDSHAKE_PACKET -> writeHandshakePacket((HandshakePacket) packet);
+            case ONE_RTT_PACKET -> writeOneRTTPacket((OneRTTPacket) packet);
+            case ZERO_RTT_PACKET -> writeZeroRTTPacket((ZeroRTTPacket) packet);
+            case RETRY_PACKET -> writeRetryPacket((RetryPacket) packet);
+            case VERSION_NEGOTIATION ->
+                    writeVersionNegotiationPacket((VersionNegotiationPacket) packet);
+            default ->
+                    throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
+        };
     }
 
     private byte[] writeInitialPacket(InitialPacket packet) throws CryptoException {

@@ -25,8 +25,9 @@ public class ZeroRTTPacketPreparator extends LongHeaderPacketPreparator<ZeroRTTP
     @Override
     public void prepare() {
         LOGGER.debug("Preparing 0-RTT Packet");
-        prepareUnprotectedFlags();
         prepareUnprotectedPacketNumber();
+        preparePacketNumberLength();
+        prepareUnprotectedFlags();
         prepareLongHeaderPacket();
     }
 
@@ -41,8 +42,9 @@ public class ZeroRTTPacketPreparator extends LongHeaderPacketPreparator<ZeroRTTP
     }
 
     private void prepareUnprotectedFlags() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.ZERO_RTT_PACKET.getHeader(context.getQuicVersion()));
+        byte packetType = QuicPacketType.ZERO_RTT_PACKET.getHeader(context.getQuicVersion());
+        int packetNumber = packet.getPacketNumberLength().getValue();
+        packet.setUnprotectedFlags((byte) (packetType ^ (packetNumber - 1)));
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

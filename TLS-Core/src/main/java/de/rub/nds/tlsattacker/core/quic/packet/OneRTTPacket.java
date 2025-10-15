@@ -32,8 +32,6 @@ public class OneRTTPacket extends QuicPacket {
 
     public OneRTTPacket() {
         super(QuicPacketType.ONE_RTT_PACKET);
-        // TODO: this does not match the header set in QuickPacketType
-        this.setUnprotectedFlags((byte) 0x40);
         this.packetSecret = QuicCryptoSecrets.APPLICATION_SECRET;
     }
 
@@ -46,6 +44,9 @@ public class OneRTTPacket extends QuicPacket {
 
     @Override
     public void buildUnprotectedPacketHeader() {
+        offsetToPacketNumber = 0;
+        unprotectedHeaderHelper.reset();
+
         unprotectedHeaderHelper.write(unprotectedFlags.getValue());
         offsetToPacketNumber++;
 

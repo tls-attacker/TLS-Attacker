@@ -59,7 +59,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
 
     public ModifiableByteArray completeUnprotectedHeader;
     public SilentByteArrayOutputStream protectedHeaderHelper = new SilentByteArrayOutputStream();
-    public SilentByteArrayOutputStream unprotectedHeaderHelper = new SilentByteArrayOutputStream();
+    protected SilentByteArrayOutputStream unprotectedHeaderHelper =
+            new SilentByteArrayOutputStream();
 
     protected QuicCryptoSecrets packetSecret;
     public int offsetToPacketNumber;

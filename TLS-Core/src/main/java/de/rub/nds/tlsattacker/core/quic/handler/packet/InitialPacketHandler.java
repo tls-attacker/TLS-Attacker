@@ -27,7 +27,9 @@ public class InitialPacketHandler extends LongHeaderPacketHandler<InitialPacket>
     @Override
     public void adjustContext(InitialPacket packet) {
         // update quic context
-        quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+        if (!quicContext.getConfig().isEchoQuic()) {
+            quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
+        }
 
         // update quic keys
         try {

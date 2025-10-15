@@ -11,11 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SniType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -62,12 +58,16 @@ public class QuicDelegate extends Delegate {
             config.setDefaultLastRecordProtocolVersion(ProtocolVersion.TLS13);
             config.setTls13BackwardsCompatibilityMode(false);
 
-            // Cipher Suites and Named Groups
+            // Cipher Suites, Named Groups, and Signature Algorithms
             config.setDefaultClientSupportedCipherSuites(CipherSuite.getTls13CipherSuites());
             config.setDefaultClientNamedGroups(NamedGroup.SECP256R1);
             config.setDefaultServerNamedGroups(NamedGroup.SECP256R1);
             config.setDefaultSelectedNamedGroup(NamedGroup.SECP256R1);
             config.setDefaultClientKeyShareNamedGroups(NamedGroup.SECP256R1);
+            config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                    SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
+            config.setDefaultServerSupportedCertificateSignAlgorithms(
+                    SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
 
             // Extensions
             config.setAddServerNameIndicationExtension(true);

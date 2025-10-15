@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.frame;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.handler.frame.QuicFrameHandler;
@@ -27,7 +27,7 @@ public abstract class QuicFrame extends ModifiableVariableHolder implements Data
 
     protected boolean ackEliciting = true;
 
-    @ModifiableVariableProperty private ModifiableByte frameType;
+    @ModifiableVariableProperty private ModifiableLong frameType;
 
     public QuicFrame() {}
 
@@ -40,15 +40,15 @@ public abstract class QuicFrame extends ModifiableVariableHolder implements Data
                 ModifiableVariableFactory.safelySetValue(this.frameType, frameType.getValue());
     }
 
-    public void setFrameType(ModifiableByte frameType) {
+    public void setFrameType(ModifiableLong frameType) {
         this.frameType = frameType;
     }
 
-    public void setFrameType(byte frameType) {
+    public void setFrameType(long frameType) {
         this.frameType = ModifiableVariableFactory.safelySetValue(this.frameType, frameType);
     }
 
-    public ModifiableByte getFrameType() {
+    public ModifiableLong getFrameType() {
         return this.frameType;
     }
 
@@ -59,7 +59,7 @@ public abstract class QuicFrame extends ModifiableVariableHolder implements Data
     @Override
     public String toCompactString() {
         if (frameType == null) {
-            // After an Exception occured, the frameType can be null in certain circumstances
+            // After an Exception occurred, the frameType can be null in certain circumstances
             // This yielded secondary Exceptions in the toString() method and can result in uncaught
             // Exceptions
             return "";

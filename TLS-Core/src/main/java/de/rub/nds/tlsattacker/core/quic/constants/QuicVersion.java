@@ -62,7 +62,7 @@ public enum QuicVersion {
             } else if (versionValue >= 0x51474f00 && versionValue <= 0x51474fff) {
                 return "QGO_" + versionBytes[3];
             } else if (versionValue >= 0x91c17000 && versionValue <= 0x91c170ff) {
-                return "QICLY0_" + versionBytes[3];
+                return "QUICLY0_" + versionBytes[3];
             } else if (versionValue >= 0xabcd0000 && versionValue <= 0xabcd000f) {
                 return "MSQUIC";
             } else if (versionValue >= 0xf123f0c0 && versionValue <= 0xf123f0cf) {
@@ -96,47 +96,35 @@ public enum QuicVersion {
     }
 
     public String getKeyLabel() {
-        switch (this) {
-            case VERSION_1:
-                return QuicHKDFConstants.QUIC1_KEY;
-            case VERSION_2:
-                return QuicHKDFConstants.QUIC2_KEY;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (this) {
+            case VERSION_1 -> QuicHKDFConstants.QUIC1_KEY;
+            case VERSION_2 -> QuicHKDFConstants.QUIC2_KEY;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     public String getIvLabel() {
-        switch (this) {
-            case VERSION_1:
-                return QuicHKDFConstants.QUIC1_IV;
-            case VERSION_2:
-                return QuicHKDFConstants.QUIC2_IV;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (this) {
+            case VERSION_1 -> QuicHKDFConstants.QUIC1_IV;
+            case VERSION_2 -> QuicHKDFConstants.QUIC2_IV;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     public String getHeaderProtectionLabel() {
-        switch (this) {
-            case VERSION_1:
-                return QuicHKDFConstants.QUIC1_HP;
-            case VERSION_2:
-                return QuicHKDFConstants.QUIC2_HP;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (this) {
+            case VERSION_1 -> QuicHKDFConstants.QUIC1_HP;
+            case VERSION_2 -> QuicHKDFConstants.QUIC2_HP;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     public String getKeyUpdateLabel() {
-        switch (this) {
-            case VERSION_1:
-                return QuicHKDFConstants.QUIC1_KU;
-            case VERSION_2:
-                return QuicHKDFConstants.QUIC2_KU;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (this) {
+            case VERSION_1 -> QuicHKDFConstants.QUIC1_KU;
+            case VERSION_2 -> QuicHKDFConstants.QUIC2_KU;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     public String getName() {

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.quic.constants;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public enum QuicPacketType {
     UNKNOWN(255, 255),
@@ -17,8 +18,8 @@ public enum QuicPacketType {
     ZERO_RTT_PACKET(0xd0, 0xe0),
     HANDSHAKE_PACKET(0xe0, 0xf0),
     RETRY_PACKET(0xf0, 0xc0),
-    ONE_RTT_PACKET(0x80, 0x80),
-    VERSION_NEGOTIATION(0x20, 0x20),
+    ONE_RTT_PACKET(0x40, 0x40),
+    VERSION_NEGOTIATION(0xc0, 0xc0),
     STATELESS_RESET(0xfe, 0xfe);
 
     private static final Map<Byte, QuicPacketType> QUIC1_MAP;
@@ -36,7 +37,7 @@ public enum QuicPacketType {
         QUIC1_MAP = new HashMap<>();
         QUIC2_MAP = new HashMap<>();
         for (QuicPacketType type : QuicPacketType.values()) {
-            if (type == UNKNOWN) {
+            if (type == UNKNOWN || type == VERSION_NEGOTIATION || type == STATELESS_RESET) {
                 continue;
             }
             QUIC1_MAP.put(type.headerQuic1, type);
@@ -45,16 +46,19 @@ public enum QuicPacketType {
     }
 
     public static QuicPacketType getPacketTypeFromFirstByte(QuicVersion version, int firstByte) {
+        if (version == QuicVersion.NULL_VERSION) {
+            return VERSION_NEGOTIATION;
+        }
+        if (version != QuicVersion.VERSION_1 && version != QuicVersion.VERSION_2) {
+            return UNKNOWN;
+        }
         if (isShortHeaderPacket(firstByte)) {
             // 1-RTT packets are the only short header packets
             return ONE_RTT_PACKET;
         } else {
-            QuicPacketType type = getHeaderMap(version).get((byte) (firstByte & 0b11110000));
-            if (type != null) {
-                return type;
-            } else {
-                return UNKNOWN;
-            }
+            QuicPacketType type =
+                    getHeaderMap(version).get((byte) (firstByte & 0b1111_0000 | 0b0100_0000));
+            return Objects.requireNonNullElse(type, UNKNOWN);
         }
     }
 
@@ -74,25 +78,19 @@ public enum QuicPacketType {
     }
 
     public byte getHeader(QuicVersion version) {
-        switch (version) {
-            case VERSION_1:
-                return headerQuic1;
-            case VERSION_2:
-                return headerQuic2;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (version) {
+            case VERSION_1 -> headerQuic1;
+            case VERSION_2 -> headerQuic2;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     private static Map<Byte, QuicPacketType> getHeaderMap(QuicVersion version) {
-        switch (version) {
-            case VERSION_1:
-                return QUIC1_MAP;
-            case VERSION_2:
-                return QUIC2_MAP;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (version) {
+            case VERSION_1 -> QUIC1_MAP;
+            case VERSION_2 -> QUIC2_MAP;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     public String getName() {
