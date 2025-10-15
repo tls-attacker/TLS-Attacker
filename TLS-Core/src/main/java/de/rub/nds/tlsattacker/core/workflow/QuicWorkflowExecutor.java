@@ -41,11 +41,13 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         // TODO this executor does not use all implemented callbacks
-        try {
-            initAllLayer();
-        } catch (IOException ex) {
-            throw new WorkflowExecutionException(
-                    "Workflow not executed, could not initialize transport handler: ", ex);
+        if (Boolean.TRUE.equals(config.isWorkflowExecutorShouldOpen())) {
+            try {
+                initAllLayer();
+            } catch (IOException ex) {
+                throw new WorkflowExecutionException(
+                        "Workflow not executed, could not initialize transport handler: ", ex);
+            }
         }
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();

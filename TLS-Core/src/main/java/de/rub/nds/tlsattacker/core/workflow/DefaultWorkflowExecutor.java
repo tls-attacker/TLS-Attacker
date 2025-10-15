@@ -32,7 +32,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
-        if (config.isWorkflowExecutorShouldOpen()) {
+        if (Boolean.TRUE.equals(config.isWorkflowExecutorShouldOpen())) {
             try {
                 initAllLayer();
             } catch (IOException ex) {
