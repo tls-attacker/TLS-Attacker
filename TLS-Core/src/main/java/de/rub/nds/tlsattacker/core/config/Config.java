@@ -1252,6 +1252,7 @@ public class Config implements Serializable {
     /** Padding for the list of alpn values */
     private Integer defaultMaxEchAlpnPadding = 25;
 
+    //region smtp
     private String defaultSmtpReversePath = "seal@upb.de";
     private List<String> defaultSmtpMessage =
             new ArrayList<>(List.of("Hello!", "This is seal.", "Bye!"));
@@ -1300,7 +1301,24 @@ public class Config implements Serializable {
 
     private String defaultSmtpForwardPath = "test@example.com";
 
-    // ---------------------- POP3 start ----------------------//
+    public List<String> getDefaultSmtpMessage() {
+        return defaultSmtpMessage;
+    }
+
+    public void setDefaultSmtpMessage(List<String> defaultSmtpMessage) {
+        this.defaultSmtpMessage = defaultSmtpMessage;
+    }
+
+    public String getDefaultSmtpMailingList() {
+        return defaultSmtpMailingList;
+    }
+
+    public void setDefaultSmtpMailingList(String defaultSmtpMailingList) {
+        this.defaultSmtpMailingList = defaultSmtpMailingList;
+    }
+    //endregion
+
+    //region pop3
     private int defaultPop3MessageNumber = 1;
 
     public int getDefaultPop3MessageNumber() {
@@ -1330,7 +1348,7 @@ public class Config implements Serializable {
     public void setDefaultPop3Password(String password) {
         this.defaultPop3Password = password;
     }
-    // ---------------------- POP3 end ----------------------//
+    //endregion
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
@@ -4283,21 +4301,5 @@ public class Config implements Serializable {
 
     public void setQuicRetryFlowRequired(Boolean quicRetryFlowRequired) {
         this.quicRetryFlowRequired = quicRetryFlowRequired;
-    }
-
-    public List<String> getDefaultSmtpMessage() {
-        return defaultSmtpMessage;
-    }
-
-    public void setDefaultSmtpMessage(List<String> defaultSmtpMessage) {
-        this.defaultSmtpMessage = defaultSmtpMessage;
-    }
-
-    public String getDefaultSmtpMailingList() {
-        return defaultSmtpMailingList;
-    }
-
-    public void setDefaultSmtpMailingList(String defaultSmtpMailingList) {
-        this.defaultSmtpMailingList = defaultSmtpMailingList;
     }
 }
