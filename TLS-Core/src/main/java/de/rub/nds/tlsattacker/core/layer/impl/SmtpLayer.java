@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.hints.SmtpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
@@ -48,7 +47,7 @@ import org.apache.logging.log4j.Logger;
  * @see SmtpCommand
  * @see SmtpReply
  */
-public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
+public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SmtpContext context;
@@ -99,7 +98,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
      * @throws IOException
      */
     @Override
-    public LayerProcessingResult sendData(SmtpLayerHint hint, byte[] additionalData)
+    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
             throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -154,7 +153,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                             SmtpMappingUtil.getCommandTypeFromVerb(smtpCommand.getVerb());
                     // this will be the actual parsing of the command
                     HintedLayerInputStream smtpCommandStream =
-                            new HintedLayerInputStream(new SmtpLayerHint(), this);
+                            new HintedLayerInputStream(null, this);
                     smtpCommandStream.extendStream(verbParser.getAlreadyParsed());
                     SmtpCommandParser parser = trueCommand.getParser(context, smtpCommandStream);
                     try {
@@ -171,7 +170,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                         try {
                             trueCommand = new SmtpUnknownCommand();
                             HintedLayerInputStream unknownCommandStream =
-                                    new HintedLayerInputStream(new SmtpLayerHint(), this);
+                                    new HintedLayerInputStream(null, this);
                             unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
                             parser = trueCommand.getParser(context, unknownCommandStream);
                             parser.parse(trueCommand);

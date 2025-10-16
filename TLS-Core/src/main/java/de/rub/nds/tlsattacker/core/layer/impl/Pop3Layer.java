@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.hints.Pop3LayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
@@ -45,7 +44,7 @@ import org.apache.logging.log4j.Logger;
  * Will fall back to Pop3UnknownReply if the type of reply is unclear, but falling back for
  * nonsensical replies is not yet implemented.
  */
-public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
+public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Pop3Context context;
@@ -87,7 +86,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
     }
 
     @Override
-    public LayerProcessingResult sendData(Pop3LayerHint hint, byte[] additionalData)
+    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
             throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -146,7 +145,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                             Pop3MappingUtil.getCommandFromKeyword(pop3Command.getKeyword());
                     // this will be the actual parsing of the command
                     HintedLayerInputStream pop3CommandStream =
-                            new HintedLayerInputStream(new Pop3LayerHint(), this);
+                            new HintedLayerInputStream(null, this);
                     pop3CommandStream.extendStream(verbParser.getAlreadyParsed());
                     Pop3CommandParser parser = trueCommand.getParser(context, pop3CommandStream);
                     try {
@@ -163,7 +162,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                         try {
                             trueCommand = new Pop3UnknownCommand();
                             HintedLayerInputStream unknownCommandStream =
-                                    new HintedLayerInputStream(new Pop3LayerHint(), this);
+                                    new HintedLayerInputStream(null, this);
                             unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
                             parser = trueCommand.getParser(context, unknownCommandStream);
                             parser.parse(trueCommand);
