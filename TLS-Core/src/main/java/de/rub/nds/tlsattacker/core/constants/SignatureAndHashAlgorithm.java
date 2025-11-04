@@ -75,6 +75,11 @@ public enum SignatureAndHashAlgorithm {
     ECDSA_BRAINPOOL_P384R1_TLS13_SHA384(0x081B, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384),
     ECDSA_BRAINPOOL_P512R1_TLS13_SHA512(0x081C, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512),
 
+    // ML-DSA IETF Draft https://datatracker.ietf.org/doc/draft-ietf-tls-mldsa/
+    MLDSA44(0x0904, null, null),
+    MLDSA65(0x0905, null, null),
+    MLDSA87(0x0906, null, null),
+
     // GREASE constants
     GREASE_00(0x0A0A, null, null),
     GREASE_01(0x1A1A, null, null),
