@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
@@ -142,7 +143,7 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
                         continue;
                     }
                     Pop3Command trueCommand =
-                            Pop3MappingUtil.getCommandFromKeyword(pop3Command.getKeyword());
+                            Pop3CommandType.fromKeyword(pop3Command.getKeyword()).createCommand();
                     // this will be the actual parsing of the command
                     HintedLayerInputStream pop3CommandStream =
                             new HintedLayerInputStream(null, this);

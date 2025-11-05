@@ -29,7 +29,7 @@ public class Pop3RETRCommandTest {
         Pop3RETRCommand retrCommand = new Pop3RETRCommand();
         String message = "RETR 1\r\n";
 
-        Pop3CommandParser<Pop3RETRCommand> parser =
+        Pop3CommandParser parser =
                 retrCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));

@@ -20,9 +20,7 @@ public class Pop3PASSReplyHandler extends Pop3ReplyHandler<Pop3PASSReply> {
 
     @Override
     public void adjustContext(Pop3PASSReply pop3PASSReply) {
-        Pop3Command lastCommand = this.getContext().getLastCommand();
-
-        if (lastCommand instanceof Pop3PASSCommand && pop3PASSReply.statusIsPositive()) {
+        if (pop3PASSReply.statusIsPositive()) {
             this.getContext().setClientIsAuthenticated(true);
         }
     }

@@ -17,6 +17,10 @@ import java.util.List;
 
 public class Pop3Context extends LayerContext {
 
+    /**
+     * Stores the last command that was sent to the server, because it may contain information a reply operates on.
+     * E.g., the DELE command may contain a message number that cannot be determined from the reply itself.
+     * */
     private Pop3Command lastCommand = new Pop3InitialGreetingDummy();
 
     private boolean greetingReceived = false;
@@ -39,7 +43,7 @@ public class Pop3Context extends LayerContext {
 
     public Pop3Reply getExpectedNextReplyType() {
         Pop3Command command = getLastCommand();
-        return Pop3MappingUtil.getMatchingReply(command);
+        return command.getCommandType().createReply();
     }
 
     public Pop3Command getLastCommand() {

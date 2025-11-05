@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3QUITCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -29,7 +29,7 @@ public class Pop3QUITCommandTest {
         Pop3QUITCommand quitCommand = new Pop3QUITCommand();
         String message = "QUIT\r\n";
 
-        Pop3CommandParser<Pop3QUITCommand> parser =
+        Pop3CommandParser parser =
                 quitCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -42,7 +42,7 @@ public class Pop3QUITCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3QUITCommand quitCommand = new Pop3QUITCommand();
-        Pop3QUITCommandPreparator preparator = quitCommand.getPreparator(context);
+        Pop3CommandPreparator preparator = quitCommand.getPreparator(context);
         Pop3MessageSerializer<?> serializer = quitCommand.getSerializer(context);
 
         preparator.prepare();

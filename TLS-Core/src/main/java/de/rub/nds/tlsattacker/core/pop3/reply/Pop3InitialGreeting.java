@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3InitialGreetingHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -21,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class Pop3InitialGreeting extends Pop3Reply {
 
     public Pop3InitialGreeting() {
-        super();
+        super(Pop3CommandType.INITIAL_GREETING);
     }
 
     @Override

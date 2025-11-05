@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3ReplyHandler;
@@ -34,13 +35,19 @@ public class Pop3Reply extends Pop3Message {
 
     protected List<String> humanReadableMessages = new ArrayList<>();
 
-    public Pop3Reply() {
-        this.humanReadableMessages = new ArrayList<>();
+    public Pop3Reply(Pop3CommandType type) {
+        this(type, "");
     }
 
-    public Pop3Reply(String statusIndicator) {
-        super();
+    public Pop3Reply(Pop3CommandType type, String statusIndicator) {
+        this.commandType = type;
+        this.humanReadableMessages = new ArrayList<>();
         this.statusIndicator = statusIndicator;
+    }
+
+    public Pop3Reply() {
+        //Jaxb constructor
+        this(Pop3CommandType.UNKNOWN, null);
     }
 
     public void setStatusIndicator(String statusIndicator) {
@@ -81,7 +88,7 @@ public class Pop3Reply extends Pop3Message {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getStatusIndicator())
                 .append(" ")
-                .append(Pop3MappingUtil.getMatchingCommand(this).getKeyword())
+                .append(this.getCommandType().getKeyword())
                 .append("Reply");
         return sb.toString();
     }

@@ -29,7 +29,7 @@ public class Pop3LISTCommandTest {
         Pop3LISTCommand listCommand = new Pop3LISTCommand();
         String message = "LIST\r\n";
 
-        Pop3CommandParser<Pop3LISTCommand> parser =
+        Pop3CommandParser parser =
                 listCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
@@ -46,7 +46,7 @@ public class Pop3LISTCommandTest {
         Pop3LISTCommand listCommand = new Pop3LISTCommand();
         String message = "LIST 1\r\n";
 
-        Pop3CommandParser<Pop3LISTCommand> parser =
+        Pop3CommandParser parser =
                 listCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));

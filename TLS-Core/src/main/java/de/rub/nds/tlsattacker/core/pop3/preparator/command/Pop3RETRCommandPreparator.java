@@ -19,7 +19,6 @@ public class Pop3RETRCommandPreparator extends Pop3CommandPreparator<Pop3RETRCom
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("RETR");
         if (this.getObject().getMessageNumber() == null) {
             this.getObject().setMessageNumber(chooser.getConfig().getDefaultPop3MessageNumber());
         }

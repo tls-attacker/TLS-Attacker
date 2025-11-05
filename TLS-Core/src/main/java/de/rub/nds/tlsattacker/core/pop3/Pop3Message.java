@@ -21,6 +21,8 @@ import java.io.InputStream;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Pop3Message extends Message<Pop3Context> {
 
+    protected Pop3CommandType commandType = Pop3CommandType.UNKNOWN;
+
     @Override
     public abstract Pop3MessageHandler<? extends Pop3Message> getHandler(Pop3Context pop3Context);
 
@@ -33,4 +35,8 @@ public abstract class Pop3Message extends Message<Pop3Context> {
 
     @Override
     public abstract Pop3MessageSerializer<? extends Pop3Message> getSerializer(Pop3Context context);
+
+    public Pop3CommandType getCommandType() {
+        return commandType;
+    }
 }

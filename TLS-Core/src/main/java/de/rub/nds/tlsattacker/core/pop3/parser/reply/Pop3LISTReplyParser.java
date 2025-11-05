@@ -64,6 +64,7 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
     private boolean replyIsSingleLine() {
         // Assumption based on RFC encouragements: "LIST [messageNumber]" will always return a
         // single line
+        // We need to access the message number from the command that prompted this reply.
         Pop3Command lastCommand = this.pop3Context.getLastCommand();
         return lastCommand instanceof Pop3LISTCommand
                 && ((Pop3LISTCommand) lastCommand).hasMessageNumber();

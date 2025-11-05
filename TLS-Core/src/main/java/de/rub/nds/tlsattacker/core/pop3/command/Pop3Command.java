@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3CommandHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
@@ -24,21 +25,23 @@ import java.io.InputStream;
 @XmlRootElement
 public class Pop3Command extends Pop3Message {
 
-    String keyword;
-
+    final String keyword;
     String arguments;
 
     public Pop3Command(String keyword, String arguments) {
-        super();
         this.keyword = keyword;
         this.arguments = arguments;
+        this.commandType = Pop3CommandType.UNKNOWN;
     }
-
-    public Pop3Command(String keyword) {
-        this.keyword = keyword;
+    protected Pop3Command(Pop3CommandType commandType, String arguments) {
+        this.commandType = commandType;
+        this.keyword = commandType.getKeyword();
+        this.arguments = arguments;
     }
-
-    public Pop3Command() {}
+    public Pop3Command() {
+        // JAXB constructor
+        this("", "");
+    }
 
     @Override
     public Pop3CommandHandler<? extends Pop3Message> getHandler(Pop3Context pop3Context) {
@@ -79,15 +82,34 @@ public class Pop3Command extends Pop3Message {
         return keyword;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
     public String getArguments() {
         return arguments;
     }
 
     public void setArguments(String arguments) {
         this.arguments = arguments;
+    }
+
+    public String serialize() {
+        final String SP = " ";
+        final String CRLF = "\r\n";
+
+        StringBuilder sb = new StringBuilder();
+
+        boolean keywordExists = this.getKeyword() != null;
+        boolean argumentsExist = this.getArguments() != null;
+
+        if (keywordExists) {
+            sb.append(this.getKeyword());
+        }
+        if (keywordExists && argumentsExist) {
+            sb.append(SP);
+        }
+        if (argumentsExist) {
+            sb.append(this.getArguments());
+        }
+
+        sb.append(CRLF);
+        return sb.toString();
     }
 }

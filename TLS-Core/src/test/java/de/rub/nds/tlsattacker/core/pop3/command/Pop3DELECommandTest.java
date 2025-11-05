@@ -29,7 +29,7 @@ public class Pop3DELECommandTest {
         Pop3DELECommand deleCommand = new Pop3DELECommand();
         String message = "DELE 1\r\n";
 
-        Pop3CommandParser<Pop3DELECommand> parser =
+        Pop3CommandParser parser =
                 deleCommand.getParser(
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3LISTCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -23,14 +24,13 @@ public class Pop3LISTCommand extends Pop3Command implements Pop3MessageNumber {
 
     private Integer messageNumber; // optional, see boolean variable hasMessageNumber
     private boolean hasMessageNumber = false;
-    private static final String commandName = "LIST";
 
     public Pop3LISTCommand() {
-        super(commandName, null);
+        super(Pop3CommandType.LIST, null);
     }
 
     public Pop3LISTCommand(int messageNumber) {
-        super(commandName, String.valueOf(messageNumber));
+        super(Pop3CommandType.LIST, String.valueOf(messageNumber));
         this.messageNumber = messageNumber;
         this.hasMessageNumber = true;
     }
@@ -46,11 +46,6 @@ public class Pop3LISTCommand extends Pop3Command implements Pop3MessageNumber {
 
     public boolean hasMessageNumber() {
         return hasMessageNumber;
-    }
-
-    @Override
-    public Pop3CommandParser<Pop3LISTCommand> getParser(Pop3Context context, InputStream stream) {
-        return new Pop3CommandParser<>(stream);
     }
 
     @Override

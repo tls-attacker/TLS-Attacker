@@ -27,8 +27,6 @@ public class Pop3USERCommandParser extends Pop3CommandParser<Pop3USERCommand> {
         String[] lineContents = line.split(" ");
         String keyword = lineContents[0];
 
-        userCommand.setKeyword(keyword);
-
         if (lineContents.length == 1) {
             LOGGER.warn("Expected username but only got keyword. Proceeding with username = null.");
 

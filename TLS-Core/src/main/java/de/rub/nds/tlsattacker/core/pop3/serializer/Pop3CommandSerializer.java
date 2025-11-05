@@ -19,9 +19,6 @@ import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 public class Pop3CommandSerializer<CommandT extends Pop3Command>
         extends Pop3MessageSerializer<CommandT> {
 
-    private static final String SP = " ";
-    private static final String CRLF = "\r\n";
-
     private final Pop3Command command;
 
     public Pop3CommandSerializer(CommandT pop3Command, Pop3Context context) {
@@ -31,23 +28,7 @@ public class Pop3CommandSerializer<CommandT extends Pop3Command>
 
     @Override
     protected byte[] serializeBytes() {
-        StringBuilder sb = new StringBuilder();
-
-        boolean keywordExists = this.command.getKeyword() != null;
-        boolean argumentsExist = this.command.getArguments() != null;
-
-        if (keywordExists) {
-            sb.append(this.command.getKeyword());
-        }
-        if (keywordExists && argumentsExist) {
-            sb.append(SP);
-        }
-        if (argumentsExist) {
-            sb.append(this.command.getArguments());
-        }
-
-        sb.append(CRLF);
-        byte[] output = sb.toString().getBytes();
+        byte[] output = this.command.serialize().getBytes();
         appendBytes(output);
         return getAlreadySerialized();
     }

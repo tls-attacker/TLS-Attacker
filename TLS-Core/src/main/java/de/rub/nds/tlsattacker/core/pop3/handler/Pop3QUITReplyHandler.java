@@ -20,9 +20,7 @@ public class Pop3QUITReplyHandler extends Pop3ReplyHandler<Pop3QUITReply> {
 
     @Override
     public void adjustContext(Pop3QUITReply pop3QUITReply) {
-        Pop3Command lastCommand = this.getContext().getLastCommand();
-
-        if (lastCommand instanceof Pop3QUITCommand && pop3QUITReply.statusIsPositive()) {
+        if (pop3QUITReply.statusIsPositive()) {
             this.getContext().setClientQuitConnection(true);
         }
     }
