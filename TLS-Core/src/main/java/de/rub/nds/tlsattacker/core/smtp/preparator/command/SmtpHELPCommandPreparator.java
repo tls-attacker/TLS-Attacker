@@ -19,6 +19,7 @@ public class SmtpHELPCommandPreparator extends SmtpCommandPreparator<SmtpHELPCom
 
     @Override
     public void prepare() {
+        // no default needed, null is also a valid value
         this.getObject().setParameters(this.getObject().getSubject());
     }
 }
