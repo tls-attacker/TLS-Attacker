@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
@@ -93,7 +92,7 @@ public class SmtpContext extends LayerContext {
      * SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
      * interpret the replies, because the reply type cannot be determined by the content alone.
      *
-     * @see SmtpMappingUtil
+     * @see de.rub.nds.tlsattacker.core.smtp.SmtpCommandType
      * @see de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer SmtpLayer
      */
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();

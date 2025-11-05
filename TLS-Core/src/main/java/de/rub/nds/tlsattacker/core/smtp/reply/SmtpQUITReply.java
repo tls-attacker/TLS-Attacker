@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpQUITReplyHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -22,5 +23,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class SmtpQUITReply extends SmtpReply {
     public SmtpQUITReplyHandler getHandler(SmtpContext context) {
         return new SmtpQUITReplyHandler(context);
+    }
+    public SmtpQUITReply() {
+        super(SmtpCommandType.QUIT);
     }
 }

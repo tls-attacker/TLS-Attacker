@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpUnknownCommand;
@@ -113,7 +112,7 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
      *
      * @return a LayerProcessingResult containing the SmtpMessage that was received across the
      *     different layers
-     * @see SmtpMappingUtil
+     * @see SmtpCommandType
      */
     @Override
     public LayerProcessingResult receiveData() {

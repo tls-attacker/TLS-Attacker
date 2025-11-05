@@ -55,16 +55,22 @@ public class SmtpReply extends SmtpMessage {
         return this.humanReadableMessages.size() > 1;
     }
 
-    public SmtpReply() {
+    public SmtpReply(SmtpCommandType type) {
+        this.commandType = type;
         this.humanReadableMessages = new ArrayList<>();
     }
 
-    public SmtpReply(Integer replyCode) {
+    public SmtpReply(SmtpCommandType type, Integer replyCode) {
         // allows a user to create a custom reply with a very specific (perhaps standard-violating)
         // reply code
         // we do not currently do this in the codebase, but it is a possibility, so we allow it
-        super();
+        this(type);
         this.replyCode = replyCode;
+    }
+
+    public SmtpReply() {
+        //JAXB constructor
+        this(SmtpCommandType.UNKNOWN);
     }
 
     @Override

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -18,4 +19,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * @see SmtpReply
  */
 @XmlRootElement
-public class SmtpAUTHCredentialsReply extends SmtpReply {}
+public class SmtpAUTHCredentialsReply extends SmtpReply {
+    public SmtpAUTHCredentialsReply() {
+        super(SmtpCommandType.AUTH_CREDENTIALS);
+    }
+}

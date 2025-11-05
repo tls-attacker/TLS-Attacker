@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpEHLOReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEHLOReplyParser;
@@ -29,7 +30,7 @@ public class SmtpEHLOReply extends SmtpReply {
     private List<SmtpServiceExtension> extensions;
 
     public SmtpEHLOReply() {
-        super();
+        super(SmtpCommandType.EHLO);
         this.extensions = new ArrayList<>();
     }
 

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
@@ -21,6 +22,9 @@ import java.io.InputStream;
  */
 @XmlRootElement
 public class SmtpUnknownReply extends SmtpReply {
+    public SmtpUnknownReply() {
+        super(SmtpCommandType.UNKNOWN);
+    }
     @Override
     public SmtpReplyParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
