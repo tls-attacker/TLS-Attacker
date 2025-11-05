@@ -29,9 +29,10 @@ public class Pop3Command extends Pop3Message {
     String arguments;
 
     public Pop3Command(String keyword, String arguments) {
+        // use for easy creation of custom commands
         this.keyword = keyword;
         this.arguments = arguments;
-        this.commandType = Pop3CommandType.UNKNOWN;
+        this.commandType = Pop3CommandType.CUSTOM;
     }
     public Pop3Command(Pop3CommandType commandType, String arguments) {
         this.commandType = commandType;
