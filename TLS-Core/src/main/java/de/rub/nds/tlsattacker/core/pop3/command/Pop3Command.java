@@ -96,6 +96,13 @@ public class Pop3Command extends Pop3Message {
 
         StringBuilder sb = new StringBuilder();
 
+        if(this instanceof Pop3MessageNumber) {
+            Pop3MessageNumber numberedMessage = (Pop3MessageNumber) this;
+            if (numberedMessage.getMessageNumber() != null) {
+                this.setArguments(numberedMessage.getMessageNumber().toString());
+            }
+        }
+
         boolean keywordExists = this.getKeyword() != null;
         boolean argumentsExist = this.getArguments() != null;
 
