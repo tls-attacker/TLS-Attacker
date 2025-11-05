@@ -65,29 +65,5 @@ public enum Pop3CommandType {
         }
         return UNKNOWN;
     }
-
-    public static Pop3CommandType fromCommand(Pop3Command command) {
-        if (command == null) {
-            return null;
-        }
-        for (Pop3CommandType type : values()) {
-            if (type.commandSupplier.get().getClass().equals(command.getClass())) {
-                return type;
-            }
-        }
-        return UNKNOWN;
-    }
-
-    public static Pop3CommandType fromReply(Pop3Reply reply) {
-        if (reply == null) {
-            return null;
-        }
-        for (Pop3CommandType type : values()) {
-            if (type.replySupplier.get().getClass().equals(reply.getClass())) {
-                return type;
-            }
-        }
-        return UNKNOWN;
-    }
 }
 
