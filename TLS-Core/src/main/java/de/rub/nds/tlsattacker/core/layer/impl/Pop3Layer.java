@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
-import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3UnknownCommand;
@@ -208,10 +207,6 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Pop3Command getCommandType() {
-        return new Pop3Command();
     }
 
     @Override
