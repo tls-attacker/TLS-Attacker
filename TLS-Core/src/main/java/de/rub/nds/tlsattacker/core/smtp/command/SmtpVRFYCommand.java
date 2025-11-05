@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpVRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpVRFYCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -25,15 +26,14 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpVRFYCommand extends SmtpCommand {
 
-    private static final String COMMAND_NAME = "VRFY";
     private String username;
 
     public SmtpVRFYCommand() {
-        super(COMMAND_NAME);
+        super(SmtpCommandType.VRFY);
     }
 
     public SmtpVRFYCommand(String username) {
-        super(COMMAND_NAME, username);
+        this();
         this.username = username;
     }
 

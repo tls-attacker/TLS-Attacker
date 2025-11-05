@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
@@ -150,7 +151,7 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
                         continue;
                     }
                     SmtpCommand trueCommand =
-                            SmtpMappingUtil.getCommandTypeFromVerb(smtpCommand.getVerb());
+                            SmtpCommandType.fromKeyword(smtpCommand.getVerb()).createCommand();
                     // this will be the actual parsing of the command
                     HintedLayerInputStream smtpCommandStream =
                             new HintedLayerInputStream(null, this);

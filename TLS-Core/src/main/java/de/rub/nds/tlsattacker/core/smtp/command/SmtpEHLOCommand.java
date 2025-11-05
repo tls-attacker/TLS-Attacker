@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpEHLOCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpEHLOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpEHLOCommandPreparator;
@@ -37,11 +38,11 @@ public class SmtpEHLOCommand extends SmtpCommand {
     private boolean hasAddressLiteral = false;
 
     public SmtpEHLOCommand() {
-        super("EHLO");
+        super(SmtpCommandType.EHLO);
     }
 
     public SmtpEHLOCommand(String clientIdentity) {
-        super("EHLO", clientIdentity);
+        this();
         if (IPAddress.isValid(clientIdentity)) {
             this.hasAddressLiteral = true;
         }
@@ -49,8 +50,9 @@ public class SmtpEHLOCommand extends SmtpCommand {
     }
 
     public SmtpEHLOCommand(IPAddress ip) {
-        super("EHLO", ip.toString());
+        this();
         this.clientIdentity = ip.toString();
+        this.hasAddressLiteral = true;
     }
 
     @Override

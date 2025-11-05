@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpRCPTCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpRCPTCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpRCPTCommandPreparator;
@@ -29,16 +30,15 @@ import java.util.List;
  */
 @XmlRootElement
 public class SmtpRCPTCommand extends SmtpCommand {
-    private static final String COMMAND = "RCPT";
     private String recipient;
     private List<String> rcptParameters = new ArrayList<>();
 
     public SmtpRCPTCommand() {
-        super(COMMAND, null);
+        super(SmtpCommandType.RCPT);
     }
 
     public SmtpRCPTCommand(String recipient) {
-        super(COMMAND, null);
+        this();
         this.recipient = recipient;
     }
 

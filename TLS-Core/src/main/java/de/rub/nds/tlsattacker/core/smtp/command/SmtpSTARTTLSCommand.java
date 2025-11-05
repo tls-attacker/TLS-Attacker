@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -25,6 +26,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 public class SmtpSTARTTLSCommand extends SmtpCommand {
     public SmtpSTARTTLSCommand() {
-        super("STARTTLS");
+        super(SmtpCommandType.STARTTLS);
     }
 }

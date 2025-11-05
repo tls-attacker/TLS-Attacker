@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
+
 public class SmtpUnknownCommand extends SmtpCommand {
-    private static final String verb = "UNKNOWN";
 
     public SmtpUnknownCommand() {
-        super(verb);
+        super(SmtpCommandType.UNKNOWN);
     }
 }

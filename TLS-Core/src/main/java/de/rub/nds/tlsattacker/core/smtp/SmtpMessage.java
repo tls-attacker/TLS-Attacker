@@ -33,6 +33,8 @@ import java.io.InputStream;
 @XmlSeeAlso({SmtpCommand.class, SmtpReply.class})
 public abstract class SmtpMessage extends Message<SmtpContext> {
 
+    protected SmtpCommandType commandType = SmtpCommandType.UNKNOWN;
+
     /**
      * Returns the handler responsible for handling this type of message.
      *
@@ -57,6 +59,9 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
 
     /**
      * Returns the preparator responsible for preparing this type of message.
+     * In general, the preparator fills in default values (if necessary) and sets the parameter string correctly.
+     * This means that a single generic serializer can be used for all messages.
+     * Also see {@link #getSerializer(SmtpContext)}
      *
      * @param context the {@link SmtpContext}
      * @return a preparator for this message
@@ -67,6 +72,9 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
 
     /**
      * Returns the serializer responsible for serializing this type of message.
+     * The serializer is responsible for converting a prepared message object into a string.
+     * Because the preparator does most of the work, a single generic serializer is currently used for all messages.
+     * Also see {@link #getPreparator(SmtpContext)}
      *
      * @param context the {@link SmtpContext}
      * @return a serializer for this message
@@ -74,4 +82,9 @@ public abstract class SmtpMessage extends Message<SmtpContext> {
      */
     @Override
     public abstract SmtpMessageSerializer<? extends SmtpMessage> getSerializer(SmtpContext context);
+
+    public SmtpCommandType getCommandType() {
+        return commandType;
+    }
+
 }

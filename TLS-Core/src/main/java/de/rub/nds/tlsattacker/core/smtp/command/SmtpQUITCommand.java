@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpQUITCommandHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -24,10 +25,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class SmtpQUITCommand extends SmtpCommand {
-    private static final String COMMAND = "QUIT";
-
     public SmtpQUITCommand() {
-        super(COMMAND, null);
+        super(SmtpCommandType.QUIT);
     }
 
     @Override

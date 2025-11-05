@@ -174,7 +174,7 @@ public class SmtpContext extends LayerContext {
      */
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
-        return SmtpMappingUtil.getMatchingReply(command);
+        return command.getCommandType().createReply();
     }
 
     public boolean isClientUsedHELO() {

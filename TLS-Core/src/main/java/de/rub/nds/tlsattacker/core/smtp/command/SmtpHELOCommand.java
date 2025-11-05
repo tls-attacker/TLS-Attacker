@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpHELOCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpHELOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpHELOCommandPreparator;
@@ -41,11 +42,11 @@ public class SmtpHELOCommand extends SmtpCommand {
     private String domain;
 
     public SmtpHELOCommand() {
-        super("HELO");
+        super(SmtpCommandType.HELO);
     }
 
     public SmtpHELOCommand(String domain) {
-        super("HELO", domain);
+        this();
         this.domain = domain;
     }
 

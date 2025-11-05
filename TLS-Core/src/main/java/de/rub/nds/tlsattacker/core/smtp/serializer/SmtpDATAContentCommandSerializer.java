@@ -10,41 +10,28 @@ package de.rub.nds.tlsattacker.core.smtp.serializer;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 
 /**
- * This class serializes SMTP commands. Typically, a command is serialized in the format
- * "COMMAND&lt;SP&gt;[PARAMETERS]&lt;CRLF&gt;". Where &lt;SP&gt; is a space character and
- * &lt;CRLF&gt; is a carriage return followed by a line feed. When there are no parameters, the
- * command is serialized as "COMMAND&lt;CRLF&gt;". This is according to the SMTP protocol as defined
- * in RFC 5321.
+ * Serializer for SMTP DATA content commands.
+ * This is special, because the content does not have a keyword
  */
-public class SmtpCommandSerializer<CommandT extends SmtpCommand>
-        extends SmtpMessageSerializer<CommandT> {
+public class SmtpDATAContentCommandSerializer
+        extends SmtpCommandSerializer<SmtpDATAContentCommand> {
 
     // modeled after their usage in RFC 5321
     private static final String SP = " ";
     private static final String CRLF = "\r\n";
 
-    protected final SmtpCommand command;
-
-    public SmtpCommandSerializer(SmtpContext context, CommandT smtpCommand) {
-        super(smtpCommand, context);
-        this.command = smtpCommand;
+    public SmtpDATAContentCommandSerializer(SmtpContext context, SmtpDATAContentCommand smtpCommand) {
+        super(context, smtpCommand);
     }
 
     @Override
     protected byte[] serializeBytes() {
         StringBuilder sb = new StringBuilder();
-
-        boolean verbExists = this.command.getVerb() != null;
         boolean parametersExist = this.command.getParameters() != null;
 
-        if (verbExists) {
-            sb.append(this.command.getVerb());
-        }
-        if (verbExists && parametersExist) {
-            sb.append(SP);
-        }
         if (parametersExist) {
             sb.append(this.command.getParameters());
         }

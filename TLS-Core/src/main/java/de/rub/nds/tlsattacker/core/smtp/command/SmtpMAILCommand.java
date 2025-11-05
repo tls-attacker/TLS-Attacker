@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMAILCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpMAILCommandParser;
@@ -30,26 +31,22 @@ import java.util.List;
  */
 @XmlRootElement
 public class SmtpMAILCommand extends SmtpCommand {
-
-    private static final String COMMAND = "MAIL";
-
     private String reversePath;
 
-    private final List<SmtpParameters> MAILparameters;
+    private List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
-        super(COMMAND);
+        super(SmtpCommandType.MAIL);
         this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath) {
-        super(COMMAND, reversePath);
+        this();
         this.reversePath = reversePath;
-        this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath, List<SmtpParameters> parameters) {
-        super(COMMAND, reversePath);
+        this();
         this.reversePath = reversePath;
         this.MAILparameters = parameters;
     }

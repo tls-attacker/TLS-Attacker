@@ -35,7 +35,6 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         // trailing white space before the terminating &lt;CRLF&gt;.
         String actualCommand = line.trim();
         String[] verbAndParams = actualCommand.split(" ", 2);
-        smtpCommand.setVerb(verbAndParams[0]);
         if (verbAndParams.length == 2) {
             smtpCommand.setParameters(verbAndParams[1]);
         }

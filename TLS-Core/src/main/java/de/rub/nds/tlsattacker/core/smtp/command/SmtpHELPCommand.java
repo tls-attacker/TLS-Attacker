@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpHELPCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpHELPCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -26,15 +27,15 @@ import java.io.InputStream;
  */
 @XmlRootElement
 public class SmtpHELPCommand extends SmtpCommand {
-    private static final String COMMAND = "HELP";
     private String subject;
 
     public SmtpHELPCommand() {
-        super(COMMAND);
+        super(SmtpCommandType.HELP);
     }
 
     public SmtpHELPCommand(String subject) {
-        super(COMMAND, subject);
+        this();
+        this.subject = subject;
     }
 
     @Override

@@ -32,23 +32,33 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
 
-    String verb;
+    final String verb;
     // this field is used by preparator+serializer for the command parameters, it should not be used
     // for the actual contents
     String parameters;
 
     public SmtpCommand(String verb, String parameters) {
         // use for easy creation of custom commands
-        super();
         this.verb = verb;
         this.parameters = parameters;
+        this.commandType = SmtpCommandType.CUSTOM;
     }
 
-    public SmtpCommand(String verb) {
-        this.verb = verb;
+    public SmtpCommand(SmtpCommandType type, String parameters) {
+        this.verb = type.getKeyword();
+        this.parameters = parameters;
+        this.commandType = type;
     }
 
-    public SmtpCommand() {}
+    public SmtpCommand(SmtpCommandType type) {
+        this.verb = type.getKeyword();
+        this.commandType = type;
+    }
+
+    public SmtpCommand() {
+        // JAXB Constructor
+        this("", "");
+    }
 
     @Override
     public SmtpCommandHandler<? extends SmtpCommand> getHandler(SmtpContext smtpContext) {
@@ -87,10 +97,6 @@ public class SmtpCommand extends SmtpMessage {
 
     public String getVerb() {
         return verb;
-    }
-
-    public void setVerb(String verb) {
-        this.verb = verb;
     }
 
     public String getParameters() {

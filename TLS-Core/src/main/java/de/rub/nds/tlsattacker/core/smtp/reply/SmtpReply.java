@@ -97,7 +97,7 @@ public class SmtpReply extends SmtpMessage {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getReplyCode())
                 .append(" ")
-                .append(SmtpMappingUtil.getMatchingCommand(this).getVerb())
+                .append(this.getCommandType().getKeyword())
                 .append("Reply");
         return sb.toString();
     }

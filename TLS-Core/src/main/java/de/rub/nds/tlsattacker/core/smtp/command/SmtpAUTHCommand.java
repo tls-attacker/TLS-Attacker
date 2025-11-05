@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpAUTHCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpAUTHCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -37,18 +38,18 @@ public class SmtpAUTHCommand extends SmtpCommand {
     private String initialResponse;
 
     public SmtpAUTHCommand() {
-        super(COMMAND_NAME);
+        super(SmtpCommandType.AUTH);
     }
 
     // E.g. "AUTH PLAIN"
     public SmtpAUTHCommand(String saslMechanism) {
-        super(COMMAND_NAME, saslMechanism);
+        this();
         this.saslMechanism = saslMechanism;
     }
 
     // E.g. "AUTH PLAIN Qts12w=="
     public SmtpAUTHCommand(String saslMechanism, String initialResponse) {
-        super(COMMAND_NAME);
+        this();
         this.saslMechanism = saslMechanism;
         this.initialResponse = initialResponse;
     }
