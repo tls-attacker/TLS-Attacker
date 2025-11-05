@@ -94,10 +94,11 @@ class EHLOReplyTest {
         ehlo.setGreeting("says Greetings");
         ehlo.setExtensions(
                 List.of(
-                        new Smtp8BITMIMEExtension(),
-                        new SmtpATRNExtension(),
-                        new SmtpSTARTTLSExtension(),
-                        new SmtpHELPExtension()));
+                        new SmtpServiceExtension("8BITMIME"),
+                        new SmtpServiceExtension("ATRN"),
+                        new SmtpServiceExtension("STARTTLS"),
+                        new SmtpServiceExtension("HELP")
+                        ));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = ehlo.getSerializer(context);
@@ -143,10 +144,10 @@ class EHLOReplyTest {
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
         assertTrue(
-                reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
+                reply.getExtensions().stream().anyMatch(e -> e.getEhloKeyword().equals("STARTTLS")));
         assertTrue(
                 reply.getExtensions().stream()
-                        .anyMatch(e -> e instanceof SmtpUnknownEHLOExtension));
+                        .anyMatch(e -> e.getEhloKeyword().equals("UNKNOWNKEYWORD")));
     }
 
     @Test
@@ -162,8 +163,8 @@ class EHLOReplyTest {
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
         assertTrue(
-                reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpSTARTTLSExtension));
-        assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof SmtpHELPExtension));
+                reply.getExtensions().stream().anyMatch(e -> e.getEhloKeyword().equals("STARTTLS")));
+        assertTrue(reply.getExtensions().stream().anyMatch(e -> e.getEhloKeyword().equals("HELP")));
     }
 
     @Test

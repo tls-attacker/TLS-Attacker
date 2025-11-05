@@ -74,7 +74,7 @@ public class SmtpLayerInboundTest {
         System.out.println(result.getUsedContainers());
         assert (result.getUsedContainers().size() == 1)
                 && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
-        assert ((SmtpCommand) result.getUsedContainers().get(0)).getVerb().equals("UNKNOWNCOMMAND");
+        assert ((SmtpCommand) result.getUsedContainers().get(0)).getCommandType().equals(SmtpCommandType.UNKNOWN);
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
     }

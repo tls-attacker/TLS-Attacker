@@ -14,10 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.extensions.Smtp8BITMIMEExtension;
-import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpATRNExtension;
-import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpHELPExtension;
-import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpSTARTTLSExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEHLOReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -93,10 +90,11 @@ class InitialGreetingTest {
         ehlo.setGreeting("says Greetings");
         ehlo.setExtensions(
                 List.of(
-                        new Smtp8BITMIMEExtension(),
-                        new SmtpATRNExtension(),
-                        new SmtpSTARTTLSExtension(),
-                        new SmtpHELPExtension()));
+                        new SmtpServiceExtension("8BITMIME"),
+                        new SmtpServiceExtension("ATRN"),
+                        new SmtpServiceExtension("STARTTLS"),
+                        new SmtpServiceExtension("HELP")
+                ));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = ehlo.getSerializer(context);

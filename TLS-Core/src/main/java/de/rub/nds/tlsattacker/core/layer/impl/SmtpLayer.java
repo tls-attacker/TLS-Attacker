@@ -32,8 +32,12 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnterminatedReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -139,50 +143,36 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
                         == ConnectionEndType.SERVER) {
                     // this shadows the readDataContainer method from the superclass, but we need to
                     // parse the command twice to determine the correct subclass
-                    SmtpCommand smtpCommand = new SmtpCommand();
-                    SmtpCommandParser verbParser = smtpCommand.getParser(context, dataStream);
+                    SmtpCommandType smtpCommand = SmtpCommandType.UNKNOWN;
+                    ByteArrayOutputStream command = new ByteArrayOutputStream();
                     try {
-                        verbParser.parse(smtpCommand);
-                    } catch (ParserException e) {
-                        // should only happen if the command is not CRLF terminated
-                        LOGGER.warn("Could not parse command even generically: ", e);
-                        setUnreadBytes(verbParser.getAlreadyParsed());
-                        continue;
-                    }
-                    SmtpCommand trueCommand =
-                            SmtpCommandType.fromKeyword(smtpCommand.getVerb()).createCommand();
-                    // this will be the actual parsing of the command
-                    HintedLayerInputStream smtpCommandStream =
-                            new HintedLayerInputStream(null, this);
-                    smtpCommandStream.extendStream(verbParser.getAlreadyParsed());
-                    SmtpCommandParser parser = trueCommand.getParser(context, smtpCommandStream);
-                    try {
-                        // TODO: this may raise a ParserException if parameters are missing
+                        // read from datastream until we hit a space
+                        while (dataStream.available() > 0) {
+                            char c = (char) dataStream.read();
+                            if (c == ' ') {
+                                smtpCommand = SmtpCommandType.fromKeyword(command.toString());
+                                command.write(c);
+                                break;
+                            }
+                            command.write(c);
+                        }
+
+                        SmtpCommand trueCommand = smtpCommand.createCommand();
+                        // this will be the actual parsing of the command
+                        HintedLayerInputStream smtpCommandStream =
+                                new HintedLayerInputStream(null, this);
+                        smtpCommandStream.extendStream(command.toByteArray());
+                        smtpCommandStream.extendStream(dataStream.readAllBytes());
+                        SmtpCommandParser parser = trueCommand.getParser(context, smtpCommandStream);
+
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);
                         preparator.prepareAfterParse();
                         Handler handler = trueCommand.getHandler(context);
                         handler.adjustContext(trueCommand);
                         addProducedContainer(trueCommand);
-                    } catch (RuntimeException ex) {
-                        // only if the ParserException is caused by the command-specific parsing
-                        // we fall back to the parsing as an unknown
-                        try {
-                            trueCommand = new SmtpUnknownCommand();
-                            HintedLayerInputStream unknownCommandStream =
-                                    new HintedLayerInputStream(null, this);
-                            unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
-                            parser = trueCommand.getParser(context, unknownCommandStream);
-                            parser.parse(trueCommand);
-                            Preparator preparator = trueCommand.getPreparator(context);
-                            preparator.prepareAfterParse();
-                            Handler handler = trueCommand.getHandler(context);
-                            handler.adjustContext(trueCommand);
-                            addProducedContainer(trueCommand);
-                        } catch (ParserException e) {
-                            LOGGER.warn("Could not parse command: ", e);
-                            setUnreadBytes(verbParser.getAlreadyParsed());
-                        }
+                    } catch (IOException e) {
+                        // SmtpCommand will be UNKNOWN, so we can ignore this exception
                     }
                 }
             } while (shouldContinueProcessing());
