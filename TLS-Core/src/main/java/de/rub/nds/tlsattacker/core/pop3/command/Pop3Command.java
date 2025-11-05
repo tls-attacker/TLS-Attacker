@@ -33,7 +33,7 @@ public class Pop3Command extends Pop3Message {
         this.arguments = arguments;
         this.commandType = Pop3CommandType.UNKNOWN;
     }
-    protected Pop3Command(Pop3CommandType commandType, String arguments) {
+    public Pop3Command(Pop3CommandType commandType, String arguments) {
         this.commandType = commandType;
         this.keyword = commandType.getKeyword();
         this.arguments = arguments;
