@@ -8,47 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-
-/** Enum of SMTP service extensions as maintained by IANA. */
-@XmlSeeAlso({
-    Smtp8BITMIMEExtension.class,
-    SmtpATRNExtension.class,
-    SmtpAUTHExtension.class,
-    SmtpBINARYMIMEExtension.class,
-    SmtpBURLExtension.class,
-    SmtpCHECKPOINTExtension.class,
-    SmtpCHUNKINGExtension.class,
-    SmtpCONNEGExtension.class,
-    SmtpCONPERMExtension.class,
-    SmtpDELIVERBYExtension.class,
-    SmtpDSNExtension.class,
-    SmtpENHANCEDSTATUSCODESExtension.class,
-    SmtpETRNExtension.class,
-    SmtpEXPNExtension.class,
-    SmtpFUTURERELEASEExtension.class,
-    SmtpHELPExtension.class,
-    SmtpLIMITSExtension.class,
-    SmtpLocalServiceExtension.class,
-    SmtpMT_PRIORITYExtension.class,
-    SmtpMTRKExtension.class,
-    SmtpNO_SOLICITINGExtension.class,
-    SmtpONEXExtension.class,
-    SmtpPIPELININGExtension.class,
-    SmtpREQUIRETLSExtension.class,
-    SmtpRRVSExtension.class,
-    SmtpSAMLExtension.class,
-    SmtpSENDExtension.class,
-    SmtpSIZEExtension.class,
-    SmtpSMTPUTF8Extension.class,
-    SmtpSOMLExtension.class,
-    SmtpSTARTTLSExtension.class,
-    SmtpSUBMITTERExtension.class,
-    SmtpTURNExtension.class,
-    SmtpUnknownEHLOExtension.class,
-    SmtpVERBExtension.class
-})
-public abstract class SmtpServiceExtension {
+/**
+ * Generic SMTP Service Extension.
+ * Extensions are specified by the IANA, but for our purposes we only store keywords and parameters.
+ */
+public class SmtpServiceExtension {
 
     private final String ehloKeyword;
     private String parameters = null;
@@ -64,10 +28,6 @@ public abstract class SmtpServiceExtension {
 
     public String getEhloKeyword() {
         return ehloKeyword;
-    }
-
-    public boolean isImplemented() {
-        return false;
     }
 
     public String getParameters() {

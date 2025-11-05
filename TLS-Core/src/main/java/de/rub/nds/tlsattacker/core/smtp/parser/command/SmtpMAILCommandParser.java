@@ -40,8 +40,8 @@ public class SmtpMAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
                     }
                     currentParameter[1] = currentParameter[1].replaceAll("[\\[\\]]", "");
                     currentParameter[1] = currentParameter[1].replace("\"=\"", "");
-                    SmtpServiceExtension extension =
-                            SmtpSyntaxParser.parseKeyword(currentParameter[0], currentParameter[1]);
+                    SmtpServiceExtension extension = new SmtpServiceExtension(currentParameter[0], currentParameter[1]);
+                    // TODO: misunderstands MAIL parameters afaict
                     SmtpParameters MAILparameters =
                             new SmtpParameters(extension, currentParameter[1]);
                     command.getMAILparameters().add(MAILparameters);
