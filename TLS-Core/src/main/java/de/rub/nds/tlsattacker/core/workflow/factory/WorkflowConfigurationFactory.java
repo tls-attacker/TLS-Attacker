@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
-import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
@@ -76,7 +75,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
@@ -672,7 +670,11 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
         trace.addTlsAction(2, new StartTLSAction());
 
-        trace.addTlsActions(createPop3Workflow().getTlsActions());
+        List<TlsAction> pop3Actions = createPop3Workflow().getTlsActions();
+        trace.addTlsAction(0, pop3Actions.get(0));
+        for (int i = 1; i < pop3Actions.size(); i++) {
+            trace.addTlsAction(pop3Actions.get(i));
+        }
 
         return trace;
     }
@@ -731,7 +733,7 @@ public class WorkflowConfigurationFactory {
                         config,
                         connection,
                         ConnectionEndType.SERVER,
-                        Pop3MappingUtil.getMatchingReply(command));
+                        command.getCommandType().createReply());
         trace.addTlsAction(serverAction);
     }
 
@@ -746,7 +748,7 @@ public class WorkflowConfigurationFactory {
                         config,
                         connection,
                         ConnectionEndType.SERVER,
-                        SmtpMappingUtil.getMatchingReply(command));
+                        command.getCommandType().createReply());
         trace.addTlsAction(serverAction);
     }
 
