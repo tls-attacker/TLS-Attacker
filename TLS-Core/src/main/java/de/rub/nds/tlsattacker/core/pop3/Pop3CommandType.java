@@ -17,7 +17,8 @@ import java.util.function.Supplier;
  * classes.
  */
 public enum Pop3CommandType {
-    // < > does not denote real command keywords, but this is better in case someone wants string representation
+    // < > does not denote real command keywords, but this is better in case someone wants string
+    // representation
     USER("USER", Pop3USERCommand::new, Pop3USERReply::new),
     PASS("PASS", Pop3PASSCommand::new, Pop3PASSReply::new),
     DELE("DELE", Pop3DELECommand::new, Pop3DELEReply::new),
@@ -66,4 +67,3 @@ public enum Pop3CommandType {
         return UNKNOWN;
     }
 }
-

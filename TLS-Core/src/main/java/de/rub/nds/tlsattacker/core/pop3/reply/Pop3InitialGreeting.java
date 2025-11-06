@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3InitialGreetingHandler;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -31,7 +31,7 @@ public class Pop3InitialGreeting extends Pop3Reply {
     }
 
     @Override
-    public Pop3InitialGreetingHandler getHandler(Pop3Context pop3Context) {
-        return new Pop3InitialGreetingHandler(pop3Context);
+    public Pop3InitialGreetingHandler getHandler(Context pop3Context) {
+        return new Pop3InitialGreetingHandler(pop3Context.getPop3Context());
     }
 }

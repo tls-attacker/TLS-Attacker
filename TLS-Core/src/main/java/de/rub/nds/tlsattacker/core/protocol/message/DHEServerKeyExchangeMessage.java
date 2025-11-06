@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -29,18 +29,16 @@ import java.util.List;
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /** DH modulus */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableByteArray modulus;
+    @ModifiableVariableProperty protected ModifiableByteArray modulus;
 
     /** DH modulus Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     protected ModifiableInteger modulusLength;
 
     /** DH generator */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableByteArray generator;
+    @ModifiableVariableProperty protected ModifiableByteArray generator;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     protected ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable protected DHEServerComputations computations;
@@ -110,19 +108,19 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("DHEServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (modulus != null && modulus.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
+            sb.append(DataConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
         if (generator != null && generator.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
+            sb.append(DataConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null && getPublicKey().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
@@ -131,13 +129,13 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // (D)TLS 1.2
         if (this.getSignatureAndHashAlgorithm() != null
                 && this.getSignatureAndHashAlgorithm().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature: ");
         if (this.getSignature() != null && this.getSignature().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
+            sb.append(DataConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");
         }
@@ -145,24 +143,28 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeHandler(tlsContext);
+    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(
+            Context context) {
+        return new DHEServerKeyExchangeHandler<>(context.getTlsContext());
     }
 
     @Override
-    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser(stream, tlsContext);
+    public DHEServerKeyExchangeParser<? extends DHEServerKeyExchangeMessage> getParser(
+            Context context, InputStream stream) {
+        return new DHEServerKeyExchangeParser<>(stream, context.getTlsContext());
     }
 
     @Override
-    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHEServerKeyExchangePreparator<? extends DHEServerKeyExchangeMessage> getPreparator(
+            Context context) {
+        return new DHEServerKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public DHEServerKeyExchangeSerializer<? extends DHEServerKeyExchangeMessage> getSerializer(
+            Context context) {
+        return new DHEServerKeyExchangeSerializer<>(
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

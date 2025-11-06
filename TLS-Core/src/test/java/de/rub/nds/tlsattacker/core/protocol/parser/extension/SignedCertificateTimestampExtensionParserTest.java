@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import java.util.List;
@@ -34,13 +34,13 @@ public class SignedCertificateTimestampExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("00120000"),
+                        DataConverter.hexStringToByteArray("00120000"),
                         List.of(),
                         ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP,
                         0,
                         List.of(new byte[0])),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "001200f100ef007500ee4bbdb775ce60"
                                         + "bae142691fabe19e66a30f7e5fb072d8"
                                         + "8300c47b897aa8fdcb0000015b8fdb11"
@@ -61,7 +61,7 @@ public class SignedCertificateTimestampExtensionParserTest
                         ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP,
                         241,
                         List.of(
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "00ef007500ee4bbdb775ce60"
                                                 + "bae142691fabe19e66a30f7e5fb072d8"
                                                 + "8300c47b897aa8fdcb0000015b8fdb11"

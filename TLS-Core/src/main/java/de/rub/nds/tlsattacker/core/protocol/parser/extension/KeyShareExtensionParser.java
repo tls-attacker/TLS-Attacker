@@ -92,7 +92,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      */
     private void parseKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
-        LOGGER.debug("KeyShareListLength: " + msg.getKeyShareListLength().getValue());
+        LOGGER.debug("KeyShareListLength: {}", msg.getKeyShareListLength().getValue());
     }
 
     /**

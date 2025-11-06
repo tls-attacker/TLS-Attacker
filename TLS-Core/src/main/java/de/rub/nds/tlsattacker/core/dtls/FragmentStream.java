@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.dtls;
 
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,10 +28,9 @@ public class FragmentStream {
 
     public boolean canInsertByteArray(byte[] bytesToAdd, int offset) {
         for (int i = 0; i < bytesToAdd.length; i++) {
-            if (fragmentByteMap.containsKey(offset + i)) {
-                if (fragmentByteMap.get(offset + i) != bytesToAdd[i]) {
-                    return false;
-                }
+            if (fragmentByteMap.containsKey(offset + i)
+                    && fragmentByteMap.get(offset + i) != bytesToAdd[i]) {
+                return false;
             }
         }
         return true;
@@ -73,59 +72,56 @@ public class FragmentStream {
      * @return the stream
      */
     public byte[] getCompleteFilledStream(byte fillingByte) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        int fillingCounter = 0;
-        for (int i = 0; i < intendedSize; i++) {
-            Byte b = fragmentByteMap.get(i);
-            if (b == null) {
-                b = fillingByte;
-                fillingCounter++;
+        try (SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream()) {
+            int fillingCounter = 0;
+            for (int i = 0; i < intendedSize; i++) {
+                Byte b = fragmentByteMap.get(i);
+                if (b == null) {
+                    b = fillingByte;
+                    fillingCounter++;
+                }
+                stream.write(b);
             }
-            stream.write(b);
-        }
-        if (fillingCounter > 0) {
-            LOGGER.warn(
-                    "Had to fill "
-                            + fillingCounter
-                            + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
-        }
-        for (Integer i : fragmentByteMap.keySet()) {
-            if (i > intendedSize) {
+            if (fillingCounter > 0) {
                 LOGGER.warn(
-                        "Found fragment greater than intended message size(intended size: "
-                                + intendedSize
-                                + " but found byte for: "
-                                + i
-                                + "). Ignoring");
+                        "Had to fill {} missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages",
+                        fillingCounter);
             }
+            for (Integer i : fragmentByteMap.keySet()) {
+                if (i > intendedSize) {
+                    LOGGER.warn(
+                            "Found fragment greater than intended message size(intended size: {} but found byte for: {}). Ignoring",
+                            intendedSize,
+                            i);
+                }
+            }
+            return stream.toByteArray();
         }
-        return stream.toByteArray();
     }
 
     public byte[] getCompleteTruncatedStream() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        int skipCounter = 0;
-        for (int i = 0; i < intendedSize; i++) {
-            Byte b = fragmentByteMap.get(i);
-            if (b == null) {
-                skipCounter++;
-                continue;
+        try (SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream()) {
+            int skipCounter = 0;
+            for (int i = 0; i < intendedSize; i++) {
+                Byte b = fragmentByteMap.get(i);
+                if (b == null) {
+                    skipCounter++;
+                    continue;
+                }
+                stream.write(b);
             }
-            stream.write(b);
-        }
-        if (skipCounter > 0) {
-            LOGGER.warn("Did not receive all bytes. Truncated {} missing bytes.", skipCounter);
-        }
-        for (Integer i : fragmentByteMap.keySet()) {
-            if (i > intendedSize) {
-                LOGGER.warn(
-                        "Found fragment greater than intended message size(intended size: "
-                                + intendedSize
-                                + " but found byte for: "
-                                + i
-                                + "). Ignoring");
+            if (skipCounter > 0) {
+                LOGGER.warn("Did not receive all bytes. Truncated {} missing bytes.", skipCounter);
             }
+            for (Integer i : fragmentByteMap.keySet()) {
+                if (i > intendedSize) {
+                    LOGGER.warn(
+                            "Found fragment greater than intended message size(intended size: {} but found byte for: {}). Ignoring",
+                            intendedSize,
+                            i);
+                }
+            }
+            return stream.toByteArray();
         }
-        return stream.toByteArray();
     }
 }

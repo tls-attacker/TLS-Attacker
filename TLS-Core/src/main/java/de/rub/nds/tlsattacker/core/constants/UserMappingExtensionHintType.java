@@ -18,13 +18,13 @@ public enum UserMappingExtensionHintType {
     private final byte value;
     private static final Map<Byte, UserMappingExtensionHintType> MAP;
 
-    private UserMappingExtensionHintType(byte value) {
+    UserMappingExtensionHintType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (UserMappingExtensionHintType c : UserMappingExtensionHintType.values()) {
+        for (UserMappingExtensionHintType c : values()) {
             MAP.put(c.value, c);
         }
     }

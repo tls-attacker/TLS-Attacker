@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -40,31 +40,37 @@ public class CertificateRequestHandlerTest
         message.setSignatureHashAlgorithms(new byte[] {0x03, 0x01, 0x01, 0x03});
         handler.adjustContext(message);
         assertArrayEquals(
-                context.getDistinguishedNames(), ArrayConverter.hexStringToByteArray("00010203"));
-        assertEquals(6, context.getClientCertificateTypes().size());
+                tlsContext.getDistinguishedNames(), DataConverter.hexStringToByteArray("00010203"));
+        assertEquals(6, tlsContext.getClientCertificateTypes().size());
         assertTrue(
-                context.getClientCertificateTypes()
+                tlsContext
+                        .getClientCertificateTypes()
                         .contains(ClientCertificateType.DSS_EPHEMERAL_DH_RESERVED));
         assertTrue(
-                context.getClientCertificateTypes().contains(ClientCertificateType.DSS_FIXED_DH));
-        assertTrue(context.getClientCertificateTypes().contains(ClientCertificateType.DSS_SIGN));
+                tlsContext
+                        .getClientCertificateTypes()
+                        .contains(ClientCertificateType.DSS_FIXED_DH));
+        assertTrue(tlsContext.getClientCertificateTypes().contains(ClientCertificateType.DSS_SIGN));
         assertTrue(
-                context.getClientCertificateTypes()
+                tlsContext
+                        .getClientCertificateTypes()
                         .contains(ClientCertificateType.RSA_EPHEMERAL_DH_RESERVED));
         assertTrue(
-                context.getClientCertificateTypes().contains(ClientCertificateType.RSA_FIXED_DH));
-        assertTrue(context.getClientCertificateTypes().contains(ClientCertificateType.RSA_SIGN));
-        assertEquals(2, context.getServerSupportedSignatureAndHashAlgorithms().size());
+                tlsContext
+                        .getClientCertificateTypes()
+                        .contains(ClientCertificateType.RSA_FIXED_DH));
+        assertTrue(tlsContext.getClientCertificateTypes().contains(ClientCertificateType.RSA_SIGN));
+        assertEquals(2, tlsContext.getServerSupportedSignatureAndHashAlgorithms().size());
     }
 
     /** Test of adjustContext method, of class CertificateRequestHandler. */
     @Test
     public void testadjustContextTLS13() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
 
         CertificateRequestMessage message = new CertificateRequestMessage(config);
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
 
         message.setCertificateRequestContext(new byte[] {1, 2, 3, 4, 5, 6});
         Objects.requireNonNull(
@@ -72,9 +78,9 @@ public class CertificateRequestHandlerTest
                 .setSignatureAndHashAlgorithms(new byte[] {0x03, 0x01, 0x01, 0x03});
         handler.adjustContext(message);
         assertArrayEquals(
-                context.getCertificateRequestContext(),
-                ArrayConverter.hexStringToByteArray("010203040506"));
-        assertEquals(2, context.getServerSupportedSignatureAndHashAlgorithms().size());
+                tlsContext.getCertificateRequestContext(),
+                DataConverter.hexStringToByteArray("010203040506"));
+        assertEquals(2, tlsContext.getServerSupportedSignatureAndHashAlgorithms().size());
     }
 
     @Test
@@ -84,8 +90,8 @@ public class CertificateRequestHandlerTest
         message.setDistinguishedNames(new byte[] {});
         message.setSignatureHashAlgorithms(new byte[] {123, 123, 127});
         handler.adjustContext(message);
-        assertArrayEquals(context.getDistinguishedNames(), new byte[0]);
-        assertTrue(context.getClientCertificateTypes().isEmpty());
-        assertTrue(context.getServerSupportedSignatureAndHashAlgorithms().isEmpty());
+        assertArrayEquals(tlsContext.getDistinguishedNames(), new byte[0]);
+        assertTrue(tlsContext.getClientCertificateTypes().isEmpty());
+        assertTrue(tlsContext.getServerSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 }

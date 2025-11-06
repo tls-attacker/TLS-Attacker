@@ -31,11 +31,11 @@ public class PskDheServerKeyExchangeHandlerTest
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {0, 1, 2, 3});
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
         message.prepareKeyExchangeComputations();
         message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
-        assertNull(context.getPreMasterSecret());
+        assertNull(tlsContext.getPreMasterSecret());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class PskDheServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {0, 1, 2, 3});
         handler.adjustContext(message);
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
+        assertNull(tlsContext.getPreMasterSecret());
+        assertNull(tlsContext.getMasterSecret());
     }
 }

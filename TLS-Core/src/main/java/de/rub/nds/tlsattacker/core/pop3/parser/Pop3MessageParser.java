@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import java.io.InputStream;

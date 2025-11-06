@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class SignatureAlgorithmCertDelegate extends Delegate {
     @Parameter(
             names = "-signature_algo_cert",
             description =
-                    "Supported Signature and Hash Algorithms for Certificates separated by comma eg. RSA-SHA512,DSA-SHA512")
+                    "Supported Signature and Hash Algorithms for Certificates separated by comma eg. RSA_SHA512,DSA_SHA512")
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = null;
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {

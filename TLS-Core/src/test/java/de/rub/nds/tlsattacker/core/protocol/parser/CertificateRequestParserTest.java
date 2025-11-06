@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -47,13 +47,13 @@ public class CertificateRequestParserTest
                                 CertificateRequestMessage::getDistinguishedNames)));
     }
 
-    private static final byte[] RSA_DSS_ECDSA_TYPES = ArrayConverter.hexStringToByteArray("010240");
+    private static final byte[] RSA_DSS_ECDSA_TYPES = DataConverter.hexStringToByteArray("010240");
 
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
                         Arrays.asList(
                                 HandshakeMessageType.CERTIFICATE_REQUEST.getValue(),
@@ -61,7 +61,7 @@ public class CertificateRequestParserTest
                                 3,
                                 RSA_DSS_ECDSA_TYPES,
                                 30,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "060106020603050105020503040104020403030103020303020102020203"),
                                 0,
                                 null)));

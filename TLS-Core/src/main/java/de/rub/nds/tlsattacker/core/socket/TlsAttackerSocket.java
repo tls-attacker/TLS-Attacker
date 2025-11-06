@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.socket;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -17,7 +18,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -29,6 +29,9 @@ import org.apache.logging.log4j.Logger;
 public class TlsAttackerSocket {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    /** Default size for internal buffer when sending data (16KB) */
+    private static final int DEFAULT_SEND_BUFFER_SIZE = 16384;
 
     private final State state;
 
@@ -73,7 +76,7 @@ public class TlsAttackerSocket {
     public void send(byte[] bytes) {
         ApplicationMessage message = new ApplicationMessage();
         ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
-        byte[] sendingBytes = new byte[16384];
+        byte[] sendingBytes = new byte[DEFAULT_SEND_BUFFER_SIZE];
         int actuallyRead;
         do {
             actuallyRead = 0;
@@ -113,7 +116,7 @@ public class TlsAttackerSocket {
                 receivedAppMessages.add((ApplicationMessage) message);
             }
         }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (ApplicationMessage message : receivedAppMessages) {
             stream.write(message.getData().getValue());
         }

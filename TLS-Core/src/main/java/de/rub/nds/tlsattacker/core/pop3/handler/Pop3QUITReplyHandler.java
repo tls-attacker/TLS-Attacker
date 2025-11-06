@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.pop3.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3QUITCommand;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3QUITReply;
 
 public class Pop3QUITReplyHandler extends Pop3ReplyHandler<Pop3QUITReply> {

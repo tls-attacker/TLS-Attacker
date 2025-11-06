@@ -20,11 +20,15 @@ import java.net.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 
     private static final int DEFAULT_HTTPS_PORT = 443;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(
             names = "-connect",
@@ -88,7 +92,7 @@ public class ClientDelegate extends Delegate {
             try {
                 con.setIpv6(getIpv6ForHost(extractedHost));
             } catch (UnknownHostException ex) {
-                LOGGER.warn("Could not resolve IPv6 address for host " + extractedHost, ex);
+                LOGGER.warn("Could not resolve IPv6 address for host {}", extractedHost, ex);
             }
         }
     }
@@ -156,15 +160,6 @@ public class ClientDelegate extends Delegate {
             }
         }
         throw new UnknownHostException();
-    }
-
-    private String getHostForIp(String ip) {
-        try {
-            return InetAddress.getByName(ip).getCanonicalHostName();
-        } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
-            return ip;
-        }
     }
 
     public String getSniHostname() {

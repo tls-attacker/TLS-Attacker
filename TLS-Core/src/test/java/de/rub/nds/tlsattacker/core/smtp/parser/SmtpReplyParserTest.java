@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import java.io.ByteArrayInputStream;

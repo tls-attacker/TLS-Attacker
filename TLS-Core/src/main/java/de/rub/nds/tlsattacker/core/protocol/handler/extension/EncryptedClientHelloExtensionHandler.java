@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeReceiverContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,8 +53,8 @@ public class EncryptedClientHelloExtensionHandler
                 LOGGER.warn("ECHConfig id's do not match");
             }
 
-            LOGGER.debug("Received ECH Config ID: " + message.getConfigId().getValue());
-            LOGGER.debug("Own ECH Config ID: " + echConfig.getConfigId());
+            LOGGER.debug("Received ECH Config ID: {}", message.getConfigId().getValue());
+            LOGGER.debug("Own ECH Config ID: {}", echConfig.getConfigId());
 
             HpkeUtil hpkeUtil = new HpkeUtil(echConfig);
             KeyShareEntry keyShareEntry = tlsContext.getChooser().getEchServerKeyShareEntry();
@@ -64,8 +65,10 @@ public class EncryptedClientHelloExtensionHandler
 
             // RFC 9180, Section 7.1
             byte[] info =
-                    ArrayConverter.concatenate(
-                            "tls ech".getBytes(), new byte[] {0x00}, echConfig.getEchConfigBytes());
+                    DataConverter.concatenate(
+                            "tls ech".getBytes(StandardCharsets.US_ASCII),
+                            new byte[] {0x00},
+                            echConfig.getEchConfigBytes());
             LOGGER.debug("Info: {}", info);
 
             byte[] payload = message.getPayload().getValue();
@@ -111,12 +114,12 @@ public class EncryptedClientHelloExtensionHandler
                 // therefore, we have to overwrite the length here
                 int clientHelloMessageLength = clientHelloParser.getAlreadyParsed().length;
                 byte[] clientHelloLength =
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 clientHelloMessageLength,
                                 HandshakeByteLength.HANDSHAKE_MESSAGE_LENGTH_FIELD_LENGTH);
                 clientHelloMessage.setLength(clientHelloMessageLength);
                 clientHelloMessage.setCompleteResultingMessage(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 type, clientHelloLength, clientHelloParser.getAlreadyParsed()));
             } catch (ParserException e) {
                 LOGGER.warn("Could not parse decrypted ClientHello", e);

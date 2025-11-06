@@ -23,21 +23,21 @@ import java.util.Objects;
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /** signature and hash algorithm */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureAndHashAlgorithm;
+    @ModifiableVariableProperty private ModifiableByteArray signatureAndHashAlgorithm;
+
     /** signature length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureLength;
+
     /** signature */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    private ModifiableByteArray signature;
+    @ModifiableVariableProperty private ModifiableByteArray signature;
 
     /** Length of the serialized public key */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger publicKeyLength;
+
     /** serialized public key */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray publicKey;
+    @ModifiableVariableProperty private ModifiableByteArray publicKey;
 
     @HoldsModifiableVariable private SignatureComputations signatureComputations;
 

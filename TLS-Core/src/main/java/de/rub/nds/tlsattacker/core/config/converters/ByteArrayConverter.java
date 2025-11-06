@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 
 public class ByteArrayConverter implements IStringConverter<byte[]> {
 
@@ -18,7 +18,7 @@ public class ByteArrayConverter implements IStringConverter<byte[]> {
     public byte[] convert(String value) {
 
         try {
-            return ArrayConverter.hexStringToByteArray(value);
+            return DataConverter.hexStringToByteArray(value);
         } catch (IllegalArgumentException ex) {
             throw new ParameterException("Could not parse " + value + ". Not a hex String");
         }

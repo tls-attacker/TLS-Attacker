@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +48,7 @@ public class PskEcDhClientKeyExchangeSerializer
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
         LOGGER.debug(
                 "SerializedPSKIdentityLength: {}",
-                () -> ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
+                () -> DataConverter.bytesToInt(msg.getIdentity().getValue()));
     }
 
     /**

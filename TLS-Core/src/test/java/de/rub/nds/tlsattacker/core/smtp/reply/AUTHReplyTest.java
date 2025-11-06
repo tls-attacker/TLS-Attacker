@@ -44,7 +44,7 @@ public class AUTHReplyTest {
         authReply.setReplyCode(235);
         authReply.setHumanReadableMessage("bla bla");
 
-        Serializer<?> serializer = authReply.getSerializer(context);
+        Serializer<?> serializer = authReply.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals("235 bla bla\r\n", serializer.getOutputStream().toString());
     }

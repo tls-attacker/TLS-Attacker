@@ -33,7 +33,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     @Override
     public void parse(CertificateRequestMessage msg) {
         LOGGER.debug("Parsing CertificateRequestMessage");
-        if (getVersion().isTLS13()) {
+        if (getVersion().is13()) {
             parseCertificateRequestContextLength(msg);
             parseCertificateRequestContext(msg);
             parseExtensionLength(msg);
@@ -107,7 +107,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseDistinguishedNamesLength(CertificateRequestMessage msg) {
         msg.setDistinguishedNamesLength(
                 parseIntField(HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH));
-        LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
+        LOGGER.debug("DistinguishedNamesLength: {}", msg.getDistinguishedNamesLength().getValue());
     }
 
     /**

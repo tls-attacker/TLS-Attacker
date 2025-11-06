@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.connection;
 
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -18,15 +18,15 @@ import java.util.Set;
  * uniform way to access aliases that identify the connections they belong to.
  */
 public interface Aliasable {
-    public abstract void assertAliasesSetProperly() throws ConfigurationException;
+    void assertAliasesSetProperly() throws ConfigurationException;
 
-    public abstract String aliasesToString();
+    String aliasesToString();
 
-    public abstract String getFirstAlias();
+    String getFirstAlias();
 
-    public abstract Set<String> getAllAliases();
+    Set<String> getAllAliases();
 
-    public abstract boolean containsAlias(String alias);
+    boolean containsAlias(String alias);
 
-    public abstract boolean containsAllAliases(Collection<String> aliases);
+    boolean containsAllAliases(Collection<String> aliases);
 }

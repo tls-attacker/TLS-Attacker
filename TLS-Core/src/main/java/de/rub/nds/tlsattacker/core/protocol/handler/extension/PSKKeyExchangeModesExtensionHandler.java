@@ -29,7 +29,7 @@ public class PSKKeyExchangeModesExtensionHandler
     }
 
     private void adjustKeyExchangeModes(PSKKeyExchangeModesExtensionMessage message) {
-        tlsContext.setClientPskKeyExchangeModes(new LinkedList<PskKeyExchangeMode>());
+        tlsContext.setClientPskKeyExchangeModes(new LinkedList<>());
         for (byte exchangeModeByte : message.getKeyExchangeModesListBytes().getValue()) {
             PskKeyExchangeMode mode = PskKeyExchangeMode.getExchangeMode(exchangeModeByte);
             tlsContext.getClientPskKeyExchangeModes().add(mode);

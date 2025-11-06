@@ -12,11 +12,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -25,8 +25,7 @@ import java.io.InputStream;
 public class PaddingExtensionMessage extends ExtensionMessage {
 
     /** Contains the padding bytes of the padding extension. The bytes shall be empty. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray paddingBytes;
+    @ModifiableVariableProperty private ModifiableByteArray paddingBytes;
 
     public PaddingExtensionMessage() {
         super(ExtensionType.PADDING);
@@ -45,22 +44,22 @@ public class PaddingExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public PaddingExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PaddingExtensionParser(stream, tlsContext);
+    public PaddingExtensionParser getParser(Context context, InputStream stream) {
+        return new PaddingExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PaddingExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PaddingExtensionPreparator(tlsContext.getChooser(), this);
+    public PaddingExtensionPreparator getPreparator(Context context) {
+        return new PaddingExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public PaddingExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PaddingExtensionSerializer getSerializer(Context context) {
         return new PaddingExtensionSerializer(this);
     }
 
     @Override
-    public PaddingExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PaddingExtensionHandler(tlsContext);
+    public PaddingExtensionHandler getHandler(Context context) {
+        return new PaddingExtensionHandler(context.getTlsContext());
     }
 }

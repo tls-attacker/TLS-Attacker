@@ -32,8 +32,8 @@ public class RenegotiationInfoExtensionSerializer
                 ExtensionByteLength.RENEGOTIATION_INFO);
         appendBytes(message.getRenegotiationInfo().getValue());
         LOGGER.debug(
-                "Serialized RenegotiationInfo extension with info of length "
-                        + message.getRenegotiationInfo().getValue().length);
+                "Serialized RenegotiationInfo extension with info of length {}",
+                message.getRenegotiationInfo().getValue().length);
         return getAlreadySerialized();
     }
 }

@@ -8,13 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +87,7 @@ public class StaticTicketCryptoTest {
         assertFalse(Arrays.equals(plaintext, resultDec));
 
         LOGGER.info("EncDec AES128 CBC with used 16byte key128 and random 120 byte message.");
-        key128 = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579");
+        key128 = DataConverter.hexStringToByteArray("536563757265535469636b65744b6579");
         resultEnc =
                 StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
         resultDec =
@@ -103,11 +107,10 @@ public class StaticTicketCryptoTest {
     @Test
     public void testGenerateHMAC_SHA256() throws CryptoException {
         LOGGER.info("Generate HMAC SHA256");
-        byte[] plaintext = ArrayConverter.hexStringToByteArray("4869205468657265");
-        byte[] key =
-                ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
+        byte[] plaintext = DataConverter.hexStringToByteArray("4869205468657265");
+        byte[] key = DataConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
         byte[] expResult =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
         byte[] result = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
         assertArrayEquals(expResult, result);
@@ -125,11 +128,10 @@ public class StaticTicketCryptoTest {
     public void testVerifyHMAC_SHA256() throws CryptoException {
         LOGGER.info("Verify HMAC SHA256");
         byte[] mac =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7");
-        byte[] plaintext = ArrayConverter.hexStringToByteArray("4869205468657265");
-        byte[] key =
-                ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
+        byte[] plaintext = DataConverter.hexStringToByteArray("4869205468657265");
+        byte[] key = DataConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
         boolean expResult = true;
         boolean result =
                 StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, mac, plaintext, key);
@@ -161,7 +163,7 @@ public class StaticTicketCryptoTest {
 
         LOGGER.info("GenVrfy HMAC SHA256 with used 32byte key and random 120 byte message.");
         key =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "536563757265535469636b65744b6579536563757265535469636b65744b6579");
         resultMAC = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
         result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultMAC, plaintext, key);

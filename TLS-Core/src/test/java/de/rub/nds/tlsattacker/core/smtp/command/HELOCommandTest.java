@@ -31,7 +31,7 @@ public class HELOCommandTest {
         SmtpHELOCommand command = new SmtpHELOCommand();
         SmtpHELOCommandParser parser =
                 command.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(
                                 "HELO seal.cs.upb.de\r\n".getBytes(StandardCharsets.UTF_8)));
         parser.parse(command);
@@ -45,7 +45,7 @@ public class HELOCommandTest {
         SmtpHELOCommand command = new SmtpHELOCommand();
         SmtpHELOCommandParser parser =
                 command.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(
                                 "HELO seal.cs.upb.de \r\n".getBytes(StandardCharsets.UTF_8)));
         parser.parse(command);
@@ -59,7 +59,7 @@ public class HELOCommandTest {
         SmtpHELOCommand command = new SmtpHELOCommand();
         SmtpHELOCommandParser parser =
                 command.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(
                                 "HELO seal.cs.upb.de invalid\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
@@ -70,8 +70,8 @@ public class HELOCommandTest {
     public void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpHELOCommand command = new SmtpHELOCommand("seal.cs.upb.de");
-        Preparator preparator = command.getPreparator(context);
-        Serializer serializer = command.getSerializer(context);
+        Preparator preparator = command.getPreparator(context.getContext());
+        Serializer serializer = command.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         assertEquals("HELO seal.cs.upb.de\r\n", serializer.getOutputStream().toString());
@@ -81,7 +81,7 @@ public class HELOCommandTest {
     public void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpHELOCommand command = new SmtpHELOCommand("seal.cs.upb.de");
-        Handler handler = command.getHandler(context);
+        Handler handler = command.getHandler(context.getContext());
         handler.adjustContext(command);
         assertEquals("seal.cs.upb.de", context.getClientIdentity());
     }

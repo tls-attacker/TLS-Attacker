@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySe
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final KeyShareExtensionMessage msg;
-    private ByteArrayOutputStream stream;
+    private SilentByteArrayOutputStream stream;
 
     public KeyShareExtensionPreparator(
             Chooser chooser,
@@ -44,9 +42,9 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         if (msg.getKeyShareList() == null) {
-            msg.setKeyShareList(new LinkedList<KeyShareEntry>());
+            msg.setKeyShareList(new LinkedList<>());
         }
-        stream = new ByteArrayOutputStream();
+        stream = new SilentByteArrayOutputStream();
 
         if (msg.isRetryRequestMode()) {
             LOGGER.debug("Preparing KeyShareExtension with HelloRetryRequest structure");
@@ -122,11 +120,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
             KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
             preparator.prepare();
             KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from KeySharePair", ex);
-            }
+            stream.write(serializer.serialize());
         }
         prepareKeyShareListBytes(msg);
         prepareKeyShareListLength(msg);
@@ -139,6 +133,6 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
 
     private void prepareKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
-        LOGGER.debug("KeyShareListBytesLength: " + msg.getKeyShareListLength().getValue());
+        LOGGER.debug("KeyShareListBytesLength: {}", msg.getKeyShareListLength().getValue());
     }
 }

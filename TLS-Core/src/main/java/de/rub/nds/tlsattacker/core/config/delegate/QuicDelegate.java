@@ -9,14 +9,11 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SniType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
@@ -27,6 +24,10 @@ public class QuicDelegate extends Delegate {
     private boolean quic = false;
 
     public QuicDelegate() {}
+
+    public QuicDelegate(boolean isQuic) {
+        this.quic = isQuic;
+    }
 
     public boolean isQuic() {
         return quic;
@@ -48,6 +49,7 @@ public class QuicDelegate extends Delegate {
 
             config.setDefaultLayerConfiguration(StackConfiguration.QUIC);
             config.setWorkflowExecutorType(WorkflowExecutorType.QUIC);
+            config.setFinishWithCloseNotify(true);
 
             // Protocol Version
             config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -56,12 +58,16 @@ public class QuicDelegate extends Delegate {
             config.setDefaultLastRecordProtocolVersion(ProtocolVersion.TLS13);
             config.setTls13BackwardsCompatibilityMode(false);
 
-            // Cipher Suites and Named Groups
+            // Cipher Suites, Named Groups, and Signature Algorithms
             config.setDefaultClientSupportedCipherSuites(CipherSuite.getTls13CipherSuites());
             config.setDefaultClientNamedGroups(NamedGroup.SECP256R1);
             config.setDefaultServerNamedGroups(NamedGroup.SECP256R1);
             config.setDefaultSelectedNamedGroup(NamedGroup.SECP256R1);
             config.setDefaultClientKeyShareNamedGroups(NamedGroup.SECP256R1);
+            config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                    SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
+            config.setDefaultServerSupportedCertificateSignAlgorithms(
+                    SignatureAndHashAlgorithm.getImplementedTls13SignatureAndHashAlgorithms());
 
             // Extensions
             config.setAddServerNameIndicationExtension(true);
@@ -75,12 +81,21 @@ public class QuicDelegate extends Delegate {
             config.setAddRenegotiationInfoExtension(false);
             config.setAddAlpnExtension(true);
             config.setQuicTransportParametersExtension(true);
+
+            // ALPN
             List<String> alpnEntries = new ArrayList<>();
             alpnEntries.add(AlpnProtocol.HTTP3.getConstant());
             alpnEntries.add("h3-27");
             alpnEntries.add("h3-28");
             alpnEntries.add("h3-29");
+            alpnEntries.add("hq-29");
+            alpnEntries.add("echo");
+            alpnEntries.add("hq-interop");
             config.setDefaultProposedAlpnProtocols(alpnEntries);
+
+            // QUIC Transport Parameters
+            QuicTransportParameters parameters = QuicTransportParameters.getDefaultParameters();
+            config.setDefaultQuicTransportParameters(parameters);
         }
     }
 }

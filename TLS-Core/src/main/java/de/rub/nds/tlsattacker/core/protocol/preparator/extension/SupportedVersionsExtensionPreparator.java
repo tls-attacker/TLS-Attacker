@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,17 +45,13 @@ public class SupportedVersionsExtensionPreparator
 
     private void prepareProtocolVersionsLength(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersionsLength(msg.getSupportedVersions().getValue().length);
-        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
+        LOGGER.debug("SupportedVersionsLength: {}", msg.getSupportedVersionsLength().getValue());
     }
 
     private byte[] createProtocolVersionArray() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (ProtocolVersion version : chooser.getConfig().getSupportedVersions()) {
-            try {
-                stream.write(version.getValue());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write ProtocolVersion to byte[]", ex);
-            }
+            stream.write(version.getValue());
         }
         return stream.toByteArray();
     }

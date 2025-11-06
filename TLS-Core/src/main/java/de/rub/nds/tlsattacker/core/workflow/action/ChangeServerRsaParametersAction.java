@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
@@ -42,7 +42,7 @@ public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
 
         state.getTlsContext().getServerX509Context().setSubjectRsaModulus(modulus);
         state.getTlsContext().getServerX509Context().setSubjectRsaPublicExponent(publicExponent);
-        state.getTlsContext().getServerX509Context().setSubjectRsaPrivateKey(privateExponent);
+        state.getTlsContext().getServerX509Context().setSubjectRsaPrivateExponent(privateExponent);
 
         setExecuted(true);
         LOGGER.info("Changed server RSA parameters");

@@ -30,6 +30,6 @@ public class CookieExtensionPreparator extends ExtensionPreparator<CookieExtensi
         msg.setCookie(chooser.getExtensionCookie());
         LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
         msg.setCookieLength(chooser.getExtensionCookie().length);
-        LOGGER.debug("Cookie length: " + msg.getCookieLength().getValue());
+        LOGGER.debug("Cookie length: {}", msg.getCookieLength().getValue());
     }
 }

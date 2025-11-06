@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 

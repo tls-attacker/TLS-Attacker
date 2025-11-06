@@ -14,9 +14,8 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -24,28 +23,27 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage extends Message<TlsContext> {
+public abstract class ProtocolMessage extends Message {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;
     @XmlTransient protected boolean requiredDefault = true;
     @XmlTransient protected boolean adjustContextDefault = true;
     @XmlTransient protected boolean shouldPrepareDefault = true;
+
     /** resulting message */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
-    protected ModifiableByteArray completeResultingMessage;
+    @ModifiableVariableProperty protected ModifiableByteArray completeResultingMessage;
+
     /** Defines whether this message is necessarily required in the workflow. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean required;
+    @ModifiableVariableProperty private ModifiableBoolean required;
+
     /**
      * Defines if the message should be sent during the workflow. Using this flag it is possible to
      * omit a message is sent during the handshake while it is executed to initialize specific
      * variables.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean goingToBeSent;
+    @ModifiableVariableProperty private ModifiableBoolean goingToBeSent;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean adjustContext;
+    @ModifiableVariableProperty private ModifiableBoolean adjustContext;
 
     /** content type */
     @XmlTransient protected ProtocolMessageType protocolMessageType;
@@ -65,8 +63,10 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
 
     @Override
     public boolean isRequired() {
-        if (required == null || required.getValue() == null) {
+        if (required == null) {
             return requiredDefault;
+        } else if (required.getValue() == null) {
+            required.setOriginalValue(requiredDefault);
         }
         return required.getValue();
     }
@@ -76,8 +76,10 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
     }
 
     public boolean isGoingToBeSent() {
-        if (goingToBeSent == null || goingToBeSent.getValue() == null) {
+        if (goingToBeSent == null) {
             return goingToBeSentDefault;
+        } else if (goingToBeSent.getValue() == null) {
+            goingToBeSent.setOriginalValue(goingToBeSentDefault);
         }
         return goingToBeSent.getValue();
     }
@@ -106,8 +108,10 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
     }
 
     public boolean getAdjustContext() {
-        if (adjustContext == null || adjustContext.getValue() == null) {
+        if (adjustContext == null) {
             return adjustContextDefault;
+        } else if (adjustContext.getValue() == null) {
+            adjustContext.setOriginalValue(adjustContextDefault);
         }
         return adjustContext.getValue();
     }
@@ -125,27 +129,22 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
         return this instanceof HandshakeMessage;
     }
 
-    public boolean isDtlsHandshakeMessageFragment() {
-        return this instanceof DtlsHandshakeMessageFragment;
-    }
-
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
 
     @Override
-    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getHandler(
-            TlsContext context);
+    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getHandler(Context context);
 
     @Override
     public abstract ProtocolMessageParser<? extends ProtocolMessage> getParser(
-            TlsContext context, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
     public abstract ProtocolMessagePreparator<? extends ProtocolMessage> getPreparator(
-            TlsContext context);
+            Context context);
 
     @Override
     public abstract ProtocolMessageSerializer<? extends ProtocolMessage> getSerializer(
-            TlsContext context);
+            Context context);
 }

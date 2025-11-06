@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
  */
 public class SmtpReplyHandler<ReplyT extends SmtpReply> extends SmtpMessageHandler<ReplyT> {
     public SmtpReplyHandler(SmtpContext smtpContext) {
-        super(smtpContext);
+        super(smtpContext.getContext());
     }
 
     @Override

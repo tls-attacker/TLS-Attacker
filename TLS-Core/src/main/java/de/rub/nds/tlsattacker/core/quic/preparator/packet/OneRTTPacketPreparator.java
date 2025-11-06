@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,23 +20,31 @@ public class OneRTTPacketPreparator extends QuicPacketPreparator<OneRTTPacket> {
 
     public OneRTTPacketPreparator(Chooser chooser, OneRTTPacket packet) {
         super(chooser, packet);
-        this.packet = packet;
     }
 
     @Override
     public void prepare() {
-        try {
-            if (!context.isApplicationSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculateApplicationSecrets(context);
-            }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error(e);
-        }
+        LOGGER.debug("Preparing 1-RTT Packet");
+        prepareUnprotectedPacketNumber();
+        preparePacketNumberLength();
+        prepareUnprotectedFlags();
+        prepareQuicPacket();
+    }
 
+    private void prepareUnprotectedPacketNumber() {
         if (packet.getUnprotectedPacketNumber() == null) {
             packet.setUnprotectedPacketNumber(context.getOneRTTPacketPacketNumber());
             context.setOneRTTPacketPacketNumber(context.getOneRTTPacketPacketNumber() + 1);
+            LOGGER.debug(
+                    "Unprotected Packet Number: {}",
+                    packet.getUnprotectedPacketNumber().getValue());
         }
-        prepareQuicPacket();
+    }
+
+    private void prepareUnprotectedFlags() {
+        byte packetType = QuicPacketType.ONE_RTT_PACKET.getHeader(context.getQuicVersion());
+        int packetNumber = packet.getPacketNumberLength().getValue();
+        packet.setUnprotectedFlags((byte) (packetType ^ (packetNumber - 1)));
+        LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.record.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -15,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +56,12 @@ public class RecordPreparator extends Preparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
+        // Set DTLS 1.3 unified header only in to be encrypted records
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
+                && !(encryptor.getRecordCipher(record.getEpoch().getValue())
+                        instanceof RecordNullCipher)) {
+            prepareDtls13UnifiedHeader(record);
+        }
         compressor.compress(record);
         encrypt();
     }
@@ -81,7 +90,8 @@ public class RecordPreparator extends Preparator<Record> {
                             .getRecordCipher(recordLayer.getWriteEpoch())
                             .getState()
                             .getConnectionId();
-            if (connectionId != null) {
+            if (connectionId != null
+                    && tlsContext.isExtensionNegotiated(ExtensionType.CONNECTION_ID)) {
                 record.setConnectionId(connectionId);
                 LOGGER.debug("ConnectionId: {}", record.getConnectionId().getValue());
             }
@@ -98,6 +108,8 @@ public class RecordPreparator extends Preparator<Record> {
         if (chooser.getSelectedProtocolVersion().isTLS13()
                 || tlsContext.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else if (chooser.getSelectedProtocolVersion().isDTLS13()) {
+            record.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }
@@ -112,5 +124,32 @@ public class RecordPreparator extends Preparator<Record> {
     protected void prepareContentMessageType(ProtocolMessageType type) {
         getObject().setContentMessageType(this.type);
         LOGGER.debug("ContentMessageType: {}", type.getArrayValue());
+    }
+
+    protected void prepareDtls13UnifiedHeader(Record record) {
+        record.setUnifiedHeader(createDtls13UnifiedHeader(record, tlsContext));
+        LOGGER.debug(
+                "UnifiedHeader: 00{}",
+                Integer.toBinaryString(record.getUnifiedHeader().getValue()));
+    }
+
+    private byte createDtls13UnifiedHeader(Record record, TlsContext context) {
+        byte header = Dtls13UnifiedHeaderBits.HEADER_BASE;
+        // Setting the flag for connection id
+        if (record.getConnectionId() != null
+                && record.getConnectionId().getValue() != null
+                && record.getConnectionId().getValue().length > 0) {
+            header ^= Dtls13UnifiedHeaderBits.CID_PRESENT;
+        }
+        // Setting the flag for sequence number
+        if (context.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()) {
+            header ^= Dtls13UnifiedHeaderBits.SQN_LONG;
+        }
+        // Setting the flag for length
+        header ^= Dtls13UnifiedHeaderBits.LENGTH_PRESENT;
+        // Setting the epoch bits
+        byte lowerEpoch = (byte) (record.getEpoch().getValue() % 4);
+        header ^= lowerEpoch;
+        return header;
     }
 }

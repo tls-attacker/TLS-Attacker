@@ -38,7 +38,7 @@ public class ServerNameIndicationExtensionSerializer
 
     private void writeServerNameListLength(ServerNameIndicationExtensionMessage msg) {
         appendInt(msg.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 
     private void writeServerNameListBytes(ServerNameIndicationExtensionMessage msg) {

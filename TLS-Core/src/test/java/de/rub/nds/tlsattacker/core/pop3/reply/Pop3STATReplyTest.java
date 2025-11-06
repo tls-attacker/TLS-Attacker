@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.pop3.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3STATReplyParser;
@@ -31,7 +31,7 @@ class Pop3STATReplyTest {
         stat.setMailDropSize(320);
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = stat.getSerializer(context);
+        Serializer<?> serializer = stat.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("+OK 2 320\r\n", serializer.getOutputStream().toString());
@@ -45,7 +45,7 @@ class Pop3STATReplyTest {
         Pop3STATReply stat = new Pop3STATReply();
         Pop3STATReplyParser parser =
                 stat.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(stat);
 
@@ -62,7 +62,8 @@ class Pop3STATReplyTest {
 
         Pop3STATReplyParser parser =
                 stat.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> parser.parse(stat));
         assertEquals(stat.getStatusIndicator(), "-ERR");
@@ -79,7 +80,8 @@ class Pop3STATReplyTest {
 
         Pop3STATReplyParser parser =
                 stat.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         assertThrows(ParserException.class, () -> parser.parse(stat));
     }

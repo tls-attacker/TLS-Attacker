@@ -14,9 +14,8 @@ import de.rub.nds.tlsattacker.core.quic.handler.packet.HandshakePacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.HandshakePacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.HandshakePacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.HandshakePacketSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,30 +36,26 @@ public class HandshakePacket extends LongHeaderPacket {
         protectedHeaderHelper.write(flags);
         this.packetSecret = QuicCryptoSecrets.HANDSHAKE_SECRET;
         setQuicVersion(versionBytes);
-        try {
-            protectedHeaderHelper.write(versionBytes);
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        protectedHeaderHelper.write(versionBytes);
     }
 
     @Override
-    public HandshakePacketHandler getHandler(QuicContext context) {
-        return null;
+    public HandshakePacketHandler getHandler(Context context) {
+        return new HandshakePacketHandler(context.getQuicContext());
     }
 
     @Override
-    public HandshakePacketSerializer getSerializer(QuicContext context) {
+    public HandshakePacketSerializer getSerializer(Context context) {
         return new HandshakePacketSerializer(this);
     }
 
     @Override
-    public HandshakePacketPreparator getPreparator(QuicContext context) {
+    public HandshakePacketPreparator getPreparator(Context context) {
         return new HandshakePacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public HandshakePacketParser getParser(QuicContext context, InputStream stream) {
-        return new HandshakePacketParser(stream, context);
+    public HandshakePacketParser getParser(Context context, InputStream stream) {
+        return new HandshakePacketParser(stream, context.getQuicContext());
     }
 }

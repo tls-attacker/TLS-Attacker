@@ -27,6 +27,6 @@ public class ClientCertificateUrlExtensionHandlerTest
     public void testadjustTLSExtensionContext() {
         ClientCertificateUrlExtensionMessage message = new ClientCertificateUrlExtensionMessage();
         handler.adjustContext(message);
-        assertTrue(context.isExtensionProposed(ExtensionType.CLIENT_CERTIFICATE_URL));
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.CLIENT_CERTIFICATE_URL));
     }
 }

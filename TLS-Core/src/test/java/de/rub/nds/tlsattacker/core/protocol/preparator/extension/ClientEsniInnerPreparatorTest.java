@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -52,7 +52,7 @@ public class ClientEsniInnerPreparatorTest {
         int expectedServerNameListLength = 18;
         byte[] resultServerNameListBytes = clientEsniInner.getServerNameListBytes().getValue();
         byte[] expectedServerNameListBytes =
-                ArrayConverter.hexStringToByteArray("00000f62617a2e6578616d706c652e636f6d");
+                DataConverter.hexStringToByteArray("00000f62617a2e6578616d706c652e636f6d");
         byte[] resultPadding = clientEsniInner.getPadding().getValue();
         byte[] expectedPadding = new byte[240];
 

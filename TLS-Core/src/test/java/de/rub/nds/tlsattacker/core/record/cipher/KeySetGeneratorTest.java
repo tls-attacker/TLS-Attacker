@@ -10,21 +10,18 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.stream.Stream;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,11 +31,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class KeySetGeneratorTest {
 
     private TlsContext context;
-
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @BeforeEach
     public void setUp() {
@@ -51,7 +43,7 @@ public class KeySetGeneratorTest {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version == ProtocolVersion.SSL2
                         || version == ProtocolVersion.SSL3
-                        || version.isTLS13() != suite.isTLS13()) {
+                        || (!suite.isTls13() && version.is13())) {
                     continue;
                 }
                 builder.add(Arguments.of(version, suite));
@@ -71,6 +63,6 @@ public class KeySetGeneratorTest {
             throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedCipherSuite(cipherSuite);
         context.setSelectedProtocolVersion(protocolVersion);
-        assertNotNull(KeySetGenerator.generateKeySet(context));
+        assertNotNull(KeyDerivator.generateKeySet(context));
     }
 }

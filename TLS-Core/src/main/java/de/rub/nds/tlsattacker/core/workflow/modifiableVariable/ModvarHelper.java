@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableListHolder;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
@@ -51,7 +51,7 @@ public class ModvarHelper {
     }
 
     public List<ModifiableVariableField> getAllNonNullSentFieldsOfType(
-            WorkflowTrace trace, Class type) {
+            WorkflowTrace trace, Class<?> type) {
         List<ModifiableVariableField> allNonNullSentFields = getAllNonNullSentFields(trace);
         List<ModifiableVariableField> resultFields = new LinkedList<>();
         for (ModifiableVariableField field : allNonNullSentFields) {

@@ -23,7 +23,7 @@ public class SmtpMAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCom
             this.getObject().setReversePath(chooser.getConfig().getDefaultSmtpReversePath());
         }
         StringBuilder pars = new StringBuilder("FROM:<" + this.getObject().getReversePath() + ">");
-        //TODO: This would love modern Java Streams
+        // TODO: This would love modern Java Streams
         if (this.getObject().getMAILparameters() != null) {
             for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {
                 pars.append(" ").append(MAILparameters.serialize());

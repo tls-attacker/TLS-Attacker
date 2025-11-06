@@ -41,7 +41,7 @@ public class DATAContentReplyTest {
             SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
             SmtpReplyParser parser =
                     dataContentReply.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(dataContentReply);
             assertEquals(Integer.parseInt(reply.substring(0, 3)), dataContentReply.getReplyCode());
@@ -58,7 +58,7 @@ public class DATAContentReplyTest {
         reply.setReplyCode(250);
         reply.setHumanReadableMessages(List.of("OK"));
 
-        Serializer<?> serializer = reply.getSerializer(context);
+        Serializer<?> serializer = reply.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("250 OK\r\n", serializer.getOutputStream().toString());

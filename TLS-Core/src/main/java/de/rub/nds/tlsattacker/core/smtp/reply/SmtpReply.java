@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -69,28 +69,28 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public SmtpReply() {
-        //JAXB constructor
+        // JAXB constructor
         this(SmtpCommandType.UNKNOWN);
     }
 
     @Override
-    public SmtpReplyHandler<? extends SmtpReply> getHandler(SmtpContext smtpContext) {
-        return new SmtpReplyHandler<>(smtpContext);
+    public SmtpReplyHandler<? extends SmtpReply> getHandler(Context smtpContext) {
+        return new SmtpReplyHandler<>(smtpContext.getSmtpContext());
     }
 
     @Override
-    public SmtpReplyPreparator<? extends SmtpReply> getPreparator(SmtpContext context) {
+    public SmtpReplyPreparator<? extends SmtpReply> getPreparator(Context context) {
         return new SmtpReplyPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
+    public SmtpReplyParser<? extends SmtpReply> getParser(Context context, InputStream stream) {
         return new SmtpGenericReplyParser<>(stream);
     }
 
     @Override
-    public SmtpReplySerializer<? extends SmtpReply> getSerializer(SmtpContext context) {
-        return new SmtpReplySerializer<>(context, this);
+    public SmtpReplySerializer<? extends SmtpReply> getSerializer(Context context) {
+        return new SmtpReplySerializer<>(context.getSmtpContext(), this);
     }
 
     @Override

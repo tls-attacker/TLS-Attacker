@@ -33,12 +33,12 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 public class SmtpCommandHandler<CommandT extends SmtpCommand> extends SmtpMessageHandler<CommandT> {
 
     public SmtpCommandHandler(SmtpContext smtpContext) {
-        super(smtpContext);
+        super(smtpContext.getContext());
     }
 
     @Override
     public void adjustContext(CommandT smtpCommand) {
-        this.context.setLastCommand(smtpCommand);
+        this.getContext().getSmtpContext().setLastCommand(smtpCommand);
         adjustContextSpecific(smtpCommand);
     }
 

@@ -13,15 +13,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ConnectionIdExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ConnectionIdExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ConnectionIdExtensionPreperator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ConnectionIdExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ConnectionIdExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -33,10 +33,9 @@ public class ConnectionIdExtensionMessage extends ExtensionMessage {
         super(ExtensionType.CONNECTION_ID);
     }
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray connectionId;
+    @ModifiableVariableProperty private ModifiableByteArray connectionId;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger connectionIdLength;
 
     public ModifiableByteArray getConnectionId() {
@@ -65,23 +64,23 @@ public class ConnectionIdExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler<ConnectionIdExtensionMessage> getHandler(TlsContext tlsContext) {
-        return new ConnectionIdExtensionHandler(tlsContext);
+    public ExtensionHandler<ConnectionIdExtensionMessage> getHandler(Context context) {
+        return new ConnectionIdExtensionHandler(context.getTlsContext());
     }
 
     @Override
-    public ExtensionSerializer<ConnectionIdExtensionMessage> getSerializer(TlsContext tlsContext) {
+    public ExtensionSerializer<ConnectionIdExtensionMessage> getSerializer(Context context) {
         return new ConnectionIdExtensionSerializer(this);
     }
 
     @Override
-    public ExtensionPreparator<ConnectionIdExtensionMessage> getPreparator(TlsContext tlsContext) {
-        return new ConnectionIdExtensionPreperator(tlsContext.getChooser(), this);
+    public ExtensionPreparator<ConnectionIdExtensionMessage> getPreparator(Context context) {
+        return new ConnectionIdExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
     public ExtensionParser<ConnectionIdExtensionMessage> getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new ConnectionIdExtensionParser(stream, tlsContext);
+            Context context, InputStream stream) {
+        return new ConnectionIdExtensionParser(stream, context.getTlsContext());
     }
 }

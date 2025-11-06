@@ -22,9 +22,16 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Retry delay in milliseconds when socket connection fails */
+    private static final int SOCKET_RETRY_DELAY_MS = 1000;
+
+    /** Maximum TLS record size (2^16 bytes) used for send buffer */
+    private static final int MAX_TLS_RECORD_SIZE = 65536;
+
     protected String hostname;
     protected long connectionTimeout;
     private boolean retryFailedSocketInitialization = false;
+    private boolean clientInitializationFailed = false;
 
     public ClientTcpTransportHandler(Connection connection) {
         super(connection);
@@ -84,7 +91,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 // client port has been manually set and the resetClientSourcePort setting is
                 // disabled
                 if (srcPort != null
-                        && (retryFailedSocketInitialization || !resetClientSourcePort)) {
+                        && ((clientInitializationFailed && retryFailedSocketInitialization)
+                                || !resetClientSourcePort)) {
                     socket.bind(new InetSocketAddress(srcPort));
                 }
                 socket.connect(new InetSocketAddress(hostname, dstPort), (int) connectionTimeout);
@@ -93,14 +101,16 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
                 }
                 break;
             } catch (Exception e) {
+                clientInitializationFailed = true;
                 if (!retryFailedSocketInitialization) {
                     LOGGER.warn("Socket initialization to {}:{} failed", hostname, dstPort, e);
                     break;
                 }
                 LOGGER.warn("Server @{}:{} is not available yet", hostname, dstPort);
                 try {
-                    Thread.sleep(1000);
-                } catch (Exception ignore) {
+                    Thread.sleep(SOCKET_RETRY_DELAY_MS);
+                } catch (InterruptedException ignored) {
+                    // Ignore interruption during retry sleep
                 }
             }
         }
@@ -108,12 +118,14 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + dstPort);
         }
+
         cachedSocketState = null;
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
         LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         socket.setSoTimeout((int) timeout);
+        socket.setSendBufferSize(MAX_TLS_RECORD_SIZE);
     }
 
     @Override

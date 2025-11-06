@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -50,14 +50,14 @@ public class RecordedWorkflowTest {
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 4555);
         } catch (IOException
                 | InvalidKeyException
-                | KeyManagementException
                 | KeyStoreException
                 | NoSuchAlgorithmException
                 | NoSuchProviderException
                 | SignatureException
-                | UnrecoverableKeyException
                 | CertificateException
-                | OperatorCreationException ex) {
+                | OperatorCreationException
+                | UnrecoverableKeyException
+                | KeyManagementException ex) {
             Logger.getLogger(RecordedWorkflowTest.class.getName())
                     .log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -79,7 +79,7 @@ public class RecordedWorkflowTest {
     @Test
     @Disabled("Not implemented")
     public void testFullWorkflowDeterministicWorkflow() throws IOException {
-        Config c = Config.createConfig();
+        Config c = new Config();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setWorkflowExecutorShouldOpen(false);

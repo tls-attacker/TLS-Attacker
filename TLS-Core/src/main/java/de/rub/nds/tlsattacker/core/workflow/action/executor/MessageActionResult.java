@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -55,8 +55,7 @@ public class MessageActionResult {
      * @param other
      */
     public MessageActionResult merge(MessageActionResult... other) {
-        LinkedList<MessageActionResult> results =
-                new LinkedList<MessageActionResult>(Arrays.asList(other));
+        LinkedList<MessageActionResult> results = new LinkedList<>(Arrays.asList(other));
         results.add(0, this);
         List<Record> recordList = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragmentList = null;

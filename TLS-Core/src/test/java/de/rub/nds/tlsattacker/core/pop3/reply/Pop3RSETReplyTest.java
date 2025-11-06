@@ -28,7 +28,7 @@ class Pop3RSETReplyTest {
         reset.setStatusIndicator("+OK");
         reset.setHumanReadableMessage("maildrop has 2 messages (320 octets)");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = reset.getSerializer(context);
+        Serializer<?> serializer = reset.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals(
@@ -44,7 +44,7 @@ class Pop3RSETReplyTest {
         Pop3RSETReply reset = new Pop3RSETReply();
         Pop3GenericReplyParser<Pop3RSETReply> parser =
                 reset.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(reset);
 
@@ -59,7 +59,8 @@ class Pop3RSETReplyTest {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3GenericReplyParser<Pop3RSETReply> parser =
                 reset.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
         assertDoesNotThrow(() -> parser.parse(reset));
         assertEquals("-ERR", reset.getStatusIndicator());
         assertEquals("not ok", reset.getHumanReadableMessage());

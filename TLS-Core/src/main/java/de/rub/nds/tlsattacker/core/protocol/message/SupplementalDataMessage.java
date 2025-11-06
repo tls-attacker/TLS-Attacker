@@ -13,15 +13,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @HoldsModifiableVariable private List<SupplementalDataEntry> entries;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger supplementalDataLength;
 
     @ModifiableVariableProperty private ModifiableByteArray supplementalDataBytes;
@@ -85,22 +85,22 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public SupplementalDataHandler getHandler(TlsContext tlsContext) {
-        return new SupplementalDataHandler(tlsContext);
+    public SupplementalDataHandler getHandler(Context context) {
+        return new SupplementalDataHandler(context.getTlsContext());
     }
 
     @Override
-    public SupplementalDataParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SupplementalDataParser(stream, tlsContext);
+    public SupplementalDataParser getParser(Context context, InputStream stream) {
+        return new SupplementalDataParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SupplementalDataPreparator getPreparator(TlsContext tlsContext) {
-        return new SupplementalDataPreparator(tlsContext.getChooser(), this);
+    public SupplementalDataPreparator getPreparator(Context context) {
+        return new SupplementalDataPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SupplementalDataSerializer getSerializer(TlsContext tlsContext) {
+    public SupplementalDataSerializer getSerializer(Context context) {
         return new SupplementalDataSerializer(this);
     }
 
@@ -123,7 +123,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
                         .append(entry.getSupplementalDataEntryLength().getValue());
                 sb.append("\n   Supplemental Data : ")
                         .append(
-                                ArrayConverter.bytesToHexString(
+                                DataConverter.bytesToHexString(
                                         entry.getSupplementalDataEntry().getValue()));
             }
         } else {

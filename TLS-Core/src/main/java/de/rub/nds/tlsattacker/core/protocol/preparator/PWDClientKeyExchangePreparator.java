@@ -8,17 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -102,7 +102,7 @@ public class PWDClientKeyExchangePreparator
 
         LOGGER.debug(
                 "PasswordElement.x: {}",
-                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+                DataConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -165,7 +165,7 @@ public class PWDClientKeyExchangePreparator
         msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
                 "Private: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
+                () -> DataConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -175,13 +175,13 @@ public class PWDClientKeyExchangePreparator
     }
 
     protected void prepareScalar(PWDClientKeyExchangeMessage msg, BigInteger scalar) {
-        msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
+        msg.setScalar(DataConverter.bigIntegerToByteArray(scalar));
+        LOGGER.debug("Scalar: {}", () -> DataConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDClientKeyExchangeMessage msg) {
         msg.setScalarLength(msg.getScalar().getValue().length);
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength());
     }
 
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
@@ -196,7 +196,7 @@ public class PWDClientKeyExchangePreparator
 
     protected void prepareElementLength(PWDClientKeyExchangeMessage msg) {
         msg.setElementLength(msg.getElement().getValue().length);
-        LOGGER.debug("ElementLength: " + msg.getElementLength());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength());
     }
 
     private byte[] generatePremasterSecret(
@@ -222,7 +222,7 @@ public class PWDClientKeyExchangePreparator
                 curve.mult(
                         privateKeyScalar,
                         curve.add(curve.mult(peerScalar, passwordElement), peerElement));
-        return ArrayConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData());
+        return DataConverter.bigIntegerToByteArray(sharedSecret.getFieldX().getData());
     }
 
     private void preparePremasterSecret(PWDClientKeyExchangeMessage msg, byte[] premasterSecret) {
@@ -232,7 +232,7 @@ public class PWDClientKeyExchangePreparator
 
     private void prepareClientServerRandom(PWDClientKeyExchangeMessage msg) {
         byte[] clientRandom =
-                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+                DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientRandom);
         LOGGER.debug(
                 "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());

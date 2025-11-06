@@ -52,13 +52,13 @@ public enum AlertDescription {
 
     private static final Map<Byte, AlertDescription> MAP;
 
-    private AlertDescription(byte value) {
+    AlertDescription(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (AlertDescription cm : AlertDescription.values()) {
+        for (AlertDescription cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

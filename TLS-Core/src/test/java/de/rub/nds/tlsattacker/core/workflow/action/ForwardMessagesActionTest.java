@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
@@ -59,7 +59,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     }
 
     public void setFetchableData(byte[] data) {
-        FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
+        FakeTcpTransportHandler th = new FakeTcpTransportHandler(ConnectionEndType.SERVER);
         th.setFetchableByte(data);
         state.getContext(ctx1Alias)
                 .getTlsContext()
@@ -70,7 +70,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     private void initContexts() throws IOException {
         state.getContext(ctx2Alias)
                 .getTcpContext()
-                .setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+                .setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
         setFetchableData(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         new byte[] {
                             (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x20
                         },

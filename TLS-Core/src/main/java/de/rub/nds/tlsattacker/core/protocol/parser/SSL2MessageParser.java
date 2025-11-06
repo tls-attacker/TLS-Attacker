@@ -8,17 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SSL2MessageParser<T extends SSL2Message> extends ProtocolMessageParser<T> {
+public abstract class SSL2MessageParser<T extends SSL2Message> extends Parser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -47,7 +47,7 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends ProtocolM
         } else {
             // Parse remaining bytes
             length =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             firstTwoBytes,
                             parseByteArrayField(
                                     SSL2ByteLength.LONG_LENGTH - SSL2ByteLength.LENGTH));
@@ -56,7 +56,7 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends ProtocolM
         }
         int intLength = ((length[0] & mask) << Bits.IN_A_BYTE) | (length[1] & 0xFF);
         message.setMessageLength(intLength);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
@@ -67,6 +67,6 @@ public abstract class SSL2MessageParser<T extends SSL2Message> extends ProtocolM
      */
     protected void parseType(T msg) {
         msg.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));
-        LOGGER.debug("Type: " + msg.getType().getValue());
+        LOGGER.debug("Type: {}", msg.getType().getValue());
     }
 }

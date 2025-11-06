@@ -25,6 +25,6 @@ public class SmtpRSETCommandHandler extends SmtpCommandHandler<SmtpRSETCommand> 
      */
     @Override
     public void adjustContextSpecific(SmtpRSETCommand command) {
-        this.getContext().resetContext();
+        this.getContext().getSmtpContext().resetContext();
     }
 }

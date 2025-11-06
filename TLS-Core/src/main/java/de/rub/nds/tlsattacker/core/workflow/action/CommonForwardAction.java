@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
@@ -18,12 +19,14 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
+import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElement;
 import java.io.IOException;
@@ -94,7 +97,7 @@ public abstract class CommonForwardAction extends TlsAction
             LOGGER.info(
                     "Receiving messages ({}): {}",
                     receiveFromAlias,
-                    LogPrinter.toHumanReadableOneLine(layerConfigurationList));
+                    LogPrinter.toHumanReadableOneLine(layerConfigurationList, LOGGER.getLevel()));
             layerStackReceiveResult =
                     receiveFromContext.getLayerStack().receiveData(layerConfigurationList);
         }
@@ -105,7 +108,7 @@ public abstract class CommonForwardAction extends TlsAction
                     forwardToContext.getLayerStack().sendData(layerConfigurationList);
         } catch (IOException e) {
             forwardToContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
+            LOGGER.debug("Failed execution", e);
         }
 
         setExecuted(true);
@@ -113,7 +116,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public boolean executedAsPlanned() {
-        return layerStackReceiveResult.executedAsPlanned()
+        return layerStackReceiveResult != null
+                && layerStackSendResult != null
+                && layerStackReceiveResult.executedAsPlanned()
                 && layerStackSendResult.executedAsPlanned();
     }
 
@@ -193,6 +198,18 @@ public abstract class CommonForwardAction extends TlsAction
                         ImplementedLayers.MESSAGE, layerStackReceiveResult)
                 .stream()
                 .map(container -> (ProtocolMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SSL2Message> getReceivedSSL2Messages() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, layerStackReceiveResult)
+                .stream()
+                .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
     }
 
@@ -306,6 +323,18 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
+    public final List<SSL2Message> getSentSSL2Messages() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, layerStackSendResult)
+                .stream()
+                .map(container -> (SSL2Message) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public final List<QuicFrame> getSentQuicFrames() {
         if (layerStackSendResult == null) {
             return null;
@@ -338,6 +367,54 @@ public abstract class CommonForwardAction extends TlsAction
                         ImplementedLayers.RECORD, layerStackSendResult)
                 .stream()
                 .map(container -> (Record) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final List<TcpStreamContainer> getSentTcpStreamContainers() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.TCP, layerStackSendResult)
+                .stream()
+                .map(container -> (TcpStreamContainer) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final List<UdpDataPacket> getSentUdpDataPackets() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.UDP, layerStackSendResult)
+                .stream()
+                .map(container -> (UdpDataPacket) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TcpStreamContainer> getReceivedTcpStreamContainers() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.TCP, layerStackReceiveResult)
+                .stream()
+                .map(container -> (TcpStreamContainer) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UdpDataPacket> getReceivedUdpDataPackets() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.UDP, layerStackReceiveResult)
+                .stream()
+                .map(container -> (UdpDataPacket) container)
                 .collect(Collectors.toList());
     }
 }

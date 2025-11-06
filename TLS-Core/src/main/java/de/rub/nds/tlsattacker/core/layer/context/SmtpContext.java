@@ -29,18 +29,22 @@ public class SmtpContext extends LayerContext {
 
     /** Stores the recipients of a mail (supplied via MAIL TO). Each entry is a recipient. */
     private List<String> recipientBuffer = new ArrayList<>();
+
     /** Stores the data of a mail (supplied via DATA). Each entry is a line of the mail. */
     private List<String> mailDataBuffer = new ArrayList<>();
+
     /**
      * Stores the identity of the client given by EHLO/HELO. See {@link SmtpContext#clientUsedHELO},
      * because legacy HELO clients do not support the client identity being an address literal.
      */
     private String clientIdentity;
+
     /** Stores the domain of the server given by the EHLO/HELO reply. */
     private String serverIdentity;
 
     /** Stores the negotiated extensions by the server given by the EHLO reply. */
     private List<SmtpServiceExtension> negotiatedExtensions = new ArrayList<>();
+
     /**
      * Indicates whether the server supports HELO (which is very old legacy by now). This affects
      * {@link SmtpContext#clientIdentity} and the extension negotiation.
@@ -64,6 +68,7 @@ public class SmtpContext extends LayerContext {
      * </blockquote>
      */
     private boolean clientRequestedClose = false;
+
     /**
      * Whether the server has acknowledged a client's request to close the connection.
      *

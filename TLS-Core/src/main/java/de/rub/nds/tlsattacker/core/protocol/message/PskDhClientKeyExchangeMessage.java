@@ -12,23 +12,21 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDhClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDhClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDhClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskDhClientKeyExchange")
 public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskDhClientKeyExchangeMessage() {
@@ -47,7 +45,7 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
         }
         sb.append("\n  PSKIdentity: ");
         if (identity != null && identity.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+            sb.append(DataConverter.bytesToHexString(identity.getValue()));
         } else {
             sb.append("null");
         }
@@ -80,23 +78,22 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<PskDhClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
-        return new PskDhClientKeyExchangeHandler(tlsContext);
+    public PskDhClientKeyExchangeHandler getHandler(Context context) {
+        return new PskDhClientKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PskDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDhClientKeyExchangeParser(stream, tlsContext);
+    public PskDhClientKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PskDhClientKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PskDhClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskDhClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskDhClientKeyExchangePreparator getPreparator(Context context) {
+        return new PskDhClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PskDhClientKeyExchangeSerializer getSerializer(Context context) {
         return new PskDhClientKeyExchangeSerializer(this);
     }
 

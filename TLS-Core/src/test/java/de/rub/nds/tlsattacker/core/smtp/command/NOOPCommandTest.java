@@ -32,7 +32,7 @@ class NOOPCommandTest {
         SmtpNOOPCommand noop = new SmtpNOOPCommand();
         Parser parser =
                 noop.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
         assertEquals("NOOP", noop.getVerb());
@@ -46,7 +46,7 @@ class NOOPCommandTest {
         SmtpNOOPCommand noop = new SmtpNOOPCommand();
         Parser parser =
                 noop.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
         assertEquals("NOOP", noop.getVerb());
@@ -57,8 +57,8 @@ class NOOPCommandTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpNOOPCommand noopCommand = new SmtpNOOPCommand();
-        Preparator preparator = noopCommand.getPreparator(context);
-        Serializer serializer = noopCommand.getSerializer(context);
+        Preparator preparator = noopCommand.getPreparator(context.getContext());
+        Serializer serializer = noopCommand.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         Assertions.assertEquals("NOOP\r\n", serializer.getOutputStream().toString());
@@ -69,7 +69,7 @@ class NOOPCommandTest {
         // not expecting anything, just no crashes
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpNOOPCommand noopCommand = new SmtpNOOPCommand();
-        Handler handler = noopCommand.getHandler(context);
+        Handler handler = noopCommand.getHandler(context.getContext());
         handler.adjustContext(noopCommand);
     }
 }

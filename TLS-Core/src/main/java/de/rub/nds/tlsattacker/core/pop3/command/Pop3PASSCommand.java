@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3PASSCommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3PASSCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -24,6 +24,7 @@ public class Pop3PASSCommand extends Pop3Command {
         super(Pop3CommandType.PASS, password);
         this.password = password;
     }
+
     public Pop3PASSCommand() {
         super(Pop3CommandType.PASS, null);
     }
@@ -37,12 +38,12 @@ public class Pop3PASSCommand extends Pop3Command {
     }
 
     @Override
-    public Pop3PASSCommandParser getParser(Pop3Context context, InputStream stream) {
+    public Pop3PASSCommandParser getParser(Context context, InputStream stream) {
         return new Pop3PASSCommandParser(stream);
     }
 
     @Override
-    public Pop3PASSCommandPreparator getPreparator(Pop3Context context) {
-        return new Pop3PASSCommandPreparator(context, this);
+    public Pop3PASSCommandPreparator getPreparator(Context context) {
+        return new Pop3PASSCommandPreparator(context.getPop3Context(), this);
     }
 }

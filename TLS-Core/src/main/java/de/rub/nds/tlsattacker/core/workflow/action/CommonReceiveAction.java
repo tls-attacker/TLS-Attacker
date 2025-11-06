@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
@@ -16,12 +17,14 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
+import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import java.util.Collections;
@@ -29,8 +32,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class CommonReceiveAction extends MessageAction implements ReceivingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CommonReceiveAction() {
         super();
@@ -56,22 +63,25 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
             throw new ActionExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving... (" + this.getClass().getSimpleName() + ")");
+        LOGGER.debug("Receiving... ({})", this.getClass().getSimpleName());
         List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(state);
         getReceiveResult(tlsContext.getLayerStack(), layerConfigurations);
         setExecuted(true);
         LOGGER.debug(
-                "Receive Expected: {}", LogPrinter.toHumanReadableOneLine(layerConfigurations));
+                "Receive Expected: {}",
+                LogPrinter.toHumanReadableOneLine(layerConfigurations, LOGGER.getLevel()));
 
         if (hasDefaultAlias()) {
             LOGGER.info(
                     "Received Messages: {}",
-                    LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult()));
+                    LogPrinter.toHumanReadableMultiLine(
+                            getLayerStackProcessingResult(), LOGGER.getLevel()));
         } else {
             LOGGER.info(
                     "Received Messages ({}): {}",
                     getConnectionAlias(),
-                    LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult()));
+                    LogPrinter.toHumanReadableMultiLine(
+                            getLayerStackProcessingResult(), LOGGER.getLevel()));
         }
     }
 
@@ -96,6 +106,18 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
                         ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
                 .stream()
                 .map(container -> (ProtocolMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SSL2Message> getReceivedSSL2Messages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
     }
 
@@ -184,9 +206,34 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
     }
 
     @Override
+    public List<TcpStreamContainer> getReceivedTcpStreamContainers() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.TCP, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (TcpStreamContainer) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UdpDataPacket> getReceivedUdpDataPackets() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.UDP, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (UdpDataPacket) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean executedAsPlanned() {
         if (this.isExecuted() && getLayerStackProcessingResult() != null) {
-            return getLayerStackProcessingResult().executedAsPlanned();
+            boolean executedAsPlanned = getLayerStackProcessingResult().executedAsPlanned();
+            return executedAsPlanned;
         }
         return false;
     }

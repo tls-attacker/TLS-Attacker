@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -15,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -54,7 +54,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
     }
 
     private byte[] computeVerifyData() throws CryptoException {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             try {
                 HKDFAlgorithm hkdfAlgorithm =
                         AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
@@ -66,7 +66,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 } else {
                     macLength = Mac.getInstance(javaMacName).getMacLength();
                 }
-                LOGGER.debug("Connection End: " + chooser.getTalkingConnectionEnd());
+                LOGGER.debug("Connection End: {}", chooser.getTalkingConnectionEnd());
                 byte[] trafficSecret;
                 if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                     trafficSecret = chooser.getServerHandshakeTrafficSecret();
@@ -79,7 +79,8 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                                 trafficSecret,
                                 HKDFunction.FINISHED,
                                 new byte[0],
-                                macLength);
+                                macLength,
+                                chooser.getSelectedProtocolVersion());
                 LOGGER.debug("Finished key: {}", finishedKey);
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, javaMacName);
                 byte[] result;
@@ -125,7 +126,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
         } else {
             LOGGER.debug("Calculating VerifyData:");
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
-            LOGGER.debug("Using PRF:" + prfAlgorithm.name());
+            LOGGER.debug("Using PRF: {}", prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret: {}", masterSecret);
             byte[] handshakeMessageHash =

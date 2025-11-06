@@ -31,7 +31,7 @@ public class Pop3RSETCommandTest {
 
         Pop3CommandParser parser =
                 rsetCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(rsetCommand);
 
@@ -42,8 +42,8 @@ public class Pop3RSETCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RSETCommand rsetCommand = new Pop3RSETCommand();
-        Pop3CommandPreparator preparator = rsetCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = rsetCommand.getSerializer(context);
+        Pop3CommandPreparator preparator = rsetCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = rsetCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

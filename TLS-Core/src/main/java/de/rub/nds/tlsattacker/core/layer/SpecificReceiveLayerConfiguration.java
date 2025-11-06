@@ -13,22 +13,20 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.Level;
 
 /**
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
  */
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
-
-    private List<DataContainerFilter> containerFilterList;
-
-    private boolean allowTrailingContainers = false;
 
     public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public SpecificReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }
@@ -48,7 +46,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
      *     case if no contradictory DataContainer has been received yet and the LayerConfiguration
      *     can be satisfied if additional DataContainers get provided
      */
-    private boolean evaluateReceivedContainers(
+    protected boolean evaluateReceivedContainers(
             List<Container> list, boolean mayReceiveMoreContainers) {
         if (list == null) {
             return false;
@@ -79,17 +77,12 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
             }
 
             for (; j < list.size(); j++) {
-                if (!containerCanBeFiltered(list.get(j)) && !isAllowTrailingContainers()) {
+                if (!containerCanBeFiltered(list.get(j)) && !mayReceiveMoreContainers) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean failedEarly(List<Container> list) {
-        return !evaluateReceivedContainers(list, true);
     }
 
     public void setContainerFilterList(DataContainerFilter... containerFilters) {
@@ -107,25 +100,16 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
         return false;
     }
 
-    public boolean isAllowTrailingContainers() {
-        return allowTrailingContainers;
-    }
-
-    public void setAllowTrailingContainers(boolean allowTrailingContainers) {
-        this.allowTrailingContainers = allowTrailingContainers;
-    }
-
-    public List<DataContainerFilter> getContainerFilterList() {
-        return containerFilterList;
-    }
-
-    public void setContainerFilterList(List<DataContainerFilter> containerFilterList) {
-        this.containerFilterList = containerFilterList;
-    }
-
     @Override
-    public boolean isProcessTrailingContainers() {
-        return true;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        if (receivedTimeout && !dataLeftToProcess) {
+            return false;
+        }
+        if (dataLeftToProcess) {
+            return true;
+        }
+        return !executedAsPlanned(list);
     }
 
     @Override
@@ -136,5 +120,10 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return true;
     }
 }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import org.junit.jupiter.api.Test;
@@ -28,11 +28,11 @@ public class HelloVerifyRequestPreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        context.getConfig().setDtlsDefaultCookieLength(10);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
+        tlsContext.getConfig().setDtlsDefaultCookieLength(10);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         preparator.prepare();
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB"),
+                DataConverter.hexStringToByteArray("60B420BB3851D9D47ACB"),
                 message.getCookie().getValue());
         assertEquals(10, (byte) message.getCookieLength().getValue());
         assertArrayEquals(

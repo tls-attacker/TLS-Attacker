@@ -40,14 +40,29 @@ public class ECDHEServerKeyExchangeHandler<KeyExchangeMessage extends ECDHEServe
     protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
         NamedGroup group = NamedGroup.getNamedGroup(message.getNamedGroup().getValue());
         if (group != null) {
-            LOGGER.debug("Adjusting selected named group: " + group.name());
+            LOGGER.debug("Adjusting selected named group: {}", group.name());
             tlsContext.setSelectedGroup(group);
 
             LOGGER.debug("Adjusting EC Point");
-            Point publicKeyPoint =
-                    PointFormatter.formatFromByteArray(
-                            (NamedEllipticCurveParameters) group.getGroupParameters(),
-                            message.getPublicKey().getValue());
+
+            Point publicKeyPoint;
+            if (group.getGroupParameters() == null
+                    || group.getGroupParameters() instanceof NamedEllipticCurveParameters
+                            == false) {
+                LOGGER.debug(
+                        "Unsuited group parameters for EC point adjustment. Falling back to SECP256R1.");
+                publicKeyPoint =
+                        PointFormatter.formatFromByteArray(
+                                (NamedEllipticCurveParameters)
+                                        NamedGroup.SECP256R1.getGroupParameters(),
+                                message.getPublicKey().getValue());
+            } else {
+                publicKeyPoint =
+                        PointFormatter.formatFromByteArray(
+                                (NamedEllipticCurveParameters) group.getGroupParameters(),
+                                message.getPublicKey().getValue());
+            }
+
             tlsContext.setServerEphemeralEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");

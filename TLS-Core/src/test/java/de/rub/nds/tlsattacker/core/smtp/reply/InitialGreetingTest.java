@@ -54,7 +54,7 @@ class InitialGreetingTest {
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
         SmtpEHLOReplyParser parser =
                 ehlo.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
         assertEquals(250, ehlo.getReplyCode());
@@ -76,7 +76,7 @@ class InitialGreetingTest {
         ehlo.setGreeting("says Greetings");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = ehlo.getSerializer(context);
+        Serializer<?> serializer = ehlo.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals(
                 "250 seal.cs.upb.de says Greetings\r\n", serializer.getOutputStream().toString());
@@ -93,11 +93,10 @@ class InitialGreetingTest {
                         new SmtpServiceExtension("8BITMIME"),
                         new SmtpServiceExtension("ATRN"),
                         new SmtpServiceExtension("STARTTLS"),
-                        new SmtpServiceExtension("HELP")
-                ));
+                        new SmtpServiceExtension("HELP")));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = ehlo.getSerializer(context);
+        Serializer<?> serializer = ehlo.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals(
                 "250-seal.cs.upb.de says Greetings\r\n250-8BITMIME\r\n250-ATRN\r\n250-STARTTLS\r\n250 HELP\r\n",

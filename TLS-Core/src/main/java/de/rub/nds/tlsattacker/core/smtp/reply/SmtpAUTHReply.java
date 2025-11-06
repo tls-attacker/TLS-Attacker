@@ -20,8 +20,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class SmtpAUTHReply extends SmtpReply {
-   public SmtpAUTHReply() {
-       super(SmtpCommandType.AUTH);
-   }
+    public SmtpAUTHReply() {
+        super(SmtpCommandType.AUTH);
+    }
 }
-

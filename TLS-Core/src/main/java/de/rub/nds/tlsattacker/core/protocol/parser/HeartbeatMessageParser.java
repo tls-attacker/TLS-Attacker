@@ -45,7 +45,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      */
     private void parseHeartbeatMessageType(HeartbeatMessage msg) {
         msg.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
-        LOGGER.debug("HeartbeatMessageType: " + msg.getHeartbeatMessageType().getValue());
+        LOGGER.debug("HeartbeatMessageType: {}", msg.getHeartbeatMessageType().getValue());
     }
 
     /**
@@ -55,7 +55,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      */
     private void parsePayloadLength(HeartbeatMessage msg) {
         msg.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
-        LOGGER.debug("PayloadLength: " + msg.getPayloadLength().getValue());
+        LOGGER.debug("PayloadLength: {}", msg.getPayloadLength().getValue());
     }
 
     /**

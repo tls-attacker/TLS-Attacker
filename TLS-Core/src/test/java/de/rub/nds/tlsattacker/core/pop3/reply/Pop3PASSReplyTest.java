@@ -28,7 +28,7 @@ class Pop3PASSReplyTest {
         pass.setStatusIndicator("+OK");
         pass.setHumanReadableMessage("you have 2 messages");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = pass.getSerializer(context);
+        Serializer<?> serializer = pass.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("+OK you have 2 messages\r\n", serializer.getOutputStream().toString());
@@ -42,7 +42,7 @@ class Pop3PASSReplyTest {
         Pop3PASSReply pass = new Pop3PASSReply();
         Pop3GenericReplyParser<Pop3PASSReply> parser =
                 pass.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(pass);
 

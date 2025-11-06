@@ -18,6 +18,6 @@ public class SmtpDATAContentReplyHandler extends SmtpReplyHandler<SmtpDATAConten
 
     @Override
     public void adjustContext(SmtpDATAContentReply container) {
-        this.getContext().clearBuffers();
+        this.getContext().getSmtpContext().clearBuffers();
     }
 }

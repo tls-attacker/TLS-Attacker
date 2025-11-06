@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ApplicationMessageParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray("00010203040506"),
-                        List.of(ArrayConverter.hexStringToByteArray("00010203040506"))));
+                        DataConverter.hexStringToByteArray("00010203040506"),
+                        List.of(DataConverter.hexStringToByteArray("00010203040506"))));
     }
 }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,7 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
     /** Test of applyDelegate method, of class WorkflowTypeDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-workflow_trace_type";
         args[1] = "FULL";
@@ -57,12 +58,66 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(
                         config, config2, "certificateChainConfig")); // little
         // ugly
+    }
+
+    @Test
+    public void testApplyDelegateHttps() {
+        Config config = new Config();
+        args = new String[2];
+        args[0] = "-workflow_trace_type";
+        args[1] = "HTTPS";
+        jcommander.parse(args);
+
+        // Default should be TLS
+        assertEquals(StackConfiguration.TLS, config.getDefaultLayerConfiguration());
+
+        delegate.applyDelegate(config);
+
+        // Should be HTTPS after applying delegate
+        assertEquals(WorkflowTraceType.HTTPS, config.getWorkflowTraceType());
+        assertEquals(StackConfiguration.HTTPS, config.getDefaultLayerConfiguration());
+    }
+
+    @Test
+    public void testApplyDelegateDynamicHttps() {
+        Config config = new Config();
+        args = new String[2];
+        args[0] = "-workflow_trace_type";
+        args[1] = "DYNAMIC_HTTPS";
+        jcommander.parse(args);
+
+        // Default should be TLS
+        assertEquals(StackConfiguration.TLS, config.getDefaultLayerConfiguration());
+
+        delegate.applyDelegate(config);
+
+        // Should be HTTPS after applying delegate
+        assertEquals(WorkflowTraceType.DYNAMIC_HTTPS, config.getWorkflowTraceType());
+        assertEquals(StackConfiguration.HTTPS, config.getDefaultLayerConfiguration());
+    }
+
+    @Test
+    public void testApplyDelegateNonHttpsWorkflow() {
+        Config config = new Config();
+        args = new String[2];
+        args[0] = "-workflow_trace_type";
+        args[1] = "HANDSHAKE";
+        jcommander.parse(args);
+
+        // Default should be TLS
+        assertEquals(StackConfiguration.TLS, config.getDefaultLayerConfiguration());
+
+        delegate.applyDelegate(config);
+
+        // Should remain TLS for non-HTTPS workflows
+        assertEquals(WorkflowTraceType.HANDSHAKE, config.getWorkflowTraceType());
+        assertEquals(StackConfiguration.TLS, config.getDefaultLayerConfiguration());
     }
 }

@@ -19,13 +19,13 @@ public enum HeartbeatMessageType {
 
     private static final Map<Byte, HeartbeatMessageType> MAP;
 
-    private HeartbeatMessageType(byte value) {
+    HeartbeatMessageType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (HeartbeatMessageType cm : HeartbeatMessageType.values()) {
+        for (HeartbeatMessageType cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

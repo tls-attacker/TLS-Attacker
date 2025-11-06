@@ -68,7 +68,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private void prepareHeartbeatMessageType(HeartbeatMessage msg) {
         msg.setHeartbeatMessageType(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue());
-        LOGGER.debug("HeartbeatMessageType: " + msg.getHeartbeatMessageType().getValue());
+        LOGGER.debug("HeartbeatMessageType: {}", msg.getHeartbeatMessageType().getValue());
     }
 
     private void preparePayload(HeartbeatMessage msg) {
@@ -78,7 +78,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private void preparePayloadLength(HeartbeatMessage msg) {
         msg.setPayloadLength(msg.getPayload().getValue().length);
-        LOGGER.debug("PayloadLength: " + msg.getPayloadLength().getValue());
+        LOGGER.debug("PayloadLength: {}", msg.getPayloadLength().getValue());
     }
 
     private void preparePadding(HeartbeatMessage msg) {

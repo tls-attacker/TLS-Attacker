@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CookieExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -25,11 +25,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "CookieExtension")
 public class CookieExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cookieLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie;
+    @ModifiableVariableProperty private ModifiableByteArray cookie;
 
     public CookieExtensionMessage() {
         super(ExtensionType.COOKIE);
@@ -60,22 +59,22 @@ public class CookieExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public CookieExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CookieExtensionParser(stream, tlsContext);
+    public CookieExtensionParser getParser(Context context, InputStream stream) {
+        return new CookieExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CookieExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CookieExtensionPreparator(tlsContext.getChooser(), this);
+    public CookieExtensionPreparator getPreparator(Context context) {
+        return new CookieExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CookieExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public CookieExtensionSerializer getSerializer(Context context) {
         return new CookieExtensionSerializer(this);
     }
 
     @Override
-    public CookieExtensionHandler getHandler(TlsContext tlsContext) {
-        return new CookieExtensionHandler(tlsContext);
+    public CookieExtensionHandler getHandler(Context context) {
+        return new CookieExtensionHandler(context.getTlsContext());
     }
 }

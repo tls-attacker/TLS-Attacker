@@ -15,12 +15,12 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
@@ -32,13 +32,12 @@ public class AlertMessage extends ProtocolMessage {
     /** config array used to configure alert message */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] config;
+
     /** alert level */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte level;
+    @ModifiableVariableProperty private ModifiableByte level;
 
     /** alert description */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte description;
+    @ModifiableVariableProperty private ModifiableByte description;
 
     public AlertMessage() {
         super();
@@ -115,11 +114,23 @@ public class AlertMessage extends ProtocolMessage {
         StringBuilder sb = new StringBuilder();
         String levelString;
         String descriptionString;
+
+        // Determine level string
         if (level != null && level.getValue() != null) {
             levelString = AlertLevel.getAlertLevel(level.getValue()).name();
+        } else if (config != null && config.length == 2) {
+            // Use config as fallback for level
+            AlertLevel alertLevel = AlertLevel.getAlertLevel((byte) config[0]);
+            if (alertLevel != null) {
+                levelString = alertLevel.name();
+            } else {
+                levelString = "" + config[0];
+            }
         } else {
-            levelString = "null";
+            levelString = "not configured";
         }
+
+        // Determine description string
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
             if (desc != null) {
@@ -127,18 +138,18 @@ public class AlertMessage extends ProtocolMessage {
             } else {
                 descriptionString = "" + description.getValue();
             }
-        } else {
-            if (config != null && config.length == 2) {
-                AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
-                if (desc != null) {
-                    descriptionString = desc.name();
-                } else {
-                    descriptionString = "" + config[1];
-                }
+        } else if (config != null && config.length == 2) {
+            // Use config as fallback for description
+            AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
+            if (desc != null) {
+                descriptionString = desc.name();
             } else {
-                descriptionString = "null";
+                descriptionString = "" + config[1];
             }
+        } else {
+            descriptionString = "not configured";
         }
+
         sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();
     }
@@ -167,9 +178,9 @@ public class AlertMessage extends ProtocolMessage {
                 && this.getLevel() != null
                 && this.getDescription() != null) {
 
-            return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                    && (Objects.equals(
-                            alert.getDescription().getValue(), this.getDescription().getValue()));
+            return Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue())
+                    && Objects.equals(
+                            alert.getDescription().getValue(), this.getDescription().getValue());
         } else {
             // If level is null we do not compare the values
             if (this.getLevel() == null || alert.getLevel() == null) {
@@ -190,22 +201,22 @@ public class AlertMessage extends ProtocolMessage {
     }
 
     @Override
-    public AlertHandler getHandler(TlsContext tlsContext) {
-        return new AlertHandler(tlsContext);
+    public AlertHandler getHandler(Context context) {
+        return new AlertHandler(context.getTlsContext());
     }
 
     @Override
-    public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
+    public AlertParser getParser(Context context, InputStream stream) {
         return new AlertParser(stream);
     }
 
     @Override
-    public AlertPreparator getPreparator(TlsContext tlsContext) {
-        return new AlertPreparator(tlsContext.getChooser(), this);
+    public AlertPreparator getPreparator(Context context) {
+        return new AlertPreparator(context.getChooser(), this);
     }
 
     @Override
-    public AlertSerializer getSerializer(TlsContext tlsContext) {
+    public AlertSerializer getSerializer(Context context) {
         return new AlertSerializer(this);
     }
 }

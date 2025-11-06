@@ -37,11 +37,10 @@ public class RenegotiationInfoExtensionHandler
             LOGGER.debug(
                     "The context RenegotiationInfo was set to {}", message.getRenegotiationInfo());
         }
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-            if (message.getRenegotiationInfo().getValue().length == 1
-                    && message.getRenegotiationInfo().getValue()[0] == 0) {
-                tlsContext.setSecureRenegotiation(true);
-            }
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER
+                && message.getRenegotiationInfo().getValue().length == 1
+                && message.getRenegotiationInfo().getValue()[0] == 0) {
+            tlsContext.setSecureRenegotiation(true);
         }
     }
 }

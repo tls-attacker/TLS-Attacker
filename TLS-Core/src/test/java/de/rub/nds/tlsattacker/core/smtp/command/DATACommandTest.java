@@ -29,7 +29,7 @@ public class DATACommandTest {
         SmtpDATACommand dataCommand = new SmtpDATACommand();
         Parser parser =
                 dataCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(dataCommand);
         assertEquals("DATA", dataCommand.getVerb());
@@ -43,7 +43,7 @@ public class DATACommandTest {
         SmtpDATACommand dataCommand = new SmtpDATACommand();
         Parser parser =
                 dataCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(dataCommand);
         assertEquals("DATA", dataCommand.getVerb());
@@ -53,7 +53,7 @@ public class DATACommandTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATACommand dataCommand = new SmtpDATACommand();
-        Serializer serializer = dataCommand.getSerializer(context);
+        Serializer serializer = dataCommand.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals("DATA\r\n", serializer.getOutputStream().toString());
     }

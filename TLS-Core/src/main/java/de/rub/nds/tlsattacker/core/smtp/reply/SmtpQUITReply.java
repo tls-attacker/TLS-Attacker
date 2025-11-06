@@ -24,6 +24,7 @@ public class SmtpQUITReply extends SmtpReply {
     public SmtpQUITReplyHandler getHandler(SmtpContext context) {
         return new SmtpQUITReplyHandler(context);
     }
+
     public SmtpQUITReply() {
         super(SmtpCommandType.QUIT);
     }

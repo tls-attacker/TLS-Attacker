@@ -37,7 +37,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
      */
     private void parseServerNameType(ServerNamePair pair) {
         pair.setServerNameType(parseByteField(ExtensionByteLength.SERVER_NAME_TYPE));
-        LOGGER.debug("ServerNameType: " + pair.getServerNameType().getValue());
+        LOGGER.debug("ServerNameType: {}", pair.getServerNameType().getValue());
     }
 
     /**
@@ -45,7 +45,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
      */
     private void parseServerNameLength(ServerNamePair pair) {
         pair.setServerNameLength(parseIntField(ExtensionByteLength.SERVER_NAME));
-        LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
+        LOGGER.debug("ServerNameLength: {}", pair.getServerNameLength().getValue());
     }
 
     /** Reads the next bytes as the serverName of the Extension and writes them in the message */

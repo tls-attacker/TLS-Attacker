@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SmtpEHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {

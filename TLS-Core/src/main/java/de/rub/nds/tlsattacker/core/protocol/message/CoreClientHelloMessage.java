@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -28,23 +28,24 @@ import org.apache.logging.log4j.Logger;
 public abstract class CoreClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
     /** compression length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger compressionLength;
+
     /** cipher suite byte length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cipherSuiteLength;
+
     /** array of supported CipherSuites */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherSuites;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuites;
+
     /** array of supported compressions */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray compressions;
+    @ModifiableVariableProperty private ModifiableByteArray compressions;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie;
+    @ModifiableVariableProperty private ModifiableByteArray cookie;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cookieLength;
 
     public CoreClientHelloMessage() {
@@ -110,6 +111,11 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddEarlyDataExtension()) {
                 addExtension(new EarlyDataExtensionMessage());
             }
+
+            if (tlsConfig.isAddDebugExtension()) {
+                addExtension(new DebugExtensionMessage());
+            }
+
             if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
                 addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
             }
@@ -291,31 +297,31 @@ public abstract class CoreClientHelloMessage extends HelloMessage {
         }
         sb.append("\n  Client Unix Time: ");
         if (getUnixTime() != null && getUnixTime().getValue() != null) {
-            sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+            sb.append(new Date(DataConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         } else {
             sb.append("null");
         }
         sb.append("\n  Client Random: ");
         if (getRandom() != null && getRandom().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getRandom().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Session ID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getSessionId().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Supported Cipher Suites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getCipherSuites().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Supported Compression Methods: ");
         if (getCompressions() != null && getCompressions().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCompressions().getValue()));
+            sb.append(DataConverter.bytesToRawHexString(getCompressions().getValue()));
         } else {
             sb.append("null");
         }

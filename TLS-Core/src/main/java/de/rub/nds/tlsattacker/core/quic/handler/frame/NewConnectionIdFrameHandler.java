@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 
 public class NewConnectionIdFrameHandler extends QuicFrameHandler<NewConnectionIdFrame> {
+
     public NewConnectionIdFrameHandler(QuicContext context) {
         super(context);
     }
@@ -19,5 +20,6 @@ public class NewConnectionIdFrameHandler extends QuicFrameHandler<NewConnectionI
     @Override
     public void adjustContext(NewConnectionIdFrame frame) {
         this.quicContext.setDestinationConnectionId(frame.getConnectionId().getValue());
+        quicContext.addStatelessResetToken(frame.getStatelessResetToken().getValue());
     }
 }

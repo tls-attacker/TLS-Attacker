@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpHELOCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpHELOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpHELOCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -51,18 +51,18 @@ public class SmtpHELOCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpHELOCommandParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpHELOCommandParser getParser(Context context, InputStream stream) {
         return new SmtpHELOCommandParser(stream);
     }
 
     @Override
-    public SmtpHELOCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpHELOCommandPreparator(context, this);
+    public SmtpHELOCommandPreparator getPreparator(Context context) {
+        return new SmtpHELOCommandPreparator(context.getSmtpContext(), this);
     }
 
     @Override
-    public SmtpHELOCommandHandler getHandler(SmtpContext smtpContext) {
-        return new SmtpHELOCommandHandler(smtpContext);
+    public SmtpHELOCommandHandler getHandler(Context context) {
+        return new SmtpHELOCommandHandler(context.getSmtpContext());
     }
 
     public String getDomain() {

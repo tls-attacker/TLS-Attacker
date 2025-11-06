@@ -8,19 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.crypto.IllegalBlockSizeException;
 import org.apache.logging.log4j.LogManager;
@@ -87,7 +88,7 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                             HKDFunction.extract(
                                     hkdfAlgorithm,
                                     null,
-                                    ArrayConverter.bigIntegerToByteArray(sharedSecret)),
+                                    DataConverter.bigIntegerToByteArray(sharedSecret)),
                             new byte[0],
                             parameters.getElementSizeBytes());
 
@@ -99,11 +100,14 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                             parameters.getElementSizeBytes(),
                             protectedUsername.length);
             SivMode aesSIV = new SivMode();
-            String username = new String(aesSIV.decrypt(ctrKey, macKey, encryptedUsername));
+            String username =
+                    new String(
+                            aesSIV.decrypt(ctrKey, macKey, encryptedUsername),
+                            StandardCharsets.ISO_8859_1);
             tlsContext.setClientPWDUsername(username);
-            LOGGER.debug("Username: " + tlsContext.getClientPWDUsername());
+            LOGGER.debug("Username: {}", tlsContext.getClientPWDUsername());
         } catch (IllegalBlockSizeException | UnauthenticCiphertextException | CryptoException e) {
-            LOGGER.warn("Failed to decrypt username: " + e.getMessage());
+            LOGGER.warn("Failed to decrypt username: {}", e.getMessage());
         }
     }
 }

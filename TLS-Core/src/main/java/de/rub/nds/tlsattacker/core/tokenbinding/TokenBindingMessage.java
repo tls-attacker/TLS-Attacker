@@ -18,49 +18,42 @@ import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 public class TokenBindingMessage extends ProtocolMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger tokenbindingsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte tokenbindingType;
+    @ModifiableVariableProperty private ModifiableByte tokenbindingType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte keyParameter;
+    @ModifiableVariableProperty private ModifiableByte keyParameter;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger keyLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger modulusLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray modulus;
+    @ModifiableVariableProperty private ModifiableByteArray modulus;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger publicExponentLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray publicExponent;
+    @ModifiableVariableProperty private ModifiableByteArray publicExponent;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableInteger pointLength;
+    @ModifiableVariableProperty private ModifiableInteger pointLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray point;
+    @ModifiableVariableProperty private ModifiableByteArray point;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    private ModifiableByteArray signature;
+    @ModifiableVariableProperty private ModifiableByteArray signature;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionLength;
 
     @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
@@ -257,22 +250,22 @@ public class TokenBindingMessage extends ProtocolMessage {
     }
 
     @Override
-    public TokenBindingMessageHandler getHandler(TlsContext tlsContext) {
-        return new TokenBindingMessageHandler(tlsContext);
+    public TokenBindingMessageHandler getHandler(Context context) {
+        return new TokenBindingMessageHandler(context.getTlsContext());
     }
 
     @Override
-    public TokenBindingMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+    public TokenBindingMessageParser getParser(Context context, InputStream stream) {
         return new TokenBindingMessageParser(stream);
     }
 
     @Override
-    public TokenBindingMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new TokenBindingMessagePreparator(tlsContext.getChooser(), this);
+    public TokenBindingMessagePreparator getPreparator(Context context) {
+        return new TokenBindingMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public TokenBindingMessageSerializer getSerializer(TlsContext tlsContext) {
+    public TokenBindingMessageSerializer getSerializer(Context context) {
         return new TokenBindingMessageSerializer(this);
     }
 

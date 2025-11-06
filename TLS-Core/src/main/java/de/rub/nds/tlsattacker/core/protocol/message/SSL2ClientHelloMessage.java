@@ -12,14 +12,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -28,25 +28,22 @@ import java.util.Objects;
 @XmlRootElement(name = "SSL2ClientHello")
 public class SSL2ClientHelloMessage extends SSL2Message {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger cipherSuiteLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger sessionIdLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger challengeLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherSuites;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuites;
 
     private ModifiableByteArray sessionId;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray challenge;
+    @ModifiableVariableProperty private ModifiableByteArray challenge;
 
     public SSL2ClientHelloMessage() {
         super(SSL2MessageType.SSL_CLIENT_HELLO);
@@ -164,19 +161,19 @@ public class SSL2ClientHelloMessage extends SSL2Message {
         }
         sb.append("\n  Supported CipherSuites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(DataConverter.bytesToHexString(getCipherSuites().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Challenge: ");
         if (getChallenge() != null && getChallenge().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getChallenge().getValue()));
+            sb.append(DataConverter.bytesToHexString(getChallenge().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  SessionID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSessionId().getValue()));
         } else {
             sb.append("null");
         }
@@ -189,22 +186,22 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     @Override
-    public SSL2ClientHelloHandler getHandler(TlsContext tlsContext) {
-        return new SSL2ClientHelloHandler(tlsContext);
+    public SSL2ClientHelloHandler getHandler(Context context) {
+        return new SSL2ClientHelloHandler(context.getTlsContext());
     }
 
     @Override
-    public SSL2ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ClientHelloParser(stream, tlsContext);
+    public SSL2ClientHelloParser getParser(Context context, InputStream stream) {
+        return new SSL2ClientHelloParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SSL2ClientHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ClientHelloPreparator(tlsContext.getChooser(), this);
+    public SSL2ClientHelloPreparator getPreparator(Context context) {
+        return new SSL2ClientHelloPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
+    public SSL2ClientHelloSerializer getSerializer(Context context) {
         return new SSL2ClientHelloSerializer(this);
     }
 

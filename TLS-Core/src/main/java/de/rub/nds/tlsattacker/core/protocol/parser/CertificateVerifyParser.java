@@ -35,7 +35,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
         LOGGER.debug("Parsing CertificateVerifyMessage");
         if (getVersion() == ProtocolVersion.TLS12
                 || getVersion() == ProtocolVersion.DTLS12
-                || getVersion().isTLS13()) {
+                || getVersion().is13()) {
             parseSignatureHashAlgorithm(msg);
         }
         parseSignatureLength(msg);
@@ -60,7 +60,7 @@ public class CertificateVerifyParser extends HandshakeMessageParser<CertificateV
      */
     private void parseSignatureLength(CertificateVerifyMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /**

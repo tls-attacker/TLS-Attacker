@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;

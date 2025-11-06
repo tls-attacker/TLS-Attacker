@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.quic.handler.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import java.io.IOException;
 
 public class ConnectionCloseFrameHandler extends QuicFrameHandler<ConnectionCloseFrame> {
 
@@ -20,5 +21,15 @@ public class ConnectionCloseFrameHandler extends QuicFrameHandler<ConnectionClos
     @Override
     public void adjustContext(ConnectionCloseFrame frame) {
         quicContext.setReceivedConnectionCloseFrame(frame);
+        // Kill connection in case of a TLS Alert
+        if (quicContext.getConfig().getQuicImmediateCloseOnTlsError()
+                && frame.getErrorCode().getValue() > 0x0100
+                && frame.getErrorCode().getValue() < 0x01ff) {
+            try {
+                quicContext.getTransportHandler().closeConnection();
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+        }
     }
 }

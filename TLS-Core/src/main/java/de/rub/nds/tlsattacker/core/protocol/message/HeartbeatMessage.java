@@ -13,15 +13,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -29,16 +29,14 @@ import java.util.Objects;
 @XmlRootElement(name = "Heartbeat")
 public class HeartbeatMessage extends ProtocolMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte heartbeatMessageType;
+    @ModifiableVariableProperty ModifiableByte heartbeatMessageType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     ModifiableInteger payloadLength;
 
     @ModifiableVariableProperty() ModifiableByteArray payload;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray padding;
+    @ModifiableVariableProperty ModifiableByteArray padding;
 
     public HeartbeatMessage() {
         super();
@@ -115,13 +113,13 @@ public class HeartbeatMessage extends ProtocolMessage {
         }
         sb.append("\n  Payload: ");
         if (payload != null && payload.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
+            sb.append(DataConverter.bytesToHexString(payload.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Padding: ");
         if (padding != null && padding.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
+            sb.append(DataConverter.bytesToHexString(padding.getValue()));
         } else {
             sb.append("null");
         }
@@ -139,22 +137,22 @@ public class HeartbeatMessage extends ProtocolMessage {
     }
 
     @Override
-    public HeartbeatMessageHandler getHandler(TlsContext tlsContext) {
-        return new HeartbeatMessageHandler(tlsContext);
+    public HeartbeatMessageHandler getHandler(Context context) {
+        return new HeartbeatMessageHandler(context.getTlsContext());
     }
 
     @Override
-    public HeartbeatMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+    public HeartbeatMessageParser getParser(Context context, InputStream stream) {
         return new HeartbeatMessageParser(stream);
     }
 
     @Override
-    public HeartbeatMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new HeartbeatMessagePreparator(tlsContext.getChooser(), this);
+    public HeartbeatMessagePreparator getPreparator(Context context) {
+        return new HeartbeatMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public HeartbeatMessageSerializer getSerializer(TlsContext tlsContext) {
+    public HeartbeatMessageSerializer getSerializer(Context context) {
         return new HeartbeatMessageSerializer(this);
     }
 

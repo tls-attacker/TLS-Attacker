@@ -10,13 +10,13 @@ package de.rub.nds.tlsattacker.core.state;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
+import de.rub.nds.protocol.exception.ContextHandlingException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.ContextHandlingException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -34,7 +34,7 @@ public class StateTest {
 
     @Test
     public void initWithoutWorkflowTraceFailsProperly() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setWorkflowTraceType(null);
 
         ConfigurationException exception =
@@ -45,7 +45,7 @@ public class StateTest {
     @Test
     public void initFromGoodConfig() {
         String expected = "testInitFromConfig";
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setWorkflowTraceType(WorkflowTraceType.SHORT_HELLO);
         config.setDefaultApplicationMessageData(expected);
         State state = new State(config);
@@ -59,7 +59,7 @@ public class StateTest {
     @Test
     public void initFromConfigAndWorkflowTrace() {
         String expected = "testInitFromConfig";
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultApplicationMessageData(expected);
         WorkflowTrace trace = new WorkflowTrace();
         State s = new State(config, trace);

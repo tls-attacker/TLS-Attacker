@@ -37,7 +37,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
         parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-        if (getKeyExchangeAlgorithm() == null || !getKeyExchangeAlgorithm().isAnon()) {
+        if (shouldParseSignature()) {
             if (isTLS12() || isDTLS12()) {
                 parseSignatureAndHashAlgorithm(msg);
             }

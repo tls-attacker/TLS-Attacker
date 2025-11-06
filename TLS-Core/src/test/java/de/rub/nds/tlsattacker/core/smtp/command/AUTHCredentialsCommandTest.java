@@ -30,7 +30,7 @@ public class AUTHCredentialsCommandTest {
 
         AUTHCredentialsParser parser =
                 authCredentials.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
 
         parser.parse(authCredentials);
@@ -42,8 +42,8 @@ public class AUTHCredentialsCommandTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpAUTHCredentialsCommand cmd = new SmtpAUTHCredentialsCommand("qweqweqwe==");
 
-        Preparator<?> preparator = cmd.getPreparator(context);
-        Serializer<?> serializer = cmd.getSerializer(context);
+        Preparator<?> preparator = cmd.getPreparator(context.getContext());
+        Serializer<?> serializer = cmd.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
 

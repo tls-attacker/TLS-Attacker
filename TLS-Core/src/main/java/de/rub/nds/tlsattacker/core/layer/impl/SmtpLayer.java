@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -25,19 +24,15 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpUnknownCommand;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnterminatedReply;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,14 +46,16 @@ import org.apache.logging.log4j.Logger;
  * @see SmtpCommand
  * @see SmtpReply
  */
-public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
+public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SmtpContext context;
+    private final Context context;
+    private final SmtpContext smtpContext;
 
-    public SmtpLayer(SmtpContext smtpContext) {
+    public SmtpLayer(Context context) {
         super(ImplementedLayers.SMTP);
-        this.context = smtpContext;
+        this.context = context;
+        this.smtpContext = context.getSmtpContext();
     }
 
     /**
@@ -102,8 +99,8 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
      * @throws IOException
      */
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<SmtpMessage> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -119,7 +116,7 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
      * @see SmtpCommandType
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<SmtpMessage> receiveData() {
         try {
             HintedInputStream dataStream;
             do {
@@ -130,16 +127,16 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
-                if (context.getContext().getConnection().getLocalConnectionEndType()
+                if (context.getChooser().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
-                    SmtpReply smtpReply = context.getExpectedNextReplyType();
+                    SmtpReply smtpReply = smtpContext.getExpectedNextReplyType();
                     if (smtpReply instanceof SmtpUnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
                                 smtpReply.getClass().getSimpleName());
                     }
                     readDataContainer(smtpReply, context);
-                } else if (context.getContext().getConnection().getLocalConnectionEndType()
+                } else if (context.getChooser().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
                     // this shadows the readDataContainer method from the superclass, but we need to
                     // parse the command twice to determine the correct subclass
@@ -163,7 +160,8 @@ public class SmtpLayer extends ProtocolLayer<LayerProcessingHint, SmtpMessage> {
                                 new HintedLayerInputStream(null, this);
                         smtpCommandStream.extendStream(command.toByteArray());
                         smtpCommandStream.extendStream(dataStream.readAllBytes());
-                        SmtpCommandParser parser = trueCommand.getParser(context, smtpCommandStream);
+                        SmtpCommandParser parser =
+                                trueCommand.getParser(context, smtpCommandStream);
 
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);

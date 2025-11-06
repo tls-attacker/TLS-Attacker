@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeSenderContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedClientHelloExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 public class EncryptedClientHelloPreparator
         extends CoreClientHelloPreparator<EncryptedClientHelloMessage> {
 
-    private final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int PADDED_LENGTH = 32;
 
@@ -72,16 +73,14 @@ public class EncryptedClientHelloPreparator
     private void prepareClientHelloInner() {
         LOGGER.debug("Preparing ClientHelloInner");
         ClientHelloMessage clientHelloInner = new ClientHelloMessage(chooser.getConfig());
-        clientHelloInner.getPreparator(chooser.getContext().getTlsContext()).prepare();
+        clientHelloInner.getPreparator(chooser.getContext()).prepare();
 
         // already serialize and save message bytes before the encoding process
         byte[] clientHelloInnerBytes =
                 new ClientHelloSerializer(clientHelloInner, chooser.getSelectedProtocolVersion())
                         .serialize();
         clientHelloInner.setCompleteResultingMessage(clientHelloInnerBytes);
-        clientHelloInner
-                .getHandler(chooser.getContext().getTlsContext())
-                .adjustContext(clientHelloInner);
+        clientHelloInner.getHandler(chooser.getContext()).adjustContext(clientHelloInner);
 
         msg.setClientHelloInner(clientHelloInner);
     }
@@ -98,7 +97,7 @@ public class EncryptedClientHelloPreparator
 
         this.clientHelloInnerValue =
                 clientHelloInner
-                        .getSerializer(chooser.getContext().getTlsContext())
+                        .getSerializer(chooser.getContext())
                         .serializeHandshakeMessageContent();
 
         // - zero padding
@@ -153,8 +152,8 @@ public class EncryptedClientHelloPreparator
                         echConfig.getKem());
         // RFC 9180, Section 6.1
         byte[] info =
-                ArrayConverter.concatenate(
-                        "tls ech".getBytes(),
+                DataConverter.concatenate(
+                        "tls ech".getBytes(StandardCharsets.US_ASCII),
                         new byte[] {0x00},
                         chooser.getEchConfig().getEchConfigBytes());
         LOGGER.debug("Info: {}", info);
@@ -195,10 +194,13 @@ public class EncryptedClientHelloPreparator
                 msg.getExtension(ServerNameIndicationExtensionMessage.class);
         if (serverNameIndicationExtensionMessage != null) {
             byte[] serverName = chooser.getEchConfig().getPublicDomainName();
-            ServerNamePair pair =
-                    new ServerNamePair(chooser.getConfig().getSniType().getValue(), serverName);
-            serverNameIndicationExtensionMessage.getServerNameList().clear();
-            serverNameIndicationExtensionMessage.getServerNameList().add(pair);
+            // attempt to change first pair, otherwise leave configuration as is
+            ServerNamePair serverNamePair =
+                    serverNameIndicationExtensionMessage.getServerNameList().get(0);
+            if (serverNamePair != null) {
+                serverNamePair.setServerNameTypeConfig(chooser.getConfig().getSniType().getValue());
+                serverNamePair.setServerNameConfig(serverName);
+            }
             ServerNameIndicationExtensionSerializer serializer =
                     new ServerNameIndicationExtensionSerializer(
                             serverNameIndicationExtensionMessage);
@@ -248,13 +250,11 @@ public class EncryptedClientHelloPreparator
     }
 
     private void prepareEncryptClientHelloOuter() {
-        byte[] aad =
-                msg.getSerializer(chooser.getContext().getTlsContext())
-                        .serializeHandshakeMessageContent();
+        byte[] aad = msg.getSerializer(chooser.getContext()).serializeHandshakeMessageContent();
         LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         clientHelloInnerValue, msg.getEncodedClientHelloInnerPadding().getValue());
         LOGGER.debug("Plaintext: {}", plaintext);
         try {

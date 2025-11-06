@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import de.rub.nds.protocol.exception.CryptoException;
+
 public abstract class BaseCipher implements EncryptionCipher, DecryptionCipher {
 
     @Override
@@ -19,4 +21,6 @@ public abstract class BaseCipher implements EncryptionCipher, DecryptionCipher {
     public DecryptionCipher getDecryptionCipher() {
         return this;
     }
+
+    public abstract byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException;
 }

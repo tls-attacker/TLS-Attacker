@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,14 +41,14 @@ public class SmtpLayerInboundTest {
 
     private Config config;
     private SmtpContext context;
-    private FakeTransportHandler transportHandler;
+    private FakeTcpTransportHandler transportHandler;
 
     @BeforeEach
     public void setUp() {
         config = new Config();
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
         context = new Context(new State(config), new InboundConnection()).getSmtpContext();
-        transportHandler = new FakeTransportHandler(null);
+        transportHandler = new FakeTcpTransportHandler(null);
         context.setTransportHandler(transportHandler);
         ProviderUtil.addBouncyCastleProvider();
     }
@@ -61,7 +61,9 @@ public class SmtpLayerInboundTest {
         System.out.println(result.getUsedContainers());
         assert (result.getUsedContainers().size() == 1)
                 && (result.getUsedContainers().get(0) instanceof SmtpHELOCommand);
-        assert ((SmtpCommand) result.getUsedContainers().get(0)).getCommandType().equals(SmtpCommandType.HELO);
+        assert ((SmtpCommand) result.getUsedContainers().get(0))
+                .getCommandType()
+                .equals(SmtpCommandType.HELO);
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
     }
@@ -74,7 +76,9 @@ public class SmtpLayerInboundTest {
         System.out.println(result.getUsedContainers());
         assert (result.getUsedContainers().size() == 1)
                 && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
-        assert ((SmtpCommand) result.getUsedContainers().get(0)).getCommandType().equals(SmtpCommandType.UNKNOWN);
+        assert ((SmtpCommand) result.getUsedContainers().get(0))
+                .getCommandType()
+                .equals(SmtpCommandType.UNKNOWN);
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
     }

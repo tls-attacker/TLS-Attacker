@@ -12,8 +12,8 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
@@ -35,15 +35,23 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.crypto.interfaces.DHPrivateKey;
-import org.bouncycastle.crypto.tls.Certificate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.tls.crypto.TlsCertificate;
 
 public class CertificateDelegate extends Delegate {
 
-    @Parameter(names = "-cert", description = "PEM encoded certificate file")
+    public static final int PREDEFINED_LEAF_CERT_INDEX = 0;
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    @Parameter(
+            names = "-cert",
+            description =
+                    "PEM encoded certificate file (can contain multiple certificates for a certificate chain)")
     private String certificate = null;
 
     @Parameter(names = "-key", description = "PEM encoded private key")
@@ -62,7 +70,9 @@ public class CertificateDelegate extends Delegate {
             description = "Alias of the key to be used from Java Key Store (JKS)")
     private String alias = null;
 
-    public CertificateDelegate() {}
+    public CertificateDelegate() {
+        // Default Constructor
+    }
 
     public String getKeystore() {
         return keystore;
@@ -115,26 +125,26 @@ public class CertificateDelegate extends Delegate {
         if (key != null) {
             LOGGER.debug("Loading private key");
             privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(
+                    config.getCertificateChainConfig().get(PREDEFINED_LEAF_CERT_INDEX), privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {
-                LOGGER.warn("Certificate provided without chain");
+                LOGGER.warn("Certificate provided without private key");
             }
             LOGGER.debug("Loading certificate chain");
-            try {
+            try (FileInputStream inputStream = new FileInputStream(certificate)) {
                 List<CertificateBytes> byteList =
-                        CertificateIo.readPemCertificateByteList(
-                                new FileInputStream(new File(certificate)));
+                        CertificateIo.readPemCertificateByteList(inputStream);
                 config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
             }
         }
         List<String> missingParameters = new ArrayList<>();
-        for (String p : mandatoryParameters.keySet()) {
-            if (mandatoryParameters.get(p) == null) {
-                missingParameters.add(p);
+        for (Map.Entry<String, String> entry : mandatoryParameters.entrySet()) {
+            if (entry.getValue() == null) {
+                missingParameters.add(entry.getKey());
             }
         }
         if (missingParameters.size() == 3) {
@@ -147,15 +157,12 @@ public class CertificateDelegate extends Delegate {
         }
         try {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
-            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
+            TlsCertificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            List<CertificateBytes> byteList = new LinkedList<>();
-            for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
-                byteList.add(new CertificateBytes(tempCert.getEncoded()));
-            }
+            List<CertificateBytes> byteList = List.of(new CertificateBytes(cert.getEncoded()));
 
             config.setDefaultExplicitCertificateChain(byteList);
-            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
+            adjustPrivateKey(config.getCertificateChainConfig().getFirst(), privateKey);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException
@@ -168,26 +175,25 @@ public class CertificateDelegate extends Delegate {
     private void adjustPrivateKey(X509CertificateConfig config, PrivateKey privateKey) {
         if (privateKey instanceof RSAPrivateKey) {
             RSAPrivateKey rsaKey = (RSAPrivateKey) privateKey;
-            config.setRsaPrivateKey(rsaKey.getPrivateExponent());
-            config.setRsaModulus(rsaKey.getModulus());
+            config.setDefaultSubjectRsaPrivateExponent(rsaKey.getPrivateExponent());
+            config.setDefaultSubjectRsaModulus(rsaKey.getModulus());
         } else if (privateKey instanceof DSAPrivateKey) {
             DSAPrivateKey dsaKey = (DSAPrivateKey) privateKey;
-            config.setDsaGenerator(dsaKey.getParams().getG());
-            config.setDsaPrimeP(dsaKey.getParams().getP());
-            config.setDsaPrimeQ(dsaKey.getParams().getQ());
-            config.setDsaPrivateKey(dsaKey.getX());
+            config.setDefaultSubjectDsaGenerator(dsaKey.getParams().getG());
+            config.setDefaultSubjectDsaPrimeP(dsaKey.getParams().getP());
+            config.setDefaultSubjectDsaPrimeQ(dsaKey.getParams().getQ());
+            config.setDefaultSubjectDsaPrivateKey(dsaKey.getX());
         } else if (privateKey instanceof DHPrivateKey) {
             DHPrivateKey dhKey = (DHPrivateKey) privateKey;
-            config.setDhPrivateKey(dhKey.getX());
+            config.setDefaultSubjectDhPrivateKey(dhKey.getX());
             config.setDhModulus(dhKey.getParams().getP());
             config.setDhGenerator(dhKey.getParams().getG());
         } else if (privateKey instanceof ECPrivateKey) {
             ECPrivateKey ecKey = (ECPrivateKey) privateKey;
-            config.setEcPrivateKey(ecKey.getS());
+            config.setDefaultSubjectEcPrivateKey(ecKey.getS());
             config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
         } else {
-            throw new UnsupportedOperationException(
-                    "This private key is not supporter:" + key.toString());
+            throw new UnsupportedOperationException("This private key is not supported:" + key);
         }
     }
 }

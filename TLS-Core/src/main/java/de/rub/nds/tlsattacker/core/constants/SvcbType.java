@@ -21,7 +21,7 @@ public enum SvcbType {
 
     private final Integer code;
 
-    private SvcbType(Integer code) {
+    SvcbType(Integer code) {
         this.code = code;
     }
 

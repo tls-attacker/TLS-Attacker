@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 /**
- * Generic SMTP Service Extension.
- * Extensions are specified by the IANA, but for our purposes we only store keywords and parameters.
+ * Generic SMTP Service Extension. Extensions are specified by the IANA, but for our purposes we
+ * only store keywords and parameters.
  */
 public class SmtpServiceExtension {
 

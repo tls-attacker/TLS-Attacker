@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
-import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3RETRCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
 
 /** The Pop3RETRCommand retrieves a message with the specified messageNumber. */
 @XmlRootElement
@@ -40,7 +38,7 @@ public class Pop3RETRCommand extends Pop3Command implements Pop3MessageNumber {
     }
 
     @Override
-    public Pop3RETRCommandPreparator getPreparator(Pop3Context context) {
-        return new Pop3RETRCommandPreparator(context, this);
+    public Pop3RETRCommandPreparator getPreparator(Context context) {
+        return new Pop3RETRCommandPreparator(context.getPop3Context(), this);
     }
 }

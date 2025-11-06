@@ -51,7 +51,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage>
     /** Writes the SessionID length field of the message into the final byte[] */
     protected void writeSessionIDLength() {
         appendInt(msg.getSessionIdLength().getValue(), HandshakeByteLength.SESSION_ID_LENGTH);
-        LOGGER.debug("SessionIDLength: " + msg.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", msg.getSessionIdLength().getValue());
     }
 
     /** Writes the SessionID of the message into the final byte[] */

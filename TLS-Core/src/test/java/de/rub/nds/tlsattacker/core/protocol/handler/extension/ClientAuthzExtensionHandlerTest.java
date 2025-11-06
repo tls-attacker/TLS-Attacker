@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class ClientAuthzExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<
                 ClientAuthzExtensionMessage, ClientAuthzExtensionHandler> {
 
-    private final byte[] authzFormatListAsBytes = ArrayConverter.hexStringToByteArray("00010203");
+    private final byte[] authzFormatListAsBytes = DataConverter.hexStringToByteArray("00010203");
     private final List<AuthzDataFormat> authzFormatList =
             Arrays.asList(
                     AuthzDataFormat.X509_ATTR_CERT,
@@ -41,6 +41,6 @@ public class ClientAuthzExtensionHandlerTest
 
         handler.adjustContext(msg);
 
-        assertEquals(authzFormatList, context.getClientAuthzDataFormatList());
+        assertEquals(authzFormatList, tlsContext.getClientAuthzDataFormatList());
     }
 }

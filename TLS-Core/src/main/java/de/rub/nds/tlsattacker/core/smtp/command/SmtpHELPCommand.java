@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpHELPCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpHELPCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -52,12 +52,12 @@ public class SmtpHELPCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpHELPCommandParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpHELPCommandParser getParser(Context context, InputStream stream) {
         return new SmtpHELPCommandParser(stream);
     }
 
     @Override
-    public SmtpHELPCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpHELPCommandPreparator(context, this);
+    public SmtpHELPCommandPreparator getPreparator(Context context) {
+        return new SmtpHELPCommandPreparator(context.getSmtpContext(), this);
     }
 }

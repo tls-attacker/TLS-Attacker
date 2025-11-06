@@ -30,7 +30,7 @@ public class QUITCommandTest {
         SmtpQUITCommand quitCommand = new SmtpQUITCommand();
         Parser parser =
                 quitCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitCommand);
         assertEquals("QUIT", quitCommand.getVerb());
@@ -44,7 +44,7 @@ public class QUITCommandTest {
         SmtpQUITCommand quitCommand = new SmtpQUITCommand();
         Parser parser =
                 quitCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitCommand);
         assertEquals("QUIT", quitCommand.getVerb());
@@ -54,7 +54,7 @@ public class QUITCommandTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpQUITCommand quitCommand = new SmtpQUITCommand();
-        Serializer serializer = quitCommand.getSerializer(context);
+        Serializer serializer = quitCommand.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals("QUIT\r\n", serializer.getOutputStream().toString());
     }
@@ -63,7 +63,7 @@ public class QUITCommandTest {
     void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpQUITCommand quitCommand = new SmtpQUITCommand();
-        quitCommand.getHandler(context).adjustContext(quitCommand);
+        quitCommand.getHandler(context.getContext()).adjustContext(quitCommand);
         assertTrue(context.isClientRequestedClose());
     }
 }

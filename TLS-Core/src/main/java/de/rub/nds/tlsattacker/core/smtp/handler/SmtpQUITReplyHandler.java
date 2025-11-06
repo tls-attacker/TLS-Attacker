@@ -24,6 +24,6 @@ public class SmtpQUITReplyHandler extends SmtpReplyHandler<SmtpQUITReply> {
      */
     @Override
     public void adjustContext(SmtpQUITReply container) {
-        this.getContext().setServerAcknowledgedClose(true);
+        this.getContext().getSmtpContext().setServerAcknowledgedClose(true);
     }
 }

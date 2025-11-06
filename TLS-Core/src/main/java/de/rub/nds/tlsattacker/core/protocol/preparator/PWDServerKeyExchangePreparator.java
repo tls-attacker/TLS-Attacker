@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
@@ -16,11 +16,11 @@ import de.rub.nds.protocol.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -77,7 +77,7 @@ public class PWDServerKeyExchangePreparator
 
         LOGGER.debug(
                 "PasswordElement.x: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+                () -> DataConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -143,7 +143,7 @@ public class PWDServerKeyExchangePreparator
 
     protected void prepareSaltLength(PWDServerKeyExchangeMessage msg) {
         msg.setSaltLength(msg.getSalt().getValue().length);
-        LOGGER.debug("SaltLength: " + msg.getSaltLength().getValue());
+        LOGGER.debug("SaltLength: {}", msg.getSaltLength().getValue());
     }
 
     protected void prepareCurveType(PWDServerKeyExchangeMessage msg) {
@@ -196,7 +196,7 @@ public class PWDServerKeyExchangePreparator
         msg.getKeyExchangeComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
                 "Private: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
+                () -> DataConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -206,13 +206,13 @@ public class PWDServerKeyExchangePreparator
     }
 
     protected void prepareScalar(PWDServerKeyExchangeMessage msg, BigInteger scalar) {
-        msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
+        msg.setScalar(DataConverter.bigIntegerToByteArray(scalar));
+        LOGGER.debug("Scalar: {}", () -> DataConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDServerKeyExchangeMessage msg) {
         msg.setScalarLength(msg.getScalar().getValue().length);
-        LOGGER.debug("ScalarLength: " + msg.getScalarLength());
+        LOGGER.debug("ScalarLength: {}", msg.getScalarLength());
     }
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {

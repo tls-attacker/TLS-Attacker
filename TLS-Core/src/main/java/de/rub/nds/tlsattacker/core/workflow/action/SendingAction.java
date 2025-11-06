@@ -8,17 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
+import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import java.util.List;
 import java.util.Set;
 
 public interface SendingAction {
 
     public abstract List<ProtocolMessage> getSentMessages();
+
+    public abstract List<SSL2Message> getSentSSL2Messages();
 
     public abstract List<Record> getSentRecords();
 
@@ -27,6 +32,10 @@ public interface SendingAction {
     public abstract List<QuicPacket> getSentQuicPackets();
 
     public abstract List<QuicFrame> getSentQuicFrames();
+
+    public abstract List<TcpStreamContainer> getSentTcpStreamContainers();
+
+    public abstract List<UdpDataPacket> getSentUdpDataPackets();
 
     public Set<String> getAllAliases();
 

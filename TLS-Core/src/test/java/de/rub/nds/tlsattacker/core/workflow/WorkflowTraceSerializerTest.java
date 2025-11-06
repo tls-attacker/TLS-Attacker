@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -28,7 +29,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mockito;
 
 public class WorkflowTraceSerializerTest {
 
@@ -50,8 +51,8 @@ public class WorkflowTraceSerializerTest {
 
     @BeforeEach
     public void setUp() throws JAXBException {
-        config = Config.createConfig();
-        action = new SendAction(new ClientHelloMessage(Config.createConfig()));
+        config = new Config();
+        action = new SendAction(new ClientHelloMessage(new Config()));
     }
 
     /**
@@ -70,13 +71,13 @@ public class WorkflowTraceSerializerTest {
         List<Record> records = new LinkedList<>();
         Record record = new Record();
         record.setContentType(new ModifiableByte());
-        record.getContentType().setModification(new ByteExplicitValueModification(Byte.MIN_VALUE));
+        record.getContentType().addModification(new ByteExplicitValueModification(Byte.MIN_VALUE));
         record.setMaxRecordLengthConfig(5);
         records.add(record);
         action = new SendAction(new ClientHelloMessage());
         ((SendAction) action).setConfiguredRecords(records);
 
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream os = new SilentByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);
 
         String serializedWorkflow = new String(os.toByteArray());
@@ -84,7 +85,7 @@ public class WorkflowTraceSerializerTest {
         ByteArrayInputStream bis = new ByteArrayInputStream(os.toByteArray());
         WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
-        os = new ByteArrayOutputStream();
+        os = new SilentByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, wt);
         LOGGER.debug(os.toString());
 
@@ -238,5 +239,82 @@ public class WorkflowTraceSerializerTest {
         DefaultNormalizeFilter.normalizeAndFilter(trace, config);
         String actual = WorkflowTraceSerializer.write(trace);
         assertEquals(expected, actual);
+    }
+
+    /** Test that insecureReadFolder handles null from listFiles() without NullPointerException */
+    @Test
+    public void testInsecureReadFolderWithNullListFiles(@TempDir File tempDir) {
+        // Create a mock File that returns null from listFiles()
+        File mockDir = Mockito.mock(File.class);
+        Mockito.when(mockDir.isDirectory()).thenReturn(true);
+        Mockito.when(mockDir.listFiles()).thenReturn(null);
+
+        // This should not throw NullPointerException
+        List<WorkflowTrace> result = WorkflowTraceSerializer.insecureReadFolder(mockDir);
+
+        // Should return empty list
+        assertTrue(result.isEmpty());
+    }
+
+    /** Test that secureReadFolder handles null from listFiles() without NullPointerException */
+    @Test
+    public void testSecureReadFolderWithNullListFiles(@TempDir File tempDir) {
+        // Create a mock File that returns null from listFiles()
+        File mockDir = Mockito.mock(File.class);
+        Mockito.when(mockDir.isDirectory()).thenReturn(true);
+        Mockito.when(mockDir.listFiles()).thenReturn(null);
+        Mockito.when(mockDir.getAbsolutePath()).thenReturn("/mock/path");
+
+        // This should not throw NullPointerException
+        List<WorkflowTrace> result = WorkflowTraceSerializer.secureReadFolder(mockDir);
+
+        // Should return empty list
+        assertTrue(result.isEmpty());
+    }
+
+    /** Test that insecureReadFolder works correctly with normal directory */
+    @Test
+    public void testInsecureReadFolderWithFiles(@TempDir File tempDir) throws Exception {
+        // Create some test files
+        File testFile1 = new File(tempDir, "test1.xml");
+        File testFile2 = new File(tempDir, "test2.xml");
+        File gitignoreFile = new File(tempDir, ".gitignore");
+
+        // Write valid workflow traces to the files
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+
+        WorkflowTraceSerializer.write(testFile1, trace);
+        WorkflowTraceSerializer.write(testFile2, trace);
+        gitignoreFile.createNewFile(); // Create empty .gitignore
+
+        // Read the folder
+        List<WorkflowTrace> result = WorkflowTraceSerializer.insecureReadFolder(tempDir);
+
+        // Should have read 2 files (excluding .gitignore)
+        assertEquals(2, result.size());
+    }
+
+    /** Test that secureReadFolder works correctly with normal directory */
+    @Test
+    public void testSecureReadFolderWithFiles(@TempDir File tempDir) throws Exception {
+        // Create some test files
+        File testFile1 = new File(tempDir, "test1.xml");
+        File testFile2 = new File(tempDir, "test2.xml");
+        File gitignoreFile = new File(tempDir, ".gitignore");
+
+        // Write valid workflow traces to the files
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
+
+        WorkflowTraceSerializer.write(testFile1, trace);
+        WorkflowTraceSerializer.write(testFile2, trace);
+        gitignoreFile.createNewFile(); // Create empty .gitignore
+
+        // Read the folder
+        List<WorkflowTrace> result = WorkflowTraceSerializer.secureReadFolder(tempDir);
+
+        // Should have read 2 files (excluding .gitignore)
+        assertEquals(2, result.size());
     }
 }

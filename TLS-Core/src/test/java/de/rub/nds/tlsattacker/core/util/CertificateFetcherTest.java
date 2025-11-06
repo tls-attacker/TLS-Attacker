@@ -22,12 +22,10 @@ import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import java.security.KeyPair;
 import java.security.KeyStore;
-import java.security.Security;
 import java.security.cert.CertificateParsingException;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,7 +45,6 @@ public class CertificateFetcherTest {
 
     @BeforeAll
     public static void setUpClass() throws Exception {
-        Security.addProvider(new BouncyCastleProvider());
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair keyPair =
                 KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
@@ -78,7 +75,7 @@ public class CertificateFetcherTest {
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
+        config = new Config();
         ClientDelegate clientDelegate = new ClientDelegate();
         clientDelegate.setHost("localhost:" + SERVER_PORT);
         clientDelegate.applyDelegate(config);

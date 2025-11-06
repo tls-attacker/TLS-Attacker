@@ -36,13 +36,13 @@ public class PreSharedKeyExtensionSerializer
                     msg.getIdentityListLength().getValue(),
                     ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH);
             LOGGER.debug(
-                    "PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
+                    "PreSharedKeyIdentityListLength: {}", msg.getIdentityListLength().getValue());
             writeIdentities();
 
             appendInt(
                     msg.getBinderListLength().getValue(),
                     ExtensionByteLength.PSK_BINDER_LIST_LENGTH);
-            LOGGER.debug("PreSharedKeyBinderListLength: " + msg.getBinderListLength().getValue());
+            LOGGER.debug("PreSharedKeyBinderListLength: {}", msg.getBinderListLength().getValue());
             writeBinders();
         } else {
             writeSelectedIdentity();

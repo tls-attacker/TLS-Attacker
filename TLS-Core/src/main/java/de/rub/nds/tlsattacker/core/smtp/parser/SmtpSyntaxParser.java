@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import java.util.ArrayList;
-import java.util.List;
 import org.bouncycastle.util.IPAddress;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */

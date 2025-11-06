@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -25,15 +24,12 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3UnknownCommand;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3MessageHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnterminatedReply;
-import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -47,14 +43,16 @@ import org.apache.logging.log4j.Logger;
  * Will fall back to Pop3UnknownReply if the type of reply is unclear, but falling back for
  * nonsensical replies is not yet implemented.
  */
-public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
+public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3Message> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Pop3Context context;
+    private final Context context;
+    private final Pop3Context pop3Context;
 
-    public Pop3Layer(Pop3Context pop3Context) {
+    public Pop3Layer(Context context) {
         super(ImplementedLayers.POP3);
-        this.context = pop3Context;
+        this.context = context;
+        this.pop3Context = context.getPop3Context();
     }
 
     /**
@@ -68,7 +66,7 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
      * @throws IOException if sending the message fails for any reason
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<Pop3Message> sendConfiguration() throws IOException {
         LayerConfiguration<Pop3Message> configuration = getLayerConfiguration();
         ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
@@ -110,7 +108,7 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
      *     different layers
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<Pop3Message> receiveData() {
         try {
             HintedInputStream dataStream;
             do {
@@ -121,16 +119,16 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
-                if (context.getContext().getConnection().getLocalConnectionEndType()
+                if (context.getChooser().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
-                    Pop3Reply pop3Reply = context.getExpectedNextReplyType();
+                    Pop3Reply pop3Reply = pop3Context.getExpectedNextReplyType();
                     if (pop3Reply instanceof Pop3UnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
                                 pop3Reply.getClass().getSimpleName());
                     }
                     readDataContainer(pop3Reply, context);
-                } else if (context.getContext().getConnection().getLocalConnectionEndType()
+                } else if (context.getChooser().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
                     Pop3CommandType pop3Command = Pop3CommandType.UNKNOWN;
                     ByteArrayOutputStream command = new ByteArrayOutputStream();
@@ -152,7 +150,8 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
                                 new HintedLayerInputStream(null, this);
                         pop3CommandStream.extendStream(command.toByteArray());
                         pop3CommandStream.extendStream(dataStream.readAllBytes());
-                        Pop3CommandParser parser = trueCommand.getParser(context, pop3CommandStream);
+                        Pop3CommandParser parser =
+                                trueCommand.getParser(context, pop3CommandStream);
 
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);

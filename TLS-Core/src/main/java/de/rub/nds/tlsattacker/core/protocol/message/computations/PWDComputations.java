@@ -8,22 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.Bits;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -34,10 +28,11 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.tls.HashAlgorithm;
-import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.crypto.util.DigestFactory;
 
 public class PWDComputations extends KeyExchangeComputations {
+
+    public static final int MAX_HASH_ITERATIONS = 1000;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -64,7 +59,7 @@ public class PWDComputations extends KeyExchangeComputations {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
         if (salt == null) {
-            Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
+            Digest digest = DigestFactory.createSHA256();
             base = new byte[digest.getDigestSize()];
             byte[] usernamePW =
                     (chooser.getClientPWDUsername() + chooser.getPWDPassword())
@@ -84,12 +79,11 @@ public class PWDComputations extends KeyExchangeComputations {
         int counter = 0;
         int n = (curve.getModulus().bitLength() + 64) / Bits.IN_A_BYTE;
         byte[] context;
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             context = chooser.getClientRandom();
         } else {
             context =
-                    ArrayConverter.concatenate(
-                            chooser.getClientRandom(), chooser.getServerRandom());
+                    DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         }
 
         Point createdPoint = null;
@@ -98,31 +92,29 @@ public class PWDComputations extends KeyExchangeComputations {
         do {
             counter++;
             byte[] seedInput =
-                    ArrayConverter.concatenate(
+                    DataConverter.concatenate(
                             base,
-                            ArrayConverter.intToBytes(counter, 1),
-                            ArrayConverter.bigIntegerToByteArray(curve.getModulus()));
+                            DataConverter.intToBytes(counter, 1),
+                            DataConverter.bigIntegerToByteArray(curve.getModulus()));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
             BigInteger tmpX =
                     new BigInteger(1, tmp)
                             .mod(curve.getModulus().subtract(BigInteger.ONE))
                             .add(BigInteger.ONE);
-            Point tempPoint = curve.createAPointOnCurve(tmpX);
-
-            if (!found && curve.isOnCurve(tempPoint)) {
+            Point tempPoint = curve.createAPointOnCurve(tmpX, false);
+            if (tempPoint != null) {
                 createdPoint = tempPoint;
-                savedSeed = seed.clone();
                 found = true;
                 chooser.getContext().getTlsContext().getBadSecureRandom().nextBytes(base);
             }
-            if (counter > 1000) {
-                savedSeed = seed.clone();
-                createdPoint = tempPoint;
-                LOGGER.warn("Could not find a useful pwd point");
-                break;
-            }
-        } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
+            savedSeed = seed.clone();
+        } while (!found && counter < MAX_HASH_ITERATIONS);
+
+        if (createdPoint == null) {
+            LOGGER.warn("Could not find a useful pwd point. Falling back to base point of curve.");
+            createdPoint = curve.getBasePoint();
+        }
 
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used
@@ -164,7 +156,7 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen)
             throws CryptoException {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             HKDFAlgorithm hkdfAlgorithm =
                     AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
             DigestAlgorithm digestAlgo =
@@ -180,7 +172,12 @@ public class PWDComputations extends KeyExchangeComputations {
             byte[] hashValue = hashFunction.digest();
 
             return HKDFunction.expandLabel(
-                    hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
+                    hkdfAlgorithm,
+                    seed,
+                    "TLS-PWD Hunting And Pecking",
+                    hashValue,
+                    outlen,
+                    chooser.getSelectedProtocolVersion());
         } else {
             PRFAlgorithm prf =
                     AlgorithmResolver.getPRFAlgorithm(
@@ -190,10 +187,9 @@ public class PWDComputations extends KeyExchangeComputations {
                         prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
                 LOGGER.warn(
-                        "Could not select prf for "
-                                + chooser.getSelectedProtocolVersion()
-                                + " and "
-                                + chooser.getSelectedCipherSuite());
+                        "Could not select prf for {} and {}",
+                        chooser.getSelectedProtocolVersion(),
+                        chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }

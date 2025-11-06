@@ -31,7 +31,7 @@ public class Pop3STATCommandTest {
 
         Pop3CommandParser parser =
                 statCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(statCommand);
 
@@ -42,8 +42,8 @@ public class Pop3STATCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3STATCommand statCommand = new Pop3STATCommand();
-        Pop3CommandPreparator preparator = statCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context);
+        Pop3CommandPreparator preparator = statCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

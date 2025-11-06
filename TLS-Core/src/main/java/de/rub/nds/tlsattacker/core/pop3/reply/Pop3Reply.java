@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3ReplyHandler;
@@ -16,6 +15,7 @@ import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3ReplyPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3ReplySerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class Pop3Reply extends Pop3Message {
     }
 
     public Pop3Reply() {
-        //Jaxb constructor
+        // Jaxb constructor
         this(Pop3CommandType.UNKNOWN, null);
     }
 
@@ -93,23 +93,23 @@ public class Pop3Reply extends Pop3Message {
     }
 
     @Override
-    public Pop3ReplyHandler<? extends Pop3Reply> getHandler(Pop3Context pop3Context) {
-        return new Pop3ReplyHandler<>(pop3Context);
+    public Pop3ReplyHandler<? extends Pop3Reply> getHandler(Context context) {
+        return new Pop3ReplyHandler<>(context.getPop3Context());
     }
 
     @Override
-    public Pop3ReplyParser<? extends Pop3Reply> getParser(Pop3Context context, InputStream stream) {
+    public Pop3ReplyParser<? extends Pop3Reply> getParser(Context context, InputStream stream) {
         return new Pop3GenericReplyParser<>(stream);
     }
 
     @Override
-    public Pop3ReplyPreparator<? extends Pop3Reply> getPreparator(Pop3Context context) {
+    public Pop3ReplyPreparator<? extends Pop3Reply> getPreparator(Context context) {
         return new Pop3ReplyPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public Pop3ReplySerializer<? extends Pop3Reply> getSerializer(Pop3Context context) {
-        return new Pop3ReplySerializer<>(this, context);
+    public Pop3ReplySerializer<? extends Pop3Reply> getSerializer(Context context) {
+        return new Pop3ReplySerializer<>(this, context.getPop3Context());
     }
 
     public String serialize() {

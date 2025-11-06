@@ -20,11 +20,11 @@ import de.rub.nds.protocol.crypto.signature.RsaSsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -91,12 +91,14 @@ public class TlsSignatureUtil {
                         || selectedProtocolVersion == ProtocolVersion.TLS10
                         || selectedProtocolVersion == ProtocolVersion.TLS11) {
                     hashAlgorithm = HashAlgorithm.NONE;
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    outputStream.writeBytes(
-                            HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.MD5));
-                    outputStream.writeBytes(
-                            HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.SHA1));
-                    toBeHashedAndSigned = outputStream.toByteArray();
+                    try (SilentByteArrayOutputStream outputStream =
+                            new SilentByteArrayOutputStream()) {
+                        outputStream.writeBytes(
+                                HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.MD5));
+                        outputStream.writeBytes(
+                                HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.SHA1));
+                        toBeHashedAndSigned = outputStream.toByteArray();
+                    }
                 }
                 computeRsaPkcs1Signature(
                         chooser,
@@ -107,7 +109,7 @@ public class TlsSignatureUtil {
             case RSA_SSA_PSS:
                 if (!(computations instanceof RsaSsaPssSignatureComputations)) {
                     throw new IllegalArgumentException(
-                            "Computations must be of type RsaPssSignatureComputations for "
+                            "Computations must be of type RsaSsaPssSignatureComputations for "
                                     + algorithm);
                 }
                 computeRsaPssSignature(
@@ -183,10 +185,10 @@ public class TlsSignatureUtil {
 
         X509Chooser x509chooser =
                 chooser.getContext().getTlsContext().getTalkingX509Context().getChooser();
-        BigInteger privateKey = x509chooser.getSubjectDsaPrivateKey();
-        BigInteger primeModulusP = x509chooser.getDsaPrimeP();
-        BigInteger primeQ = x509chooser.getDsaPrimeQ();
-        BigInteger generator = x509chooser.getDsaGenerator();
+        BigInteger privateKey = x509chooser.getSubjectDsaPrivateKeyX();
+        BigInteger primeModulusP = x509chooser.getSubjectDsaPrimeP();
+        BigInteger primeQ = x509chooser.getSubjectDsaPrimeQ();
+        BigInteger generator = x509chooser.getSubjectDsaGenerator();
         BigInteger nonce = chooser.getConfig().getDefaultDsaNonce();
         calculator.computeDsaSignature(
                 computations,
@@ -239,12 +241,12 @@ public class TlsSignatureUtil {
                         .getChooser()
                         .getSubjectRsaPrivateKey();
         byte[] salt = chooser.getConfig().getDefaultRsaSsaPssSalt();
-        if (salt.length > algorithm.getBitLength() * 8) {
+        if (salt.length > algorithm.getBitLength() / 8) {
             LOGGER.debug("Default PSS salt is too long, truncating");
-            salt = Arrays.copyOfRange(salt, 0, algorithm.getBitLength() * 8);
-        } else if (salt.length < algorithm.getBitLength() * 8) {
+            salt = Arrays.copyOfRange(salt, 0, algorithm.getBitLength() / 8);
+        } else if (salt.length < algorithm.getBitLength() / 8) {
             LOGGER.debug("Default PSS salt is too short, padding");
-            byte[] newSalt = new byte[algorithm.getBitLength() * 8];
+            byte[] newSalt = new byte[algorithm.getBitLength() / 8];
             System.arraycopy(salt, 0, newSalt, 0, salt.length);
             salt = newSalt;
         }
@@ -253,7 +255,6 @@ public class TlsSignatureUtil {
                 new RsaPrivateKey(privateKey, modulus),
                 toBeHasedAndSigned,
                 algorithm,
-                salt,
-                algorithm);
+                salt);
     }
 }

@@ -8,31 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
-import jakarta.xml.bind.annotation.XmlElement;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskRsaClientKeyExchange")
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    @XmlElement
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskRsaClientKeyExchangeMessage() {
@@ -51,7 +45,7 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
         }
         sb.append("\n  PSKIdentity: ");
         if (identity != null && identity.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+            sb.append(DataConverter.bytesToHexString(identity.getValue()));
         } else {
             sb.append("null");
         }
@@ -84,25 +78,24 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
     }
 
     @Override
-    public RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
-        return new PskRsaClientKeyExchangeHandler(tlsContext);
+    public PskRsaClientKeyExchangeHandler getHandler(Context context) {
+        return new PskRsaClientKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PskRsaClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskRsaClientKeyExchangeParser(stream, tlsContext);
+    public PskRsaClientKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PskRsaClientKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PskRsaClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskRsaClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskRsaClientKeyExchangePreparator getPreparator(Context context) {
+        return new PskRsaClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskRsaClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PskRsaClientKeyExchangeSerializer getSerializer(Context context) {
         return new PskRsaClientKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

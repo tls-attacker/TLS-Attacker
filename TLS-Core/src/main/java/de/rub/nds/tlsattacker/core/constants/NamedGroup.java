@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.GroupParameters;
@@ -19,9 +18,9 @@ import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group3072;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group6144;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group8192;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -67,12 +66,32 @@ public enum NamedGroup {
     BRAINPOOLP512R1(new byte[] {(byte) 0, (byte) 28}, NamedEllipticCurveParameters.BRAINPOOLP512R1),
     ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, NamedEllipticCurveParameters.CURVE_X25519),
     ECDH_X448(new byte[] {(byte) 0, (byte) 30}, NamedEllipticCurveParameters.CURVE_X448),
+    BRAINPOOLP256R1TLS13(
+            new byte[] {(byte) 0, (byte) 31}, NamedEllipticCurveParameters.BRAINPOOLP256R1),
+    BRAINPOOLP384R1TLS13(
+            new byte[] {(byte) 0, (byte) 32}, NamedEllipticCurveParameters.BRAINPOOLP384R1),
+    BRAINPOOLP512R1TLS13(
+            new byte[] {(byte) 0, (byte) 33}, NamedEllipticCurveParameters.BRAINPOOLP512R1),
+    GC256A(new byte[] {(byte) 0, (byte) 34}, null),
+    GC256B(new byte[] {(byte) 0, (byte) 35}, null),
+    GC256C(new byte[] {(byte) 0, (byte) 36}, null),
+    GC256D(new byte[] {(byte) 0, (byte) 37}, null),
+    GC512A(new byte[] {(byte) 0, (byte) 38}, null),
+    GC512B(new byte[] {(byte) 0, (byte) 39}, null),
+    GC512C(new byte[] {(byte) 0, (byte) 40}, null),
     CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, NamedEllipticCurveParameters.CURVE_SM2),
     FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new Rfc7919Group2048()),
     FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new Rfc7919Group3072()),
     FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new Rfc7919Group4096()),
     FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new Rfc7919Group6144()),
     FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new Rfc7919Group8192()),
+    MLKEM512(new byte[] {(byte) 2, (byte) 0}, null),
+    MLKEM768(new byte[] {(byte) 2, (byte) 1}, null),
+    MLKEM1024(new byte[] {(byte) 2, (byte) 2}, null),
+    SECP256R1_MLKEM768(new byte[] {0x11, (byte) 0xEB}, null),
+    X25519_MLKEM768(new byte[] {0x11, (byte) 0xEC}, null),
+    SECP384R1_MLKEM1024(new byte[] {0x11, (byte) 0xED}, null),
+    X25519_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x99}, null),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
     EXPLICIT_CHAR2(new byte[] {(byte) 0xFF, (byte) 2}, null),
@@ -114,16 +133,25 @@ public enum NamedGroup {
                             SECP256R1,
                             SECP384R1,
                             SECP521R1,
-                            CURVE_SM2));
+                            CURVE_SM2,
+                            MLKEM512,
+                            MLKEM768,
+                            MLKEM1024,
+                            BRAINPOOLP256R1TLS13,
+                            BRAINPOOLP384R1TLS13,
+                            BRAINPOOLP512R1TLS13,
+                            X25519_MLKEM768,
+                            SECP256R1_MLKEM768,
+                            SECP384R1_MLKEM1024));
 
-    private NamedGroup(byte[] value, GroupParameters<?> group) {
+    NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
         this.groupParameters = group;
     }
 
     static {
         MAP = new HashMap<>();
-        for (NamedGroup group : NamedGroup.values()) {
+        for (NamedGroup group : values()) {
             MAP.put(ByteBuffer.wrap(group.value), group);
         }
     }
@@ -332,7 +360,7 @@ public enum NamedGroup {
     }
 
     public static NamedGroup convert(GroupParameters<?> parameters) {
-        for (NamedGroup group : NamedGroup.values()) {
+        for (NamedGroup group : values()) {
             if (group.getGroupParameters() == parameters) {
                 return group;
             }
@@ -362,12 +390,12 @@ public enum NamedGroup {
             return new byte[0];
         }
 
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        for (NamedGroup i : groups) {
-            bytes.write(i.getValue());
+        try (SilentByteArrayOutputStream bytes = new SilentByteArrayOutputStream()) {
+            for (NamedGroup i : groups) {
+                bytes.write(i.getValue());
+            }
+            return bytes.toByteArray();
         }
-
-        return bytes.toByteArray();
     }
 
     public static List<NamedGroup> namedGroupsFromByteArray(byte[] sourceBytes) {
@@ -390,8 +418,7 @@ public enum NamedGroup {
                 if (group != null) {
                     groups.add(group);
                 } else {
-                    LOGGER.warn(
-                            "Unknown named group: {}", ArrayConverter.bytesToHexString(groupBytes));
+                    LOGGER.warn("Unknown named group: {}", groupBytes);
                 }
             } catch (IOException ex) {
                 LOGGER.error("Could not read from ByteArrayInputStream", ex);
@@ -478,6 +505,9 @@ public enum NamedGroup {
         list.add(BRAINPOOLP256R1);
         list.add(BRAINPOOLP384R1);
         list.add(BRAINPOOLP512R1);
+        list.add(BRAINPOOLP256R1TLS13);
+        list.add(BRAINPOOLP384R1TLS13);
+        list.add(BRAINPOOLP512R1TLS13);
         list.add(FFDHE2048);
         list.add(FFDHE3072);
         list.add(FFDHE4096);
@@ -491,6 +521,6 @@ public enum NamedGroup {
     }
 
     public boolean isGost() {
-        return name().contains("GOST");
+        return name().startsWith("GC");
     }
 }

@@ -24,7 +24,7 @@ public class SmtpMAILCommandHandler extends SmtpCommandHandler<SmtpMAILCommand> 
      */
     @Override
     public void adjustContextSpecific(SmtpMAILCommand smtpCommand) {
-        this.getContext().clearBuffers();
-        this.getContext().insertReversePath(smtpCommand.getReversePath());
+        this.getContext().getSmtpContext().clearBuffers();
+        this.getContext().getSmtpContext().insertReversePath(smtpCommand.getReversePath());
     }
 }

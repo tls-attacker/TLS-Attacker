@@ -25,6 +25,6 @@ public class SmtpEHLOCommandHandler extends SmtpCommandHandler<SmtpEHLOCommand> 
      */
     @Override
     public void adjustContextSpecific(SmtpEHLOCommand smtpCommand) {
-        this.getContext().setClientIdentity(smtpCommand.getClientIdentity());
+        this.getContext().getSmtpContext().setClientIdentity(smtpCommand.getClientIdentity());
     }
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import java.nio.charset.StandardCharsets;
+
 public enum HpkeLabel {
     EMPTY(""),
 
@@ -35,11 +37,11 @@ public enum HpkeLabel {
 
     private final String name;
 
-    private HpkeLabel(String name) {
+    HpkeLabel(String name) {
         this.name = name;
     }
 
     public byte[] getBytes() {
-        return this.name.getBytes();
+        return this.name.getBytes(StandardCharsets.US_ASCII);
     }
 }

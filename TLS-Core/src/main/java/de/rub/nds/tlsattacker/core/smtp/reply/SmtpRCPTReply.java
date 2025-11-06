@@ -23,4 +23,3 @@ public class SmtpRCPTReply extends SmtpReply {
         super(SmtpCommandType.RCPT);
     }
 }
-

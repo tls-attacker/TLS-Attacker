@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpEHLOReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpEHLOReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,13 +35,13 @@ public class SmtpEHLOReply extends SmtpReply {
     }
 
     @Override
-    public SmtpEHLOReplyParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpEHLOReplyParser getParser(Context context, InputStream stream) {
         return new SmtpEHLOReplyParser(stream);
     }
 
     @Override
-    public SmtpEHLOReplyHandler getHandler(SmtpContext context) {
-        return new SmtpEHLOReplyHandler(context);
+    public SmtpEHLOReplyHandler getHandler(Context context) {
+        return new SmtpEHLOReplyHandler(context.getSmtpContext());
     }
 
     public String getGreeting() {

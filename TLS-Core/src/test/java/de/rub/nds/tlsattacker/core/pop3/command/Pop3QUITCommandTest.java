@@ -31,7 +31,7 @@ public class Pop3QUITCommandTest {
 
         Pop3CommandParser parser =
                 quitCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitCommand);
 
@@ -42,8 +42,8 @@ public class Pop3QUITCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3QUITCommand quitCommand = new Pop3QUITCommand();
-        Pop3CommandPreparator preparator = quitCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = quitCommand.getSerializer(context);
+        Pop3CommandPreparator preparator = quitCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = quitCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

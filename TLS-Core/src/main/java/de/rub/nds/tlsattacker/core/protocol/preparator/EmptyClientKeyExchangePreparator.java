@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
@@ -45,7 +44,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     }
 
     protected void prepareClientServerRandom(T msg) {
-        random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        random = DataConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug(
@@ -71,8 +70,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
             EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
         int elementLength =
-                ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(
+                DataConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+        return DataConverter.bigIntegerToNullPaddedByteArray(
                 sharedPoint.getFieldX().getData(), elementLength);
     }
 
@@ -95,10 +94,12 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                             .getLeaf()
                             .getCertificateKeyType();
             KeyExchangeAlgorithm keyExchangeAlgorithm =
-                    AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
-            if (keyExchangeAlgorithm.isKeyExchangeDh() || keyExchangeAlgorithm.isKeyExchangeDhe()) {
+                    chooser.getSelectedCipherSuite().getKeyExchangeAlgorithm();
+            if (keyExchangeAlgorithm != null
+                    && (keyExchangeAlgorithm.isKeyExchangeDh()
+                            || keyExchangeAlgorithm.isKeyExchangeDhe())) {
                 computeDhKeyExchangePms();
-            } else if (keyExchangeAlgorithm.isEC()) {
+            } else if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.isEC()) {
                 computeEcKeyExchangePms();
             } else {
                 LOGGER.warn(

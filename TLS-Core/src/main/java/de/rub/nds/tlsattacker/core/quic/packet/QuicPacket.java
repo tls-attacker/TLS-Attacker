@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -21,17 +22,15 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicCryptoSecrets;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class QuicPacket extends ModifiableVariableHolder
-        implements DataContainer<QuicContext> {
+public abstract class QuicPacket extends ModifiableVariableHolder implements DataContainer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -43,6 +42,8 @@ public abstract class QuicPacket extends ModifiableVariableHolder
     protected ModifiableByteArray destinationConnectionId;
     protected ModifiableByte destinationConnectionIdLength;
 
+    protected ModifiableByteArray configuredDestinationConnectionId;
+
     protected ModifiableInteger packetLength;
     protected int packetLengthSize;
 
@@ -50,7 +51,6 @@ public abstract class QuicPacket extends ModifiableVariableHolder
     protected ModifiableByteArray unprotectedPacketNumber;
     protected ModifiableByteArray restoredPacketNumber;
     protected int plainPacketNumber;
-
     protected ModifiableInteger packetNumberLength;
 
     protected ModifiableByteArray protectedPacketNumberAndPayload;
@@ -58,12 +58,15 @@ public abstract class QuicPacket extends ModifiableVariableHolder
     protected ModifiableByteArray protectedPayload;
 
     public ModifiableByteArray completeUnprotectedHeader;
-    public int offsetToPacketNumber;
-    public ByteArrayOutputStream protectedHeaderHelper = new ByteArrayOutputStream();
-    public ByteArrayOutputStream unprotectedHeaderHelper = new ByteArrayOutputStream();
+    public SilentByteArrayOutputStream protectedHeaderHelper = new SilentByteArrayOutputStream();
+    protected SilentByteArrayOutputStream unprotectedHeaderHelper =
+            new SilentByteArrayOutputStream();
 
     protected QuicCryptoSecrets packetSecret;
+    public int offsetToPacketNumber;
     protected int padding;
+
+    protected int configuredPadding = -1;
 
     public QuicPacket() {}
 
@@ -77,159 +80,17 @@ public abstract class QuicPacket extends ModifiableVariableHolder
 
     public abstract void convertCompleteProtectedHeader();
 
-    public int getPadding() {
-        return padding;
-    }
+    @Override
+    public abstract Handler<? extends QuicPacket> getHandler(Context context);
 
-    public void setPadding(int padding) {
-        this.padding = padding;
-    }
+    @Override
+    public abstract Serializer<? extends QuicPacket> getSerializer(Context context);
 
-    public void setProtectedFlags(byte flags) {
-        this.protectedFlags = ModifiableVariableFactory.safelySetValue(this.protectedFlags, flags);
-    }
+    @Override
+    public abstract Preparator<? extends QuicPacket> getPreparator(Context context);
 
-    public void setUnprotectedFlags(byte flags) {
-        this.unprotectedFlags =
-                ModifiableVariableFactory.safelySetValue(this.unprotectedFlags, flags);
-    }
-
-    public void setPacketNumberLength(int packetNumberLength) {
-        this.packetNumberLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.packetNumberLength, packetNumberLength);
-    }
-
-    public void setProtectedPacketNumber(byte[] packetNumber) {
-        this.protectedPacketNumber =
-                ModifiableVariableFactory.safelySetValue(this.protectedPacketNumber, packetNumber);
-    }
-
-    public void setPacketLengthSize(int packetLengthSize) {
-        this.packetLengthSize = packetLengthSize;
-    }
-
-    public void setUnprotectedPacketNumber(byte[] packetNumber) {
-        setPacketNumberLength(packetNumber.length);
-        this.unprotectedPacketNumber =
-                ModifiableVariableFactory.safelySetValue(
-                        this.unprotectedPacketNumber, packetNumber);
-    }
-
-    public void setUnprotectedPacketNumber(int packetNumber) {
-        this.setUnprotectedPacketNumber(encodePacketNumber(packetNumber));
-    }
-
-    public void setRestoredPacketNumber(byte[] packetNumber) {
-        this.restoredPacketNumber =
-                ModifiableVariableFactory.safelySetValue(this.restoredPacketNumber, packetNumber);
-    }
-
-    public void setRestoredPacketNumber(int packetNumber) {
-        this.setRestoredPacketNumber(encodePacketNumber(packetNumber));
-    }
-
-    public void setPacketLength(int packetLength) {
-        this.packetLength =
-                ModifiableVariableFactory.safelySetValue(this.packetLength, packetLength);
-    }
-
-    public void setDestinationConnectionId(byte[] destinationConnectionId) {
-        this.destinationConnectionId =
-                ModifiableVariableFactory.safelySetValue(
-                        this.destinationConnectionId, destinationConnectionId);
-    }
-
-    public void setDestinationConnectionIdLength(byte variableLengthInteger) {
-        this.destinationConnectionIdLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.destinationConnectionIdLength, variableLengthInteger);
-    }
-
-    public void setProtectedPacketNumberAndPayload(byte[] protectedPayload) {
-        this.protectedPacketNumberAndPayload =
-                ModifiableVariableFactory.safelySetValue(
-                        this.protectedPacketNumberAndPayload, protectedPayload);
-    }
-
-    public void setUnprotectedPayload(byte[] unprotectedPayload) {
-        this.unprotectedPayload =
-                ModifiableVariableFactory.safelySetValue(
-                        this.unprotectedPayload, unprotectedPayload);
-    }
-
-    public void setProtectedPayload(byte[] protectedPayload) {
-        this.protectedPayload =
-                ModifiableVariableFactory.safelySetValue(this.protectedPayload, protectedPayload);
-    }
-
-    public void setPacketSecret(QuicCryptoSecrets packetSecret) {
-        this.packetSecret = packetSecret;
-    }
-
-    public ModifiableByte getProtectedFlags() {
-        return protectedFlags;
-    }
-
-    public QuicPacketType getPacketType() {
-        return packetType;
-    }
-
-    public ModifiableByte getUnprotectedFlags() {
-        return unprotectedFlags;
-    }
-
-    public ModifiableByteArray getUnprotectedPacketNumber() {
-        return unprotectedPacketNumber;
-    }
-
-    public ModifiableInteger getPacketNumberLength() {
-        return packetNumberLength;
-    }
-
-    public ModifiableByteArray getProtectedPacketNumber() {
-        return protectedPacketNumber;
-    }
-
-    public ModifiableByteArray getRestoredPacketNumber() {
-        return restoredPacketNumber;
-    }
-
-    public int getPacketLengthSize() {
-        return packetLengthSize;
-    }
-
-    public ModifiableInteger getPacketLength() {
-        return packetLength;
-    }
-
-    public ModifiableByteArray getDestinationConnectionId() {
-        return destinationConnectionId;
-    }
-
-    public ModifiableByte getDestinationConnectionIdLength() {
-        return destinationConnectionIdLength;
-    }
-
-    public ModifiableByteArray getProtectedPacketNumberAndPayload() {
-        return protectedPacketNumberAndPayload;
-    }
-
-    public ModifiableByteArray getUnprotectedPayload() {
-        return unprotectedPayload;
-    }
-
-    public ModifiableByteArray getProtectedPayload() {
-        return protectedPayload;
-    }
-
-    public int getPlainPacketNumber() {
-        return plainPacketNumber;
-    }
-
-    public void setPlainPacketNumber(int plainPacketNumber) {
-        this.plainPacketNumber = plainPacketNumber;
-    }
+    @Override
+    public abstract Parser<? extends QuicPacket> getParser(Context context, InputStream stream);
 
     public byte[] encodePacketNumber(long packetnumber) {
         if (packetnumber <= 0xff) {
@@ -293,7 +154,6 @@ public abstract class QuicPacket extends ModifiableVariableHolder
             setUnprotectedFlags(
                     encodePacketNumberLength(
                             unprotectedFlags.getValue(), unprotectedPacketNumber.getValue()));
-
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -341,15 +201,231 @@ public abstract class QuicPacket extends ModifiableVariableHolder
         return this.packetType.getName();
     }
 
-    @Override
-    public abstract Handler<?> getHandler(QuicContext context);
+    public void setProtectedFlags(byte protectedFlags) {
+        this.protectedFlags =
+                ModifiableVariableFactory.safelySetValue(this.protectedFlags, protectedFlags);
+    }
 
-    @Override
-    public abstract Serializer<?> getSerializer(QuicContext context);
+    public void setProtectedFlags(ModifiableByte protectedFlags) {
+        this.protectedFlags = protectedFlags;
+    }
 
-    @Override
-    public abstract Preparator<?> getPreparator(QuicContext context);
+    public void setUnprotectedFlags(byte unprotectedFlags) {
+        this.unprotectedFlags =
+                ModifiableVariableFactory.safelySetValue(this.unprotectedFlags, unprotectedFlags);
+    }
 
-    @Override
-    public abstract Parser<?> getParser(QuicContext context, InputStream stream);
+    public void setUnprotectedFlags(ModifiableByte unprotectedFlags) {
+        this.unprotectedFlags = unprotectedFlags;
+    }
+
+    public void setPacketNumberLength(int packetNumberLength) {
+        this.packetNumberLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.packetNumberLength, packetNumberLength);
+    }
+
+    public void setPacketNumberLength(ModifiableInteger packetNumberLength) {
+        this.packetNumberLength = packetNumberLength;
+    }
+
+    public void setProtectedPacketNumber(byte[] packetNumber) {
+        this.protectedPacketNumber =
+                ModifiableVariableFactory.safelySetValue(this.protectedPacketNumber, packetNumber);
+    }
+
+    public void setProtectedPacketNumber(ModifiableByteArray packetNumber) {
+        this.protectedPacketNumber = packetNumber;
+    }
+
+    public void setPacketLengthSize(int packetLengthSize) {
+        this.packetLengthSize = packetLengthSize;
+    }
+
+    public void setUnprotectedPacketNumber(byte[] packetNumber) {
+        setPacketNumberLength(packetNumber.length);
+        this.unprotectedPacketNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.unprotectedPacketNumber, packetNumber);
+    }
+
+    public void setUnprotectedPacketNumber(ModifiableByteArray packetNumber) {
+        setPacketNumberLength(packetNumber.getValue().length);
+        this.unprotectedPacketNumber = packetNumber;
+    }
+
+    public void setUnprotectedPacketNumber(int packetNumber) {
+        this.setUnprotectedPacketNumber(encodePacketNumber(packetNumber));
+    }
+
+    public void setRestoredPacketNumber(byte[] packetNumber) {
+        this.restoredPacketNumber =
+                ModifiableVariableFactory.safelySetValue(this.restoredPacketNumber, packetNumber);
+    }
+
+    public void setRestoredPacketNumber(ModifiableByteArray packetNumber) {
+        this.restoredPacketNumber = packetNumber;
+    }
+
+    public void setRestoredPacketNumber(int packetNumber) {
+        this.setRestoredPacketNumber(encodePacketNumber(packetNumber));
+    }
+
+    public void setPacketLength(int packetLength) {
+        this.packetLength =
+                ModifiableVariableFactory.safelySetValue(this.packetLength, packetLength);
+    }
+
+    public void setRestoredPacketNumber(ModifiableInteger packetLength) {
+        this.packetLength = packetLength;
+    }
+
+    public void setDestinationConnectionId(byte[] destinationConnectionId) {
+        this.destinationConnectionId =
+                ModifiableVariableFactory.safelySetValue(
+                        this.destinationConnectionId, destinationConnectionId);
+    }
+
+    public void setDestinationConnectionId(ModifiableByteArray destinationConnectionId) {
+        this.destinationConnectionId = destinationConnectionId;
+    }
+
+    public void setConfiguredDestinationConnectionId(byte[] destinationConnectionId) {
+        this.configuredDestinationConnectionId =
+                ModifiableVariableFactory.safelySetValue(
+                        this.configuredDestinationConnectionId, destinationConnectionId);
+    }
+
+    public void setConfiguredDestinationConnectionId(
+            ModifiableByteArray configuredDestinationConnectionId) {
+        this.configuredDestinationConnectionId = configuredDestinationConnectionId;
+    }
+
+    public void setDestinationConnectionIdLength(byte destinationConnectionIdLength) {
+        this.destinationConnectionIdLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.destinationConnectionIdLength, destinationConnectionIdLength);
+    }
+
+    public void setDestinationConnectionIdLength(ModifiableByte destinationConnectionIdLength) {
+        this.destinationConnectionIdLength = destinationConnectionIdLength;
+    }
+
+    public void setProtectedPacketNumberAndPayload(byte[] protectedPacketNumberAndPayload) {
+        this.protectedPacketNumberAndPayload =
+                ModifiableVariableFactory.safelySetValue(
+                        this.protectedPacketNumberAndPayload, protectedPacketNumberAndPayload);
+    }
+
+    public void setProtectedPacketNumberAndPayload(
+            ModifiableByteArray protectedPacketNumberAndPayload) {
+        this.protectedPacketNumberAndPayload = protectedPacketNumberAndPayload;
+    }
+
+    public void setUnprotectedPayload(byte[] unprotectedPayload) {
+        this.unprotectedPayload =
+                ModifiableVariableFactory.safelySetValue(
+                        this.unprotectedPayload, unprotectedPayload);
+    }
+
+    public void setUnprotectedPayload(ModifiableByteArray unprotectedPayload) {
+        this.unprotectedPayload = unprotectedPayload;
+    }
+
+    public void setProtectedPayload(byte[] protectedPayload) {
+        this.protectedPayload =
+                ModifiableVariableFactory.safelySetValue(this.protectedPayload, protectedPayload);
+    }
+
+    public void setProtectedPayload(ModifiableByteArray protectedPayload) {
+        this.protectedPayload = protectedPayload;
+    }
+
+    public void setPacketSecret(QuicCryptoSecrets packetSecret) {
+        this.packetSecret = packetSecret;
+    }
+
+    public void setPadding(int padding) {
+        this.padding = padding;
+    }
+
+    public void setPlainPacketNumber(int plainPacketNumber) {
+        this.plainPacketNumber = plainPacketNumber;
+    }
+
+    public ModifiableByte getProtectedFlags() {
+        return protectedFlags;
+    }
+
+    public QuicPacketType getPacketType() {
+        return packetType;
+    }
+
+    public ModifiableByte getUnprotectedFlags() {
+        return unprotectedFlags;
+    }
+
+    public ModifiableByteArray getUnprotectedPacketNumber() {
+        return unprotectedPacketNumber;
+    }
+
+    public ModifiableInteger getPacketNumberLength() {
+        return packetNumberLength;
+    }
+
+    public ModifiableByteArray getProtectedPacketNumber() {
+        return protectedPacketNumber;
+    }
+
+    public ModifiableByteArray getRestoredPacketNumber() {
+        return restoredPacketNumber;
+    }
+
+    public int getPacketLengthSize() {
+        return packetLengthSize;
+    }
+
+    public ModifiableInteger getPacketLength() {
+        return packetLength;
+    }
+
+    public ModifiableByteArray getDestinationConnectionId() {
+        return destinationConnectionId;
+    }
+
+    public ModifiableByteArray getConfiguredDestinationConnectionId() {
+        return configuredDestinationConnectionId;
+    }
+
+    public ModifiableByte getDestinationConnectionIdLength() {
+        return destinationConnectionIdLength;
+    }
+
+    public ModifiableByteArray getProtectedPacketNumberAndPayload() {
+        return protectedPacketNumberAndPayload;
+    }
+
+    public ModifiableByteArray getUnprotectedPayload() {
+        return unprotectedPayload;
+    }
+
+    public ModifiableByteArray getProtectedPayload() {
+        return protectedPayload;
+    }
+
+    public int getPlainPacketNumber() {
+        return plainPacketNumber;
+    }
+
+    public int getPadding() {
+        return padding;
+    }
+
+    public void setConfiguredPadding(int configuredPadding) {
+        this.configuredPadding = configuredPadding;
+    }
+
+    public int getConfiguredPadding() {
+        return configuredPadding;
+    }
 }

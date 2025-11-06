@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import java.math.BigInteger;
 import java.util.List;
 
 public class MathHelper {
 
     public static BigInteger intFloorDiv(BigInteger c, BigInteger d) {
-        return (c.subtract(c.mod(d))).divide(d);
+        return c.subtract(c.mod(d)).divide(d);
     }
 
     public static int intFloorDiv(int c, int d) {
@@ -118,8 +118,8 @@ public class MathHelper {
      * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
     public static BigInteger crt(List<BigInteger> congs, List<BigInteger> moduli) {
-        BigInteger[] cs = ArrayConverter.convertListToArray(congs);
-        BigInteger[] ms = ArrayConverter.convertListToArray(moduli);
+        BigInteger[] cs = DataConverter.convertListToArray(congs);
+        BigInteger[] ms = DataConverter.convertListToArray(moduli);
         return crt(cs, ms);
     }
 
@@ -147,7 +147,7 @@ public class MathHelper {
         // while y>x/y
         while (y.compareTo(x.divide(y)) > 0) {
             // y=(x/y+y)/2
-            y = ((x.divide(y)).add(y)).divide(two);
+            y = x.divide(y).add(y).divide(two);
         }
         return y;
     } // end bigIntSqRootFloor
@@ -175,7 +175,7 @@ public class MathHelper {
         // while y>x/y
         while (y.compareTo(x.divide(y)) > 0) {
             // y=(x/y+y)/2
-            y = ((x.divide(y)).add(y)).divide(two);
+            y = x.divide(y).add(y).divide(two);
         }
         if (x.compareTo(y.multiply(y)) == 0) {
             return y;

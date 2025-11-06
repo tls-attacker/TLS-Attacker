@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3CommandHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -34,35 +34,36 @@ public class Pop3Command extends Pop3Message {
         this.arguments = arguments;
         this.commandType = Pop3CommandType.CUSTOM;
     }
+
     public Pop3Command(Pop3CommandType commandType, String arguments) {
         this.commandType = commandType;
         this.keyword = commandType.getKeyword();
         this.arguments = arguments;
     }
+
     public Pop3Command() {
         // JAXB constructor
         this("", "");
     }
 
     @Override
-    public Pop3CommandHandler<? extends Pop3Message> getHandler(Pop3Context pop3Context) {
-        return new Pop3CommandHandler<>(pop3Context);
+    public Pop3CommandHandler<? extends Pop3Message> getHandler(Context context) {
+        return new Pop3CommandHandler<>(context.getPop3Context());
     }
 
     @Override
-    public Pop3CommandParser<? extends Pop3Message> getParser(
-            Pop3Context context, InputStream stream) {
+    public Pop3CommandParser<? extends Pop3Message> getParser(Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 
     @Override
-    public Pop3CommandPreparator<? extends Pop3Message> getPreparator(Pop3Context context) {
+    public Pop3CommandPreparator<? extends Pop3Message> getPreparator(Context context) {
         return new Pop3CommandPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public Pop3CommandSerializer<? extends Pop3Message> getSerializer(Pop3Context context) {
-        return new Pop3CommandSerializer<>(this, context);
+    public Pop3CommandSerializer<? extends Pop3Message> getSerializer(Context context) {
+        return new Pop3CommandSerializer<>(this, context.getPop3Context());
     }
 
     @Override
@@ -97,7 +98,7 @@ public class Pop3Command extends Pop3Message {
 
         StringBuilder sb = new StringBuilder();
 
-        if(this instanceof Pop3MessageNumber) {
+        if (this instanceof Pop3MessageNumber) {
             Pop3MessageNumber numberedMessage = (Pop3MessageNumber) this;
             if (numberedMessage.getMessageNumber() != null) {
                 this.setArguments(numberedMessage.getMessageNumber().toString());

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser.command;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 import java.io.InputStream;
 import java.util.ArrayList;

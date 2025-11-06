@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedRandomExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedRandomExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedRandomExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -30,7 +30,7 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray extendedRandom;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extendedRandomLength;
 
     public ExtendedRandomExtensionMessage() {
@@ -64,22 +64,22 @@ public class ExtendedRandomExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtendedRandomExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ExtendedRandomExtensionParser(stream, tlsContext);
+    public ExtendedRandomExtensionParser getParser(Context context, InputStream stream) {
+        return new ExtendedRandomExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public ExtendedRandomExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ExtendedRandomExtensionPreparator(tlsContext.getChooser(), this);
+    public ExtendedRandomExtensionPreparator getPreparator(Context context) {
+        return new ExtendedRandomExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ExtendedRandomExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ExtendedRandomExtensionSerializer getSerializer(Context context) {
         return new ExtendedRandomExtensionSerializer(this);
     }
 
     @Override
-    public ExtendedRandomExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ExtendedRandomExtensionHandler(tlsContext);
+    public ExtendedRandomExtensionHandler getHandler(Context context) {
+        return new ExtendedRandomExtensionHandler(context.getTlsContext());
     }
 }

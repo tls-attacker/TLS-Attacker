@@ -8,9 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -20,6 +22,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement(name = "SendRaccoonCke")
@@ -92,19 +95,19 @@ public class SendRaccoonCkeAction extends CommonSendAction {
             BigInteger serverPublicKey,
             BigInteger initialClientDhSecret,
             boolean withNullByte) {
-        int length = ArrayConverter.bigIntegerToByteArray(m).length;
+        int length = DataConverter.bigIntegerToByteArray(m).length;
         byte[] pms =
-                ArrayConverter.bigIntegerToNullPaddedByteArray(
+                DataConverter.bigIntegerToNullPaddedByteArray(
                         serverPublicKey.modPow(initialClientDhSecret, m), length);
 
         if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
             BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);
-            byte[] cke = ArrayConverter.bigIntegerToByteArray(clientPublicKey);
+            byte[] cke = DataConverter.bigIntegerToByteArray(clientPublicKey);
             if (cke.length == length) {
                 return cke;
             }
         }
-        initialClientDhSecret = initialClientDhSecret.add(new BigInteger("1"));
+        initialClientDhSecret = initialClientDhSecret.add(BigInteger.ONE);
         return getClientPublicKey(g, m, serverPublicKey, initialClientDhSecret, withNullByte);
     }
 
@@ -150,7 +153,10 @@ public class SendRaccoonCkeAction extends CommonSendAction {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         ClientKeyExchangeMessage message =
                 generateRaccoonDhClientKeyExchangeMessage(tlsContext, withNullByte);
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext, List.of(message), null, null, null, null, null, null, null);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, message));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

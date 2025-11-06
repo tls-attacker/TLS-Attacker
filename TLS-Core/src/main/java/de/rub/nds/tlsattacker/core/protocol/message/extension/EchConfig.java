@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EchConfigVersion;
@@ -17,7 +17,12 @@ import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ech.HpkeCipherSuite;
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -47,7 +52,7 @@ public class EchConfig implements Serializable {
 
     @XmlElement(name = "extension")
     @XmlElementWrapper
-    private List<ExtensionMessage> extensions = new LinkedList();
+    private List<ExtensionMessage> extensions = new LinkedList<>();
 
     // HPKE key data
 
@@ -75,19 +80,18 @@ public class EchConfig implements Serializable {
         EchConfig echConfig = new EchConfig();
         echConfig.isDefault = true;
         echConfig.setEchConfigBytes(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "FE0D003AB8002000205611F61F4F5F5C801C60009DA68DD0EB0DD5DBA8FF33C32D5025D7FFADF5DC6F000400010001000B6578616D706C652E636F6D0000"));
         echConfig.setConfigVersion(EchVersion.DRAFT_14.getEchConfigVersion());
         echConfig.setLength(58);
         echConfig.setMaximumNameLength(0);
         // example.com
-        echConfig.setPublicDomainName(
-                ArrayConverter.hexStringToByteArray("6578616D706C652E636F6D"));
+        echConfig.setPublicDomainName(DataConverter.hexStringToByteArray("6578616D706C652E636F6D"));
         echConfig.setExtensions(new LinkedList<>());
         echConfig.setConfigId(184);
         echConfig.setKem(HpkeKeyEncapsulationMechanism.DHKEM_X25519_HKDF_SHA256);
         echConfig.setHpkePublicKey(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "5611F61F4F5F5C801C60009DA68DD0EB0DD5DBA8FF33C32D5025D7FFADF5DC6F"));
         echConfig.setCipherSuites(new LinkedList<>());
         HpkeCipherSuite hpkeCipherSuite =

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -278,7 +278,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetMasterSecret() {
         byte[] masterSecret =
-                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+                DataConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultMasterSecret(masterSecret);
         assertArrayEquals(masterSecret, config.getDefaultMasterSecret());
         assertArrayEquals(masterSecret, chooser.getMasterSecret());
@@ -303,7 +303,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetPreMasterSecret() {
         byte[] preMasterSecret =
-                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+                DataConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultPreMasterSecret(preMasterSecret);
         assertArrayEquals(preMasterSecret, config.getDefaultPreMasterSecret());
         assertArrayEquals(preMasterSecret, chooser.getPreMasterSecret());
@@ -315,7 +315,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientRandom() {
         byte[] clientRandom =
-                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+                DataConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultClientRandom(clientRandom);
         assertArrayEquals(clientRandom, config.getDefaultClientRandom());
         assertArrayEquals(clientRandom, chooser.getClientRandom());
@@ -327,7 +327,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetServerRandom() {
         byte[] serverRandom =
-                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+                DataConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultServerRandom(serverRandom);
         assertArrayEquals(serverRandom, config.getDefaultServerRandom());
         assertArrayEquals(serverRandom, chooser.getServerRandom());
@@ -338,7 +338,7 @@ public class DefaultChooserTest {
     /** Test of getClientExtendedRandom method of class DefaultChooser. */
     @Test
     public void testGetClientExtendedRandom() {
-        byte[] clientExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
+        byte[] clientExtendedRandom = DataConverter.hexStringToByteArray("abcd");
         config.setDefaultClientExtendedRandom(clientExtendedRandom);
         assertArrayEquals(clientExtendedRandom, config.getDefaultClientExtendedRandom());
         assertArrayEquals(clientExtendedRandom, chooser.getClientExtendedRandom());
@@ -349,7 +349,7 @@ public class DefaultChooserTest {
     /** Test of getServerExtendedRandom of class DefaultChooser. */
     @Test
     public void testGetServerExtendedRandom() {
-        byte[] serverExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
+        byte[] serverExtendedRandom = DataConverter.hexStringToByteArray("abcd");
         config.setDefaultServerExtendedRandom(serverExtendedRandom);
         assertArrayEquals(serverExtendedRandom, config.getDefaultServerExtendedRandom());
         assertArrayEquals(serverExtendedRandom, chooser.getServerExtendedRandom());
@@ -393,7 +393,7 @@ public class DefaultChooserTest {
     /** Test of getDtlsCookie method, of class DefaultChooser. */
     @Test
     public void testGetDtlsCookie() {
-        byte[] cookie = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        byte[] cookie = DataConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDtlsDefaultCookie(cookie);
         assertArrayEquals(cookie, config.getDtlsDefaultCookie());
         assertArrayEquals(cookie, chooser.getDtlsCookie());
@@ -405,7 +405,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetTransportHandler() {
         TransportHandler transportHandler = new ClientTcpTransportHandler(0, 0, "abc", 0);
-        context.getContext().getTcpContext().setTransportHandler(transportHandler);
+        context.setTransportHandler(transportHandler);
         assertEquals(transportHandler, chooser.getTransportHandler());
     }
 
@@ -425,9 +425,9 @@ public class DefaultChooserTest {
     public void testGetLatestSessionTicket() {
         List<Session> sessionList = new LinkedList<>();
         context.setSessionList(sessionList);
-        byte[] sessionTicketTLS = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] sessionTicketTLS = DataConverter.hexStringToByteArray("122131123987891238098123");
         byte[] sessionTicketTLS2 =
-                ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+                DataConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setTlsSessionTicket(sessionTicketTLS);
         assertArrayEquals(sessionTicketTLS, config.getTlsSessionTicket());
         assertArrayEquals(sessionTicketTLS, chooser.getLatestSessionTicket());
@@ -441,8 +441,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetSignedCertificateTimestamp() {
         context.setSignedCertificateTimestamp(null);
-        byte[] timestamp = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] timestamp2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        byte[] timestamp = DataConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] timestamp2 = DataConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setDefaultSignedCertificateTimestamp(timestamp);
         assertArrayEquals(timestamp, config.getDefaultSignedCertificateTimestamp());
         assertArrayEquals(timestamp, chooser.getSignedCertificateTimestamp());
@@ -653,9 +653,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetCertificateRequestContext() {
         context.setCertificateRequestContext(null);
-        byte[] requestContext = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] requestContext2 =
-                ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        byte[] requestContext = DataConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] requestContext2 = DataConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setDefaultCertificateRequestContext(requestContext);
         assertArrayEquals(requestContext, config.getDefaultCertificateRequestContext());
         assertArrayEquals(requestContext, chooser.getCertificateRequestContext());
@@ -667,8 +666,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetServerHandshakeTrafficSecret() {
         context.setServerHandshakeTrafficSecret(null);
-        byte[] secret = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] secret2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        byte[] secret = DataConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] secret2 = DataConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setDefaultServerHandshakeTrafficSecret(secret);
         assertArrayEquals(secret, config.getDefaultServerHandshakeTrafficSecret());
         assertArrayEquals(secret, chooser.getServerHandshakeTrafficSecret());
@@ -680,8 +679,8 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientHandshakeTrafficSecret() {
         context.setClientHandshakeTrafficSecret(null);
-        byte[] secret = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] secret2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        byte[] secret = DataConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] secret2 = DataConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setDefaultClientHandshakeTrafficSecret(secret);
         assertArrayEquals(secret, config.getDefaultClientHandshakeTrafficSecret());
         assertArrayEquals(secret, chooser.getClientHandshakeTrafficSecret());
@@ -703,8 +702,8 @@ public class DefaultChooserTest {
     /** Test of getServerPWDSalt method, of class DefaultChooser. */
     @Test
     public void testGetServerPWDSalt() {
-        byte[] salt = ArrayConverter.hexStringToByteArray("12");
-        byte[] salt2 = ArrayConverter.hexStringToByteArray("FF");
+        byte[] salt = DataConverter.hexStringToByteArray("12");
+        byte[] salt2 = DataConverter.hexStringToByteArray("FF");
         context.setServerPWDSalt(null);
         config.setDefaultServerPWDSalt(salt);
         assertArrayEquals(salt, config.getDefaultServerPWDSalt());

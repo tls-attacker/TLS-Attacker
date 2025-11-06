@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -20,9 +21,13 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "PopAndSend")
 public class PopAndSendAction extends CommonSendAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /** Pop and send message with this index in message buffer. */
     private Integer index = null;
@@ -57,12 +62,13 @@ public class PopAndSendAction extends CommonSendAction {
         String messageString =
                 LogPrinter.toHumanReadableContainerList(
                         ActionHelperUtil.getDataContainersForLayer(
-                                ImplementedLayers.MESSAGE, getLayerStackProcessingResult()));
+                                ImplementedLayers.MESSAGE, getLayerStackProcessingResult()),
+                        LOGGER.getLevel());
         return "PopAndSendAction: index: "
                 + index
                 + " message: "
                 + messageString
-                + " exexuted: "
+                + " executed: "
                 + isExecuted()
                 + " couldPop: "
                 + couldPop
@@ -103,7 +109,11 @@ public class PopAndSendAction extends CommonSendAction {
                 messages.add(messageBuffer.pop());
             }
         }
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext, messages, null, null, null, null, null, null, null);
+
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, messages));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

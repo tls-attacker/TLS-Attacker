@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnterminatedReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,14 +44,14 @@ public class SmtpLayerOutboundTest {
 
     private Config config;
     private SmtpContext context;
-    private FakeTransportHandler transportHandler;
+    private FakeTcpTransportHandler transportHandler;
 
     @BeforeEach
     public void setUp() {
         config = new Config();
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
         context = new Context(new State(config), new OutboundConnection()).getSmtpContext();
-        transportHandler = new FakeTransportHandler(null);
+        transportHandler = new FakeTcpTransportHandler(null);
         context.setTransportHandler(transportHandler);
         ProviderUtil.addBouncyCastleProvider();
     }

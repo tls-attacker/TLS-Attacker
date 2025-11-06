@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.core.dtls;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.exceptions.IllegalDtlsFragmentException;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FragmentCollector {
 
-    protected static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Integer messageLength;
 
@@ -73,7 +72,7 @@ public class FragmentCollector {
                 retransmission = true;
             }
             fragmentStream.insertByteArray(
-                    fragment.getMessageContent().getValue(),
+                    fragment.getFragmentContent().getValue(),
                     fragment.getFragmentOffset().getValue());
         } else {
             throw new IllegalDtlsFragmentException("Tried to insert an illegal DTLS fragment.");
@@ -110,11 +109,11 @@ public class FragmentCollector {
      * @return true if fragment fits the collector, false if it doesn't
      */
     public boolean isFitting(DtlsHandshakeMessageFragment fragment) {
-        if (fragment.getType().getValue() == type
-                && fragment.getMessageSequence().getValue() == this.messageSeq
-                && fragment.getLength().getValue() == this.messageLength) {
+        if (fragment.getType().getValue().equals(type)
+                && fragment.getMessageSequence().getValue().equals(this.messageSeq)
+                && fragment.getLength().getValue().equals(this.messageLength)) {
             return fragmentStream.canInsertByteArray(
-                    fragment.getMessageContent().getValue(),
+                    fragment.getFragmentContent().getValue(),
                     fragment.getFragmentOffset().getValue());
         } else {
             return false;
@@ -130,7 +129,7 @@ public class FragmentCollector {
      */
     public boolean isFragmentOverwritingContent(DtlsHandshakeMessageFragment fragment) {
         return !fragmentStream.canInsertByteArray(
-                fragment.getMessageContent().getValue(), fragment.getFragmentOffset().getValue());
+                fragment.getFragmentContent().getValue(), fragment.getFragmentOffset().getValue());
     }
 
     /**
@@ -149,12 +148,10 @@ public class FragmentCollector {
         message.setMessageSequence(messageSeq);
         message.setFragmentOffset(0);
         message.setFragmentLength(messageLength);
-        message.setMessageContent(getCombinedContent());
+        message.setFragmentContent(getCombinedContent());
         DtlsHandshakeMessageFragmentSerializer serializer =
                 new DtlsHandshakeMessageFragmentSerializer(message);
         message.setCompleteResultingMessage(serializer.serialize());
-        message.setRetransmission(retransmission);
-        message.setIncludeInDigest(!retransmission);
         interpreted = true;
         return message;
     }

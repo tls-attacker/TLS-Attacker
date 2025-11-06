@@ -39,6 +39,7 @@ public class PopBufferedMessageAction extends ConnectionBoundAction {
         } else {
             LOGGER.info("Popping message from buffer");
             context.getMessageBuffer().pop();
+            couldPop = true;
         }
         setExecuted(Boolean.TRUE);
     }

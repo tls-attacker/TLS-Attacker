@@ -17,78 +17,66 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.StreamFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.StreamFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.StreamFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.StreamFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/** STREAM frames implicitly create a stream and carry stream data. */
 @XmlRootElement(name = "StreamFrame")
 public class StreamFrame extends QuicFrame {
 
-    /** A variable-length integer indicating the stream ID of the stream; see Section 2.1. */
     @ModifiableVariableProperty protected ModifiableInteger streamId;
 
-    /**
-     * A variable-length integer specifying the byte offset in the stream for the data in this
-     * STREAM frame. This field is present when the OFF bit is set to 1. When the Offset field is
-     * absent, the offset is 0.
-     */
     @ModifiableVariableProperty protected ModifiableInteger offset;
 
-    /**
-     * A variable-length integer specifying the length of the Stream Data field in this STREAM
-     * frame. This field is present when the LEN bit is set to 1. When the LEN bit is set to 0, the
-     * Stream Data field consumes all the remaining bytes in the packet.
-     */
     @ModifiableVariableProperty protected ModifiableInteger length;
 
-    /** The bytes from the designated stream to be delivered. */
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
-    /**
-     * The FIN bit (0x01) indicates that the frame marks the end of the stream. The final size of
-     * the stream is the sum of the offset and the length of this frame. The LSB of the frame type
-     * represents the FIN bit.
-     */
-    protected boolean isFinalFrame;
+    private int streamIdConfig;
+    private byte[] dataConfig;
+    private int lengthConfig;
+    private int offsetConfig;
+    private boolean finalFrameConfig;
 
     public StreamFrame() {
         super(QuicFrameType.STREAM_FRAME);
-    }
-
-    public StreamFrame(byte[] data, int streamId) {
-        super(QuicFrameType.STREAM_FRAME);
-        setData(data);
-        setLength(data.length);
-        setStreamId(streamId);
-        this.isFinalFrame = false;
-    }
-
-    public StreamFrame(byte[] data, int streamId, boolean isFinalFrame) {
-        this(data, streamId);
-        this.isFinalFrame = isFinalFrame;
     }
 
     public StreamFrame(QuicFrameType frameType) {
         super(frameType);
     }
 
-    @Override
-    public StreamFrameHandler getHandler(QuicContext context) {
-        return new StreamFrameHandler(context);
+    public StreamFrame(byte[] dataConfig, int streamIdConfig, boolean finalFrameConfig) {
+        this();
+        this.dataConfig = dataConfig;
+        this.streamIdConfig = streamIdConfig;
+        this.lengthConfig = dataConfig.length;
+        this.finalFrameConfig = finalFrameConfig;
+        this.offsetConfig = 0;
+    }
+
+    public StreamFrame(byte[] dataConfig, int streamIdConfig) {
+        this(dataConfig, streamIdConfig, false);
     }
 
     @Override
-    public StreamFrameSerializer getSerializer(QuicContext context) {
+    public StreamFrameHandler getHandler(Context context) {
+        return new StreamFrameHandler(context.getQuicContext());
+    }
+
+    @Override
+    public StreamFrameSerializer getSerializer(Context context) {
         return new StreamFrameSerializer(this);
     }
 
     @Override
-    public StreamFramePreparator getPreparator(QuicContext context) {
+    public StreamFramePreparator getPreparator(Context context) {
         return new StreamFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public StreamFrameParser getParser(QuicContext context, InputStream stream) {
+    public StreamFrameParser getParser(Context context, InputStream stream) {
         return new StreamFrameParser(stream);
     }
 
@@ -124,11 +112,43 @@ public class StreamFrame extends QuicFrame {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
-    public boolean isFinalFrame() {
-        return isFinalFrame;
+    public int getStreamIdConfig() {
+        return streamIdConfig;
     }
 
-    public void setFinalFrame(boolean finalFrame) {
-        this.isFinalFrame = finalFrame;
+    public void setStreamIdConfig(int streamIdConfig) {
+        this.streamIdConfig = streamIdConfig;
+    }
+
+    public byte[] getDataConfig() {
+        return dataConfig;
+    }
+
+    public void setDataConfig(byte[] dataConfig) {
+        this.dataConfig = dataConfig;
+    }
+
+    public int getLengthConfig() {
+        return lengthConfig;
+    }
+
+    public void setLengthConfig(int lengthConfig) {
+        this.lengthConfig = lengthConfig;
+    }
+
+    public int getOffsetConfig() {
+        return offsetConfig;
+    }
+
+    public void setOffsetConfig(int offsetConfig) {
+        this.offsetConfig = offsetConfig;
+    }
+
+    public boolean isFinalFrameConfig() {
+        return finalFrameConfig;
+    }
+
+    public void setFinalFrameConfig(boolean finalFrameConfig) {
+        this.finalFrameConfig = finalFrameConfig;
     }
 }

@@ -33,9 +33,9 @@ public class CertificateStatusRequestExtensionPreparator
                         .getCertificateStatusRequestExtensionRequestType()
                         .getCertificateStatusRequestValue());
         LOGGER.debug(
-                "Prepared the CertificateStatusRequestExtension with request type "
-                        + CertificateStatusRequestType.getCertificateStatusRequestType(
-                                msg.getCertificateStatusRequestType().getValue()));
+                "Prepared the CertificateStatusRequestExtension with request type {}",
+                CertificateStatusRequestType.getCertificateStatusRequestType(
+                        msg.getCertificateStatusRequestType().getValue()));
         msg.setResponderIDList(
                 chooser.getConfig().getCertificateStatusRequestExtensionResponderIDList());
         msg.setResponderIDListLength(msg.getResponderIDList().getValue().length);

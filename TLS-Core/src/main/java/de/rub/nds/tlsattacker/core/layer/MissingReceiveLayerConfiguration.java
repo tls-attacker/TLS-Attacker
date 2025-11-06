@@ -11,17 +11,18 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * Send configuration that sends a list of containers to the recipient.
  *
  * @param <Container>
  */
-public class MissingReceiveLayerConfiguration<Container extends DataContainer<?>>
+public class MissingReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     public MissingReceiveLayerConfiguration(LayerType layerType) {
-        super(layerType, (List) null);
+        super(layerType, (List<Container>) null);
     }
 
     @Override
@@ -30,17 +31,18 @@ public class MissingReceiveLayerConfiguration<Container extends DataContainer<?>
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
-        return false;
-    }
-
-    @Override
     public String toCompactString() {
         return "(" + getLayerType().getName() + ") Not configured";
     }
 
     @Override
-    public boolean isProcessTrailingContainers() {
-        return true;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldBeLogged(Level level) {
+        return level.isMoreSpecificThan(Level.INFO); // DEBUG, TRACE etc should log it.
     }
 }

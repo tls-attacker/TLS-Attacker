@@ -18,13 +18,13 @@ import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
-import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -104,12 +104,12 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
     private byte[] generateToBeSigned() {
         try {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             stream.write(new byte[] {message.getTokenbindingType().getValue()});
             stream.write(new byte[] {message.getKeyParameter().getValue()});
             stream.write(TokenCalculator.calculateEKM(chooser, 32));
             return stream.toByteArray();
-        } catch (IOException | CryptoException ex) {
+        } catch (CryptoException ex) {
             throw new PreparationException("Could not generate data to be Signed!", ex);
         }
     }

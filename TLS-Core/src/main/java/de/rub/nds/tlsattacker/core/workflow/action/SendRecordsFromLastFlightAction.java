@@ -9,13 +9,16 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.protocol.util.DeepCopyUtil;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SendRecordsFromLastFlightAction extends CommonSendAction {
@@ -39,16 +42,14 @@ public class SendRecordsFromLastFlightAction extends CommonSendAction {
                             Modifiable.explicit(
                                     lastRecords.get(i).getCleanProtocolMessageBytes().getValue()));
         }
-        return ActionHelperUtil.createSendConfiguration(
-                state.getTlsContext(getConnectionAlias()),
-                null,
-                null,
-                duplicatedRecords,
-                null,
-                null,
-                null,
-                null,
-                null);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, duplicatedRecords));
+        return ActionHelperUtil.sortAndAddOptions(
+                state.getTlsContext(connectionAlias).getLayerStack(),
+                true,
+                getActionOptions(),
+                configurationList);
     }
 
     private SendingAction getLastSendingAction(WorkflowTrace trace) {

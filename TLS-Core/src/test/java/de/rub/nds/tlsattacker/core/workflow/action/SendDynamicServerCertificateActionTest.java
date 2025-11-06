@@ -8,7 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -16,13 +19,10 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -34,12 +34,7 @@ public class SendDynamicServerCertificateActionTest
 
         TlsContext context = state.getTlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
-    }
-
-    @BeforeAll
-    public static void before() {
-        Security.addProvider(new BouncyCastleProvider());
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.SERVER));
     }
 
     @Override

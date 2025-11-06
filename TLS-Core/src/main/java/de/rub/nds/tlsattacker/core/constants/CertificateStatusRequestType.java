@@ -19,13 +19,13 @@ public enum CertificateStatusRequestType {
     private final int certificateStatusRequestValue;
     private static final Map<Integer, CertificateStatusRequestType> MAP;
 
-    private CertificateStatusRequestType(int value) {
+    CertificateStatusRequestType(int value) {
         this.certificateStatusRequestValue = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (CertificateStatusRequestType c : CertificateStatusRequestType.values()) {
+        for (CertificateStatusRequestType c : values()) {
             MAP.put(c.certificateStatusRequestValue, c);
         }
     }

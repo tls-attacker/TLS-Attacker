@@ -31,7 +31,7 @@ public class Pop3NOOPCommandTest {
 
         Pop3CommandParser<Pop3NOOPCommand> parser =
                 noopCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noopCommand);
 
@@ -42,8 +42,8 @@ public class Pop3NOOPCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3NOOPCommand noopCommand = new Pop3NOOPCommand();
-        Pop3CommandPreparator preparator = noopCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = noopCommand.getSerializer(context);
+        Pop3CommandPreparator preparator = noopCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = noopCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

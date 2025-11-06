@@ -11,9 +11,13 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ActivateDecryption")
 public class ActivateDecryptionAction extends ActivateCryptoAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     protected void activateCrypto(TlsContext tlsContext, RecordCipher recordCipher) {

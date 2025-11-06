@@ -10,14 +10,14 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-abstract class AbstractMessageTest<T extends ProtocolMessage> {
+abstract class AbstractMessageTest<T extends Message> {
 
     protected T message;
 
@@ -39,7 +39,7 @@ abstract class AbstractMessageTest<T extends ProtocolMessage> {
         // a reference id)
         for (int i = 0; i < values.length; i++) {
             if (values[i] instanceof byte[]) {
-                values[i] = ArrayConverter.bytesToHexString((byte[]) values[i]);
+                values[i] = DataConverter.bytesToHexString((byte[]) values[i]);
             }
         }
         assertEquals(String.format(expectedToStringFormat, values), message.toString());

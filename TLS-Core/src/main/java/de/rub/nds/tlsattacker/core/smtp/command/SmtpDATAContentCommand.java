@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpDATAContentCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpDATAContentParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpDATAContentCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpDATAContentCommandSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -50,22 +50,22 @@ public class SmtpDATAContentCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpDATAContentParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpDATAContentParser getParser(Context context, InputStream stream) {
         return new SmtpDATAContentParser(stream);
     }
 
     @Override
-    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(SmtpContext context) {
-        return new SmtpDATAContentCommandSerializer(context, this);
+    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(Context context) {
+        return new SmtpDATAContentCommandSerializer(context.getSmtpContext(), this);
     }
 
     @Override
-    public SmtpDATAContentCommandHandler getHandler(SmtpContext context) {
-        return new SmtpDATAContentCommandHandler(context);
+    public SmtpDATAContentCommandHandler getHandler(Context context) {
+        return new SmtpDATAContentCommandHandler(context.getSmtpContext());
     }
 
     @Override
-    public SmtpDATAContentCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpDATAContentCommandPreparator(context, this);
+    public SmtpDATAContentCommandPreparator getPreparator(Context context) {
+        return new SmtpDATAContentCommandPreparator(context.getSmtpContext(), this);
     }
 }

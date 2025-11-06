@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.unittest.helper.DefaultNormalizeFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import javax.xml.stream.XMLStreamException;
@@ -159,14 +159,14 @@ public class ActionTestUtils {
         try {
             T action = actionClass.getDeclaredConstructor().newInstance();
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
             action.filter();
             ActionIO.write(outputStream, action);
             TlsAction actual = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
             action.normalize();
             actual.normalize();
-            ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
-            ByteArrayOutputStream actualStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream resultStream = new SilentByteArrayOutputStream();
+            SilentByteArrayOutputStream actualStream = new SilentByteArrayOutputStream();
             ActionIO.write(resultStream, action);
             ActionIO.write(actualStream, actual);
             assertArrayEquals(resultStream.toByteArray(), actualStream.toByteArray());
@@ -221,15 +221,15 @@ public class ActionTestUtils {
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(
             T action, Logger logger) throws JAXBException, IOException, XMLStreamException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         action.filter();
         ActionIO.write(outputStream, action);
         TlsAction actual = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
         action.normalize();
         actual.normalize();
 
-        ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream actualStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream resultStream = new SilentByteArrayOutputStream();
+        SilentByteArrayOutputStream actualStream = new SilentByteArrayOutputStream();
         ActionIO.write(resultStream, action);
         ActionIO.write(actualStream, actual);
         assertArrayEquals(resultStream.toByteArray(), actualStream.toByteArray());

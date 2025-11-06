@@ -33,7 +33,7 @@ class Pop3RETRReplyTest {
         ret.addMessagePart("Hello Juan Fernandez I hope this email finds you well.");
         ret.addMessagePart("Did you hear about SEAL, a super cool project group of UPB.");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = ret.getSerializer(context);
+        Serializer<?> serializer = ret.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals(
@@ -52,7 +52,7 @@ class Pop3RETRReplyTest {
         Pop3RETRReply ret = new Pop3RETRReply();
         Pop3RETRReplyParser parser =
                 ret.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ret);
 
@@ -73,7 +73,8 @@ class Pop3RETRReplyTest {
 
         Pop3RETRReplyParser parser =
                 ret.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> parser.parse(ret));
         assertEquals(ret.getStatusIndicator(), "-ERR");

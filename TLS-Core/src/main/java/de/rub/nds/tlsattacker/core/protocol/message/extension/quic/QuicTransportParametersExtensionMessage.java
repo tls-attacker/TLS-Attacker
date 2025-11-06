@@ -13,10 +13,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.quic.QuicTransportParametersExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -26,8 +26,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.quic.QuicTransportParametersExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic.QuicTransportParametersExtensionsSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -102,28 +102,27 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler<QuicTransportParametersExtensionMessage> getHandler(
-            TlsContext context) {
-        return new QuicTransportParametersExtensionsHandler(context);
+    public ExtensionHandler<QuicTransportParametersExtensionMessage> getHandler(Context context) {
+        return new QuicTransportParametersExtensionsHandler(context.getTlsContext());
     }
 
     @Override
     public ExtensionSerializer<QuicTransportParametersExtensionMessage> getSerializer(
-            TlsContext context) {
+            Context context) {
         return new QuicTransportParametersExtensionsSerializer(this);
     }
 
     @Override
     public ExtensionPreparator<QuicTransportParametersExtensionMessage> getPreparator(
-            TlsContext context) {
+            Context context) {
         return new QuicTransportParametersExtensionsPreparator(
                 context.getChooser(), this, getSerializer(context));
     }
 
     @Override
     public ExtensionParser<QuicTransportParametersExtensionMessage> getParser(
-            TlsContext context, InputStream stream) {
-        return new QuicTransportParametersExtensionParser(stream, context);
+            Context context, InputStream stream) {
+        return new QuicTransportParametersExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
@@ -154,15 +153,15 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
             } catch (UnknownHostException e) {
                 this.ipv4Address = null;
             }
-            this.ipv4Port = ArrayConverter.bytesToInt(Arrays.copyOfRange(entryValue, 4, 6));
+            this.ipv4Port = DataConverter.bytesToInt(Arrays.copyOfRange(entryValue, 4, 6));
             try {
                 this.ipv6Address = InetAddress.getByAddress(Arrays.copyOfRange(entryValue, 6, 22));
             } catch (UnknownHostException e) {
                 this.ipv6Address = null;
             }
-            this.ipv6Port = ArrayConverter.bytesToInt(Arrays.copyOfRange(entryValue, 22, 24));
+            this.ipv6Port = DataConverter.bytesToInt(Arrays.copyOfRange(entryValue, 22, 24));
             this.connectionIdLength =
-                    ArrayConverter.bytesToInt(Arrays.copyOfRange(entryValue, 24, 25));
+                    DataConverter.bytesToInt(Arrays.copyOfRange(entryValue, 24, 25));
             this.connectionId = Arrays.copyOfRange(entryValue, 25, 25 + this.connectionIdLength);
             this.statelessResetToken =
                     Arrays.copyOfRange(
@@ -183,14 +182,14 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
                     + ", ipv6Port="
                     + ipv6Port
                     + ", connectionId="
-                    + ArrayConverter.bytesToHexString(connectionId)
+                    + DataConverter.bytesToHexString(connectionId)
                     + ", statelessResetToken="
-                    + ArrayConverter.bytesToHexString(statelessResetToken)
+                    + DataConverter.bytesToHexString(statelessResetToken)
                     + '}';
         }
 
         public byte[] serialize() throws IOException {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream byteArrayOutputStream = new SilentByteArrayOutputStream();
             byteArrayOutputStream.write(this.ipv4Address.getAddress());
             byteArrayOutputStream.write(this.ipv4Port);
             byteArrayOutputStream.write(this.ipv6Address.getAddress());

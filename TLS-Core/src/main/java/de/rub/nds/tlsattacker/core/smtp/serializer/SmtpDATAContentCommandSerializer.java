@@ -9,12 +9,11 @@
 package de.rub.nds.tlsattacker.core.smtp.serializer;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 
 /**
- * Serializer for SMTP DATA content commands.
- * This is special, because the content does not have a keyword
+ * Serializer for SMTP DATA content commands. This is special, because the content does not have a
+ * keyword
  */
 public class SmtpDATAContentCommandSerializer
         extends SmtpCommandSerializer<SmtpDATAContentCommand> {
@@ -23,7 +22,8 @@ public class SmtpDATAContentCommandSerializer
     private static final String SP = " ";
     private static final String CRLF = "\r\n";
 
-    public SmtpDATAContentCommandSerializer(SmtpContext context, SmtpDATAContentCommand smtpCommand) {
+    public SmtpDATAContentCommandSerializer(
+            SmtpContext context, SmtpDATAContentCommand smtpCommand) {
         super(context, smtpCommand);
     }
 

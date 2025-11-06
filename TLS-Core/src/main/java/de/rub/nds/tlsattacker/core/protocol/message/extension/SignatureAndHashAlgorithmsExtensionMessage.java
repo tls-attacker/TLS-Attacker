@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -25,11 +25,10 @@ import java.io.InputStream;
 @XmlRootElement(name = "SignatureAndHashAlgorithmsExtension")
 public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureAndHashAlgorithmsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureAndHashAlgorithms;
+    @ModifiableVariableProperty private ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
         super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
@@ -65,22 +64,22 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
 
     @Override
     public SignatureAndHashAlgorithmsExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new SignatureAndHashAlgorithmsExtensionParser(stream, tlsContext);
+            Context context, InputStream stream) {
+        return new SignatureAndHashAlgorithmsExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(tlsContext.getChooser(), this);
+    public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(Context context) {
+        return new SignatureAndHashAlgorithmsExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SignatureAndHashAlgorithmsExtensionSerializer getSerializer(Context context) {
         return new SignatureAndHashAlgorithmsExtensionSerializer(this);
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SignatureAndHashAlgorithmsExtensionHandler(tlsContext);
+    public SignatureAndHashAlgorithmsExtensionHandler getHandler(Context context) {
+        return new SignatureAndHashAlgorithmsExtensionHandler(context.getTlsContext());
     }
 }

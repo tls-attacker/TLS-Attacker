@@ -12,13 +12,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -27,7 +26,7 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     private ModifiableByteArray identityHint;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityHintLength;
 
     public PskDheServerKeyExchangeMessage() {
@@ -66,19 +65,19 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
         sb.append("PskDheServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (super.modulus != null && super.modulus.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
+            sb.append(DataConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
         if (generator != null && generator.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
+            sb.append(DataConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
@@ -86,24 +85,24 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     }
 
     @Override
-    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new PskDheServerKeyExchangeHandler(tlsContext);
+    public PskDheServerKeyExchangeHandler getHandler(Context context) {
+        return new PskDheServerKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PskDheServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskDheServerKeyExchangeParser(stream, tlsContext);
+    public PskDheServerKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PskDheServerKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PskDheServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskDheServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskDheServerKeyExchangePreparator getPreparator(Context context) {
+        return new PskDheServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskDheServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PskDheServerKeyExchangeSerializer getSerializer(Context context) {
         return new PskDheServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

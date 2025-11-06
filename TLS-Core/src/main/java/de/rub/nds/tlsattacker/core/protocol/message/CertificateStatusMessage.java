@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -25,10 +25,9 @@ import java.util.Objects;
 @XmlRootElement(name = "CertificateStatus")
 public class CertificateStatusMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger certificateStatusType;
+    @ModifiableVariableProperty private ModifiableInteger certificateStatusType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger ocspResponseLength;
 
     @ModifiableVariableProperty private ModifiableByteArray ocspResponseBytes;
@@ -38,22 +37,22 @@ public class CertificateStatusMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateStatusHandler getHandler(TlsContext tlsContext) {
-        return new CertificateStatusHandler(tlsContext);
+    public CertificateStatusHandler getHandler(Context context) {
+        return new CertificateStatusHandler(context.getTlsContext());
     }
 
     @Override
-    public CertificateStatusParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateStatusParser(stream, tlsContext);
+    public CertificateStatusParser getParser(Context context, InputStream stream) {
+        return new CertificateStatusParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CertificateStatusPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateStatusPreparator(tlsContext.getChooser(), this);
+    public CertificateStatusPreparator getPreparator(Context context) {
+        return new CertificateStatusPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateStatusSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateStatusSerializer getSerializer(Context context) {
         return new CertificateStatusSerializer(this);
     }
 

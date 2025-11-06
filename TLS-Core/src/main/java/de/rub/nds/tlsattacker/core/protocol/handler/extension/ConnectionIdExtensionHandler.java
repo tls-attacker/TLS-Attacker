@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConnectionIdExtensionHandler extends ExtensionHandler<ConnectionIdExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ConnectionIdExtensionHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -22,8 +26,12 @@ public class ConnectionIdExtensionHandler extends ExtensionHandler<ConnectionIdE
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.setReadConnectionId(message.getConnectionId().getValue());
+            LOGGER.debug(
+                    "Set ReadConnectionId in Context to {}", message.getConnectionId().getValue());
         } else {
             tlsContext.setWriteConnectionId(message.getConnectionId().getValue());
+            LOGGER.debug(
+                    "Set WriteConnectionId in Context to {}", message.getConnectionId().getValue());
         }
     }
 }

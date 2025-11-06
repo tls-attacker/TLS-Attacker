@@ -31,7 +31,7 @@ public class Pop3DELECommandTest {
 
         Pop3CommandParser parser =
                 deleCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(deleCommand);
 
@@ -43,8 +43,8 @@ public class Pop3DELECommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3DELECommand deleCommand = new Pop3DELECommand(1);
-        Pop3DELECommandPreparator preparator = deleCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context);
+        Pop3DELECommandPreparator preparator = deleCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();
@@ -56,8 +56,8 @@ public class Pop3DELECommandTest {
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3DELECommand deleCommand = new Pop3DELECommand();
-        Pop3DELECommandPreparator preparator = deleCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context);
+        Pop3DELECommandPreparator preparator = deleCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = deleCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

@@ -108,7 +108,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     LOGGER.debug("Setting ServerCertificateChain in Context");
                     tlsContext.setServerCertificateChain(certificateChain);
                 }
-                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
                     adjustCertExtensions(message);
                 }
                 break;
@@ -120,9 +120,11 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     private void adjustCertExtensions(CertificateMessage certificateMessage) {
         for (CertificateEntry pair : certificateMessage.getCertificateEntryList()) {
-            for (ExtensionMessage extensionMessage : pair.getExtensionList()) {
-                ExtensionHandler handler = extensionMessage.getHandler(tlsContext);
-                handler.adjustContext(extensionMessage);
+            if (pair.getExtensionList() != null) {
+                for (ExtensionMessage extensionMessage : pair.getExtensionList()) {
+                    ExtensionHandler handler = extensionMessage.getHandler(tlsContext.getContext());
+                    handler.adjustContext(extensionMessage);
+                }
             }
         }
     }

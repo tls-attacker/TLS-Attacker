@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
@@ -35,7 +35,7 @@ class EHLOReplyTest {
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
         SmtpEHLOReplyParser parser =
                 ehlo.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
 
@@ -57,7 +57,7 @@ class EHLOReplyTest {
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
         SmtpEHLOReplyParser parser =
                 ehlo.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
 
@@ -80,7 +80,7 @@ class EHLOReplyTest {
         ehlo.setGreeting("says Greetings");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = ehlo.getSerializer(context);
+        Serializer<?> serializer = ehlo.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals(
                 "250 seal.cs.upb.de says Greetings\r\n", serializer.getOutputStream().toString());
@@ -97,11 +97,10 @@ class EHLOReplyTest {
                         new SmtpServiceExtension("8BITMIME"),
                         new SmtpServiceExtension("ATRN"),
                         new SmtpServiceExtension("STARTTLS"),
-                        new SmtpServiceExtension("HELP")
-                        ));
+                        new SmtpServiceExtension("HELP")));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = ehlo.getSerializer(context);
+        Serializer<?> serializer = ehlo.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals(
                 "250-seal.cs.upb.de says Greetings\r\n250-8BITMIME\r\n250-ATRN\r\n250-STARTTLS\r\n250 HELP\r\n",
@@ -144,7 +143,8 @@ class EHLOReplyTest {
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
         assertTrue(
-                reply.getExtensions().stream().anyMatch(e -> e.getEhloKeyword().equals("STARTTLS")));
+                reply.getExtensions().stream()
+                        .anyMatch(e -> e.getEhloKeyword().equals("STARTTLS")));
         assertTrue(
                 reply.getExtensions().stream()
                         .anyMatch(e -> e.getEhloKeyword().equals("UNKNOWNKEYWORD")));
@@ -163,7 +163,8 @@ class EHLOReplyTest {
         assertEquals("Hello user! itsa me", reply.getGreeting());
         assertEquals(2, reply.getExtensions().size());
         assertTrue(
-                reply.getExtensions().stream().anyMatch(e -> e.getEhloKeyword().equals("STARTTLS")));
+                reply.getExtensions().stream()
+                        .anyMatch(e -> e.getEhloKeyword().equals("STARTTLS")));
         assertTrue(reply.getExtensions().stream().anyMatch(e -> e.getEhloKeyword().equals("HELP")));
     }
 

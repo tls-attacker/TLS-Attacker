@@ -33,7 +33,7 @@ public class AUTHCommandTest {
 
         SmtpAUTHCommandParser parser =
                 auth.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
 
         parser.parse(auth);
@@ -50,7 +50,7 @@ public class AUTHCommandTest {
 
         SmtpAUTHCommandParser parser =
                 auth.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
 
         assertThrows(ParserException.class, () -> parser.parse(auth));
@@ -61,8 +61,8 @@ public class AUTHCommandTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpAUTHCommand auth = new SmtpAUTHCommand("PLAIN", "qweqweqwe==");
 
-        Preparator<?> preparator = auth.getPreparator(context);
-        Serializer<?> serializer = auth.getSerializer(context);
+        Preparator<?> preparator = auth.getPreparator(context.getContext());
+        Serializer<?> serializer = auth.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
 

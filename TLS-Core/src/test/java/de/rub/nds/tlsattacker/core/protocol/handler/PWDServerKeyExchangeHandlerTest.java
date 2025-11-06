@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -33,13 +33,13 @@ public class PWDServerKeyExchangeHandlerTest
         PWDServerKeyExchangeMessage message = new PWDServerKeyExchangeMessage();
         message.setNamedGroup(NamedGroup.BRAINPOOLP256R1.getValue());
         byte[] element =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1");
         BigInteger scalar =
                 new BigInteger(
                         "2f704896699fc424d3cec33717644f5adf7f68483424ee51492bb96613fc4921", 16);
         byte[] salt =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
         message.setElement(element);
         message.setScalar(scalar.toByteArray());
@@ -47,17 +47,17 @@ public class PWDServerKeyExchangeHandlerTest
         handler.adjustContext(message);
 
         assertArrayEquals(
-                ArrayConverter.bigIntegerToByteArray(
+                DataConverter.bigIntegerToByteArray(
                         PointFormatter.formatFromByteArray(
                                         (NamedEllipticCurveParameters)
                                                 NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
                                         element)
                                 .getFieldX()
                                 .getData()),
-                ArrayConverter.bigIntegerToByteArray(
-                        context.getServerPWDElement().getFieldX().getData()));
-        assertArrayEquals(salt, context.getServerPWDSalt());
-        assertArrayEquals(scalar.toByteArray(), context.getServerPWDScalar().toByteArray());
-        assertEquals(NamedGroup.BRAINPOOLP256R1, context.getSelectedGroup());
+                DataConverter.bigIntegerToByteArray(
+                        tlsContext.getServerPWDElement().getFieldX().getData()));
+        assertArrayEquals(salt, tlsContext.getServerPWDSalt());
+        assertArrayEquals(scalar.toByteArray(), tlsContext.getServerPWDScalar().toByteArray());
+        assertEquals(NamedGroup.BRAINPOOLP256R1, tlsContext.getSelectedGroup());
     }
 }

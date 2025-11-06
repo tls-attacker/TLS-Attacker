@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3LISTReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ public class Pop3LISTReply extends Pop3Reply {
     }
 
     @Override
-    public Pop3LISTReplyParser getParser(Pop3Context context, InputStream stream) {
-        return new Pop3LISTReplyParser(context, stream);
+    public Pop3LISTReplyParser getParser(Context context, InputStream stream) {
+        return new Pop3LISTReplyParser(context.getPop3Context(), stream);
     }
 
     public void setMessageNumbers(List<Integer> messageNumbers) {

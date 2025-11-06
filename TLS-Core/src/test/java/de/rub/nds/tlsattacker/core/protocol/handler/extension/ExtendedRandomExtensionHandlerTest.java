@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
@@ -21,16 +21,16 @@ public class ExtendedRandomExtensionHandlerTest
                 ExtendedRandomExtensionMessage, ExtendedRandomExtensionHandler> {
     private final byte[] EXTENDED_RANDOM_SHORT = new byte[0];
     private final byte[] EXTENDED_RANDOM_DEFAULT =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
     private final byte[] EXTENDED_RANDOM_LONG =
-            ArrayConverter.hexStringToByteArray(
+            DataConverter.hexStringToByteArray(
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                             + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     private final byte[] EXTENDED_RANDOM_CLIENT =
-            ArrayConverter.hexStringToByteArray("AABBCCDDEEFF");
+            DataConverter.hexStringToByteArray("AABBCCDDEEFF");
     private final byte[] EXTENDED_RANDOM_SERVER =
-            ArrayConverter.hexStringToByteArray("112233445566");
+            DataConverter.hexStringToByteArray("112233445566");
 
     public ExtendedRandomExtensionHandlerTest() {
         super(ExtendedRandomExtensionMessage::new, ExtendedRandomExtensionHandler::new);
@@ -43,78 +43,84 @@ public class ExtendedRandomExtensionHandlerTest
         ExtendedRandomExtensionMessage message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_SHORT);
         message.setExtendedRandomLength(EXTENDED_RANDOM_SHORT.length);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setClientRandom(new byte[32]);
+        tlsContext.setServerRandom(new byte[32]);
         handler.adjustContext(message);
 
-        assertArrayEquals(EXTENDED_RANDOM_SHORT, context.getClientExtendedRandom());
+        assertArrayEquals(EXTENDED_RANDOM_SHORT, tlsContext.getClientExtendedRandom());
 
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustContext(message);
 
-        assertArrayEquals(EXTENDED_RANDOM_SHORT, context.getServerExtendedRandom());
+        assertArrayEquals(EXTENDED_RANDOM_SHORT, tlsContext.getServerExtendedRandom());
 
         // Default length Extended Random Test
         message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_DEFAULT);
         message.setExtendedRandomLength(EXTENDED_RANDOM_DEFAULT.length);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(message);
 
-        assertArrayEquals(EXTENDED_RANDOM_DEFAULT, context.getClientExtendedRandom());
+        assertArrayEquals(EXTENDED_RANDOM_DEFAULT, tlsContext.getClientExtendedRandom());
 
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustContext(message);
 
-        assertArrayEquals(EXTENDED_RANDOM_DEFAULT, context.getServerExtendedRandom());
+        assertArrayEquals(EXTENDED_RANDOM_DEFAULT, tlsContext.getServerExtendedRandom());
 
         // Long Extended Random Test
         message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_LONG);
         message.setExtendedRandomLength(EXTENDED_RANDOM_LONG.length);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(message);
 
-        assertArrayEquals(EXTENDED_RANDOM_LONG, context.getClientExtendedRandom());
+        assertArrayEquals(EXTENDED_RANDOM_LONG, tlsContext.getClientExtendedRandom());
 
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustContext(message);
 
-        assertArrayEquals(EXTENDED_RANDOM_LONG, context.getServerExtendedRandom());
+        assertArrayEquals(EXTENDED_RANDOM_LONG, tlsContext.getServerExtendedRandom());
 
         // Generate same length Extended Random Test
         message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_DEFAULT);
         message.setExtendedRandomLength(EXTENDED_RANDOM_DEFAULT.length);
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        context.setServerExtendedRandom(EXTENDED_RANDOM_SHORT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setServerExtendedRandom(EXTENDED_RANDOM_SHORT);
         handler.adjustContext(message);
 
-        assertEquals(EXTENDED_RANDOM_DEFAULT.length, context.getServerExtendedRandom().length);
+        assertEquals(EXTENDED_RANDOM_DEFAULT.length, tlsContext.getServerExtendedRandom().length);
     }
 
     @Test
     public void testConcatRandoms() {
-        byte[] clientRandom = context.getClientRandom();
-        byte[] serverRandom = context.getServerRandom();
+        byte[] clientRandom =
+                DataConverter.hexStringToByteArray(
+                        "001122334455667788990000112233445566778899000011223344556677889900AABB");
+        byte[] serverRandom =
+                DataConverter.hexStringToByteArray(
+                        "FF1122334455667788990000112233445566778899000011223344556677889900AABB");
+        tlsContext.setClientRandom(clientRandom);
+        tlsContext.setServerRandom(serverRandom);
 
         ExtendedRandomExtensionMessage message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_CLIENT);
         message.setExtendedRandomLength(EXTENDED_RANDOM_CLIENT.length);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(message);
 
         message = new ExtendedRandomExtensionMessage();
         message.setExtendedRandom(EXTENDED_RANDOM_SERVER);
         message.setExtendedRandomLength(EXTENDED_RANDOM_SERVER.length);
-        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustContext(message);
 
-        byte[] concatClientRandom =
-                ArrayConverter.concatenate(clientRandom, EXTENDED_RANDOM_CLIENT);
-        byte[] concatServerRandom =
-                ArrayConverter.concatenate(serverRandom, EXTENDED_RANDOM_SERVER);
+        byte[] concatClientRandom = DataConverter.concatenate(clientRandom, EXTENDED_RANDOM_CLIENT);
+        byte[] concatServerRandom = DataConverter.concatenate(serverRandom, EXTENDED_RANDOM_SERVER);
 
-        assertArrayEquals(concatClientRandom, context.getClientRandom());
-        assertArrayEquals(concatServerRandom, context.getServerRandom());
+        assertArrayEquals(concatClientRandom, tlsContext.getClientRandom());
+        assertArrayEquals(concatServerRandom, tlsContext.getServerRandom());
     }
 }

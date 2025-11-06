@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.PaddingFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.PaddingFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.PaddingFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.PaddingFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -29,10 +29,11 @@ public class PaddingFrame extends QuicFrame {
 
     public PaddingFrame() {
         super(QuicFrameType.PADDING_FRAME);
+        ackEliciting = false;
     }
 
     public PaddingFrame(int length) {
-        super(QuicFrameType.PADDING_FRAME);
+        this();
         this.length = length;
     }
 
@@ -45,22 +46,22 @@ public class PaddingFrame extends QuicFrame {
     }
 
     @Override
-    public PaddingFrameHandler getHandler(QuicContext context) {
-        return new PaddingFrameHandler(context);
+    public PaddingFrameHandler getHandler(Context context) {
+        return new PaddingFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public PaddingFrameSerializer getSerializer(QuicContext context) {
+    public PaddingFrameSerializer getSerializer(Context context) {
         return new PaddingFrameSerializer(this);
     }
 
     @Override
-    public PaddingFramePreparator getPreparator(QuicContext context) {
+    public PaddingFramePreparator getPreparator(Context context) {
         return new PaddingFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PaddingFrameParser getParser(QuicContext context, InputStream stream) {
+    public PaddingFrameParser getParser(Context context, InputStream stream) {
         return new PaddingFrameParser(stream);
     }
 }

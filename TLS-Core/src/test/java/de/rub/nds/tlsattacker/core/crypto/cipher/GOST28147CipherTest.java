@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import java.security.Security;
 import org.bouncycastle.jcajce.spec.GOST28147ParameterSpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -29,11 +29,11 @@ public class GOST28147CipherTest {
     public void testEncryptAndDecrypt() throws CryptoException {
         byte[] iv = new byte[8];
         byte[] key =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF");
         byte[] plaintext = "The quick brown fox jumps over the lazy dog\n".getBytes();
         byte[] expectedCiphertext =
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "bcb821452e459f10f92019171e7c3b27b87f24b174306667f67704812c07b70b5e7420f74a9d54feb4897df8");
 
         GOST28147ParameterSpec spec = new GOST28147ParameterSpec("E-A");

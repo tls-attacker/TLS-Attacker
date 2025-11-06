@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.handler;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 
 /**
  * Super class for handlers of SMTP messages. The handler is invoked whenever a message is processed
@@ -22,7 +23,7 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
  */
 public abstract class SmtpMessageHandler<MessageT extends SmtpMessage> extends Handler<MessageT> {
 
-    protected final SmtpContext context;
+    protected final Context context;
 
     /**
      * Creates a new SmtpMessageHandler with the given SmtpContext. As the handler is responsible
@@ -30,7 +31,7 @@ public abstract class SmtpMessageHandler<MessageT extends SmtpMessage> extends H
      *
      * @param context The SmtpContext to be used by the handler.
      */
-    public SmtpMessageHandler(SmtpContext context) {
+    public SmtpMessageHandler(Context context) {
         this.context = context;
     }
 
@@ -43,7 +44,7 @@ public abstract class SmtpMessageHandler<MessageT extends SmtpMessage> extends H
     @Override
     public void adjustContext(MessageT container) {}
 
-    public SmtpContext getContext() {
+    public Context getContext() {
         return context;
     }
 }

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.StreambasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
 import java.net.Socket;
@@ -19,7 +19,7 @@ import java.net.SocketTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class TcpTransportHandler extends TransportHandler {
+public abstract class TcpTransportHandler extends StreambasedTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -87,7 +87,7 @@ public abstract class TcpTransportHandler extends TransportHandler {
             socket.setSoTimeout((int) timeout);
 
         } catch (SocketException ex) {
-            LOGGER.error("Could not adjust socket timeout", ex);
+            LOGGER.debug("Could not adjust socket timeout", ex);
         }
     }
 
@@ -102,4 +102,20 @@ public abstract class TcpTransportHandler extends TransportHandler {
     public abstract Integer getDstPort();
 
     public abstract void setDstPort(int port);
+
+    public String getSrcIp() {
+        if (socket == null || socket.getLocalAddress() == null) {
+            return null;
+        } else {
+            return socket.getLocalAddress().getHostAddress();
+        }
+    }
+
+    public String getDstIp() {
+        if (socket == null || socket.getInetAddress() == null) {
+            return null;
+        } else {
+            return socket.getInetAddress().getHostAddress();
+        }
+    }
 }

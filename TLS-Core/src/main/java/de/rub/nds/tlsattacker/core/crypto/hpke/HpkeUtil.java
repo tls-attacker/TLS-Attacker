@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.hpke;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.HpkeLabel;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
@@ -16,9 +17,9 @@ import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeMode;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /** Implements a subset of the functionality specified in RFC 9180. Needed in ECH */
@@ -112,7 +113,7 @@ public class HpkeUtil {
                         keyShareEntry.getPrivateKey(),
                         echServerPublicKey);
         this.kemContext =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         keyShareEntry.getPublicKey().getValue(), echServerPublicKey);
         this.sharedSecret = extractAndExpand(dh, kemContext, true);
     }
@@ -137,7 +138,7 @@ public class HpkeUtil {
                         enc);
 
         // concatenate the two public keys
-        this.kemContext = ArrayConverter.concatenate(enc, publicKeyReceiver);
+        this.kemContext = DataConverter.concatenate(enc, publicKeyReceiver);
 
         // save both our public key and the shared secret
         this.sharedSecret = extractAndExpand(dh, kemContext, true);
@@ -173,16 +174,20 @@ public class HpkeUtil {
                 labeledExtract(
                         HpkeLabel.EMPTY.getBytes(),
                         HpkeLabel.PSK_ID_HASH.getBytes(),
-                        pskId.getBytes(),
+                        pskId.getBytes(StandardCharsets.US_ASCII),
                         false);
         byte[] infoHash =
                 labeledExtract(
                         HpkeLabel.EMPTY.getBytes(), HpkeLabel.INFO_HASH.getBytes(), info, false);
         this.keyScheduleContext =
-                ArrayConverter.concatenate(mode.getByteValue(), pskIdHash, infoHash);
+                DataConverter.concatenate(mode.getByteValue(), pskIdHash, infoHash);
 
         this.secret =
-                labeledExtract(sharedSecret, HpkeLabel.SECRET.getBytes(), psk.getBytes(), false);
+                labeledExtract(
+                        sharedSecret,
+                        HpkeLabel.SECRET.getBytes(),
+                        psk.getBytes(StandardCharsets.US_ASCII),
+                        false);
 
         this.key =
                 labeledExpand(
@@ -226,16 +231,20 @@ public class HpkeUtil {
                 labeledExtract(
                         HpkeLabel.EMPTY.getBytes(),
                         HpkeLabel.PSK_ID_HASH.getBytes(),
-                        pskId.getBytes(),
+                        pskId.getBytes(StandardCharsets.US_ASCII),
                         false);
         byte[] infoHash =
                 labeledExtract(
                         HpkeLabel.EMPTY.getBytes(), HpkeLabel.INFO_HASH.getBytes(), info, false);
         this.keyScheduleContext =
-                ArrayConverter.concatenate(mode.getByteValue(), pskIdHash, infoHash);
+                DataConverter.concatenate(mode.getByteValue(), pskIdHash, infoHash);
 
         this.secret =
-                labeledExtract(sharedSecret, HpkeLabel.SECRET.getBytes(), psk.getBytes(), false);
+                labeledExtract(
+                        sharedSecret,
+                        HpkeLabel.SECRET.getBytes(),
+                        psk.getBytes(StandardCharsets.US_ASCII),
+                        false);
 
         this.key =
                 labeledExpand(
@@ -273,13 +282,13 @@ public class HpkeUtil {
     private byte[] getSuiteId(boolean fromKEM) {
         if (fromKEM) {
             byte[] kemId = hpkeKeyEncapsulationMechanism.getByteValue();
-            return ArrayConverter.concatenate(HpkeLabel.KEM.getBytes(), kemId);
+            return DataConverter.concatenate(HpkeLabel.KEM.getBytes(), kemId);
         } else {
             byte[] version = HpkeLabel.HPKE.getBytes();
             byte[] kemId = hpkeKeyEncapsulationMechanism.getByteValue();
             byte[] aeadId = hpkeAeadFunction.getByteValue();
             byte[] hkdfID = hpkeKeyDerivationFunction.getByteValue();
-            return ArrayConverter.concatenate(version, kemId, hkdfID, aeadId);
+            return DataConverter.concatenate(version, kemId, hkdfID, aeadId);
         }
     }
 
@@ -292,7 +301,7 @@ public class HpkeUtil {
     private byte[] labeledExtract(byte[] salt, byte[] label, byte[] ikm, boolean fromKem)
             throws CryptoException {
         byte[] labeledIkm =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         HpkeLabel.HPKE_VERSION_1.getBytes(), getSuiteId(fromKem), label, ikm);
         return HKDFunction.extract(hpkeKeyDerivationFunction.getHkdfAlgorithm(), salt, labeledIkm);
     }
@@ -306,8 +315,8 @@ public class HpkeUtil {
     private byte[] labeledExpand(byte[] prk, byte[] label, byte[] info, int l, boolean fromKem)
             throws CryptoException {
         byte[] labeledInfo =
-                ArrayConverter.concatenate(
-                        ArrayConverter.longToBytes(l, 2),
+                DataConverter.concatenate(
+                        DataConverter.longToBytes(l, 2),
                         HpkeLabel.HPKE_VERSION_1.getBytes(),
                         getSuiteId(fromKem),
                         label,

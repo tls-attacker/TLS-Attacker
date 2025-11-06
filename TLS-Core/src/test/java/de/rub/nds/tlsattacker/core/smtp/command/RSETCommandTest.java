@@ -31,7 +31,7 @@ public class RSETCommandTest {
         SmtpRSETCommand resetCommand = new SmtpRSETCommand();
         Parser parser =
                 resetCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(resetCommand);
         assertEquals("RSET", resetCommand.getVerb());
@@ -45,7 +45,7 @@ public class RSETCommandTest {
         SmtpRSETCommand resetCommand = new SmtpRSETCommand();
         Parser parser =
                 resetCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(resetCommand);
         assertEquals("RSET", resetCommand.getVerb());
@@ -55,7 +55,7 @@ public class RSETCommandTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpRSETCommand resetCommand = new SmtpRSETCommand();
-        Serializer serializer = resetCommand.getSerializer(context);
+        Serializer serializer = resetCommand.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals("RSET\r\n", serializer.getOutputStream().toString());
     }
@@ -64,7 +64,7 @@ public class RSETCommandTest {
     void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpRSETCommand resetCommand = new SmtpRSETCommand();
-        resetCommand.getHandler(context).adjustContext(resetCommand);
+        resetCommand.getHandler(context.getContext()).adjustContext(resetCommand);
 
         assertTrue(context.getReversePathBuffer().isEmpty());
         assertTrue(context.getForwardPathBuffer().isBlank());

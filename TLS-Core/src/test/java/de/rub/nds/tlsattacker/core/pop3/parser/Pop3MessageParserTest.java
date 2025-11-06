@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.pop3.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

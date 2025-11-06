@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.pop3;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -17,7 +20,6 @@ import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.layer.impl.Pop3Layer;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3PASSCommand;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3USERCommand;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3UnknownCommand;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3NOOPReply;
@@ -25,18 +27,14 @@ import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3USERReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.util.ProviderUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the Pop3Layer where TLS-Attacker acts as a server, i.e. receiving commands and sending
@@ -47,14 +45,14 @@ public class Pop3LayerInboundTest {
 
     private Config config;
     private Pop3Context context;
-    private FakeTransportHandler transportHandler;
+    private FakeTcpTransportHandler transportHandler;
 
     @BeforeEach
     public void setUp() {
         config = new Config();
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
         context = new Context(new State(config), new InboundConnection()).getPop3Context();
-        transportHandler = new FakeTransportHandler(null);
+        transportHandler = new FakeTcpTransportHandler(null);
         context.setTransportHandler(transportHandler);
         ProviderUtil.addBouncyCastleProvider();
     }
@@ -67,7 +65,9 @@ public class Pop3LayerInboundTest {
         System.out.println(result.getUsedContainers());
         assert (result.getUsedContainers().size() == 1)
                 && (result.getUsedContainers().get(0) instanceof Pop3USERCommand);
-        assert ((Pop3Command) result.getUsedContainers().get(0)).getCommandType().equals(Pop3CommandType.USER);
+        assert ((Pop3Command) result.getUsedContainers().get(0))
+                .getCommandType()
+                .equals(Pop3CommandType.USER);
         assert ((Pop3Command) result.getUsedContainers().get(0)).getArguments().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
     }
@@ -80,7 +80,9 @@ public class Pop3LayerInboundTest {
         System.out.println(result.getUsedContainers());
         assert (result.getUsedContainers().size() == 1)
                 && (result.getUsedContainers().get(0) instanceof Pop3UnknownCommand);
-        assert ((Pop3Command) result.getUsedContainers().get(0)).getCommandType().equals(Pop3CommandType.UNKNOWN);
+        assert ((Pop3Command) result.getUsedContainers().get(0))
+                .getCommandType()
+                .equals(Pop3CommandType.UNKNOWN);
         assert ((Pop3Command) result.getUsedContainers().get(0)).getArguments().equals("xyz");
         assertEquals(0, result.getUnreadBytes().length);
     }

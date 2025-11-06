@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.socket;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -23,14 +23,14 @@ import org.apache.logging.log4j.Logger;
 /** An input stream that is reading from a tls attacker state */
 public class EncapsulatingOutputStream extends OutputStream {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final State state;
 
-    private ByteArrayOutputStream outputStream;
+    private SilentByteArrayOutputStream outputStream;
 
     public EncapsulatingOutputStream(State state) {
-        this.outputStream = new ByteArrayOutputStream();
+        this.outputStream = new SilentByteArrayOutputStream();
         this.state = state;
     }
 
@@ -57,7 +57,7 @@ public class EncapsulatingOutputStream extends OutputStream {
                 LOGGER.warn(ex);
             }
         } while (actuallyRead > 0);
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     private void send(ProtocolMessage message) {

@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension.quic;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameterEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes;
@@ -16,8 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic.QuicTransportParametersEntrySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -46,22 +45,17 @@ public class QuicTransportParametersExtensionsPreparator
         quicTransportEntrys.add(
                 new QuicTransportParameterEntry(
                         QuicTransportParameterEntryTypes.INITIAL_SOURCE_CONNECTION_ID,
-                        ArrayConverter.bytesToHexString(
+                        DataConverter.bytesToRawHexString(
                                         chooser.getContext()
                                                 .getQuicContext()
                                                 .getSourceConnectionId())
-                                .toLowerCase()
-                                .replaceAll("\\s", "")));
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                .toLowerCase()));
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
 
         for (QuicTransportParameterEntry parameterEntry : quicTransportEntrys) {
             QuicTransportParametersEntrySerializer serializer =
                     new QuicTransportParametersEntrySerializer(parameterEntry);
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                LOGGER.warn("Could not serialize QuicTransportParameterEntry", ex);
-            }
+            stream.write(serializer.serialize());
         }
         msg.setParameterExtensions(stream.toByteArray());
         msg.setParameterExtensionsLength(stream.toByteArray().length);

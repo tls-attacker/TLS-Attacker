@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -61,24 +61,23 @@ public class SmtpCommand extends SmtpMessage {
     }
 
     @Override
-    public SmtpCommandHandler<? extends SmtpCommand> getHandler(SmtpContext smtpContext) {
-        return new SmtpCommandHandler<>(smtpContext);
+    public SmtpCommandHandler<? extends SmtpCommand> getHandler(Context smtpContext) {
+        return new SmtpCommandHandler<>(smtpContext.getSmtpContext());
     }
 
     @Override
-    public SmtpCommandParser<? extends SmtpCommand> getParser(
-            SmtpContext context, InputStream stream) {
+    public SmtpCommandParser<? extends SmtpCommand> getParser(Context context, InputStream stream) {
         return new SmtpCommandParser<>(stream);
     }
 
     @Override
-    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(SmtpContext context) {
+    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(Context context) {
         return new SmtpCommandPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(SmtpContext context) {
-        return new SmtpCommandSerializer<>(context, this);
+    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(Context context) {
+        return new SmtpCommandSerializer<>(context.getSmtpContext(), this);
     }
 
     @Override

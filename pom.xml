@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>4.0.5</version>
+        <version>6.2.2</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>6.0.3-SNAPSHOT-PG-SEAL</version>
+    <version>7.5.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -87,15 +87,15 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/TLS-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/TLS-Attacker-Development.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v7.4.1</tag>
         <url>https://github.com/tls-attacker/TLS-Attacker</url>
     </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <main.basedir>${project.basedir}</main.basedir>
         <!-- The following variables are required for Jenkins CI -->
         <skipTests>false</skipTests>
@@ -172,18 +172,22 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>asn1-attacker</artifactId>
+            <version>4.2.1</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>modifiable-variable</artifactId>
+            <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>protocol-attacker</artifactId>
+            <version>2.1.0</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>x509-attacker</artifactId>
+            <version>4.3.4</version>
         </dependency>
         <dependency>
             <groupId>dnsjava</groupId>
@@ -211,16 +215,15 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk18on</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
         </dependency>
         <dependency>
             <groupId>org.cryptomator</groupId>
             <artifactId>siv-mode</artifactId>
-            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -239,11 +242,17 @@
         <dependency>
             <groupId>de.rub.nds.tls.dockerlib</groupId>
             <artifactId>tls-docker-library</artifactId>
+            <version>3.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -263,12 +272,14 @@
             <plugins>
                 <!--################# default lifecycle plugins #################-->
                 <!-- Plugin to compile source files -->
+                <!-- Compile source files -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
+                        <proc>full</proc>
                     </configuration>
                 </plugin>
                 <!-- Plugin to execute unit tests -->
@@ -445,7 +456,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.16.0</version>
+                            <version>${plugin.spotless-maven-plugin.google-java-format.version}</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>
@@ -483,6 +494,9 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <excludeFilterFile>${main.basedir}/resources/spotbugs.xml</excludeFilterFile>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

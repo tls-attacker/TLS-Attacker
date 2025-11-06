@@ -12,11 +12,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -25,8 +25,7 @@ import java.io.InputStream;
 public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 
     /** Maximum fragment length value described in rfc3546 */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray maxFragmentLength;
+    @ModifiableVariableProperty private ModifiableByteArray maxFragmentLength;
 
     public MaxFragmentLengthExtensionMessage() {
         super(ExtensionType.MAX_FRAGMENT_LENGTH);
@@ -46,22 +45,22 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public MaxFragmentLengthExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new MaxFragmentLengthExtensionParser(stream, tlsContext);
+    public MaxFragmentLengthExtensionParser getParser(Context context, InputStream stream) {
+        return new MaxFragmentLengthExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public MaxFragmentLengthExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new MaxFragmentLengthExtensionPreparator(tlsContext.getChooser(), this);
+    public MaxFragmentLengthExtensionPreparator getPreparator(Context context) {
+        return new MaxFragmentLengthExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public MaxFragmentLengthExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public MaxFragmentLengthExtensionSerializer getSerializer(Context context) {
         return new MaxFragmentLengthExtensionSerializer(this);
     }
 
     @Override
-    public MaxFragmentLengthExtensionHandler getHandler(TlsContext tlsContext) {
-        return new MaxFragmentLengthExtensionHandler(tlsContext);
+    public MaxFragmentLengthExtensionHandler getHandler(Context context) {
+        return new MaxFragmentLengthExtensionHandler(context.getTlsContext());
     }
 }

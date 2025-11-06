@@ -31,7 +31,7 @@ public class Pop3USERCommandTest {
 
         Pop3USERCommandParser parser =
                 userCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(userCommand);
 
@@ -43,8 +43,8 @@ public class Pop3USERCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3USERCommand userCommand = new Pop3USERCommand("juan.fernandez@upb.de");
-        Pop3USERCommandPreparator preparator = userCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = userCommand.getSerializer(context);
+        Pop3USERCommandPreparator preparator = userCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = userCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();
@@ -56,8 +56,8 @@ public class Pop3USERCommandTest {
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3USERCommand userCommand = new Pop3USERCommand();
-        Pop3USERCommandPreparator preparator = userCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = userCommand.getSerializer(context);
+        Pop3USERCommandPreparator preparator = userCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = userCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

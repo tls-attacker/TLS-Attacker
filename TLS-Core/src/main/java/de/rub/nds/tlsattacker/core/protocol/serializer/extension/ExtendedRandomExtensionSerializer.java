@@ -40,7 +40,7 @@ public class ExtendedRandomExtensionSerializer
         appendInt(
                 msg.getExtendedRandomLength().getValue(),
                 ExtensionByteLength.EXTENDED_RANDOM_LENGTH);
-        LOGGER.debug("ExtendedRandomLength: " + msg.getExtendedRandomLength().getValue());
+        LOGGER.debug("ExtendedRandomLength: {}", msg.getExtendedRandomLength().getValue());
     }
 
     private void writeExtendedRandom(ExtendedRandomExtensionMessage msg) {

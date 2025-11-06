@@ -10,11 +10,10 @@ package de.rub.nds.tlsattacker.core.smtp.serializer;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpAUTHCredentialsCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 
 /**
- * Serializer for SMTP AUTH 'credential commands'.
- * This is special, because the credentials do not have a keyword
+ * Serializer for SMTP AUTH 'credential commands'. This is special, because the credentials do not
+ * have a keyword
  */
 public class SmtpAUTHCredentialsCommandSerializer
         extends SmtpCommandSerializer<SmtpAUTHCredentialsCommand> {
@@ -23,7 +22,8 @@ public class SmtpAUTHCredentialsCommandSerializer
     private static final String SP = " ";
     private static final String CRLF = "\r\n";
 
-    public SmtpAUTHCredentialsCommandSerializer(SmtpContext context, SmtpAUTHCredentialsCommand smtpCommand) {
+    public SmtpAUTHCredentialsCommandSerializer(
+            SmtpContext context, SmtpAUTHCredentialsCommand smtpCommand) {
         super(context, smtpCommand);
     }
 

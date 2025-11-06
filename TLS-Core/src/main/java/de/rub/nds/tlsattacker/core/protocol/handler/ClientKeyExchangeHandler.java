@@ -8,17 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.session.IdSession;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,56 +38,13 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         }
     }
 
-    protected byte[] calculateMasterSecret(Message message) throws CryptoException {
-        Chooser chooser = tlsContext.getChooser();
-        if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
-            LOGGER.debug(
-                    "Calculate SSL MasterSecret with Client and Server Nonces, which are: {}",
-                    message.getComputations().getClientServerRandom().getValue());
-            return SSLUtils.calculateMasterSecretSSL3(
-                    chooser.getPreMasterSecret(),
-                    message.getComputations().getClientServerRandom().getValue());
-        } else {
-            PRFAlgorithm prfAlgorithm =
-                    AlgorithmResolver.getPRFAlgorithm(
-                            chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-            if (chooser.isUseExtendedMasterSecret()) {
-                LOGGER.debug("Calculating ExtendedMasterSecret");
-                byte[] sessionHash =
-                        tlsContext
-                                .getDigest()
-                                .digest(
-                                        chooser.getSelectedProtocolVersion(),
-                                        chooser.getSelectedCipherSuite());
-                LOGGER.debug("Premastersecret: {}", chooser.getPreMasterSecret());
-
-                LOGGER.debug("SessionHash: {}", sessionHash);
-                byte[] extendedMasterSecret =
-                        PseudoRandomFunction.compute(
-                                prfAlgorithm,
-                                chooser.getPreMasterSecret(),
-                                PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL,
-                                sessionHash,
-                                HandshakeByteLength.MASTER_SECRET);
-                return extendedMasterSecret;
-            } else {
-                LOGGER.debug("Calculating MasterSecret");
-                byte[] masterSecret =
-                        PseudoRandomFunction.compute(
-                                prfAlgorithm,
-                                chooser.getPreMasterSecret(),
-                                PseudoRandomFunction.MASTER_SECRET_LABEL,
-                                message.getComputations().getClientServerRandom().getValue(),
-                                HandshakeByteLength.MASTER_SECRET);
-                return masterSecret;
-            }
-        }
-    }
-
     public void adjustMasterSecret(Message message) {
         byte[] masterSecret;
         try {
-            masterSecret = calculateMasterSecret(message);
+            masterSecret =
+                    KeyDerivator.calculateMasterSecret(
+                            tlsContext,
+                            message.getComputations().getClientServerRandom().getValue());
         } catch (CryptoException ex) {
             throw new UnsupportedOperationException("Could not calculate masterSecret", ex);
         }

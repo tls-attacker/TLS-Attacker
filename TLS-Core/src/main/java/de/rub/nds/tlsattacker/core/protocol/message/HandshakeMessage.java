@@ -20,13 +20,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -51,27 +51,25 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     /** handshake type */
     private ModifiableByte type = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger length = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
-    private ModifiableBoolean includeInDigest = null;
+    @ModifiableVariableProperty private ModifiableBoolean includeInDigest = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableBoolean retransmission = null;
+    @ModifiableVariableProperty private ModifiableBoolean retransmission = null;
 
     private ModifiableByteArray messageContent = null;
+
     /** List of extensions */
     @XmlElementWrapper @XmlElementRef @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
     @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionsLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSequence = null;
+    @ModifiableVariableProperty private ModifiableInteger messageSequence = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
@@ -161,6 +159,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public boolean getIncludeInDigest() {
         if (includeInDigest == null) {
             return isIncludeInDigestDefault;
+        } else if (includeInDigest.getValue() == null) {
+            includeInDigest.setOriginalValue(isIncludeInDigestDefault);
         }
         return includeInDigest.getValue();
     }
@@ -168,6 +168,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public boolean isRetransmission() {
         if (retransmission == null) {
             return isRetranmissionDefault;
+        } else if (retransmission.getValue() == null) {
+            retransmission.setOriginalValue(isRetranmissionDefault);
         }
         return retransmission.getValue();
     }
@@ -279,19 +281,18 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     @Override
     public abstract HandshakeMessageParser<? extends HandshakeMessage> getParser(
-            TlsContext tlsContext, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
     public abstract HandshakeMessagePreparator<? extends HandshakeMessage> getPreparator(
-            TlsContext tlsContext);
+            Context context);
 
     @Override
     public abstract HandshakeMessageSerializer<? extends HandshakeMessage> getSerializer(
-            TlsContext tlsContext);
+            Context context);
 
     @Override
-    public abstract HandshakeMessageHandler<? extends HandshakeMessage> getHandler(
-            TlsContext tlsContext);
+    public abstract HandshakeMessageHandler<? extends HandshakeMessage> getHandler(Context context);
 
     public ModifiableByteArray getMessageContent() {
         return messageContent;

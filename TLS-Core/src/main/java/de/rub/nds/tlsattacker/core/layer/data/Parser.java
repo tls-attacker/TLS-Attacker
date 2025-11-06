@@ -8,15 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,19 +34,19 @@ public abstract class Parser<T> {
      * quicBuffer is used as a helper to construct the original QuicHeader for PacketDecryption.
      * there might be a nicer solution.
      */
-    protected ByteArrayOutputStream quicBuffer = new ByteArrayOutputStream();
+    protected SilentByteArrayOutputStream quicBuffer = new SilentByteArrayOutputStream();
 
     /** Not so nice... */
-    private final ByteArrayOutputStream outputStream;
+    private final SilentByteArrayOutputStream outputStream;
 
     /**
      * Constructor for the Parser
      *
      * @param stream The Inputstream to read data drom
      */
-    public Parser(InputStream stream) {
+    protected Parser(InputStream stream) {
         this.stream = stream;
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     public byte[] getAlreadyParsed() {
@@ -78,8 +77,6 @@ public abstract class Parser<T> {
             } else {
                 outputStream.write(data);
             }
-        } catch (SocketTimeoutException E) {
-            throw new TimeoutException("Received a timeout while reading", E);
         } catch (IOException E) {
             throw new ParserException("Could not parse byteArrayField of length=" + length, E);
         }
@@ -97,7 +94,7 @@ public abstract class Parser<T> {
         if (length == 0) {
             throw new ParserException("Cannot parse int of size 0");
         }
-        return ArrayConverter.bytesToInt(parseByteArrayField(length));
+        return DataConverter.bytesToInt(parseByteArrayField(length));
     }
 
     /**
@@ -128,16 +125,22 @@ public abstract class Parser<T> {
         if (length > 1) {
             LOGGER.warn("Parsing byte[] field into a byte of size >1");
         }
-        return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
+        return (byte) DataConverter.bytesToInt(parseByteArrayField(length));
     }
 
+    /**
+     * Parses as US_ASCII
+     *
+     * @param endSequence
+     * @return
+     */
     protected String parseStringTill(byte endSequence) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream tempStream = new SilentByteArrayOutputStream();
         while (true) {
             byte b = parseByteField(1);
-            stream.write(b);
+            tempStream.write(b);
             if (b == endSequence) {
-                return stream.toString();
+                return tempStream.toString(StandardCharsets.US_ASCII);
             }
         }
     }

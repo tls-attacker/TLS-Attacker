@@ -23,6 +23,6 @@ public class SmtpInitialGreetingHandler extends SmtpReplyHandler<SmtpInitialGree
      */
     @Override
     public void adjustContext(SmtpInitialGreeting smtpMessage) {
-        this.getContext().setGreetingReceived(true);
+        this.getContext().getSmtpContext().setGreetingReceived(true);
     }
 }
