@@ -31,6 +31,9 @@ import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnterminatedReply;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -129,52 +132,36 @@ public class Pop3Layer extends ProtocolLayer<LayerProcessingHint, Pop3Message> {
                     readDataContainer(pop3Reply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
-                    // this shadows the readDataContainer method from the superclass, but we need to
-                    // parse the command twice to determine the correct subclass
-                    Pop3Command pop3Command = new Pop3Command();
-                    Pop3CommandParser verbParser = pop3Command.getParser(context, dataStream);
+                    Pop3CommandType pop3Command = Pop3CommandType.UNKNOWN;
+                    ByteArrayOutputStream command = new ByteArrayOutputStream();
                     try {
-                        verbParser.parse(pop3Command);
-                    } catch (ParserException e) {
-                        // should only happen if the command is not CRLF terminated
-                        LOGGER.warn("Could not parse command even generically: ", e);
-                        setUnreadBytes(verbParser.getAlreadyParsed());
-                        continue;
-                    }
-                    Pop3Command trueCommand =
-                            Pop3CommandType.fromKeyword(pop3Command.getKeyword()).createCommand();
-                    // this will be the actual parsing of the command
-                    HintedLayerInputStream pop3CommandStream =
-                            new HintedLayerInputStream(null, this);
-                    pop3CommandStream.extendStream(verbParser.getAlreadyParsed());
-                    Pop3CommandParser parser = trueCommand.getParser(context, pop3CommandStream);
-                    try {
-                        // TODO: this may raise a ParserException if parameters are missing
+                        // read from datastream until we hit a space
+                        while (dataStream.available() > 0) {
+                            char c = (char) dataStream.read();
+                            if (c == ' ') {
+                                pop3Command = Pop3CommandType.fromKeyword(command.toString());
+                                command.write(c);
+                                break;
+                            }
+                            command.write(c);
+                        }
+
+                        Pop3Command trueCommand = pop3Command.createCommand();
+                        // this will be the actual parsing of the command
+                        HintedLayerInputStream pop3CommandStream =
+                                new HintedLayerInputStream(null, this);
+                        pop3CommandStream.extendStream(command.toByteArray());
+                        pop3CommandStream.extendStream(dataStream.readAllBytes());
+                        Pop3CommandParser parser = trueCommand.getParser(context, pop3CommandStream);
+
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);
                         preparator.prepareAfterParse();
                         Handler handler = trueCommand.getHandler(context);
                         handler.adjustContext(trueCommand);
                         addProducedContainer(trueCommand);
-                    } catch (RuntimeException ex) {
-                        // only if the ParserException is caused by the command-specific parsing
-                        // we fall back to the parsing as an unknown
-                        try {
-                            trueCommand = new Pop3UnknownCommand();
-                            HintedLayerInputStream unknownCommandStream =
-                                    new HintedLayerInputStream(null, this);
-                            unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
-                            parser = trueCommand.getParser(context, unknownCommandStream);
-                            parser.parse(trueCommand);
-                            Preparator preparator = trueCommand.getPreparator(context);
-                            preparator.prepareAfterParse();
-                            Handler handler = trueCommand.getHandler(context);
-                            handler.adjustContext(trueCommand);
-                            addProducedContainer(trueCommand);
-                        } catch (ParserException e) {
-                            LOGGER.warn("Could not parse command: ", e);
-                            setUnreadBytes(verbParser.getAlreadyParsed());
-                        }
+                    } catch (IOException ex) {
+                        // SmtpCommand will be UNKNOWN, so we can ignore this exception
                     }
                 }
             } while (shouldContinueProcessing());
