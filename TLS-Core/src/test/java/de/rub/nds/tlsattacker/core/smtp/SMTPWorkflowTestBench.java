@@ -31,6 +31,8 @@ import java.io.IOException;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
@@ -75,7 +77,7 @@ public class SMTPWorkflowTestBench {
         }
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
-        assert state.getWorkflowTrace().executedAsPlanned();
+        assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 
     @Disabled("Requires a running SMTP server at PLAIN_PORT")

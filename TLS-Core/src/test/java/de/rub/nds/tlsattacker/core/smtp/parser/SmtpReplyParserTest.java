@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
@@ -28,7 +27,7 @@ public class SmtpReplyParserTest {
     @ValueSource(strings = {"404 blabla", "111 ASDSADAS ASDSAD ASDASD", "000 k", "250 OK"})
     void isValidReplyEnd(String input) {
         SmtpReplyParser<?> parser = new SmtpGenericReplyParser<>(InputStream.nullInputStream());
-        assert parser.isEndOfReply(input);
+        assertTrue(parser.isEndOfReply(input));
     }
 
     @ParameterizedTest
@@ -48,7 +47,7 @@ public class SmtpReplyParserTest {
         List<String> lines = parser.readWholeReply();
         assertEquals(1, lines.size());
         String firstLine = lines.get(0);
-        assertEquals(firstLine, "250 OK");
+        assertEquals("250 OK", firstLine);
     }
 
     @Test

@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.pop3;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -35,6 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the Pop3Layer where TLS-Attacker acts as a server, i.e. receiving commands and sending
@@ -62,13 +61,11 @@ public class Pop3LayerInboundTest {
         transportHandler.setFetchableByte("USER xyz\r\n".getBytes());
         Pop3Layer smtpLayer = (Pop3Layer) context.getLayerStack().getLayer(Pop3Layer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
-        System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof Pop3USERCommand);
-        assert ((Pop3Command) result.getUsedContainers().get(0))
-                .getCommandType()
-                .equals(Pop3CommandType.USER);
-        assert ((Pop3Command) result.getUsedContainers().get(0)).getArguments().equals("xyz");
+        assertEquals(1, result.getUsedContainers().size());
+        assertInstanceOf(Pop3USERCommand.class, result.getUsedContainers().getFirst());
+        assertEquals(Pop3CommandType.USER, ((Pop3Command) result.getUsedContainers().getFirst())
+                .getCommandType());
+        assertEquals("xyz", ((Pop3Command) result.getUsedContainers().getFirst()).getArguments());
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -78,13 +75,12 @@ public class Pop3LayerInboundTest {
         Pop3Layer smtpLayer = (Pop3Layer) context.getLayerStack().getLayer(Pop3Layer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof Pop3UnknownCommand);
-        assert ((Pop3Command) result.getUsedContainers().get(0))
-                .getCommandType()
-                .equals(Pop3CommandType.UNKNOWN);
-        assert ((Pop3Command) result.getUsedContainers().get(0)).getArguments().equals("xyz");
-        assert ((Pop3UnknownCommand) result.getUsedContainers().get(0)).getUnknownCommandVerb().equals("UNKW");
+        assertEquals(1, result.getUsedContainers().size());
+        assertInstanceOf(Pop3UnknownCommand.class, result.getUsedContainers().getFirst());
+        assertEquals(Pop3CommandType.UNKNOWN, ((Pop3Command) result.getUsedContainers().getFirst())
+                .getCommandType());
+        assertEquals("xyz", ((Pop3Command) result.getUsedContainers().getFirst()).getArguments());
+        assertEquals("UNKW", ((Pop3UnknownCommand) result.getUsedContainers().getFirst()).getUnknownCommandVerb());
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -101,9 +97,8 @@ public class Pop3LayerInboundTest {
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
         System.out.println(Arrays.toString(result.getUnreadBytes()));
-        ;
-        assert (result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof Pop3UnknownCommand);
+        assertEquals(1, result.getUsedContainers().size());
+        assertInstanceOf(Pop3UnknownCommand.class, result.getUsedContainers().getFirst());
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -131,7 +126,7 @@ public class Pop3LayerInboundTest {
         smtpLayer.setLayerConfiguration(layerConfiguration);
         LayerProcessingResult result = smtpLayer.sendConfiguration();
         assertEquals(2, result.getUsedContainers().size());
-        assert (result.getUsedContainers().get(0) instanceof Pop3USERReply)
-                && (result.getUsedContainers().get(1) instanceof Pop3NOOPReply);
+        assertInstanceOf(Pop3USERReply.class, result.getUsedContainers().get(0));
+        assertInstanceOf(Pop3NOOPReply.class, result.getUsedContainers().get(1));
     }
 }

@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -31,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the SmtpLayer where TLS-Attacker acts as a server, i.e. receiving commands and sending
@@ -59,12 +58,11 @@ public class SmtpLayerInboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof SmtpHELOCommand);
-        assert ((SmtpCommand) result.getUsedContainers().get(0))
-                .getCommandType()
-                .equals(SmtpCommandType.HELO);
-        assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
+        assertEquals(1, result.getUsedContainers().size());
+        assertInstanceOf(SmtpHELOCommand.class, result.getUsedContainers().getFirst());
+        assertEquals(SmtpCommandType.HELO, ((SmtpCommand) result.getUsedContainers().getFirst())
+                .getCommandType());
+        assertEquals("xyz", ((SmtpCommand) result.getUsedContainers().getFirst()).getParameters());
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -74,13 +72,12 @@ public class SmtpLayerInboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assert (result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
-        assert ((SmtpCommand) result.getUsedContainers().get(0))
-                .getCommandType()
-                .equals(SmtpCommandType.UNKNOWN);
-        assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
-        assert ((SmtpUnknownCommand) result.getUsedContainers().get(0)).getUnknownCommandVerb().equals("UNKNOWNCOMMAND");
+        assertEquals(1, result.getUsedContainers().size());
+        assertInstanceOf(SmtpUnknownCommand.class, result.getUsedContainers().getFirst());
+        assertEquals(SmtpCommandType.UNKNOWN, ((SmtpCommand) result.getUsedContainers().getFirst())
+                .getCommandType());
+        assertEquals("xyz", ((SmtpCommand) result.getUsedContainers().getFirst()).getParameters());
+        assertEquals("UNKNOWNCOMMAND", ((SmtpUnknownCommand) result.getUsedContainers().getFirst()).getUnknownCommandVerb());
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -98,8 +95,8 @@ public class SmtpLayerInboundTest {
         System.out.println(result.getUsedContainers());
         System.out.println(Arrays.toString(result.getUnreadBytes()));
         ;
-        assert (result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof SmtpUnknownCommand);
+        assertEquals(1, result.getUsedContainers().size());
+        assertInstanceOf(SmtpUnknownCommand.class, result.getUsedContainers().getFirst());
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -127,7 +124,7 @@ public class SmtpLayerInboundTest {
         smtpLayer.setLayerConfiguration(layerConfiguration);
         LayerProcessingResult result = smtpLayer.sendConfiguration();
         assertEquals(2, result.getUsedContainers().size());
-        assert (result.getUsedContainers().get(0) instanceof SmtpEHLOReply)
-                && (result.getUsedContainers().get(1) instanceof SmtpNOOPReply);
+        assertInstanceOf(SmtpEHLOReply.class, result.getUsedContainers().get(0));
+        assertInstanceOf(SmtpNOOPReply.class, result.getUsedContainers().get(1));
     }
 }
