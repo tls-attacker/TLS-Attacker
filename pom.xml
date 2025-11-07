@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>7.5.3-SNAPSHOT</version>
+    <version>7.5.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -87,7 +87,7 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/TLS-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/TLS-Attacker-Development.git</developerConnection>
-        <tag>v7.4.1</tag>
+        <tag>v7.5.3</tag>
         <url>https://github.com/tls-attacker/TLS-Attacker</url>
     </scm>
 
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>asn1-attacker</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.2</version>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
@@ -187,7 +187,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>x509-attacker</artifactId>
-            <version>4.3.4</version>
+            <version>4.3.5</version>
         </dependency>
         <dependency>
             <groupId>dnsjava</groupId>
@@ -242,7 +242,7 @@
         <dependency>
             <groupId>de.rub.nds.tls.dockerlib</groupId>
             <artifactId>tls-docker-library</artifactId>
-            <version>3.2.0</version>
+            <version>3.2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
