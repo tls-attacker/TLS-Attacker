@@ -80,6 +80,7 @@ public class SmtpLayerInboundTest {
                 .getCommandType()
                 .equals(SmtpCommandType.UNKNOWN);
         assert ((SmtpCommand) result.getUsedContainers().get(0)).getParameters().equals("xyz");
+        assert ((SmtpUnknownCommand) result.getUsedContainers().get(0)).getUnknownCommandVerb().equals("UNKNOWNCOMMAND");
         assertEquals(0, result.getUnreadBytes().length);
     }
 
