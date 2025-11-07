@@ -74,7 +74,7 @@ public class Pop3LayerInboundTest {
 
     @Test
     public void testReceiveUnknownCommand() {
-        transportHandler.setFetchableByte("UNKNOWNCOMMAND xyz\r\n".getBytes());
+        transportHandler.setFetchableByte("UNKW xyz\r\n".getBytes());
         Pop3Layer smtpLayer = (Pop3Layer) context.getLayerStack().getLayer(Pop3Layer.class);
         LayerProcessingResult result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
@@ -84,6 +84,7 @@ public class Pop3LayerInboundTest {
                 .getCommandType()
                 .equals(Pop3CommandType.UNKNOWN);
         assert ((Pop3Command) result.getUsedContainers().get(0)).getArguments().equals("xyz");
+        assert ((Pop3UnknownCommand) result.getUsedContainers().get(0)).getUnknownCommandVerb().equals("UNKW");
         assertEquals(0, result.getUnreadBytes().length);
     }
 
