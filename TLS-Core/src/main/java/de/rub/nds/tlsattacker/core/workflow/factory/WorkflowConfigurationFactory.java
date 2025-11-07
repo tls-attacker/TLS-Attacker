@@ -663,6 +663,8 @@ public class WorkflowConfigurationFactory {
             appendPop3CommandAndReplyActions(connection, trace, new Pop3RETRCommand(1));
             appendPop3CommandAndReplyActions(connection, trace, new Pop3DELECommand(1));
             appendPop3CommandAndReplyActions(connection, trace, new Pop3QUITCommand());
+        } else {
+            throw new ConfigurationException("POP3 Server workflow not supported yet");
         }
 
         return trace;
@@ -679,7 +681,11 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
 
         List<TlsAction> pop3Actions = createPop3Workflow().getTlsActions();
-        trace.addTlsAction(0, pop3Actions.get(0));
+        try {
+            trace.addTlsAction(0, pop3Actions.get(0));
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("lol");
+        }
         for (int i = 1; i < pop3Actions.size(); i++) {
             trace.addTlsAction(pop3Actions.get(i));
         }
