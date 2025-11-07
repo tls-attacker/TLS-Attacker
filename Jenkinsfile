@@ -125,7 +125,6 @@ pipeline {
                 anyOf {
                     branch 'main'
                     tag 'v*'
-                    branch 'email-protocols'
                 }
             }
             steps {
