@@ -145,7 +145,7 @@ public class POP3WorkflowTestBench {
                 factory.createWorkflowTrace(
                         WorkflowTraceType.POP3_STARTTLS, RunningModeType.CLIENT);
 
-        System.out.println(trace);
+//        System.out.println(trace);
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =

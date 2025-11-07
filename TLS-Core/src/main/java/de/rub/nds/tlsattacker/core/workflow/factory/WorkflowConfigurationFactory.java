@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
@@ -674,7 +675,8 @@ public class WorkflowConfigurationFactory {
         // dynamic handshake mechanism
         trace.addTlsAction(0, new SendAction(new Pop3STLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
-        trace.addTlsAction(2, new ToggleTLSLayersAction());
+        // POP3 layer stack has disabled RECORD+MESSAGE per default
+        trace.addTlsAction(2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
 
         List<TlsAction> pop3Actions = createPop3Workflow().getTlsActions();
         trace.addTlsAction(0, pop3Actions.get(0));
@@ -716,7 +718,8 @@ public class WorkflowConfigurationFactory {
         // dynamic handshake mechanism
         trace.addTlsAction(0, new SendAction(new SmtpSTARTTLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
-        trace.addTlsAction(2, new ToggleTLSLayersAction());
+        // SMTP layer stack has disabled RECORD+MESSAGE per default
+        trace.addTlsAction(2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
 
         // put InitialGreeting back to the front
         List<TlsAction> smtpActions = createSmtpWorkflow().getTlsActions();
