@@ -55,7 +55,7 @@ class MAILReplyTest {
         reply.setHumanReadableMessage("OK");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = reply.getSerializer(context);
+        Serializer<?> serializer = reply.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals("250 OK\r\n", serializer.getOutputStream().toString());
     }

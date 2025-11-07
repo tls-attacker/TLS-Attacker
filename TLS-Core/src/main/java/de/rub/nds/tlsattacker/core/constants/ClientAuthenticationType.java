@@ -21,13 +21,13 @@ public enum ClientAuthenticationType {
 
     private static final Map<Byte, ClientAuthenticationType> MAP;
 
-    private ClientAuthenticationType(byte value) {
+    ClientAuthenticationType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ClientAuthenticationType c : ClientAuthenticationType.values()) {
+        for (ClientAuthenticationType c : values()) {
             MAP.put(c.value, c);
         }
     }

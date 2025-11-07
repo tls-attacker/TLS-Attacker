@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.context.*;
@@ -97,9 +97,7 @@ public class State {
     private void retainServerTcpTransportHandlers(List<Context> previousContexts) {
         previousContexts.forEach(
                 oldContext -> {
-                    if (oldContext.getTransportHandler() != null
-                            && oldContext.getTransportHandler()
-                                    instanceof ServerTcpTransportHandler) {
+                    if (oldContext.getTransportHandler() instanceof ServerTcpTransportHandler) {
                         for (Context context : contextContainer.getAllContexts()) {
                             if (context.getConnection()
                                     .getAlias()
@@ -140,11 +138,7 @@ public class State {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
         LOGGER.debug("Created new {} workflow trace", config.getWorkflowTraceType());
-        LOGGER.debug("Workflow trace: {}", trace.toString());
-
-        if (trace == null) {
-            throw new ConfigurationException("Could not load workflow trace");
-        }
+        LOGGER.debug("Workflow trace: {}", trace);
         return trace;
     }
 

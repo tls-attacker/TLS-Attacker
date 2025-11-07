@@ -12,9 +12,10 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicCryptoSecrets;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.handler.packet.ZeroRTTPacketHandler;
+import de.rub.nds.tlsattacker.core.quic.parser.packet.ZeroRTTPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.ZeroRTTPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.ZeroRTTPacketSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -27,22 +28,22 @@ public class ZeroRTTPacket extends LongHeaderPacket {
     }
 
     @Override
-    public ZeroRTTPacketHandler getHandler(QuicContext context) {
-        return new ZeroRTTPacketHandler(context);
+    public ZeroRTTPacketHandler getHandler(Context context) {
+        return new ZeroRTTPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public ZeroRTTPacketSerializer getSerializer(QuicContext context) {
+    public ZeroRTTPacketSerializer getSerializer(Context context) {
         return new ZeroRTTPacketSerializer(this);
     }
 
     @Override
-    public ZeroRTTPacketPreparator getPreparator(QuicContext context) {
+    public ZeroRTTPacketPreparator getPreparator(Context context) {
         return new ZeroRTTPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public Parser<ZeroRTTPacket> getParser(QuicContext context, InputStream stream) {
-        return null;
+    public Parser<ZeroRTTPacket> getParser(Context context, InputStream stream) {
+        return new ZeroRTTPacketParser(stream, context.getQuicContext());
     }
 }

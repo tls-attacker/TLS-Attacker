@@ -55,6 +55,11 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
+    public QuicPathChallengeAction(String connectionAlias, boolean requireAtLeastOnePathChallenge) {
+        super(connectionAlias);
+        this.requireAtLeastOnePathChallenge = requireAtLeastOnePathChallenge;
+    }
+
     public QuicPathChallengeAction() {
         super();
     }
@@ -68,9 +73,14 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
     public void execute(State state) throws ActionExecutionException {
         MessageAction action;
         do {
-            action = executeAction(state, new ReceiveQuicTillAction(new PathChallengeFrame()));
+            ReceiveQuicTillAction receiveQuicTillAction =
+                    new ReceiveQuicTillAction(new PathChallengeFrame());
+            receiveQuicTillAction.setConnectionAlias(getConnectionAlias());
+            action = executeAction(state, receiveQuicTillAction);
             if (action.executedAsPlanned()) {
-                action = executeAction(state, new SendAction(new PathResponseFrame()));
+                SendAction sendAction = new SendAction(new PathResponseFrame());
+                sendAction.setConnectionAlias(getConnectionAlias());
+                action = executeAction(state, sendAction);
                 if (!action.executedAsPlanned()) {
                     executedAsPlanned = false;
                     return;
@@ -90,11 +100,11 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
             throws ActionExecutionException {
         action.execute(state);
         if (action instanceof SendAction) {
-            sendQuicFrames.addAll(((SendAction) action).getSentQuicFrames());
-            sendQuicPackets.addAll(((SendAction) action).getSentQuicPackets());
+            sendQuicFrames.addAll(((SendingAction) action).getSentQuicFrames());
+            sendQuicPackets.addAll(((SendingAction) action).getSentQuicPackets());
         } else {
-            receivedQuicFrames.addAll(((ReceiveAction) action).getReceivedQuicFrames());
-            receivedQuicPackets.addAll(((ReceiveAction) action).getReceivedQuicPackets());
+            receivedQuicFrames.addAll(((ReceivingAction) action).getReceivedQuicFrames());
+            receivedQuicPackets.addAll(((ReceivingAction) action).getReceivedQuicPackets());
         }
         executedActions.add(action);
         return action;

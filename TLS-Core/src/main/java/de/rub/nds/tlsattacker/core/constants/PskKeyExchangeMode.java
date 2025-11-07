@@ -26,13 +26,13 @@ public enum PskKeyExchangeMode {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private PskKeyExchangeMode(byte value) {
+    PskKeyExchangeMode(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (PskKeyExchangeMode cm : PskKeyExchangeMode.values()) {
+        for (PskKeyExchangeMode cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

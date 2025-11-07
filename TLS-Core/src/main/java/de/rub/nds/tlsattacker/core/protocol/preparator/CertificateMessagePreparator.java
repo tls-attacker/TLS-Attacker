@@ -12,22 +12,24 @@ import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.constants.PointFormat;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificateEntryPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuilder;
 import de.rub.nds.x509attacker.x509.X509ChainCreationResult;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.x509attacker.x509.preparator.X509CertificatePreparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +54,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateMessage");
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             prepareRequestContext(msg);
             prepareRequestContextLength(msg);
         }
@@ -76,8 +78,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 try {
                     // We currently only support this extension only very
                     // limited. Only secp256r1 is supported.
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    ASN1OutputStream asn1OutputStream = new ASN1OutputStream(byteArrayOutputStream);
+                    SilentByteArrayOutputStream byteArrayOutputStream =
+                            new SilentByteArrayOutputStream();
+                    ASN1OutputStream asn1OutputStream =
+                            ASN1OutputStream.create(byteArrayOutputStream);
                     Point ecPointToEncode =
                             chooser.getContext()
                                     .getTlsContext()
@@ -114,13 +118,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     if (entryList == null) {
                         if (chooser.getConfig().getAutoAdjustCertificate()) {
                             X509PublicKeyType[] certificateKeyTypes =
-                                    AlgorithmResolver.getSuiteableLeafCertificateKeyType(
+                                    AlgorithmResolver.getSuitableLeafCertificateKeyType(
                                             chooser.getSelectedCipherSuite());
-                            if (certificateKeyTypes != null) {
-                                chooser.getConfig()
-                                        .getCertificateChainConfig()
-                                        .get(0)
-                                        .setPublicKeyType(certificateKeyTypes[0]);
+                            if (certificateKeyTypes.length > 0) {
+                                autoSelectCertificateKeyType(certificateKeyTypes);
                             } else {
                                 LOGGER.warn(
                                         "Could not adjust public key in certificate to fit cipher suite");
@@ -141,6 +142,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                             entryList.add(new CertificateEntry(certificate));
                         }
                         msg.setCertificateEntryList(entryList);
+                    } else {
+                        preparePredefinedCerts(entryList);
                     }
                     prepareFromEntryList(msg);
                 } else {
@@ -162,18 +165,86 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         }
     }
 
+    private void autoSelectCertificateKeyType(X509PublicKeyType[] certificateKeyTypes) {
+        if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
+            chooser.getConfig()
+                    .getCertificateChainConfig()
+                    .get(0)
+                    .setPublicKeyType(certificateKeyTypes[0]);
+        } else {
+            for (X509PublicKeyType certKeyType : certificateKeyTypes) {
+                if (chooser.getConfig()
+                        .getDefaultSelectedSignatureAndHashAlgorithm()
+                        .suitableForSignatureKeyType(certKeyType)) {
+                    chooser.getConfig()
+                            .getCertificateChainConfig()
+                            .get(0)
+                            .setPublicKeyType(certKeyType);
+                    return;
+                }
+            }
+            LOGGER.warn(
+                    "Could not find certificate public key type matching both cipher suite and default SignatureAndHashAlgorithm. Using first key type.");
+            chooser.getConfig()
+                    .getCertificateChainConfig()
+                    .get(0)
+                    .setPublicKeyType(certificateKeyTypes[0]);
+        }
+    }
+
+    private void preparePredefinedCerts(List<CertificateEntry> entryList) {
+        X509Context x509Context = new X509Context();
+        for (int i = chooser.getConfig().getCertificateChainConfig().size() - 1; i >= 0; i--) {
+            if (i >= entryList.size()) {
+                LOGGER.warn(
+                        "Not enough certificates provided for certificate chain config. Ignoring trailing config.");
+                continue;
+            }
+            X509CertificateConfig certConfig =
+                    chooser.getConfig().getCertificateChainConfig().get(i);
+            prepareCert(entryList, x509Context, certConfig, i);
+        }
+        int certsBeyondConfigs =
+                entryList.size() - chooser.getConfig().getCertificateChainConfig().size();
+        if (certsBeyondConfigs > 0) {
+            LOGGER.warn(
+                    "Found {} more certificates than provided certificate configs. Using first config to prepare remaining entries.",
+                    certsBeyondConfigs);
+            X509CertificateConfig certConfig =
+                    chooser.getConfig().getCertificateChainConfig().get(0);
+            for (int i =
+                            (entryList.size()
+                                            - chooser.getConfig()
+                                                    .getCertificateChainConfig()
+                                                    .size())
+                                    - 1;
+                    i >= 0;
+                    i--) {
+                prepareCert(entryList, x509Context, certConfig, i);
+            }
+        }
+        chooser.getContext().getTlsContext().setTalkingX509Context(x509Context);
+    }
+
+    private void prepareCert(
+            List<CertificateEntry> entryList,
+            X509Context x509Context,
+            X509CertificateConfig certConfig,
+            int i) {
+        X509Certificate certificate = entryList.get(i).getX509certificate();
+        X509Chooser chooser = new X509Chooser(certConfig, x509Context);
+        X509CertificatePreparator preparator = new X509CertificatePreparator(chooser, certificate);
+        preparator.prepare();
+    }
+
     private void prepareFromEntryList(CertificateMessage msg) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CertificateEntry pair : msg.getCertificateEntryList()) {
             CertificateEntryPreparator preparator = new CertificateEntryPreparator(chooser, pair);
             preparator.prepare();
             CertificatePairSerializer serializer =
                     new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from CertificatePair", ex);
-            }
+            stream.write(serializer.serialize());
         }
         msg.setCertificatesListBytes(stream.toByteArray());
         msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);

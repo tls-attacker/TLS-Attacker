@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -20,18 +19,17 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.hints.Pop3LayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
-import de.rub.nds.tlsattacker.core.pop3.command.Pop3UnknownCommand;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3MessageHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnknownReply;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3UnterminatedReply;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,14 +43,16 @@ import org.apache.logging.log4j.Logger;
  * Will fall back to Pop3UnknownReply if the type of reply is unclear, but falling back for
  * nonsensical replies is not yet implemented.
  */
-public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
+public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3Message> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Pop3Context context;
+    private final Context context;
+    private final Pop3Context pop3Context;
 
-    public Pop3Layer(Pop3Context pop3Context) {
+    public Pop3Layer(Context context) {
         super(ImplementedLayers.POP3);
-        this.context = pop3Context;
+        this.context = context;
+        this.pop3Context = context.getPop3Context();
     }
 
     /**
@@ -66,9 +66,8 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
      * @throws IOException if sending the message fails for any reason
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<Pop3Message> sendConfiguration() throws IOException {
         LayerConfiguration<Pop3Message> configuration = getLayerConfiguration();
-        ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Pop3Message pop3Msg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(pop3Msg, context)) {
@@ -78,16 +77,15 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                 handler.adjustContext(pop3Msg);
                 Serializer<?> serializer = pop3Msg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                serializedMessages.write(serializedMessage);
                 addProducedContainer(pop3Msg);
+                getLowerLayer().sendData(null, serializedMessage);
             }
-            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
         return getLayerResult();
     }
 
     @Override
-    public LayerProcessingResult sendData(Pop3LayerHint hint, byte[] additionalData)
+    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
             throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -108,7 +106,7 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
      *     different layers
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<Pop3Message> receiveData() {
         try {
             HintedInputStream dataStream;
             do {
@@ -119,63 +117,48 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
-                if (context.getContext().getConnection().getLocalConnectionEndType()
+                if (context.getChooser().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
-                    Pop3Reply pop3Reply = context.getExpectedNextReplyType();
+                    Pop3Reply pop3Reply = pop3Context.getExpectedNextReplyType();
                     if (pop3Reply instanceof Pop3UnknownReply) {
                         LOGGER.trace(
                                 "Expected reply type unclear, receiving {} instead",
                                 pop3Reply.getClass().getSimpleName());
                     }
                     readDataContainer(pop3Reply, context);
-                } else if (context.getContext().getConnection().getLocalConnectionEndType()
+                } else if (context.getChooser().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
-                    // this shadows the readDataContainer method from the superclass, but we need to
-                    // parse the command twice to determine the correct subclass
-                    Pop3Command pop3Command = new Pop3Command();
-                    Pop3CommandParser verbParser = pop3Command.getParser(context, dataStream);
+                    Pop3CommandType pop3Command = Pop3CommandType.UNKNOWN;
+                    ByteArrayOutputStream command = new ByteArrayOutputStream();
                     try {
-                        verbParser.parse(pop3Command);
-                    } catch (ParserException e) {
-                        // should only happen if the command is not CRLF terminated
-                        LOGGER.warn("Could not parse command even generically: ", e);
-                        setUnreadBytes(verbParser.getAlreadyParsed());
-                        continue;
-                    }
-                    Pop3Command trueCommand =
-                            Pop3MappingUtil.getCommandFromKeyword(pop3Command.getKeyword());
-                    // this will be the actual parsing of the command
-                    HintedLayerInputStream pop3CommandStream =
-                            new HintedLayerInputStream(new Pop3LayerHint(), this);
-                    pop3CommandStream.extendStream(verbParser.getAlreadyParsed());
-                    Pop3CommandParser parser = trueCommand.getParser(context, pop3CommandStream);
-                    try {
-                        // TODO: this may raise a ParserException if parameters are missing
+                        // read from datastream until we hit a space
+                        while (dataStream.available() > 0) {
+                            char c = (char) dataStream.read();
+                            if (c == ' ') {
+                                pop3Command = Pop3CommandType.fromKeyword(command.toString());
+                                command.write(c);
+                                break;
+                            }
+                            command.write(c);
+                        }
+
+                        Pop3Command trueCommand = pop3Command.createCommand();
+                        // this will be the actual parsing of the command
+                        HintedLayerInputStream pop3CommandStream =
+                                new HintedLayerInputStream(null, this);
+                        pop3CommandStream.extendStream(command.toByteArray());
+                        pop3CommandStream.extendStream(dataStream.readAllBytes());
+                        Pop3CommandParser parser =
+                                trueCommand.getParser(context, pop3CommandStream);
+
                         parser.parse(trueCommand);
                         Preparator preparator = trueCommand.getPreparator(context);
                         preparator.prepareAfterParse();
                         Handler handler = trueCommand.getHandler(context);
                         handler.adjustContext(trueCommand);
                         addProducedContainer(trueCommand);
-                    } catch (RuntimeException ex) {
-                        // only if the ParserException is caused by the command-specific parsing
-                        // we fall back to the parsing as an unknown
-                        try {
-                            trueCommand = new Pop3UnknownCommand();
-                            HintedLayerInputStream unknownCommandStream =
-                                    new HintedLayerInputStream(new Pop3LayerHint(), this);
-                            unknownCommandStream.extendStream(verbParser.getAlreadyParsed());
-                            parser = trueCommand.getParser(context, unknownCommandStream);
-                            parser.parse(trueCommand);
-                            Preparator preparator = trueCommand.getPreparator(context);
-                            preparator.prepareAfterParse();
-                            Handler handler = trueCommand.getHandler(context);
-                            handler.adjustContext(trueCommand);
-                            addProducedContainer(trueCommand);
-                        } catch (ParserException e) {
-                            LOGGER.warn("Could not parse command: ", e);
-                            setUnreadBytes(verbParser.getAlreadyParsed());
-                        }
+                    } catch (IOException ex) {
+                        // SmtpCommand will be UNKNOWN, so we can ignore this exception
                     }
                 }
             } while (shouldContinueProcessing());
@@ -208,10 +191,6 @@ public class Pop3Layer extends ProtocolLayer<Pop3LayerHint, Pop3Message> {
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public Pop3Command getCommandType() {
-        return new Pop3Command();
     }
 
     @Override

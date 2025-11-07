@@ -19,13 +19,13 @@ public enum CompressionMethod {
 
     private static final Map<Byte, CompressionMethod> MAP;
 
-    private CompressionMethod(byte value) {
+    CompressionMethod(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (CompressionMethod cm : CompressionMethod.values()) {
+        for (CompressionMethod cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

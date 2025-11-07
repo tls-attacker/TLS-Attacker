@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpVRFYReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ import java.util.List;
  */
 @XmlRootElement
 public class SmtpVRFYReply extends SmtpReply {
+    public SmtpVRFYReply() {
+        super(SmtpCommandType.VRFY);
+    }
 
     public static class SmtpVRFYData {
         String username;
@@ -76,7 +80,7 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     @Override
-    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
+    public SmtpReplyParser<? extends SmtpReply> getParser(Context context, InputStream stream) {
         return new SmtpVRFYReplyParser(stream);
     }
 

@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
@@ -35,8 +35,8 @@ class HELPReplyTest {
         reply.setHumanReadableMessage("Commands: HELO EHLO MAIL RCPT DATA VRFY NOOP QUIT HELP");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = reply.getPreparator(context);
-        Serializer serializer = reply.getSerializer(context);
+        Preparator preparator = reply.getPreparator(context.getContext());
+        Serializer serializer = reply.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         assertEquals(
@@ -67,7 +67,7 @@ class HELPReplyTest {
             SmtpHELPReply helpReply = new SmtpHELPReply();
             SmtpReplyParser parser =
                     helpReply.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(helpReply);
             assertEquals(helpReply.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
@@ -88,7 +88,7 @@ class HELPReplyTest {
         SmtpHELPReply helpReply = new SmtpHELPReply();
         SmtpReplyParser parser =
                 helpReply.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(helpReply);
 
@@ -105,7 +105,7 @@ class HELPReplyTest {
             SmtpHELPReply helpReply = new SmtpHELPReply();
             SmtpReplyParser parser =
                     helpReply.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(helpReply);
         }
@@ -123,7 +123,7 @@ class HELPReplyTest {
             SmtpHELPReply helpReply = new SmtpHELPReply();
             SmtpReplyParser parser =
                     helpReply.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             assertThrows(ParserException.class, () -> parser.parse(helpReply));
         }

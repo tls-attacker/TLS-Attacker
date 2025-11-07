@@ -27,7 +27,7 @@ class Pop3USERReplyTest {
         Pop3USERReply user = new Pop3USERReply();
         user.setStatusIndicator("+OK");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = user.getSerializer(context);
+        Serializer<?> serializer = user.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("+OK\r\n", serializer.getOutputStream().toString());
@@ -41,7 +41,7 @@ class Pop3USERReplyTest {
         Pop3USERReply user = new Pop3USERReply();
         Pop3GenericReplyParser<Pop3USERReply> parser =
                 user.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(user);
 
@@ -56,7 +56,8 @@ class Pop3USERReplyTest {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3GenericReplyParser<Pop3USERReply> parser =
                 noop.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
         assertDoesNotThrow(() -> parser.parse(noop));
         assertEquals("-ERR", noop.getStatusIndicator());
         assertEquals("user not ok", noop.getHumanReadableMessage());

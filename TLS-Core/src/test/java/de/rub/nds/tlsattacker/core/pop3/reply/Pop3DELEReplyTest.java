@@ -28,7 +28,7 @@ class Pop3DELEReplyTest {
         del.setStatusIndicator("+OK");
         del.setHumanReadableMessage("message 1 deleted");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = del.getSerializer(context);
+        Serializer<?> serializer = del.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("+OK message 1 deleted\r\n", serializer.getOutputStream().toString());
@@ -42,7 +42,7 @@ class Pop3DELEReplyTest {
         Pop3DELEReply deleReply = new Pop3DELEReply();
         Pop3GenericReplyParser<Pop3DELEReply> parser =
                 deleReply.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(deleReply);
 

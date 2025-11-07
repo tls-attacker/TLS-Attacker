@@ -14,11 +14,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -36,10 +36,10 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
      * As a TLS 1.3 CertificateEntry extension, this extension uses the format of a
      * CertificateStatus message. If this is the case, let's have the same fields as such a message.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger certificateStatusType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger ocspResponseLength;
 
     @ModifiableVariableProperty private ModifiableByteArray ocspResponseBytes;
@@ -137,25 +137,24 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public CertificateStatusRequestExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
+    public CertificateStatusRequestExtensionParser getParser(Context context, InputStream stream) {
         // TODO make sure this is the correct version
         return new CertificateStatusRequestExtensionParser(
-                stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+                stream, context.getChooser().getSelectedProtocolVersion(), context.getTlsContext());
     }
 
     @Override
-    public CertificateStatusRequestExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateStatusRequestExtensionPreparator(tlsContext.getChooser(), this);
+    public CertificateStatusRequestExtensionPreparator getPreparator(Context context) {
+        return new CertificateStatusRequestExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateStatusRequestExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateStatusRequestExtensionSerializer getSerializer(Context context) {
         return new CertificateStatusRequestExtensionSerializer(this);
     }
 
     @Override
-    public CertificateStatusRequestExtensionHandler getHandler(TlsContext tlsContext) {
-        return new CertificateStatusRequestExtensionHandler(tlsContext);
+    public CertificateStatusRequestExtensionHandler getHandler(Context context) {
+        return new CertificateStatusRequestExtensionHandler(context.getTlsContext());
     }
 }

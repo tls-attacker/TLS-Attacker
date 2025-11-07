@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import java.io.InputStream;

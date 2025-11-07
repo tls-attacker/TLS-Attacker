@@ -32,7 +32,7 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
         LOGGER.debug("Serializing CertificatePair");
         writeCertificateLength(pair);
         writeCertificateBytes(pair);
-        if (version.isTLS13()) {
+        if (version.is13()) {
             writeExtensionsLength(pair);
             if (pair.getExtensionBytes() != null && pair.getExtensionBytes().getValue() != null) {
                 writeExtensionBytes(pair);
@@ -43,7 +43,7 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
 
     private void writeCertificateLength(CertificateEntry pair) {
         appendInt(pair.getCertificateLength().getValue(), HandshakeByteLength.CERTIFICATE_LENGTH);
-        LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", pair.getCertificateLength().getValue());
     }
 
     private void writeCertificateBytes(CertificateEntry pair) {
@@ -53,7 +53,7 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
 
     private void writeExtensionsLength(CertificateEntry pair) {
         appendInt(pair.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionsLength: " + pair.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionsLength: {}", pair.getExtensionsLength().getValue());
     }
 
     private void writeExtensionBytes(CertificateEntry pair) {

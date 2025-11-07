@@ -12,11 +12,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -55,22 +55,22 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
 
     @Override
     public SignedCertificateTimestampExtensionParser getParser(
-            TlsContext tlsContext, InputStream stream) {
-        return new SignedCertificateTimestampExtensionParser(stream, tlsContext);
+            Context context, InputStream stream) {
+        return new SignedCertificateTimestampExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SignedCertificateTimestampExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new SignedCertificateTimestampExtensionPreparator(tlsContext.getChooser(), this);
+    public SignedCertificateTimestampExtensionPreparator getPreparator(Context context) {
+        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SignedCertificateTimestampExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public SignedCertificateTimestampExtensionSerializer getSerializer(Context context) {
         return new SignedCertificateTimestampExtensionSerializer(this);
     }
 
     @Override
-    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext tlsContext) {
-        return new SignedCertificateTimestampExtensionHandler(tlsContext);
+    public SignedCertificateTimestampExtensionHandler getHandler(Context context) {
+        return new SignedCertificateTimestampExtensionHandler(context.getTlsContext());
     }
 }

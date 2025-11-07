@@ -13,15 +13,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -29,11 +29,9 @@ import java.util.List;
 @XmlRootElement(name = "ECDHEServerKeyExchange")
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByte curveType;
+    @ModifiableVariableProperty protected ModifiableByte curveType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByteArray namedGroup;
+    @ModifiableVariableProperty protected ModifiableByteArray namedGroup;
 
     protected ECDHEServerComputations computations;
 
@@ -83,7 +81,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
         sb.append("\n  Public Key: ");
         if (getPublicKey() != null && getPublicKey().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue()));
         } else {
             sb.append("null");
         }
@@ -92,13 +90,13 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // (D)TLS 1.2
         if (this.getSignatureAndHashAlgorithm() != null
                 && getSignatureAndHashAlgorithm().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature: ");
         if (getSignature() != null && getSignature().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignature().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignature().getValue()));
         } else {
             sb.append("null");
         }
@@ -112,24 +110,28 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ECDHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new ECDHEServerKeyExchangeHandler(tlsContext);
+    public ECDHEServerKeyExchangeHandler<? extends ECDHEServerKeyExchangeMessage> getHandler(
+            Context context) {
+        return new ECDHEServerKeyExchangeHandler<>(context.getTlsContext());
     }
 
     @Override
-    public ECDHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHEServerKeyExchangeParser(stream, tlsContext);
+    public ECDHEServerKeyExchangeParser<? extends ECDHEServerKeyExchangeMessage> getParser(
+            Context context, InputStream stream) {
+        return new ECDHEServerKeyExchangeParser<>(stream, context.getTlsContext());
     }
 
     @Override
-    public ECDHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public ECDHEServerKeyExchangePreparator<? extends ECDHEServerKeyExchangeMessage> getPreparator(
+            Context context) {
+        return new ECDHEServerKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public ECDHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new ECDHEServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ECDHEServerKeyExchangeSerializer<? extends ECDHEServerKeyExchangeMessage> getSerializer(
+            Context context) {
+        return new ECDHEServerKeyExchangeSerializer<>(
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -16,14 +16,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -37,33 +36,28 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger clientCertificateTypesCount;
+    @ModifiableVariableProperty private ModifiableInteger clientCertificateTypesCount;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray clientCertificateTypes;
+    @ModifiableVariableProperty private ModifiableByteArray clientCertificateTypes;
 
     // In TLS 1.3 this is moved to an extension
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureHashAlgorithmsLength;
 
     // In TLS 1.3 this is moved to an extension
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureHashAlgorithms;
+    @ModifiableVariableProperty private ModifiableByteArray signatureHashAlgorithms;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger distinguishedNamesLength;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray distinguishedNames;
+    @ModifiableVariableProperty private ModifiableByteArray distinguishedNames;
 
     // TLS 1.3 only
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger certificateRequestContextLength;
 
     // TLS 1.3 only
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray certificateRequestContext;
+    @ModifiableVariableProperty private ModifiableByteArray certificateRequestContext;
 
     public CertificateRequestMessage() {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
@@ -71,8 +65,8 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public CertificateRequestMessage(Config tlsConfig) {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
-        if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
-            this.setExtensions(new LinkedList<ExtensionMessage>());
+        if (tlsConfig.getHighestProtocolVersion().is13()) {
+            this.setExtensions(new LinkedList<>());
             this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
         if (tlsConfig.isAddSignatureAlgorithmsCertExtension()) {
@@ -246,7 +240,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
-        // sb.append("\n Distinguished Names: ").append(ArrayConverter
+        // sb.append("\n Distinguished Names: ").append(DataConverter
         // .bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
     }
@@ -257,24 +251,24 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateRequestHandler getHandler(TlsContext tlsContext) {
-        return new CertificateRequestHandler(tlsContext);
+    public CertificateRequestHandler getHandler(Context context) {
+        return new CertificateRequestHandler(context.getTlsContext());
     }
 
     @Override
-    public CertificateRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateRequestParser(stream, tlsContext);
+    public CertificateRequestParser getParser(Context context, InputStream stream) {
+        return new CertificateRequestParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CertificateRequestPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateRequestPreparator(tlsContext.getChooser(), this);
+    public CertificateRequestPreparator getPreparator(Context context) {
+        return new CertificateRequestPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateRequestSerializer getSerializer(TlsContext tlsContext) {
+    public CertificateRequestSerializer getSerializer(Context context) {
         return new CertificateRequestSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

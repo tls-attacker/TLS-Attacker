@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpAUTHCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpAUTHCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -37,18 +38,18 @@ public class SmtpAUTHCommand extends SmtpCommand {
     private String initialResponse;
 
     public SmtpAUTHCommand() {
-        super(COMMAND_NAME);
+        super(SmtpCommandType.AUTH);
     }
 
     // E.g. "AUTH PLAIN"
     public SmtpAUTHCommand(String saslMechanism) {
-        super(COMMAND_NAME, saslMechanism);
+        this();
         this.saslMechanism = saslMechanism;
     }
 
     // E.g. "AUTH PLAIN Qts12w=="
     public SmtpAUTHCommand(String saslMechanism, String initialResponse) {
-        super(COMMAND_NAME);
+        this();
         this.saslMechanism = saslMechanism;
         this.initialResponse = initialResponse;
     }
@@ -70,12 +71,12 @@ public class SmtpAUTHCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpAUTHCommandParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpAUTHCommandParser getParser(Context context, InputStream stream) {
         return new SmtpAUTHCommandParser(stream);
     }
 
     @Override
-    public SmtpAUTHCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpAUTHCommandPreparator(context, this);
+    public SmtpAUTHCommandPreparator getPreparator(Context context) {
+        return new SmtpAUTHCommandPreparator(context.getSmtpContext(), this);
     }
 }

@@ -12,13 +12,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -26,14 +26,12 @@ import java.util.Objects;
 @XmlRootElement(name = "HelloVerifyRequest")
 public class HelloVerifyRequestMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion = null;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableByte cookieLength = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    private ModifiableByteArray cookie = null;
+    @ModifiableVariableProperty private ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
@@ -79,22 +77,22 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public HelloVerifyRequestHandler getHandler(TlsContext tlsContext) {
-        return new HelloVerifyRequestHandler(tlsContext);
+    public HelloVerifyRequestHandler getHandler(Context context) {
+        return new HelloVerifyRequestHandler(context.getTlsContext());
     }
 
     @Override
-    public HelloVerifyRequestParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new HelloVerifyRequestParser(stream, tlsContext);
+    public HelloVerifyRequestParser getParser(Context context, InputStream stream) {
+        return new HelloVerifyRequestParser(stream, context.getTlsContext());
     }
 
     @Override
-    public HelloVerifyRequestPreparator getPreparator(TlsContext tlsContext) {
-        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), this);
+    public HelloVerifyRequestPreparator getPreparator(Context context) {
+        return new HelloVerifyRequestPreparator(context.getChooser(), this);
     }
 
     @Override
-    public HelloVerifyRequestSerializer getSerializer(TlsContext tlsContext) {
+    public HelloVerifyRequestSerializer getSerializer(Context context) {
         return new HelloVerifyRequestSerializer(this);
     }
 
@@ -104,7 +102,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         sb.append("HelloVerifyRequestMessage:");
         sb.append("\n  ProtocolVersion: ");
         if (protocolVersion != null && protocolVersion.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
+            sb.append(DataConverter.bytesToHexString(protocolVersion.getValue()));
         } else {
             sb.append("null");
         }
@@ -116,7 +114,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         }
         sb.append("\n  Cookie: ");
         if (cookie != null && cookie.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(cookie.getValue()));
+            sb.append(DataConverter.bytesToHexString(cookie.getValue()));
         } else {
             sb.append("null");
         }

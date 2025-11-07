@@ -16,7 +16,7 @@ public enum KeyExchangeAlgorithm {
     DH_ANON,
     RSA,
     RSA_EXPORT,
-    PSK_RSA,
+    RSA_PSK,
     DH_DSS,
     DH_RSA,
     KRB5,
@@ -30,6 +30,7 @@ public enum KeyExchangeAlgorithm {
     ECDHE_ECDSA,
     ECDHE_RSA,
     ECDHE_PSK,
+    VKO_GOST94,
     VKO_GOST01,
     VKO_GOST12,
     FORTEZZA_KEA,
@@ -37,7 +38,9 @@ public enum KeyExchangeAlgorithm {
     ECMQV_ECNRA,
     ECDH_ECNRA,
     CECPQ1_ECDSA,
-    ECCPWD;
+    ECCPWD,
+    CECPQ1_RSA,
+    GOSTR341112_256;
 
     public boolean isKeyExchangeRsa() {
         switch (this) {
@@ -67,6 +70,17 @@ public enum KeyExchangeAlgorithm {
         switch (this) {
             case DH_DSS:
             case DH_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isSrp() {
+        switch (this) {
+            case SRP_SHA_DSS:
+            case SRP_SHA_RSA:
+            case SRP_SHA:
                 return true;
             default:
                 return false;
@@ -135,12 +149,60 @@ public enum KeyExchangeAlgorithm {
         }
     }
 
+    public boolean isKeyExchangeEphemeral() {
+        switch (this) {
+            case ECDHE_ECDSA:
+            case ECDHE_PSK:
+            case ECDHE_RSA:
+            case ECDH_ANON: // This is also ephemeral(!)
+            case DHE_DSS:
+            case DHE_PSK:
+            case DHE_RSA:
+            case DH_ANON: // This is also ephemeral(!)
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isEC() {
-        return this.name().contains("EC");
+        switch (this) {
+            case ECDH_RSA:
+            case ECDH_ANON:
+            case ECDH_ECDSA:
+            case ECDHE_ECDSA:
+            case ECDHE_RSA:
+            case ECDHE_PSK:
+            case ECDH_ECNRA:
+            case ECMQV_ECDSA:
+            case ECMQV_ECNRA:
+            case CECPQ1_ECDSA:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isAnon() {
-        return this.name().contains("ANON");
+        switch (this) {
+            case DH_ANON:
+            case ECDH_ANON:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isPsk() {
+        switch (this) {
+            case PSK:
+            case RSA_PSK:
+            case DHE_PSK:
+            case ECDHE_PSK:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isExport() {
@@ -171,7 +233,7 @@ public enum KeyExchangeAlgorithm {
             case FORTEZZA_KEA: // I dont know if this is correct actually
             case KRB5:
             case PSK:
-            case PSK_RSA:
+            case RSA_PSK:
             case ECDHE_PSK:
             case DHE_PSK:
             case ECCPWD:
@@ -184,6 +246,41 @@ public enum KeyExchangeAlgorithm {
                 throw new UnsupportedOperationException(
                         this.name()
                                 + " not defined yet! Please ask the developers to add this KEX algorithm");
+        }
+    }
+
+    public boolean isDss() {
+        switch (this) {
+            case DHE_DSS:
+            case DH_DSS:
+            case SRP_SHA_DSS:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isGost() {
+        switch (this) {
+            case VKO_GOST94:
+            case VKO_GOST01:
+            case VKO_GOST12:
+            case GOSTR341112_256:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isEcdsa() {
+        switch (this) {
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+                return true;
+            default:
+                return false;
         }
     }
 }

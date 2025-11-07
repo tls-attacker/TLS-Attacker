@@ -40,7 +40,7 @@ public class CertificateVerifySerializer
         LOGGER.debug("Serializing CertificateVerifyMessage");
         if (version == ProtocolVersion.TLS12
                 || version == ProtocolVersion.DTLS12
-                || version.isTLS13()) {
+                || version.is13()) {
             writeSignatureHashAlgorithm(msg);
         }
         writeSignatureLength(msg);
@@ -57,7 +57,7 @@ public class CertificateVerifySerializer
     /** Writes the SignatureLength of the CertificateVerifyMessage into the final byte[] */
     private void writeSignatureLength(CertificateVerifyMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /** Writes the Signature of the CertificateVerifyMessage into the final byte[] */

@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
@@ -31,6 +31,8 @@ import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
@@ -76,7 +78,7 @@ public class SMTPWorkflowTestBench {
         }
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
-        assert state.getWorkflowTrace().executedAsPlanned();
+        assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 
     @Disabled("Requires a running SMTP server at PLAIN_PORT")

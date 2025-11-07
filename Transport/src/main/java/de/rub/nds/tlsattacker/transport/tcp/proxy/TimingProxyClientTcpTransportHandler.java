@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,11 +24,18 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         implements ProxyableTransportHandler, TimeableTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    /** Default proxy data port */
+    private static final int DEFAULT_PROXY_DATA_PORT = 4444;
+
+    /** Default proxy control port */
+    private static final int DEFAULT_PROXY_CONTROL_PORT = 5555;
+
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";
-    protected int proxyDataPort = 4444;
+    protected int proxyDataPort = DEFAULT_PROXY_DATA_PORT;
     protected String proxyControlHostName = "127.0.0.1";
-    protected int proxyControlPort = 5555;
+    protected int proxyControlPort = DEFAULT_PROXY_CONTROL_PORT;
     protected Long measurement = null;
 
     public TimingProxyClientTcpTransportHandler(Connection connection) {
@@ -90,8 +98,12 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
                 (int) connectionTimeout);
         cachedSocketState = null;
         /* tell the proxy where the real server is */
-        controlSocket.getOutputStream().write((hostname + "\n").getBytes());
-        controlSocket.getOutputStream().write((Integer.toString(dstPort) + "\n").getBytes());
+        controlSocket
+                .getOutputStream()
+                .write((hostname + "\n").getBytes(StandardCharsets.ISO_8859_1));
+        controlSocket
+                .getOutputStream()
+                .write((Integer.toString(dstPort) + "\n").getBytes(StandardCharsets.ISO_8859_1));
         controlSocket.getOutputStream().flush();
         hostname = proxyDataHostName;
         dstPort = proxyDataPort;
@@ -124,7 +136,7 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
 
     @Override
     public void setMeasuringActive(boolean measuringActive) {
-        if (measuringActive == false) {
+        if (!measuringActive) {
             LOGGER.warn("Ignoring deactivation of measuring for proxy-based transport handler.");
         }
     }

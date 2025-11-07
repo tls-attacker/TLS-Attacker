@@ -8,15 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
+import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
+import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
+import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -26,13 +30,9 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,18 +42,18 @@ import org.bouncycastle.util.Arrays;
 
 /** The DtlsFragmentLayer handles DTLS fragmentation between the message and record layer. */
 public class DtlsFragmentLayer
-        extends ProtocolLayer<RecordLayerHint, DtlsHandshakeMessageFragment> {
+        extends ProtocolLayer<Context, RecordLayerHint, DtlsHandshakeMessageFragment> {
 
-    private static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final Context context;
 
     private FragmentManager fragmentManager;
 
     private int readHandshakeMessageSequence = 0;
     private int writeHandshakeMessageSequence = 0;
 
-    public DtlsFragmentLayer(TlsContext context) {
+    public DtlsFragmentLayer(Context context) {
         super(ImplementedLayers.DTLS_FRAGMENT);
         this.context = context;
         this.fragmentManager = new FragmentManager(context.getConfig());
@@ -66,7 +66,8 @@ public class DtlsFragmentLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<DtlsHandshakeMessageFragment> sendConfiguration()
+            throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (DtlsHandshakeMessageFragment fragment : getUnprocessedConfiguredContainers()) {
@@ -80,7 +81,7 @@ public class DtlsFragmentLayer
                 fragment.setCompleteResultingMessage(serializedMessage);
                 getLowerLayer()
                         .sendData(
-                                new RecordLayerHint(fragment.getProtocolMessageType()),
+                                new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
                                 serializedMessage);
                 addProducedContainer(fragment);
             }
@@ -105,13 +106,19 @@ public class DtlsFragmentLayer
      */
     @Override
     public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(
-            RecordLayerHint hint, byte[] data) throws IOException {
-        if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
+            LayerProcessingHint hint, byte[] data) throws IOException {
+        ProtocolMessageType hintedType;
+        if (hint instanceof RecordLayerHint) {
+            hintedType = ((RecordLayerHint) hint).getType();
+        } else {
+            hintedType = ProtocolMessageType.UNKNOWN;
+        }
+        if (hintedType == ProtocolMessageType.HANDSHAKE) {
             // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null
                     || getUnprocessedConfiguredContainers().isEmpty()) {
-                fragments = getEnoughFragments(context, data.length);
+                fragments = getEnoughFragments(context.getTlsContext(), data.length);
             } else {
                 // use the provided fragments
                 int dataToBeSent = data.length;
@@ -123,7 +130,7 @@ public class DtlsFragmentLayer
                     dataToBeSent -= nextFragment.getMaxFragmentLengthConfig();
                 }
                 if (dataToBeSent > 0 && context.getConfig().isCreateFragmentsDynamically()) {
-                    fragments.addAll(getEnoughFragments(context, dataToBeSent));
+                    fragments.addAll(getEnoughFragments(context.getTlsContext(), dataToBeSent));
                 }
             }
             fragments =
@@ -135,22 +142,17 @@ public class DtlsFragmentLayer
                                             + HandshakeByteLength.MESSAGE_LENGTH_FIELD,
                                     data.length),
                             fragments);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             // send the fragments
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 fragment.getPreparator(context).prepare();
-                try {
-                    byte[] completeMessage = fragment.getSerializer(context).serialize();
-                    fragment.setCompleteResultingMessage(completeMessage);
-                    stream.write(fragment.getCompleteResultingMessage().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException(
-                            "Could not write Record bytes to ByteArrayStream", ex);
-                }
+                byte[] completeMessage = fragment.getSerializer(context).serialize();
+                fragment.setCompleteResultingMessage(completeMessage);
+                stream.write(fragment.getCompleteResultingMessage().getValue());
                 addProducedContainer(fragment);
                 if (context.getConfig().isIndividualTransportPacketsForFragments()) {
                     getLowerLayer().sendData(hint, stream.toByteArray());
-                    stream = new ByteArrayOutputStream();
+                    stream = new SilentByteArrayOutputStream();
                 }
             }
             if (!context.getConfig().isIndividualTransportPacketsForFragments()) {
@@ -164,7 +166,7 @@ public class DtlsFragmentLayer
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<DtlsHandshakeMessageFragment> receiveData() {
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
@@ -202,7 +204,7 @@ public class DtlsFragmentLayer
                     fragmentManager.addMessageFragment(fragment);
                     List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
                             fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
+                                    true, context.getConfig().isCanSkipMessageSequenceNumber());
                     // run until we received a complete fragment
                     if (!uninterpretedMessageFragments.isEmpty()) {
                         DtlsHandshakeMessageFragment uninterpretedMessageFragment =
@@ -210,17 +212,17 @@ public class DtlsFragmentLayer
                         addProducedContainer(uninterpretedMessageFragment);
                         RecordLayerHint currentHint =
                                 new RecordLayerHint(
-                                        uninterpretedMessageFragment.getProtocolMessageType(),
+                                        ProtocolMessageType.HANDSHAKE,
                                         uninterpretedMessageFragment
                                                 .getMessageSequence()
                                                 .getValue());
                         byte type = uninterpretedMessageFragment.getType().getValue();
                         byte[] content =
-                                uninterpretedMessageFragment.getMessageContent().getValue();
+                                uninterpretedMessageFragment.getFragmentContent().getValue();
                         byte[] message =
-                                ArrayConverter.concatenate(
+                                DataConverter.concatenate(
                                         new byte[] {type},
-                                        ArrayConverter.intToBytes(
+                                        DataConverter.intToBytes(
                                                 content.length,
                                                 HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                                         content);
@@ -310,9 +312,8 @@ public class DtlsFragmentLayer
         }
         if (currentOffset != handshakeBytes.length) {
             LOGGER.warn(
-                    "Unsent bytes for message "
-                            + type
-                            + ". Not enough dtls fragments specified and disabled dynamic fragment creation in config.");
+                    "Unsent bytes for message {}. Not enough dtls fragments specified and disabled dynamic fragment creation in config.",
+                    type);
         }
         increaseWriteHandshakeMessageSequence();
 
@@ -330,7 +331,7 @@ public class DtlsFragmentLayer
      * @return DtlsHandshakeMessageFragment The fragment containing the message
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(
-            TlsContext context, HandshakeMessage message, boolean goingToBeSent) {
+            Context context, HandshakeMessage message, boolean goingToBeSent) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setHandshakeMessageTypeConfig(message.getHandshakeMessageType());
         byte[] messageContent = message.getSerializer(context).serializeHandshakeMessageContent();

@@ -20,10 +20,9 @@ public class AUTHCredentialsCommandPreparator
 
     @Override
     public void prepare() {
-        if (this.getObject() != null && this.getObject().getCredentials() != null) {
-            this.getObject().setParameters(this.getObject().getCredentials());
-        } else {
-            this.getObject().setParameters(chooser.getConfig().getDefaultSmtpAuthCredentials());
+        if (this.getObject().getCredentials() == null) {
+            this.getObject().setCredentials(chooser.getConfig().getDefaultSmtpAuthCredentials());
         }
+        this.getObject().setParameters(this.getObject().getCredentials());
     }
 }

@@ -18,28 +18,25 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 public class GOSTClientComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray ukm;
+    @ModifiableVariableProperty private ModifiableByteArray ukm;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray encryptedKey;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedKey;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray macKey;
+    @ModifiableVariableProperty private ModifiableByteArray macKey;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray keyEncryptionKey;
+    @ModifiableVariableProperty private ModifiableByteArray keyEncryptionKey;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray maskKey;
+    @ModifiableVariableProperty private ModifiableByteArray maskKey;
 
-    private ModifiableByteArray proxyKeyBlobs;
+    @ModifiableVariableProperty private ModifiableByteArray proxyKeyBlobs;
 
-    private ModifiableString encryptionParamSet;
+    @ModifiableVariableProperty private ModifiableString encryptionParamSet;
 
-    private ModifiableBigInteger clientPublicKeyX;
+    @ModifiableVariableProperty private ModifiableBigInteger clientPublicKeyX;
 
-    private ModifiableBigInteger clientPublicKeyY;
+    @ModifiableVariableProperty private ModifiableBigInteger clientPublicKeyY;
+
+    public GOSTClientComputations() {}
 
     public void setClientPublicKey(Point point) {
         this.clientPublicKeyX =

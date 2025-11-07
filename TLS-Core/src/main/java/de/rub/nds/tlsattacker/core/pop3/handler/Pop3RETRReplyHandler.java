@@ -20,6 +20,7 @@ public class Pop3RETRReplyHandler extends Pop3ReplyHandler<Pop3RETRReply> {
 
     @Override
     public void adjustContext(Pop3RETRReply pop3RETRReply) {
+        // We need to access the message number from the command that prompted this reply.
         Pop3Command lastCommand = this.getContext().getLastCommand();
 
         if (lastCommand instanceof Pop3RETRCommand && pop3RETRReply.statusIsPositive()) {

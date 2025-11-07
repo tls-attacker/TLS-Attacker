@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
@@ -40,6 +41,18 @@ public class MessageActionFactory {
                 connection,
                 sendingConnectionEndType,
                 new ArrayList<>(Arrays.asList(protocolMessages)));
+    }
+
+    public static MessageAction createSSL2Action(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEndType,
+            SSL2Message... ssl2Messages) {
+        return createSSL2Action(
+                tlsConfig,
+                connection,
+                sendingConnectionEndType,
+                new ArrayList<>(Arrays.asList(ssl2Messages)));
     }
 
     public static MessageAction createHttpAction(
@@ -105,6 +118,28 @@ public class MessageActionFactory {
         return action;
     }
 
+    public static MessageAction createSSL2Action(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            List<SSL2Message> ssl2Messages) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action =
+                    new SendAction(
+                            (SSL2Message[])
+                                    ssl2Messages.toArray(new SSL2Message[ssl2Messages.size()]));
+        } else {
+            action =
+                    new ReceiveAction(
+                            getFactoryReceiveActionOptions(tlsConfig),
+                            (SSL2Message[])
+                                    ssl2Messages.toArray(new SSL2Message[ssl2Messages.size()]));
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
     public static MessageAction createQuicAction(
             Config tlsConfig,
             AliasedConnection connection,
@@ -164,6 +199,14 @@ public class MessageActionFactory {
                 .getMessageFactoryActionOptions()
                 .contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             globalOptions.add(ActionOption.IGNORE_UNEXPECTED_WARNINGS);
+        }
+        if (tlsConfig.getMessageFactoryActionOptions().contains(ActionOption.IGNORE_ACK_MESSAGES)) {
+            globalOptions.add(ActionOption.IGNORE_ACK_MESSAGES);
+        }
+        if (tlsConfig
+                .getMessageFactoryActionOptions()
+                .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
+            globalOptions.add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
         }
 
         return globalOptions;

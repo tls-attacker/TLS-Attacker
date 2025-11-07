@@ -9,13 +9,14 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.File;
@@ -23,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,10 +106,10 @@ public class ConfigTest {
                         "-35862849564059803287082945144062507860160501396022878289617408550825798132134"));
         ModifiableByteArray publicKey = new ModifiableByteArray();
         publicKey.setOriginalValue(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
         ModifiableByteArray group = new ModifiableByteArray();
-        group.setOriginalValue(ArrayConverter.hexStringToByteArray("001D"));
+        group.setOriginalValue(DataConverter.hexStringToByteArray("001D"));
         keyShareEntry.setGroup(group);
         keyShareEntry.setPublicKey(publicKey);
         ArrayList<KeyShareEntry> list = new ArrayList<>();
@@ -132,11 +134,11 @@ public class ConfigTest {
 
         ModifiableByteArray publicKey = new ModifiableByteArray();
         publicKey.setOriginalValue(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
 
         ModifiableByteArray group = new ModifiableByteArray();
-        group.setOriginalValue(ArrayConverter.hexStringToByteArray("001D"));
+        group.setOriginalValue(DataConverter.hexStringToByteArray("001D"));
 
         keyShareEntry.setGroup(group);
         keyShareEntry.setPublicKey(publicKey);
@@ -232,7 +234,7 @@ public class ConfigTest {
 
     @Test
     public void generatePskConfig() {
-        config.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("AA"));
+        config.setDefaultPSKKey(DataConverter.hexStringToByteArray("AA"));
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "psk.config"));
     }
 
@@ -265,28 +267,27 @@ public class ConfigTest {
         config.setAddKeyShareExtension(true);
         config.setUseFreshRandom(false);
         config.setDefaultClientRandom(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "528FBF52175DE2C869845FDBFA8344F7D732712EBFA679D8643CD31A880E043D"));
         config.setDefaultServerRandom(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
-        config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
         config.setDefaultServerPWDMask(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0D96AB624D082C71255BE3648DCD303F6AB0CA61A95034A553E3308D1D3744E5"));
         config.setDefaultClientPWDPrivate(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "171DE8CAA5352D36EE96A39979B5B72FA189AE7A6A09C77F7B438AF16DF4A88B"));
         config.setDefaultClientPWDMask(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4F745BDFC295D3B38429F7EB3025A48883728B07D88605C0EE202316A072D1BD"));
         config.setDefaultServerPWDSalt(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "963C77CDC13A2A8D75CDDDD1E0449929843711C21D47CE6E6383CDDA37E47DA3"));
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "pwd.config"));
@@ -326,28 +327,27 @@ public class ConfigTest {
         config.setAddKeyShareExtension(true);
         config.setUseFreshRandom(false);
         config.setDefaultClientRandom(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "528FBF52175DE2C869845FDBFA8344F7D732712EBFA679D8643CD31A880E043D"));
         config.setDefaultServerRandom(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
-        config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
         config.setDefaultServerPWDMask(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "0D96AB624D082C71255BE3648DCD303F6AB0CA61A95034A553E3308D1D3744E5"));
         config.setDefaultClientPWDPrivate(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "171DE8CAA5352D36EE96A39979B5B72FA189AE7A6A09C77F7B438AF16DF4A88B"));
         config.setDefaultClientPWDMask(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "4F745BDFC295D3B38429F7EB3025A48883728B07D88605C0EE202316A072D1BD"));
         config.setDefaultServerPWDSalt(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "963C77CDC13A2A8D75CDDDD1E0449929843711C21D47CE6E6383CDDA37E47DA3"));
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "pwd13.config"));
@@ -396,6 +396,43 @@ public class ConfigTest {
     }
 
     @Test
+    public void generateDTls13Config() {
+        setUpBasicDTls13Config(config);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
+    }
+
+    @Test
+    public void generateDTls13ZeroRttConfig() {
+        setUpBasicDTls13Config(config);
+        config.setAddPSKKeyExchangeModesExtension(true);
+        config.setAddPreSharedKeyExtension(true);
+        config.setAddEarlyDataExtension(true);
+        config.setSessionTicketLifetimeHint(3600);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13zerortt.config"));
+    }
+
+    private void setUpBasicDTls13Config(Config config) {
+        setUpBasicTls13Config(config);
+        config.setHighestProtocolVersion(ProtocolVersion.DTLS13);
+        config.setSupportedVersions(ProtocolVersion.DTLS13);
+        config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
+        config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
+        config.setFinishWithCloseNotify(true);
+        config.setIgnoreRetransmittedCssInDtls(true);
+        config.getDefaultClientKeyShareNamedGroups().add(NamedGroup.SECP256R1);
+        config.getDefaultClientNamedGroups().add(NamedGroup.SECP256R1);
+        config.getDefaultServerNamedGroups().add(NamedGroup.SECP256R1);
+        config.setMessageFactoryActionOptions(new LinkedList<>());
+        config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
+        config.setDtlsCookieExchange(true);
+        config.setDefaultExtensionCookie(
+                DataConverter.hexStringToByteArray(
+                        "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100"));
+    }
+
+    @Test
     public void generateTls13Config() {
         setUpBasicTls13Config(config);
 
@@ -416,7 +453,6 @@ public class ConfigTest {
     private void setUpBasicTls13Config(Config config) {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
-
         ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);

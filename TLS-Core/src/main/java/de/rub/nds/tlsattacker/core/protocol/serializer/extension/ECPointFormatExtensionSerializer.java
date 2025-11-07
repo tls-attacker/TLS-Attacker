@@ -35,7 +35,7 @@ public class ECPointFormatExtensionSerializer
 
     private void writePointFormatsLength(ECPointFormatExtensionMessage msg) {
         appendInt(msg.getPointFormatsLength().getValue(), ExtensionByteLength.EC_POINT_FORMATS);
-        LOGGER.debug("PointFormatsLength: " + msg.getPointFormatsLength().getValue());
+        LOGGER.debug("PointFormatsLength: {}", msg.getPointFormatsLength().getValue());
     }
 
     private void writePointFormats(ECPointFormatExtensionMessage msg) {

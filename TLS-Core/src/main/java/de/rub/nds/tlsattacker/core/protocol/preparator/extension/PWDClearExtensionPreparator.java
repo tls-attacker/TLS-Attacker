@@ -33,11 +33,11 @@ public class PWDClearExtensionPreparator extends ExtensionPreparator<PWDClearExt
 
     private void prepareUsername(PWDClearExtensionMessage msg) {
         msg.setUsername(chooser.getClientPWDUsername());
-        LOGGER.debug("Username: " + msg.getUsername().getValue());
+        LOGGER.debug("Username: {}", msg.getUsername().getValue());
     }
 
     private void prepareUsernameLength(PWDClearExtensionMessage msg) {
         msg.setUsernameLength(msg.getUsername().getValue().length());
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 }

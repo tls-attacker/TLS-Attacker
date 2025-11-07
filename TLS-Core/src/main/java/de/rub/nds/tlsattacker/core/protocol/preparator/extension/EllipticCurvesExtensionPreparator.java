@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +43,7 @@ public class EllipticCurvesExtensionPreparator
     }
 
     private byte[] createNamedGroupsArray() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         List<NamedGroup> namedGroups;
         if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
             namedGroups = chooser.getConfig().getDefaultClientNamedGroups();
@@ -53,17 +51,13 @@ public class EllipticCurvesExtensionPreparator
             namedGroups = chooser.getConfig().getDefaultServerNamedGroups();
         }
         for (NamedGroup group : namedGroups) {
-            try {
-                stream.write(group.getValue());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write NamedGroup to byte[]", ex);
-            }
+            stream.write(group.getValue());
         }
         return stream.toByteArray();
     }
 
     private void prepareSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroupsLength(msg.getSupportedGroups().getValue().length);
-        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
+        LOGGER.debug("SupportedGroupsLength: {}", msg.getSupportedGroupsLength().getValue());
     }
 }

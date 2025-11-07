@@ -13,13 +13,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -27,12 +27,12 @@ import java.util.List;
 @XmlRootElement(name = "PWDClientKeyExchange")
 public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger elementLength;
 
     @ModifiableVariableProperty private ModifiableByteArray element;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger scalarLength;
 
     @ModifiableVariableProperty private ModifiableByteArray scalar;
@@ -56,22 +56,22 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public PWDClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new PWDClientKeyExchangeHandler(tlsContext);
+    public PWDClientKeyExchangeHandler getHandler(Context context) {
+        return new PWDClientKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PWDClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDClientKeyExchangeParser(stream, tlsContext);
+    public PWDClientKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PWDClientKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PWDClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PWDClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PWDClientKeyExchangePreparator getPreparator(Context context) {
+        return new PWDClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PWDClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PWDClientKeyExchangeSerializer getSerializer(Context context) {
         return new PWDClientKeyExchangeSerializer(this);
     }
 
@@ -131,13 +131,13 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         sb.append("PWDClientKeyExchangeMessage:");
         sb.append("\n  Element: ");
         if (getElement() != null && getElement().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getElement().getValue()));
+            sb.append(DataConverter.bytesToHexString(getElement().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Scalar: ");
         if (getScalar() != null && getScalar().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getScalar().getValue()));
+            sb.append(DataConverter.bytesToHexString(getScalar().getValue()));
         } else {
             sb.append("null");
         }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
@@ -24,10 +24,10 @@ public class ServerNamePairParserTest {
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("00000b747769747465722e636f6d"),
+                        DataConverter.hexStringToByteArray("00000b747769747465722e636f6d"),
                         (byte) 0x00,
                         11,
-                        ArrayConverter.hexStringToByteArray("747769747465722e636f6d")));
+                        DataConverter.hexStringToByteArray("747769747465722e636f6d")));
     }
 
     @ParameterizedTest

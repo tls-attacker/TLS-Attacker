@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpEXPNCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpEXPNCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -49,12 +49,12 @@ public class SmtpEXPNCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpEXPNCommandParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpEXPNCommandParser getParser(Context context, InputStream stream) {
         return new SmtpEXPNCommandParser(stream);
     }
 
     @Override
-    public SmtpEXPNCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpEXPNCommandPreparator(context, this);
+    public SmtpEXPNCommandPreparator getPreparator(Context context) {
+        return new SmtpEXPNCommandPreparator(context.getSmtpContext(), this);
     }
 }

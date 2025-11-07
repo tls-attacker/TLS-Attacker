@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,15 +52,19 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         prepareSessionIDLength();
     }
 
-    // for DTLS, the random value of a second ClientHello message should be
-    // the same as that of the first (at least in case the first prompted
-    // HelloVerifyResponse from server)
     protected void prepareRandom() {
-        if (isDTLS() && hasClientRandom()) {
+        if (mustRetainPreviousClientRandom()) {
             msg.setRandom(chooser.getClientRandom());
         } else {
             super.prepareRandom();
         }
+    }
+
+    // for DTLS, the random value of a second ClientHello message should be
+    // the same as that of the first (at least in case the first prompted
+    // HelloVerifyResponse from server). The same applies for HelloRetryRequest flows in TLS 1.3
+    private boolean mustRetainPreviousClientRandom() {
+        return (isDTLS() || isHelloRetryRequestFlow()) && hasClientRandom();
     }
 
     private void prepareSessionID() {
@@ -69,10 +72,9 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
                     msg.getExtension(SessionTicketTLSExtensionMessage.class);
-            if (extensionMessage != null) {
-                if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
-                    isResumptionWithSessionTicket = true;
-                }
+            if (extensionMessage != null
+                    && extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
+                isResumptionWithSessionTicket = true;
             }
         }
         if (isResumptionWithSessionTicket && chooser.getConfig().isOverrideSessionIdForTickets()) {
@@ -89,30 +91,36 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         return chooser.getSelectedProtocolVersion().isDTLS();
     }
 
+    /**
+     * Determines if we are in a HelloRetryRequest flow. Since other information from the context
+     * may be retained from a previous handshake, we check the start of the digest for the 'message
+     * hash' handshake message type which is unique to HRR flows and won't be retained after a
+     * connection reset.
+     *
+     * @return true if the digest indicates that we are in a HelloRetryRequest TLS 1.3 flow
+     */
+    private boolean isHelloRetryRequestFlow() {
+        if (chooser.getContext().getTlsContext().getSelectedProtocolVersion()
+                == ProtocolVersion.TLS13) {
+            return chooser.getContext().getTlsContext().getDigest().getRawBytes().length > 0
+                    && chooser.getContext().getTlsContext().getDigest().getRawBytes()[0]
+                            == HandshakeMessageType.MESSAGE_HASH.getValue();
+        }
+        return false;
+    }
+
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CompressionMethod compression : compressionList) {
-            try {
-                stream.write(compression.getArrayValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
-                        ex);
-            }
+            stream.write(compression.getArrayValue());
         }
         return stream.toByteArray();
     }
 
     private byte[] convertCipherSuites(List<CipherSuite> suiteList) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         for (CipherSuite suite : suiteList) {
-            try {
-                stream.write(suite.getByteValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
-                        ex);
-            }
+            stream.write(suite.getByteValue());
         }
         return stream.toByteArray();
     }
@@ -120,6 +128,8 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     private void prepareProtocolVersion(T msg) {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else if (chooser.getConfig().getHighestProtocolVersion().isDTLS13()) {
+            msg.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
         } else {
             msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         }
@@ -127,7 +137,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private void prepareCompressions(T msg) {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().is13()) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
             msg.setCompressions(
@@ -139,7 +149,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCompressionLength(T msg) {
         msg.setCompressionLength(msg.getCompressions().getValue().length);
-        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: {}", msg.getCompressionLength().getValue());
     }
 
     private void prepareCipherSuites(T msg) {
@@ -150,7 +160,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
 
     private void prepareCipherSuitesLength(T msg) {
         msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuitesLength: {}", msg.getCipherSuiteLength().getValue());
     }
 
     private boolean hasClientRandom() {
@@ -158,13 +168,17 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private void prepareCookie(T msg) {
-        msg.setCookie(chooser.getDtlsCookie());
+        if (chooser.getSelectedProtocolVersion().isDTLS13()) {
+            msg.setCookie(new byte[0]);
+        } else {
+            msg.setCookie(chooser.getDtlsCookie());
+        }
         LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 
     private void prepareCookieLength(T msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
-        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: {}", msg.getCookieLength().getValue());
     }
 
     @Override

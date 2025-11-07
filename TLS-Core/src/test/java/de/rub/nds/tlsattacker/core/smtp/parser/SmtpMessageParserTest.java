@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.pop3.parser.reply;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3LISTCommand;
@@ -64,6 +64,7 @@ public class Pop3LISTReplyParser extends Pop3ReplyParser<Pop3LISTReply> {
     private boolean replyIsSingleLine() {
         // Assumption based on RFC encouragements: "LIST [messageNumber]" will always return a
         // single line
+        // We need to access the message number from the command that prompted this reply.
         Pop3Command lastCommand = this.pop3Context.getLastCommand();
         return lastCommand instanceof Pop3LISTCommand
                 && ((Pop3LISTCommand) lastCommand).hasMessageNumber();

@@ -32,7 +32,7 @@ public class CookieExtensionParser extends ExtensionParser<CookieExtensionMessag
 
     private void parseCookieLength(CookieExtensionMessage msg) {
         msg.setCookieLength(parseIntField(ExtensionByteLength.COOKIE_LENGTH));
-        LOGGER.debug("Cookie length: " + msg.getCookieLength().getValue());
+        LOGGER.debug("Cookie length: {}", msg.getCookieLength().getValue());
     }
 
     private void parseCookie(CookieExtensionMessage msg) {

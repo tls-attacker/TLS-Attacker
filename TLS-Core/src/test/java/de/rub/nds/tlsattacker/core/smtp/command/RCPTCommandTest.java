@@ -186,8 +186,8 @@ public class RCPTCommandTest {
     public void testSerialization() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpRCPTCommand rcptCommand = new SmtpRCPTCommand("seal@upb.de");
-        SmtpRCPTCommandPreparator preparator = rcptCommand.getPreparator(context);
-        Serializer serializer = rcptCommand.getSerializer(context);
+        SmtpRCPTCommandPreparator preparator = rcptCommand.getPreparator(context.getContext());
+        Serializer serializer = rcptCommand.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         assertEquals("RCPT TO:<seal@upb.de>\r\n", serializer.getOutputStream().toString());
@@ -197,7 +197,7 @@ public class RCPTCommandTest {
     public void testHandler() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpRCPTCommand rcptCommand = new SmtpRCPTCommand("seal@upb.de");
-        Handler handler = rcptCommand.getHandler(context);
+        Handler handler = rcptCommand.getHandler(context.getContext());
         handler.adjustContext(rcptCommand);
 
         assertEquals(context.getRecipientBuffer().get(0), rcptCommand.getRecipient());

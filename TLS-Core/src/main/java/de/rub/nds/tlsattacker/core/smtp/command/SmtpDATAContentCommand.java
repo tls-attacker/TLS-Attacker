@@ -8,10 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpDATAContentCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpDATAContentParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpDATAContentCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpDATAContentCommandSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,17 +29,16 @@ public class SmtpDATAContentCommand extends SmtpCommand {
     private List<String> lines;
 
     public SmtpDATAContentCommand() {
-        super(null, null);
+        super(SmtpCommandType.DATA_CONTENT);
     }
 
     public SmtpDATAContentCommand(List<String> content) {
-        super(null, null);
+        this();
         this.lines = content;
     }
 
     public SmtpDATAContentCommand(String... content) {
-        super(null, null);
-        this.lines = new ArrayList<>(List.of(content));
+        this(new ArrayList<>(List.of(content)));
     }
 
     public List<String> getLines() {
@@ -48,17 +50,22 @@ public class SmtpDATAContentCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpDATAContentParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpDATAContentParser getParser(Context context, InputStream stream) {
         return new SmtpDATAContentParser(stream);
     }
 
     @Override
-    public SmtpDATAContentCommandHandler getHandler(SmtpContext context) {
-        return new SmtpDATAContentCommandHandler(context);
+    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(Context context) {
+        return new SmtpDATAContentCommandSerializer(context.getSmtpContext(), this);
     }
 
     @Override
-    public SmtpDATAContentCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpDATAContentCommandPreparator(context, this);
+    public SmtpDATAContentCommandHandler getHandler(Context context) {
+        return new SmtpDATAContentCommandHandler(context.getSmtpContext());
+    }
+
+    @Override
+    public SmtpDATAContentCommandPreparator getPreparator(Context context) {
+        return new SmtpDATAContentCommandPreparator(context.getSmtpContext(), this);
     }
 }

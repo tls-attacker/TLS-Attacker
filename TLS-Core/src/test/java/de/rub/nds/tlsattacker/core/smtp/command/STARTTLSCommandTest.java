@@ -30,7 +30,7 @@ public class STARTTLSCommandTest {
         SmtpSTARTTLSCommand starttlsCommand = new SmtpSTARTTLSCommand();
         Parser parser =
                 starttlsCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(starttlsCommand);
         assertEquals("STARTTLS", starttlsCommand.getVerb());
@@ -40,8 +40,8 @@ public class STARTTLSCommandTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpSTARTTLSCommand starttlsCommand = new SmtpSTARTTLSCommand();
-        Preparator preparator = starttlsCommand.getPreparator(context);
-        Serializer serializer = starttlsCommand.getSerializer(context);
+        Preparator preparator = starttlsCommand.getPreparator(context.getContext());
+        Serializer serializer = starttlsCommand.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         Assertions.assertEquals("STARTTLS\r\n", serializer.getOutputStream().toString());

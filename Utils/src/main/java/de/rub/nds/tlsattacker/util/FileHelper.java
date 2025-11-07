@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +32,7 @@ public class FileHelper {
         assert folder.delete();
     }
 
-    public static String getResourceAsString(Class currentClass, String resourceFilePath) {
+    public static String getResourceAsString(Class<?> currentClass, String resourceFilePath) {
         if (!resourceFilePath.startsWith("/")) {
             resourceFilePath = "/" + resourceFilePath;
         }
@@ -46,14 +47,15 @@ public class FileHelper {
     }
 
     public static String inputStreamToString(InputStream is) throws IOException {
-        BufferedInputStream bis = new BufferedInputStream(is);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        int result = bis.read();
-        while (result != -1) {
-            bos.write((byte) result);
-            result = bis.read();
+        try (BufferedInputStream bis = new BufferedInputStream(is);
+                SilentByteArrayOutputStream bos = new SilentByteArrayOutputStream()) {
+            int result = bis.read();
+            while (result != -1) {
+                bos.write((byte) result);
+                result = bis.read();
+            }
+            return bos.toString(StandardCharsets.UTF_8);
         }
-        return bos.toString(StandardCharsets.UTF_8);
     }
 
     private FileHelper() {}

@@ -35,8 +35,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     public ExtensionPreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.msg = message;
-        this.serializer =
-                (ExtensionSerializer<T>) msg.getSerializer(chooser.getContext().getTlsContext());
+        this.serializer = (ExtensionSerializer<T>) msg.getSerializer(chooser.getContext());
     }
 
     @Override
@@ -69,8 +68,8 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     }
 
     private void prepareExtensionLength(ExtensionMessage msg) {
-        msg.setExtensionLength(content.length);
-        LOGGER.debug("ExtensionLength: " + msg.getExtensionLength().getValue());
+        msg.setExtensionLength(msg.getExtensionContent().getValue().length);
+        LOGGER.debug("ExtensionLength: {}", msg.getExtensionLength().getValue());
     }
 
     private void prepareExtensionBytes(ExtensionMessage msg) {

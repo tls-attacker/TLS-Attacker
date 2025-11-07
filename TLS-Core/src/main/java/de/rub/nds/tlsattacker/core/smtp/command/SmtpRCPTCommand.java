@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpRCPTCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpRCPTCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpRCPTCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,16 +30,15 @@ import java.util.List;
  */
 @XmlRootElement
 public class SmtpRCPTCommand extends SmtpCommand {
-    private static final String COMMAND = "RCPT";
     private String recipient;
     private List<String> rcptParameters = new ArrayList<>();
 
     public SmtpRCPTCommand() {
-        super(COMMAND, null);
+        super(SmtpCommandType.RCPT);
     }
 
     public SmtpRCPTCommand(String recipient) {
-        super(COMMAND, null);
+        this();
         this.recipient = recipient;
     }
 
@@ -56,18 +56,18 @@ public class SmtpRCPTCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpRCPTCommandParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpRCPTCommandParser getParser(Context context, InputStream stream) {
         return new SmtpRCPTCommandParser(stream);
     }
 
     @Override
-    public SmtpRCPTCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpRCPTCommandPreparator(context, this);
+    public SmtpRCPTCommandPreparator getPreparator(Context context) {
+        return new SmtpRCPTCommandPreparator(context.getSmtpContext(), this);
     }
 
     @Override
-    public SmtpRCPTCommandHandler getHandler(SmtpContext context) {
-        return new SmtpRCPTCommandHandler(context);
+    public SmtpRCPTCommandHandler getHandler(Context context) {
+        return new SmtpRCPTCommandHandler(context.getSmtpContext());
     }
 
     public List<String> getRcptParameters() {

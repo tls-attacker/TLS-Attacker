@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.protocol.exception.AdjustmentException;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -34,8 +34,9 @@ public class MaxFragmentLengthExtensionHandler
                 MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
         if (length == null) {
             LOGGER.warn("Unknown MaxFragmentLength: {}", maxFragmentLengthBytes);
-        } else {
-            LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
+        } else if (tlsContext.getTalkingConnectionEndType()
+                == tlsContext.getChooser().getMyConnectionPeer()) {
+            LOGGER.debug("Setting MaxFragmentLength: {}", length.getValue());
             tlsContext.setMaxFragmentLength(length);
             tlsContext.setPeerReceiveLimit(length.getReceiveLimit());
         }

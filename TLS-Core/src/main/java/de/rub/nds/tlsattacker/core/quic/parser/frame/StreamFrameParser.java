@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.quic.parser.frame;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
 import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public StreamFrameParser(InputStream stream) {
         super(stream);
@@ -23,6 +27,7 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
         parseStreamId(frame);
         QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
         if (frameType == QuicFrameType.STREAM_FRAME_OFF
+                || frameType == QuicFrameType.STREAM_FRAME_OFF_FIN
                 || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN
                 || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN_FIN) {
             parseOffset(frame);
@@ -31,7 +36,8 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
         }
         if (frameType == QuicFrameType.STREAM_FRAME_LEN
                 || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN
-                || frameType == QuicFrameType.STREAM_FRAME_LEN_FIN) {
+                || frameType == QuicFrameType.STREAM_FRAME_LEN_FIN
+                || frameType == QuicFrameType.STREAM_FRAME_OFF_LEN_FIN) {
             parseLength(frame);
         }
         parseData(frame, frameType);
@@ -39,14 +45,17 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
 
     protected void parseStreamId(StreamFrame frame) {
         frame.setStreamId((int) parseVariableLengthInteger());
+        LOGGER.debug("Stream ID: {}", frame.getStreamId().getValue());
     }
 
     protected void parseOffset(StreamFrame frame) {
         frame.setOffset((int) parseVariableLengthInteger());
+        LOGGER.debug("Offset: {}", frame.getOffset().getValue());
     }
 
     protected void parseLength(StreamFrame frame) {
         frame.setLength((int) parseVariableLengthInteger());
+        LOGGER.debug("Length: {}", frame.getLength().getValue());
     }
 
     protected void parseData(StreamFrame frame, QuicFrameType frameType) {
@@ -57,5 +66,6 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
         } else {
             frame.setData(parseByteArrayField(frame.getLength().getValue()));
         }
+        LOGGER.debug("Data: {}", frame.getData().getValue());
     }
 }

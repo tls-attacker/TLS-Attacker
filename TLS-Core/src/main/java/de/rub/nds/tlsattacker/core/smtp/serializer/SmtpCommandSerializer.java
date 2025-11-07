@@ -25,7 +25,7 @@ public class SmtpCommandSerializer<CommandT extends SmtpCommand>
     private static final String SP = " ";
     private static final String CRLF = "\r\n";
 
-    private final SmtpCommand command;
+    protected final SmtpCommand command;
 
     public SmtpCommandSerializer(SmtpContext context, CommandT smtpCommand) {
         super(smtpCommand, context);

@@ -70,6 +70,9 @@ public enum ExtensionType {
     ENCRYPTED_CLIENT_HELLO_DRAFT_12(new byte[] {(byte) 0xFF, (byte) 0x0c}),
     ENCRYPTED_CLIENT_HELLO(new byte[] {(byte) 0xFE, (byte) 0x0D}),
 
+    // Debug extension
+    DEBUG(new byte[] {(byte) 0xFB, (byte) 0xFB}),
+
     // GREASE constants
     GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}),
     GREASE_01(new byte[] {(byte) 0x1A, (byte) 0x1A}),
@@ -94,13 +97,13 @@ public enum ExtensionType {
 
     private static final Map<Integer, ExtensionType> MAP;
 
-    private ExtensionType(byte[] value) {
+    ExtensionType(byte[] value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ExtensionType c : ExtensionType.values()) {
+        for (ExtensionType c : values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }

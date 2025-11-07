@@ -8,22 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +51,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         prepareEcDhParams();
 
         SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooseSignatureAndHashAlgorithm();
+        signHashAlgo =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, false);
         prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
         byte[] signature = generateSignature(signHashAlgo, generateSignatureContents(msg));
         prepareSignature(msg, signature);
@@ -108,7 +108,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                             curve.getBasePoint());
             publicKeyBytes =
                     PointFormatter.formatToByteArray(
-                            (namedGroup.getGroupParameters()), publicKey, pointFormat.getFormat());
+                            namedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
         } else {
             LOGGER.warn(
                     "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
@@ -175,7 +175,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     protected byte[] generateSignatureContents(T msg) {
         EllipticCurveType curveType = chooser.getEcCurveType();
-        ByteArrayOutputStream ecParams = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream ecParams = new SilentByteArrayOutputStream();
         switch (curveType) {
             case EXPLICIT_PRIME:
             case EXPLICIT_CHAR2:
@@ -183,26 +183,16 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                         "Signing of explicit curves not implemented yet.");
             case NAMED_CURVE:
                 ecParams.write(curveType.getValue());
-                try {
-                    ecParams.write(msg.getNamedGroup().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException(
-                            "Failed to add named group to ECDHEServerKeyExchange signature", ex);
-                }
+                ecParams.write(msg.getNamedGroup().getValue());
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported curve type: " + curveType);
         }
 
         ecParams.write(msg.getPublicKeyLength().getValue());
-        try {
-            ecParams.write(msg.getPublicKey().getValue());
-        } catch (IOException ex) {
-            throw new PreparationException(
-                    "Failed to add serializedPublicKey to ECDHEServerKeyExchange signature", ex);
-        }
+        ecParams.write(msg.getPublicKey().getValue());
 
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getKeyExchangeComputations().getClientServerRandom().getValue(),
                 ecParams.toByteArray());
     }
@@ -216,7 +206,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     protected void prepareClientServerRandom(T msg) {
         msg.getKeyExchangeComputations()
                 .setClientServerRandom(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",

@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
@@ -37,7 +34,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     @Override
     public void adjustContext(NewSessionTicketMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
             adjustPskSets(message);
         } else {
             byte[] ticket = message.getTicket().getIdentity().getValue();
@@ -112,7 +109,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             digestAlgo.getJavaName(),
                             tlsContext.getChooser().getMasterSecret(),
                             HKDFunction.RESUMPTION_MASTER_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
             LOGGER.debug("Derived ResumptionMasterSecret: {}", resumptionMasterSecret);
             LOGGER.debug(
@@ -123,7 +121,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             resumptionMasterSecret,
                             HKDFunction.RESUMPTION,
                             pskSet.getTicketNonce(),
-                            macLength);
+                            macLength,
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             LOGGER.debug("New derived pre-shared-key: {}", psk);
             return psk;
 

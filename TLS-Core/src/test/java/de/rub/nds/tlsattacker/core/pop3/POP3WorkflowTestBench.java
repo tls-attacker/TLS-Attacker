@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.pop3;
 
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
@@ -35,13 +35,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
 @Disabled
 public class POP3WorkflowTestBench {
-    int PLAIN_PORT = 110;
+    int PLAIN_PORT = 11100;
 
     @BeforeEach
     public void changeLoglevel() {
@@ -79,7 +81,7 @@ public class POP3WorkflowTestBench {
         System.out.println(state.getWorkflowTrace().executedAsPlanned());
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
-        assert (state.getWorkflowTrace().executedAsPlanned());
+        assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -125,7 +127,7 @@ public class POP3WorkflowTestBench {
 
         System.out.println(state.getWorkflowTrace());
         System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
-        assert state.getWorkflowTrace().executedAsPlanned();
+        assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -160,6 +162,6 @@ public class POP3WorkflowTestBench {
 
         System.out.println(state.getWorkflowTrace());
         System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
-        assert state.getWorkflowTrace().executedAsPlanned();
+        assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 }

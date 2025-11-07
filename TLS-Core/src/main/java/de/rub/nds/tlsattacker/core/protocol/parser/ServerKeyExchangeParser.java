@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -32,8 +31,7 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
     public ServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);
         this.keyExchangeAlgorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(
-                        tlsContext.getChooser().getSelectedCipherSuite());
+                tlsContext.getChooser().getSelectedCipherSuite().getKeyExchangeAlgorithm();
     }
 
     protected KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
@@ -60,5 +58,27 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      */
     protected boolean isDTLS12() {
         return getVersion() == ProtocolVersion.DTLS12;
+    }
+
+    /**
+     * Determines whether signature fields should be parsed based on the key exchange algorithm.
+     *
+     * <p>For anonymous key exchange algorithms (DH_ANON, ECDH_ANON), no signature should be parsed.
+     * For all other algorithms, signatures are required.
+     *
+     * <p>If keyExchangeAlgorithm is null (which can happen in test scenarios where the cipher suite
+     * context is not fully established), we assume it's a non-anonymous exchange that requires
+     * signature parsing.
+     *
+     * @return true if signature fields should be parsed, false otherwise
+     */
+    protected boolean shouldParseSignature() {
+        KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm();
+
+        if (keyExchangeAlgorithm == null) {
+            return true;
+        }
+
+        return !keyExchangeAlgorithm.isAnon();
     }
 }

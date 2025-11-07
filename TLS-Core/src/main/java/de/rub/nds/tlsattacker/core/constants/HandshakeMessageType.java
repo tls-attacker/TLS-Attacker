@@ -22,6 +22,8 @@ public enum HandshakeMessageType {
     END_OF_EARLY_DATA((byte) 5),
     // HELLO_RETRY_REQUEST((byte) 6), ONLY IN TLS 1.3 DRAFT
     ENCRYPTED_EXTENSIONS((byte) 8),
+    REQUEST_CONNECTION_ID((byte) 9),
+    NEW_CONNECTION_ID((byte) 10),
     CERTIFICATE((byte) 11),
     SERVER_KEY_EXCHANGE((byte) 12),
     CERTIFICATE_REQUEST((byte) 13),
@@ -38,17 +40,17 @@ public enum HandshakeMessageType {
 
     private static final Map<Byte, HandshakeMessageType> MAP;
 
-    private HandshakeMessageType(byte value) {
+    HandshakeMessageType(byte value) {
         this.value = value;
     }
 
-    private HandshakeMessageType() {
+    HandshakeMessageType() {
         this.value = -1;
     }
 
     static {
         MAP = new HashMap<>();
-        for (HandshakeMessageType cm : HandshakeMessageType.values()) {
+        for (HandshakeMessageType cm : values()) {
             if (cm == UNKNOWN || cm.name().contains("SSL2")) {
                 continue;
             }

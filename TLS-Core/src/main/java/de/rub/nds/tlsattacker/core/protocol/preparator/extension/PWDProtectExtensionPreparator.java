@@ -8,16 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
@@ -100,7 +100,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
                         HKDFunction.extract(
                                 hkdfAlgorithm,
                                 null,
-                                ArrayConverter.bigIntegerToByteArray(sharedSecret)),
+                                DataConverter.bigIntegerToByteArray(sharedSecret)),
                         new byte[0],
                         curve.getModulus().bitLength() / Bits.IN_A_BYTE);
         LOGGER.debug("Username encryption key: {}", key);
@@ -122,8 +122,8 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
                         macKey,
                         chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
         msg.setUsername(
-                ArrayConverter.concatenate(
-                        ArrayConverter.bigIntegerToByteArray(
+                DataConverter.concatenate(
+                        DataConverter.bigIntegerToByteArray(
                                 clientPublicKey,
                                 curve.getModulus().bitLength() / Bits.IN_A_BYTE,
                                 true),

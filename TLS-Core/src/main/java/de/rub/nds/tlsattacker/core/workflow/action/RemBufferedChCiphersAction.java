@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.exception.WorkflowExecutionException;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,16 +98,11 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         byte[] ciphersBytes = ch.getCipherSuites().getValue();
         List<CipherSuite> ciphers = CipherSuite.getCipherSuites(ciphersBytes);
         int origCiphersLength = ciphersBytes.length;
-        ByteArrayOutputStream newCiphersBytes = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream newCiphersBytes = new SilentByteArrayOutputStream();
         for (CipherSuite cs : ciphers) {
             LOGGER.debug("cipher.name, cipher.val = {}, {}", cs.name(), cs.getValue());
             if (!removeCiphers.contains(cs)) {
-                try {
-                    newCiphersBytes.write(cs.getByteValue());
-                } catch (IOException ex) {
-                    throw new WorkflowExecutionException(
-                            "Could not write CipherSuite value to byte[]", ex);
-                }
+                newCiphersBytes.write(cs.getByteValue());
             }
         }
         ch.setCipherSuites(newCiphersBytes.toByteArray());
@@ -155,7 +148,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         StringBuilder sb = new StringBuilder();
         sb.append("cipher suite bytes length: ").append(ch.getCipherSuites().getValue().length);
         sb.append("\ncipher suite bytes:");
-        sb.append(ArrayConverter.bytesToHexString(ch.getCipherSuites().getValue()));
+        sb.append(DataConverter.bytesToRawHexString(ch.getCipherSuites().getValue()));
         sb.append("\nreadable cipher suite list:\n");
         for (CipherSuite cs : CipherSuite.getCipherSuites(ch.getCipherSuites().getValue())) {
             sb.append(cs.name()).append("\n");

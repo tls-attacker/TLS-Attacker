@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,8 +48,7 @@ public class ExtendedRandomExtensionPreparator
             if (!(chooser.getServerExtendedRandom().length
                     == chooser.getClientExtendedRandom().length)) {
                 LOGGER.debug(
-                        "Extended Random of Client is not same length as Default Server Extended Random."
-                                + " Generating fresh Server Extended Random of appropriate length.");
+                        "Extended Random of Client is not same length as Default Server Extended Random. Generating fresh Server Extended Random of appropriate length.");
                 byte[] generatedExtendedRandom =
                         prepareExtendedRandom(chooser.getClientExtendedRandom().length);
                 message.setExtendedRandom(generatedExtendedRandom);
@@ -65,12 +64,12 @@ public class ExtendedRandomExtensionPreparator
 
     private void prepareExtendedRandomLength(ExtendedRandomExtensionMessage msg) {
         msg.setExtendedRandomLength(msg.getExtendedRandom().getValue().length);
-        LOGGER.debug("ExtendedRandomLength: " + msg.getExtendedRandomLength().getValue());
+        LOGGER.debug("ExtendedRandomLength: {}", msg.getExtendedRandomLength().getValue());
     }
 
     private byte[] prepareExtendedRandom(int length) {
         byte[] randomBytes = new byte[length];
-        new Random().nextBytes(randomBytes);
+        RandomHelper.getBadSecureRandom().nextBytes(randomBytes);
         return randomBytes;
     }
 }

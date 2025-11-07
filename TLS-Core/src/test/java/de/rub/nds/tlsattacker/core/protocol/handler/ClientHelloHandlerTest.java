@@ -37,21 +37,23 @@ public class ClientHelloHandlerTest
         message.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 
         handler.adjustContext(message);
-        assertArrayEquals(context.getClientRandom(), new byte[] {0, 1, 2, 3, 4, 5});
-        assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
-        assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
-        assertEquals(2, context.getClientSupportedCompressions().size());
-        assertArrayEquals(context.getClientSessionId(), new byte[] {6, 6, 6});
-        assertEquals(2, context.getClientSupportedCipherSuites().size());
+        assertArrayEquals(tlsContext.getClientRandom(), new byte[] {0, 1, 2, 3, 4, 5});
+        assertTrue(tlsContext.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
+        assertTrue(tlsContext.getClientSupportedCompressions().contains(CompressionMethod.NULL));
+        assertEquals(2, tlsContext.getClientSupportedCompressions().size());
+        assertArrayEquals(tlsContext.getClientSessionId(), new byte[] {6, 6, 6});
+        assertEquals(2, tlsContext.getClientSupportedCipherSuites().size());
         assertTrue(
-                context.getClientSupportedCipherSuites()
+                tlsContext
+                        .getClientSupportedCipherSuites()
                         .contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(
-                context.getClientSupportedCipherSuites()
+                tlsContext
+                        .getClientSupportedCipherSuites()
                         .contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
-        assertNull(context.getDtlsCookie());
+        assertNull(tlsContext.getDtlsCookie());
         assertArrayEquals(
-                context.getHighestClientProtocolVersion().getValue(),
+                tlsContext.getHighestClientProtocolVersion().getValue(),
                 ProtocolVersion.TLS12.getValue());
     }
 
@@ -70,21 +72,23 @@ public class ClientHelloHandlerTest
                 });
         message.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         handler.adjustContext(message);
-        assertArrayEquals(context.getClientRandom(), new byte[] {0, 1, 2, 3, 4, 5});
-        assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
-        assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
-        assertEquals(2, context.getClientSupportedCompressions().size());
-        assertArrayEquals(context.getClientSessionId(), new byte[] {6, 6, 6});
-        assertEquals(2, context.getClientSupportedCipherSuites().size());
+        assertArrayEquals(tlsContext.getClientRandom(), new byte[] {0, 1, 2, 3, 4, 5});
+        assertTrue(tlsContext.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
+        assertTrue(tlsContext.getClientSupportedCompressions().contains(CompressionMethod.NULL));
+        assertEquals(2, tlsContext.getClientSupportedCompressions().size());
+        assertArrayEquals(tlsContext.getClientSessionId(), new byte[] {6, 6, 6});
+        assertEquals(2, tlsContext.getClientSupportedCipherSuites().size());
         assertTrue(
-                context.getClientSupportedCipherSuites()
+                tlsContext
+                        .getClientSupportedCipherSuites()
                         .contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(
-                context.getClientSupportedCipherSuites()
+                tlsContext
+                        .getClientSupportedCipherSuites()
                         .contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
-        assertArrayEquals(context.getDtlsCookie(), new byte[] {2, 2, 3});
+        assertArrayEquals(tlsContext.getDtlsCookie(), new byte[] {2, 2, 3});
         assertArrayEquals(
-                context.getHighestClientProtocolVersion().getValue(),
+                tlsContext.getHighestClientProtocolVersion().getValue(),
                 ProtocolVersion.TLS12.getValue());
     }
 

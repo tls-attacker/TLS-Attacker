@@ -23,7 +23,7 @@ public enum HpkeMode {
     MODE_AUTH_PSK(new byte[] {(byte) 0x03}),
     ;
 
-    private HpkeMode(byte[] byteValue) {
+    HpkeMode(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 
@@ -36,7 +36,7 @@ public enum HpkeMode {
 
     static {
         MAP = new HashMap<>();
-        for (HpkeMode version : HpkeMode.values()) {
+        for (HpkeMode version : values()) {
             byte[] versionBytes = version.getByteValue();
             if (versionBytes != null) {
                 BigInteger hashMapKey = new BigInteger(versionBytes);

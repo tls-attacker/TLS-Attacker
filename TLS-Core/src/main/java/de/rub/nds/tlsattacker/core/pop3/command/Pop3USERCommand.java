@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3USERCommandParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3USERCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -19,15 +20,13 @@ import java.io.InputStream;
 public class Pop3USERCommand extends Pop3Command {
     private String username;
 
-    private static final String commandName = "USER";
-
-    public Pop3USERCommand() {
-        super(commandName);
+    public Pop3USERCommand(String username) {
+        super(Pop3CommandType.USER, username);
+        this.username = username;
     }
 
-    public Pop3USERCommand(String username) {
-        super(commandName, username);
-        this.username = username;
+    public Pop3USERCommand() {
+        super(Pop3CommandType.USER, null);
     }
 
     public String getUsername() {
@@ -39,12 +38,12 @@ public class Pop3USERCommand extends Pop3Command {
     }
 
     @Override
-    public Pop3USERCommandParser getParser(Pop3Context context, InputStream stream) {
+    public Pop3USERCommandParser getParser(Context context, InputStream stream) {
         return new Pop3USERCommandParser(stream);
     }
 
     @Override
-    public Pop3USERCommandPreparator getPreparator(Pop3Context context) {
-        return new Pop3USERCommandPreparator(context, this);
+    public Pop3USERCommandPreparator getPreparator(Context context) {
+        return new Pop3USERCommandPreparator(context.getPop3Context(), this);
     }
 }

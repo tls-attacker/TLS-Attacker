@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -29,7 +28,6 @@ public class RecordCipherFactory {
                 LOGGER.warn("Cipher {} not implemented. Using Null Cipher instead", cipherSuite);
                 return getNullCipher(tlsContext);
             } else {
-                CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
                 CipherState state =
                         new CipherState(
                                 tlsContext.getChooser().getSelectedProtocolVersion(),
@@ -37,7 +35,12 @@ public class RecordCipherFactory {
                                 keySet,
                                 tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC),
                                 connectionId);
-                switch (type) {
+                CipherType cipherType = cipherSuite.getCipherType();
+                if (cipherType == null) {
+                    LOGGER.warn("CipherType is null. Using Null Cipher instead");
+                    return new RecordNullCipher(tlsContext, state);
+                }
+                switch (cipherType) {
                     case AEAD:
                         return new RecordAEADCipher(tlsContext, state);
                     case BLOCK:
@@ -45,7 +48,7 @@ public class RecordCipherFactory {
                     case STREAM:
                         return new RecordStreamCipher(tlsContext, state);
                     default:
-                        LOGGER.warn("UnknownCipherType: {}", type);
+                        LOGGER.warn("Unknown CipherType: {}", cipherType);
                         return new RecordNullCipher(tlsContext, state);
                 }
             }

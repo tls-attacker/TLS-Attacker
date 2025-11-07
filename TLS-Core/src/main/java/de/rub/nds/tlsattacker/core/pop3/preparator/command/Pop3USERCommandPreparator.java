@@ -19,7 +19,6 @@ public class Pop3USERCommandPreparator extends Pop3CommandPreparator<Pop3USERCom
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("USER");
         if (this.getObject().getUsername() == null) {
             this.getObject().setUsername(chooser.getConfig().getDefaultPop3Username());
         }

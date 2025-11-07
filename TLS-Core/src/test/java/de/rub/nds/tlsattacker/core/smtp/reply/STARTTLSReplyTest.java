@@ -29,7 +29,7 @@ class STARTTLSReplyTest {
         SmtpSTARTTLSReply starttlsReply = new SmtpSTARTTLSReply();
         Parser parser =
                 starttlsReply.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(starttlsReply);
 

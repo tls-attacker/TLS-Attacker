@@ -40,8 +40,8 @@ public class SignatureAndHashAlgorithmsExtensionSerializer
                 msg.getSignatureAndHashAlgorithmsLength().getValue(),
                 ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS);
         LOGGER.debug(
-                "SignatureAndHashAlgorithmsLength: "
-                        + msg.getSignatureAndHashAlgorithmsLength().getValue());
+                "SignatureAndHashAlgorithmsLength: {}",
+                msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 
     private void writeSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.tlsattacker.core.smtp.SmtpMappingUtil;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
@@ -30,18 +29,22 @@ public class SmtpContext extends LayerContext {
 
     /** Stores the recipients of a mail (supplied via MAIL TO). Each entry is a recipient. */
     private List<String> recipientBuffer = new ArrayList<>();
+
     /** Stores the data of a mail (supplied via DATA). Each entry is a line of the mail. */
     private List<String> mailDataBuffer = new ArrayList<>();
+
     /**
      * Stores the identity of the client given by EHLO/HELO. See {@link SmtpContext#clientUsedHELO},
      * because legacy HELO clients do not support the client identity being an address literal.
      */
     private String clientIdentity;
+
     /** Stores the domain of the server given by the EHLO/HELO reply. */
     private String serverIdentity;
 
     /** Stores the negotiated extensions by the server given by the EHLO reply. */
     private List<SmtpServiceExtension> negotiatedExtensions = new ArrayList<>();
+
     /**
      * Indicates whether the server supports HELO (which is very old legacy by now). This affects
      * {@link SmtpContext#clientIdentity} and the extension negotiation.
@@ -65,6 +68,7 @@ public class SmtpContext extends LayerContext {
      * </blockquote>
      */
     private boolean clientRequestedClose = false;
+
     /**
      * Whether the server has acknowledged a client's request to close the connection.
      *
@@ -93,7 +97,7 @@ public class SmtpContext extends LayerContext {
      * SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
      * interpret the replies, because the reply type cannot be determined by the content alone.
      *
-     * @see SmtpMappingUtil
+     * @see de.rub.nds.tlsattacker.core.smtp.SmtpCommandType
      * @see de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer SmtpLayer
      */
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
@@ -103,6 +107,7 @@ public class SmtpContext extends LayerContext {
 
     public SmtpContext(Context context) {
         super(context);
+        context.setSmtpContext(this);
     }
 
     /** Clear all buffers. */
@@ -174,7 +179,7 @@ public class SmtpContext extends LayerContext {
      */
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
-        return SmtpMappingUtil.getMatchingReply(command);
+        return command.getCommandType().createReply();
     }
 
     public boolean isClientUsedHELO() {

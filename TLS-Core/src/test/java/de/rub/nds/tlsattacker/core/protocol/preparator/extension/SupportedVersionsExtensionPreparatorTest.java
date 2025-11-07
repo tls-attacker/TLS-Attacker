@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
@@ -42,7 +42,7 @@ public class SupportedVersionsExtensionPreparatorTest
         preparator.prepare();
         assertArrayEquals(
                 message.getSupportedVersions().getValue(),
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         ProtocolVersion.TLS13.getValue(), ProtocolVersion.TLS12.getValue()));
         assertEquals(4, message.getSupportedVersionsLength().getValue());
     }

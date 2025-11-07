@@ -12,9 +12,8 @@ import static de.rub.nds.tlsattacker.core.dtls.FragmentUtils.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,7 @@ public class FragmentCollectorTest {
 
     @BeforeEach
     public void setUp() {
-        collector = new FragmentCollector(Config.createConfig(), (byte) 0, 0, 10);
+        collector = new FragmentCollector(new Config(), (byte) 0, 0, 10);
     }
 
     /** Test that addFragment is successful. (Does not throw an exception */
@@ -115,7 +114,7 @@ public class FragmentCollectorTest {
     /** Test buildCombinedFragment in the usual case. */
     @Test
     public void testBuildCombinedFragment() {
-        byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
+        byte[] original = DataConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
         collector.addFragment(fragmentOfMsg(0, 3, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 8, 2, original, 0));
@@ -126,7 +125,7 @@ public class FragmentCollectorTest {
     /** Test buildCombinedFragment when fragments have been inserted disorderly with overlaps. */
     @Test
     public void testBuildCombinedFragmentDisorderlyOverlap() {
-        byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
+        byte[] original = DataConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 5, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 0, 3, original, 0));
         collector.addFragment(fragmentOfMsg(0, 2, 4, original, 0));
@@ -137,11 +136,11 @@ public class FragmentCollectorTest {
     /** Test buildCombinedFragment when not all bytes have been received. */
     @Test
     public void testBuildCombinedFragmentIncomplete() {
-        byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
+        byte[] original = DataConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 5, original, 0));
         collector.addFragment(fragmentOfMsg(0, 6, 4, original, 0));
         DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
-        byte[] expected = ArrayConverter.hexStringToByteArray("123456789A3456789A");
+        byte[] expected = DataConverter.hexStringToByteArray("123456789A3456789A");
         assertFragment(fragment, 0, 10, expected);
     }
 
@@ -151,16 +150,16 @@ public class FragmentCollectorTest {
      */
     @Test
     public void testBuildCombinedFragmentAddUnfitting() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setAcceptOnlyFittingDtlsFragments(false);
         collector = new FragmentCollector(config, (byte) 0, 6, 10);
-        byte[] original = ArrayConverter.hexStringToByteArray("123456789A123456789A");
+        byte[] original = DataConverter.hexStringToByteArray("123456789A123456789A");
         collector.addFragment(fragmentOfMsg(0, 0, 5, original, 0));
         DtlsHandshakeMessageFragment unfitting = fragmentOfMsg(0, 6, 4, original, 0);
         unfitting.setLength(20);
         collector.addFragment(unfitting);
         DtlsHandshakeMessageFragment fragment = collector.buildCombinedFragment();
-        byte[] expected = ArrayConverter.hexStringToByteArray("123456789A3456789A");
+        byte[] expected = DataConverter.hexStringToByteArray("123456789A3456789A");
         assertFragment(fragment, 0, 10, expected);
     }
 }

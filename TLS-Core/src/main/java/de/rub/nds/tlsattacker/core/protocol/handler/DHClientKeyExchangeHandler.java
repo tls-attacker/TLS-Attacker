@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class DHClientKeyExchangeHandler<KeyExchangeMessage extends DHClientKeyExchangeMessage>
         extends ClientKeyExchangeHandler<KeyExchangeMessage> {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

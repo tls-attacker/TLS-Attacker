@@ -27,7 +27,7 @@ class Pop3NOOPReplyTest {
         Pop3NOOPReply noop = new Pop3NOOPReply();
         noop.setStatusIndicator("+OK");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = noop.getSerializer(context);
+        Serializer<?> serializer = noop.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("+OK\r\n", serializer.getOutputStream().toString());

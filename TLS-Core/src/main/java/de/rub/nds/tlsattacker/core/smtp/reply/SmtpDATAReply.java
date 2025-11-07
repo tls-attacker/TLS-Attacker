@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -17,4 +18,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * @see SmtpReply
  */
 @XmlRootElement
-public class SmtpDATAReply extends SmtpReply {}
+public class SmtpDATAReply extends SmtpReply {
+    public SmtpDATAReply() {
+        super(SmtpCommandType.DATA);
+    }
+}

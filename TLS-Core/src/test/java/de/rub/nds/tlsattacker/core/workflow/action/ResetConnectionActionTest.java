@@ -10,18 +10,18 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectio
     ResetConnectionActionTest() throws NoSuchAlgorithmException, CryptoException {
         super(new ResetConnectionAction(), ResetConnectionAction.class);
         context = state.getTlsContext();
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         RecordCipher recordCipher =
                 new RecordBlockCipher(
@@ -44,7 +44,7 @@ public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectio
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         context.getRecordLayer().updateEncryptionCipher(recordCipher);
         context.getRecordLayer().updateDecryptionCipher(recordCipher);
@@ -60,8 +60,8 @@ public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectio
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
-        assertEquals(context.getActiveClientKeySetType(), Tls13KeySetType.NONE);
-        assertEquals(context.getActiveServerKeySetType(), Tls13KeySetType.NONE);
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertFalse(context.getTransportHandler().isClosed());
     }
 

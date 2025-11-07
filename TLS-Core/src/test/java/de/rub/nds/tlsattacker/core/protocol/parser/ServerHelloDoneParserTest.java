@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -27,15 +27,15 @@ public class ServerHelloDoneParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS12,
-                        ArrayConverter.hexStringToByteArray("0e000000"),
+                        DataConverter.hexStringToByteArray("0e000000"),
                         List.of(HandshakeMessageType.SERVER_HELLO_DONE.getValue(), 0)),
                 Arguments.of(
                         ProtocolVersion.TLS11,
-                        ArrayConverter.hexStringToByteArray("0e000000"),
+                        DataConverter.hexStringToByteArray("0e000000"),
                         List.of(HandshakeMessageType.SERVER_HELLO_DONE.getValue(), 0)),
                 Arguments.of(
                         ProtocolVersion.TLS10,
-                        ArrayConverter.hexStringToByteArray("0e000000"),
+                        DataConverter.hexStringToByteArray("0e000000"),
                         List.of(HandshakeMessageType.SERVER_HELLO_DONE.getValue(), 0)));
     }
 }

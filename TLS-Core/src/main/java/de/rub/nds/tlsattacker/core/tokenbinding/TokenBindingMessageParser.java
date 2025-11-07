@@ -25,22 +25,22 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
     @Override
     public void parse(TokenBindingMessage message) {
         message.setTokenbindingsLength(parseIntField(TokenBindingLength.TOKENBINDINGS));
-        LOGGER.debug("TokenbindingLength:" + message.getTokenbindingsLength().getValue());
+        LOGGER.debug("TokenbindingLength: {}", message.getTokenbindingsLength().getValue());
         message.setTokenbindingType(parseByteField(TokenBindingLength.BINDING_TYPE));
-        LOGGER.debug("TokenBindingType:" + message.getTokenbindingType().getValue());
+        LOGGER.debug("TokenBindingType: {}", message.getTokenbindingType().getValue());
 
         message.setKeyParameter(parseByteField(TokenBindingLength.KEY_PARAMETER));
-        LOGGER.debug("KeyParameter:" + message.getKeyParameter().getValue());
+        LOGGER.debug("KeyParameter: {}", message.getKeyParameter().getValue());
 
         TokenBindingKeyParameters keyParameter =
                 TokenBindingKeyParameters.getTokenBindingKeyParameter(
                         message.getKeyParameter().getValue());
         message.setKeyLength(parseIntField(TokenBindingLength.KEY));
-        LOGGER.debug("KeyLength:" + message.getKeyLength().getValue());
+        LOGGER.debug("KeyLength: {}", message.getKeyLength().getValue());
 
         if (keyParameter.equals(TokenBindingKeyParameters.ECDSAP256)) {
             message.setPointLength(parseIntField(TokenBindingLength.POINT));
-            LOGGER.debug("PointLength:" + message.getPointLength().getValue());
+            LOGGER.debug("PointLength: {}", message.getPointLength().getValue());
 
             message.setPoint(parseByteArrayField(message.getPointLength().getValue()));
             LOGGER.debug("Point: {}", message.getPoint().getValue());
@@ -53,13 +53,13 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
                     parseByteArrayField(message.getPublicExponentLength().getValue()));
         }
         message.setSignatureLength(parseIntField(TokenBindingLength.SIGNATURE));
-        LOGGER.debug("SignatureLength:" + message.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", message.getSignatureLength().getValue());
 
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
         LOGGER.debug("Signature: {}", message.getSignature().getValue());
 
         message.setExtensionLength(parseIntField(TokenBindingLength.EXTENSIONS));
-        LOGGER.debug("ExtensionLength:" + message.getExtensionLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", message.getExtensionLength().getValue());
 
         message.setExtensionBytes(parseByteArrayField(message.getExtensionLength().getValue()));
         LOGGER.debug("Extensions: {}", message.getExtensionBytes().getValue());

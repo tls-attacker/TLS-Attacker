@@ -19,11 +19,8 @@ public class Pop3DELECommandPreparator extends Pop3CommandPreparator<Pop3DELECom
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("DELE");
         if (this.getObject().getMessageNumber() == null) {
             this.getObject().setMessageNumber(chooser.getConfig().getDefaultPop3MessageNumber());
         }
-
-        this.getObject().setArguments(String.valueOf(this.getObject().getMessageNumber()));
     }
 }

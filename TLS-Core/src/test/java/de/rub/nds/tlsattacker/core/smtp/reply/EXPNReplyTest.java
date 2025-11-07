@@ -30,7 +30,7 @@ public class EXPNReplyTest {
         expn.addUsernameAndMailbox("Jane Doe", "<jane.doe@mail.com>");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = expn.getSerializer(context);
+        Serializer<?> serializer = expn.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals(
@@ -56,7 +56,7 @@ public class EXPNReplyTest {
         assertEquals(expn.getData().get(1).getMailbox(), "<jane.doe@mail.com>");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = expn.getSerializer(context);
+        Serializer<?> serializer = expn.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals(reply, serializer.getOutputStream().toString());
     }

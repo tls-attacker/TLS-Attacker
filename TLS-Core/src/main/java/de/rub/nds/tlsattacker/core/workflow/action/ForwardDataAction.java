@@ -8,173 +8,82 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlElement;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ForwardData")
-public class ForwardDataAction extends TlsAction {
+public class ForwardDataAction extends CommonForwardAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    @XmlElement(name = "from")
-    protected String receiveFromAlias = null;
-
-    @XmlElement(name = "to")
-    protected String forwardToAlias = null;
-
-    @XmlTransient protected boolean executedAsPlanned = false;
 
     public ForwardDataAction() {}
 
     public ForwardDataAction(String receiveFromAlias, String forwardToAlias) {
-        this.receiveFromAlias = receiveFromAlias;
-        this.forwardToAlias = forwardToAlias;
+        super(receiveFromAlias, forwardToAlias);
     }
 
-    public void setReceiveFromAlias(String receiveFromAlias) {
-        this.receiveFromAlias = receiveFromAlias;
-    }
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Forward Data Action:\n");
+        sb.append("Receive from alias: ").append(receiveFromAlias).append("\n");
 
-    public void setForwardToAlias(String forwardToAlias) {
-        this.forwardToAlias = forwardToAlias;
+        sb.append("\n\tReceived:");
+        if ((getReceivedRecords() != null) && (!getReceivedRecords().isEmpty())) {
+            for (Record record : getReceivedRecords()) {
+                sb.append(record.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no records set)");
+        }
+        sb.append("\n");
+        sb.append("Forwarded to alias: ").append(forwardToAlias).append("\n");
+        if (getSentRecords() != null) {
+            sb.append("\t");
+            for (Record record : getSentRecords()) {
+                sb.append(record.toCompactString());
+                sb.append(", ");
+            }
+            sb.append("\n");
+        } else {
+            sb.append("null (no records set)");
+        }
+        return sb.toString();
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
-        }
-
-        assertAliasesSetProperly();
-
-        Context receiveFromCtx = state.getContext(receiveFromAlias);
-        Context forwardToCtx = state.getContext(forwardToAlias);
-
-        byte[] data = receiveData(receiveFromCtx);
-        sendData(forwardToCtx, data);
-        setExecuted(true);
-        executedAsPlanned = true;
-    }
-
-    private byte[] receiveData(Context receiveFromContext) {
-        LOGGER.debug("Receiving Messages...");
-        LayerStack layerStack = receiveFromContext.getLayerStack();
-        try {
-            layerStack.getLowestLayer().receiveData();
-            return layerStack
-                    .getLowestLayer()
-                    .getDataStream()
-                    .readChunk(layerStack.getLowestLayer().getDataStream().available());
-        } catch (IOException ex) {
-            LOGGER.warn(ex);
-            return new byte[0];
-        }
-    }
-
-    private void sendData(Context forwardToContext, byte[] data) {
-        LayerStack layerStack = forwardToContext.getLayerStack();
-        try {
-            layerStack.getLowestLayer().sendData(null, data);
-        } catch (IOException ex) {
-            LOGGER.warn(ex);
-        }
-    }
-
-    public String getReceiveFromAlias() {
-        return receiveFromAlias;
-    }
-
-    public String getForwardToAlias() {
-        return forwardToAlias;
+    protected List<LayerConfiguration<?>> createReceiveConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.TCP));
+        configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.UDP));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override
-    public boolean executedAsPlanned() {
-        return executedAsPlanned;
-    }
-
-    @Override
-    public void reset() {
-        executedAsPlanned = false;
-        setExecuted(null);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.receiveFromAlias);
-        hash = 89 * hash + Objects.hashCode(this.forwardToAlias);
-        hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
-        return hash;
-    }
-
-    /**
-     * TODO: the equals methods for message/record actions and similar classes would require that
-     * messages and records implement equals for a proper implementation. The present approach is
-     * not satisfying.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+    protected List<LayerConfiguration<?>> createSendConfiguration(
+            State state, LayerStackProcessingResult receivedResult) {
+        TlsContext tlsContext = state.getTlsContext(getForwardToAlias());
+        List<Record> receivedRecords = getReceivedRecords();
+        for (Record record : receivedRecords) {
+            record.setShouldPrepare(false); // Do not recompute the messages on the message layer
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ForwardDataAction other = (ForwardDataAction) obj;
-        if (!Objects.equals(this.receiveFromAlias, other.receiveFromAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.forwardToAlias, other.forwardToAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.executedAsPlanned, other.executedAsPlanned)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public Set<String> getAllAliases() {
-        Set<String> aliases = new LinkedHashSet<>();
-        aliases.add(forwardToAlias);
-        aliases.add(receiveFromAlias);
-        return aliases;
-    }
-
-    @Override
-    public void assertAliasesSetProperly() throws ConfigurationException {
-        if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new ActionExecutionException(
-                    "Can't execute "
-                            + this.getClass().getSimpleName()
-                            + " with empty receive alias (if using XML: add <from/>)");
-        }
-        if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new ActionExecutionException(
-                    "Can't execute "
-                            + this.getClass().getSimpleName()
-                            + " with empty forward alis (if using XML: add <to/>)");
-        }
-    }
-
-    @Override
-    public void filter(TlsAction defaultAction) {
-        super.filter(defaultAction);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, receivedRecords));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

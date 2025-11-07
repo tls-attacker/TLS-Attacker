@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMAILCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpMAILCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpMAILCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,26 +31,22 @@ import java.util.List;
  */
 @XmlRootElement
 public class SmtpMAILCommand extends SmtpCommand {
-
-    private static final String COMMAND = "MAIL";
-
     private String reversePath;
 
-    private final List<SmtpParameters> MAILparameters;
+    private List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
-        super(COMMAND);
+        super(SmtpCommandType.MAIL);
         this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath) {
-        super(COMMAND, reversePath);
+        this();
         this.reversePath = reversePath;
-        this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath, List<SmtpParameters> parameters) {
-        super(COMMAND, reversePath);
+        this();
         this.reversePath = reversePath;
         this.MAILparameters = parameters;
     }
@@ -68,18 +65,18 @@ public class SmtpMAILCommand extends SmtpCommand {
     }
 
     @Override
-    public SmtpMAILCommandParser getParser(SmtpContext context, InputStream stream) {
+    public SmtpMAILCommandParser getParser(Context context, InputStream stream) {
         return new SmtpMAILCommandParser(stream);
     }
 
     @Override
-    public SmtpMAILCommandPreparator getPreparator(SmtpContext context) {
-        return new SmtpMAILCommandPreparator(context, this);
+    public SmtpMAILCommandPreparator getPreparator(Context context) {
+        return new SmtpMAILCommandPreparator(context.getSmtpContext(), this);
     }
 
     @Override
-    public SmtpMAILCommandHandler getHandler(SmtpContext context) {
-        return new SmtpMAILCommandHandler(context);
+    public SmtpMAILCommandHandler getHandler(Context context) {
+        return new SmtpMAILCommandHandler(context.getSmtpContext());
     }
 
     public List<SmtpParameters> getMAILparameters() {

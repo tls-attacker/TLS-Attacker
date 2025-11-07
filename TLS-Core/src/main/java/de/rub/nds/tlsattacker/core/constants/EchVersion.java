@@ -13,7 +13,7 @@ public enum EchVersion {
     // TODO: support draft 6-14
     DRAFT_14(EchConfigVersion.DRAFT_FF0D);
 
-    private EchVersion(EchConfigVersion echConfigVersion) {
+    EchVersion(EchConfigVersion echConfigVersion) {
         this.echConfigVersion = echConfigVersion;
     }
 

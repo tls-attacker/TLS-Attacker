@@ -8,14 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class Delegate {
-
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     public abstract void applyDelegate(Config config) throws ConfigurationException;
 }

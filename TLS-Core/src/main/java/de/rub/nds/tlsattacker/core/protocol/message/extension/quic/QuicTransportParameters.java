@@ -19,13 +19,14 @@ import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.consta
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.INITIAL_MAX_STREAM_DATA_UNI;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.INITIAL_SOURCE_CONNECTION_ID;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.MAX_ACK_DELAY;
+import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.MAX_DATAGRAM_FRAME_SIZE;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.MAX_IDLE_TIMEOUT;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.MAX_UDP_PAYLOAD_SIZE;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.ORIGINAL_DESTINATION_CONNECTION_ID;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.PREFERRED_ADDRESS;
 import static de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes.RETRY_SOURCE_CONNECTION_ID;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +37,14 @@ import java.util.Objects;
 public class QuicTransportParameters {
 
     private byte[] originalDestinationConnectionId;
+
     private byte[] initialSourceConnectionId;
+
     private byte[] retrySourceConnectionId;
 
     private Long maxIdleTimeout;
     private Long maxUdpPayloadSize;
+    private Long maxDatagramFrameSize;
     private Long initialMaxData;
     private Long initialMaxStreamDataBidiLocal;
     private Long initialMaxStreamDataBidiRemote;
@@ -76,6 +80,11 @@ public class QuicTransportParameters {
                     break;
                 case MAX_IDLE_TIMEOUT:
                     this.maxIdleTimeout =
+                            VariableLengthIntegerEncoding.decodeVariableLengthInteger(
+                                    parameterEntry.getEntryValue().getValue());
+                    break;
+                case MAX_DATAGRAM_FRAME_SIZE:
+                    this.maxDatagramFrameSize =
                             VariableLengthIntegerEncoding.decodeVariableLengthInteger(
                                     parameterEntry.getEntryValue().getValue());
                     break;
@@ -156,6 +165,7 @@ public class QuicTransportParameters {
         quicTransportParameters.setInitialMaxStreamsUni(2147745792L);
         quicTransportParameters.setAckDelayExponent(0L);
         quicTransportParameters.setMaxAckDelay(2000L);
+        quicTransportParameters.setMaxDatagramFrameSize(65527L);
         return quicTransportParameters;
     }
 
@@ -179,6 +189,11 @@ public class QuicTransportParameters {
         }
         if (this.maxIdleTimeout != null) {
             entryList.add(new QuicTransportParameterEntry(MAX_IDLE_TIMEOUT, this.maxIdleTimeout));
+        }
+        if (this.maxDatagramFrameSize != null) {
+            entryList.add(
+                    new QuicTransportParameterEntry(
+                            MAX_DATAGRAM_FRAME_SIZE, this.maxDatagramFrameSize));
         }
         if (this.maxUdpPayloadSize != null) {
             entryList.add(
@@ -374,6 +389,14 @@ public class QuicTransportParameters {
 
     public void setMaxUdpPayloadSize(Long maxUdpPayloadSize) {
         this.maxUdpPayloadSize = maxUdpPayloadSize;
+    }
+
+    public Long getMaxDatagramFrameSize() {
+        return maxDatagramFrameSize;
+    }
+
+    public void setMaxDatagramFrameSize(Long maxDatagramFrameSize) {
+        this.maxDatagramFrameSize = maxDatagramFrameSize;
     }
 
     public Long getInitialMaxData() {

@@ -29,9 +29,9 @@ public class Pop3RETRCommandTest {
         Pop3RETRCommand retrCommand = new Pop3RETRCommand();
         String message = "RETR 1\r\n";
 
-        Pop3CommandParser<Pop3RETRCommand> parser =
+        Pop3CommandParser parser =
                 retrCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(retrCommand);
 
@@ -43,8 +43,8 @@ public class Pop3RETRCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRCommand retrCommand = new Pop3RETRCommand(1);
-        Pop3RETRCommandPreparator preparator = retrCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context);
+        Pop3RETRCommandPreparator preparator = retrCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();
@@ -56,8 +56,8 @@ public class Pop3RETRCommandTest {
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3RETRCommand retrCommand = new Pop3RETRCommand();
-        Pop3RETRCommandPreparator preparator = retrCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context);
+        Pop3RETRCommandPreparator preparator = retrCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = retrCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

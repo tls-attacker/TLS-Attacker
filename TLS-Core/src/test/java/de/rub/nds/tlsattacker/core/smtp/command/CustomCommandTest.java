@@ -24,8 +24,8 @@ public class CustomCommandTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpCommand custom = new SmtpCommand("WOW", "such command");
 
-        Preparator<?> preparator = custom.getPreparator(context);
-        Serializer<?> serializer = custom.getSerializer(context);
+        Preparator<?> preparator = custom.getPreparator(context.getContext());
+        Serializer<?> serializer = custom.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
 

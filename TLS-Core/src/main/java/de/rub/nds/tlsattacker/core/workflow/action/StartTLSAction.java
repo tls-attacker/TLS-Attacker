@@ -73,10 +73,10 @@ public class StartTLSAction extends ConnectionBoundAction {
         if (!layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE)
                 && !layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
             if (starttlsContext.getMessageLayer() == null) {
-                starttlsContext.setMessageLayer(new MessageLayer(tlsContext));
+                starttlsContext.setMessageLayer(new MessageLayer(state.getContext()));
             }
             if (starttlsContext.getRecordLayer() == null) {
-                starttlsContext.setRecordLayer(new RecordLayer(tlsContext));
+                starttlsContext.setRecordLayer(new RecordLayer(state.getContext()));
             }
             layerStack.insertLayer(starttlsContext.getRecordLayer(), targetedLayerIndex + 1);
             layerStack.insertLayer(starttlsContext.getMessageLayer(), targetedLayerIndex + 1);

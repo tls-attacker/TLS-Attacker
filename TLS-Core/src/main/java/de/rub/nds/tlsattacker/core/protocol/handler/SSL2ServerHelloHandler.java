@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
@@ -18,7 +17,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHelloMessage> {
+public class SSL2ServerHelloHandler extends SSL2MessageHandler<SSL2ServerHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

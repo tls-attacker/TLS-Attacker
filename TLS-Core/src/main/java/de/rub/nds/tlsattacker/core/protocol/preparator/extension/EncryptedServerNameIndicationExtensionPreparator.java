@@ -8,15 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
@@ -31,8 +39,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -355,7 +361,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
             }
         }
         if (!isFoundSharedNamedGroup) {
-            LOGGER.warn("No private key available for selected named group: " + group);
+            LOGGER.warn("No private key available for selected named group: {}", group);
         }
         byte[] clientPublicKey = msg.getKeyShareEntry().getPublicKey().getValue();
 
@@ -391,11 +397,16 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-        int keyLen = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keyLen = cipherSuite.getCipherAlgorithm().getKeySize();
         try {
             key =
                     HKDFunction.expandLabel(
-                            hkdfAlgorithm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen);
+                            hkdfAlgorithm,
+                            esniMasterSecret,
+                            HKDFunction.ESNI_KEY,
+                            hashIn,
+                            keyLen,
+                            chooser.getSelectedProtocolVersion());
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniKey", e);
         }
@@ -416,7 +427,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
                             esniMasterSecret,
                             HKDFunction.ESNI_IV,
                             hashIn,
-                            IV_LENGTH);
+                            IV_LENGTH,
+                            chooser.getSelectedProtocolVersion());
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniIv", e);
         }
@@ -428,7 +440,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         int keyShareListBytesLength = 0;
         byte[] keyShareListBytesLengthField = null;
         byte[] keyShareListBytes = null;
-        ByteArrayOutputStream clientHelloKeyShareStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream clientHelloKeyShareStream = new SilentByteArrayOutputStream();
         boolean isClientHelloExtensionsFound = false;
         if (clientHelloMessage != null) {
             List<ExtensionMessage> clientHelloExtensions = clientHelloMessage.getExtensions();
@@ -445,32 +457,24 @@ public class EncryptedServerNameIndicationExtensionPreparator
             }
         }
         if (!isClientHelloExtensionsFound) {
-            ByteArrayOutputStream keyShareListStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream keyShareListStream = new SilentByteArrayOutputStream();
             for (KeyShareStoreEntry pair : chooser.getClientKeyShares()) {
                 KeyShareEntry entry = new KeyShareEntry();
                 KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
                 entry.setGroup(pair.getGroup().getValue());
                 entry.setPublicKeyLength(pair.getPublicKey().length);
                 entry.setPublicKey(pair.getPublicKey());
-                try {
-                    keyShareListStream.write(serializer.serialize());
-                } catch (IOException e) {
-                    throw new PreparationException("Failed to write esniContents", e);
-                }
+                keyShareListStream.write(serializer.serialize());
             }
             keyShareListBytes = keyShareListStream.toByteArray();
             keyShareListBytesLength = keyShareListBytes.length;
         }
 
         keyShareListBytesLengthField =
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        try {
-            clientHelloKeyShareStream.write(keyShareListBytesLengthField);
-            clientHelloKeyShareStream.write(keyShareListBytes);
-        } catch (IOException e) {
-            throw new PreparationException("Failed to write ClientHelloKeyShare", e);
-        }
+        clientHelloKeyShareStream.write(keyShareListBytesLengthField);
+        clientHelloKeyShareStream.write(keyShareListBytes);
         byte[] clientHelloKeyShareBytes = clientHelloKeyShareStream.toByteArray();
         msg.getEncryptedSniComputation().setClientHelloKeyShare(clientHelloKeyShareBytes);
         LOGGER.debug("clientHelloKeyShare: {}", clientHelloKeyShareBytes);
@@ -545,7 +549,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private byte[] generateEsniContents(EncryptedServerNameIndicationExtensionMessage msg) {
-        ByteArrayOutputStream contentsStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream contentsStream = new SilentByteArrayOutputStream();
         try {
             contentsStream.write(
                     msg.getRecordDigestLength()

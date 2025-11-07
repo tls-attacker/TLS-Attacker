@@ -24,6 +24,6 @@ public class SmtpDATAContentCommandHandler extends SmtpCommandHandler<SmtpDATACo
      */
     @Override
     public void adjustContextSpecific(SmtpDATAContentCommand smtpCommand) {
-        this.getContext().setMailDataBuffer(smtpCommand.getLines());
+        this.getContext().getSmtpContext().setMailDataBuffer(smtpCommand.getLines());
     }
 }

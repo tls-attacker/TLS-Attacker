@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -53,7 +53,7 @@ public class KeyShareExtensionPreparatorTest
         preparator.prepare();
         assertArrayEquals(
                 message.getKeyShareListBytes().getValue(),
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         "001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         assertEquals(36, (int) message.getKeyShareListLength().getValue());
     }
@@ -71,7 +71,7 @@ public class KeyShareExtensionPreparatorTest
         preparator.prepare();
         assertEquals(101, (long) message.getKeyShareListLength().getValue());
         assertArrayEquals(
-                ArrayConverter.hexStringToByteArray(
+                DataConverter.hexStringToByteArray(
                         ("00 1A 00 61 9E E1 7F 2E  CF 74 02 8F 6C 1F D7 0D\n"
                                         + "A1 D0 5A 4A 85 97 5D 7D  27 0C AA 6B 86 05 F1 C6\n"
                                         + "EB B8 75 BA 87 57 91 67  40 8F 7C 9E 77 84 2C 2B\n"

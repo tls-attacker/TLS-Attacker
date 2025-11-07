@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
@@ -38,23 +38,23 @@ public class SupplementalDataParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.TLS11,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "1700001100000e4002000a0008010005aaaaaaaaaa"),
                         List.of(
                                 HandshakeMessageType.SUPPLEMENTAL_DATA.getValue(),
                                 17,
                                 14,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "4002000a0008010005aaaaaaaaaa"))),
                 Arguments.of(
                         ProtocolVersion.TLS11,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "1700001F00001c4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"),
                         List.of(
                                 HandshakeMessageType.SUPPLEMENTAL_DATA.getValue(),
                                 31,
                                 28,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "4002000a0008010005aaaaaaaaaa4002000a0008010005aaaaaaaaaa"))));
     }
 }

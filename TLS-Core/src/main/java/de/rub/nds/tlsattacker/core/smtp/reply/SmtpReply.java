@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,36 +55,42 @@ public class SmtpReply extends SmtpMessage {
         return this.humanReadableMessages.size() > 1;
     }
 
-    public SmtpReply() {
+    public SmtpReply(SmtpCommandType type) {
+        this.commandType = type;
         this.humanReadableMessages = new ArrayList<>();
     }
 
-    public SmtpReply(Integer replyCode) {
+    public SmtpReply(SmtpCommandType type, Integer replyCode) {
         // allows a user to create a custom reply with a very specific (perhaps standard-violating)
         // reply code
         // we do not currently do this in the codebase, but it is a possibility, so we allow it
-        super();
+        this(type);
         this.replyCode = replyCode;
     }
 
-    @Override
-    public SmtpReplyHandler<? extends SmtpReply> getHandler(SmtpContext smtpContext) {
-        return new SmtpReplyHandler<>(smtpContext);
+    public SmtpReply() {
+        // JAXB constructor
+        this(SmtpCommandType.UNKNOWN);
     }
 
     @Override
-    public SmtpReplyPreparator<? extends SmtpReply> getPreparator(SmtpContext context) {
+    public SmtpReplyHandler<? extends SmtpReply> getHandler(Context smtpContext) {
+        return new SmtpReplyHandler<>(smtpContext.getSmtpContext());
+    }
+
+    @Override
+    public SmtpReplyPreparator<? extends SmtpReply> getPreparator(Context context) {
         return new SmtpReplyPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
+    public SmtpReplyParser<? extends SmtpReply> getParser(Context context, InputStream stream) {
         return new SmtpGenericReplyParser<>(stream);
     }
 
     @Override
-    public SmtpReplySerializer<? extends SmtpReply> getSerializer(SmtpContext context) {
-        return new SmtpReplySerializer<>(context, this);
+    public SmtpReplySerializer<? extends SmtpReply> getSerializer(Context context) {
+        return new SmtpReplySerializer<>(context.getSmtpContext(), this);
     }
 
     @Override
@@ -97,7 +103,7 @@ public class SmtpReply extends SmtpMessage {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getReplyCode())
                 .append(" ")
-                .append(SmtpMappingUtil.getMatchingCommand(this).getVerb())
+                .append(this.getCommandType().getKeyword())
                 .append("Reply");
         return sb.toString();
     }

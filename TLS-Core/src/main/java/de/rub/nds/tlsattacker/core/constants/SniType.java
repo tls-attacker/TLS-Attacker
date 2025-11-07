@@ -19,13 +19,13 @@ public enum SniType {
 
     private static final Map<Byte, SniType> MAP;
 
-    private SniType(byte value) {
+    SniType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (SniType cm : SniType.values()) {
+        for (SniType cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

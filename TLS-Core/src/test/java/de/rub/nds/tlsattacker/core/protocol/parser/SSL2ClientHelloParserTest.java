@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
 public class SSL2ClientHelloParserTest
-        extends AbstractProtocolMessageParserTest<SSL2ClientHelloMessage, SSL2ClientHelloParser> {
+        extends AbstractSSL2MessageParserTest<SSL2ClientHelloMessage, SSL2ClientHelloParser> {
 
     public SSL2ClientHelloParserTest() {
         super(
@@ -52,17 +52,17 @@ public class SSL2ClientHelloParserTest
         return Stream.of(
                 Arguments.of(
                         ProtocolVersion.SSL2,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "00020012000000100100800700c0030080060040020080040080bc4c7de14f6fc8bff4428f159fb24f2b"),
                         Arrays.asList(
                                 ProtocolVersion.SSL2.getValue(),
                                 18,
                                 0,
                                 16,
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "0100800700c0030080060040020080040080"),
                                 new byte[0],
-                                ArrayConverter.hexStringToByteArray(
+                                DataConverter.hexStringToByteArray(
                                         "bc4c7de14f6fc8bff4428f159fb24f2b"))));
     }
 }

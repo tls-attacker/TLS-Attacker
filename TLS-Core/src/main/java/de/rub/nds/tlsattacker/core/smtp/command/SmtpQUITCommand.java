@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpQUITCommandHandler;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,14 +25,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class SmtpQUITCommand extends SmtpCommand {
-    private static final String COMMAND = "QUIT";
-
     public SmtpQUITCommand() {
-        super(COMMAND, null);
+        super(SmtpCommandType.QUIT);
     }
 
     @Override
-    public SmtpQUITCommandHandler getHandler(SmtpContext smtpContext) {
-        return new SmtpQUITCommandHandler(smtpContext);
+    public SmtpQUITCommandHandler getHandler(Context smtpContext) {
+        return new SmtpQUITCommandHandler(smtpContext.getSmtpContext());
     }
 }

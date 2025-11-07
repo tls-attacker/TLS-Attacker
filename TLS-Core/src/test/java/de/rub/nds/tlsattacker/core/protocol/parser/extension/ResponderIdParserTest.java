@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
@@ -24,9 +24,9 @@ public class ResponderIdParserTest {
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0006010203040506"),
+                        DataConverter.hexStringToByteArray("0006010203040506"),
                         6,
-                        ArrayConverter.hexStringToByteArray("010203040506")));
+                        DataConverter.hexStringToByteArray("010203040506")));
     }
 
     @ParameterizedTest

@@ -54,7 +54,7 @@ public class MaxFragmentLengthDelegateTest extends AbstractDelegateTest<MaxFragm
     /** Test of applyDelegate method, of class MaxFragmentLengthDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-max_fragment_length";
         args[1] = "3";
@@ -68,8 +68,8 @@ public class MaxFragmentLengthDelegateTest extends AbstractDelegateTest<MaxFragm
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

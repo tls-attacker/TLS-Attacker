@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -32,43 +32,52 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
 
-    String verb;
+    final String verb;
     // this field is used by preparator+serializer for the command parameters, it should not be used
     // for the actual contents
     String parameters;
 
     public SmtpCommand(String verb, String parameters) {
         // use for easy creation of custom commands
-        super();
         this.verb = verb;
         this.parameters = parameters;
+        this.commandType = SmtpCommandType.CUSTOM;
     }
 
-    public SmtpCommand(String verb) {
-        this.verb = verb;
+    public SmtpCommand(SmtpCommandType type, String parameters) {
+        this.verb = type.getKeyword();
+        this.parameters = parameters;
+        this.commandType = type;
     }
 
-    public SmtpCommand() {}
+    public SmtpCommand(SmtpCommandType type) {
+        this.verb = type.getKeyword();
+        this.commandType = type;
+    }
+
+    public SmtpCommand() {
+        // JAXB Constructor
+        this("", "");
+    }
 
     @Override
-    public SmtpCommandHandler<? extends SmtpCommand> getHandler(SmtpContext smtpContext) {
-        return new SmtpCommandHandler<>(smtpContext);
+    public SmtpCommandHandler<? extends SmtpCommand> getHandler(Context smtpContext) {
+        return new SmtpCommandHandler<>(smtpContext.getSmtpContext());
     }
 
     @Override
-    public SmtpCommandParser<? extends SmtpCommand> getParser(
-            SmtpContext context, InputStream stream) {
+    public SmtpCommandParser<? extends SmtpCommand> getParser(Context context, InputStream stream) {
         return new SmtpCommandParser<>(stream);
     }
 
     @Override
-    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(SmtpContext context) {
+    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(Context context) {
         return new SmtpCommandPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(SmtpContext context) {
-        return new SmtpCommandSerializer<>(context, this);
+    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(Context context) {
+        return new SmtpCommandSerializer<>(context.getSmtpContext(), this);
     }
 
     @Override
@@ -87,10 +96,6 @@ public class SmtpCommand extends SmtpMessage {
 
     public String getVerb() {
         return verb;
-    }
-
-    public void setVerb(String verb) {
-        this.verb = verb;
     }
 
     public String getParameters() {

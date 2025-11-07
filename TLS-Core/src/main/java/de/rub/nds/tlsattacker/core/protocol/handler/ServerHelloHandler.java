@@ -8,11 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.exception.AdjustmentException;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -28,8 +30,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -41,8 +41,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -70,10 +70,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContext(ServerHelloMessage message) {
+        adjustSelectedCipherSuite(message);
         if (tlsContext.getConfig().isAddEncryptedClientHelloExtension()
                 && tlsContext.getTransportHandler().getConnectionEndType()
                         == ConnectionEndType.CLIENT) {
-            determineEncryptedClientHelloSupport(message, message.isTls13HelloRetryRequest());
+            determineEncryptedClientHelloSupport(
+                    message, message.hasTls13HelloRetryRequestRandom());
         } else if (!tlsContext.getConfig().isAddEncryptedClientHelloExtension()) {
             LOGGER.debug("Not determining Server ECH support because ECH disabled");
         } else if (tlsContext.getTransportHandler().getConnectionEndType()
@@ -83,23 +85,23 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedProtocolVersion(message);
         adjustSelectedCompression(message);
         adjustSelectedSessionID(message);
-        adjustSelectedCipherSuite(message);
         adjustServerRandom(message);
         adjustExtensions(message);
         warnOnConflictingExtensions();
-        if (!message.isTls13HelloRetryRequest()) {
-            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (!message.hasTls13HelloRetryRequestRandom()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
                 KeyShareStoreEntry keyShareStoreEntry = adjustKeyShareStoreEntry();
                 adjustHandshakeTrafficSecrets(keyShareStoreEntry);
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
+                    precalculateHandshakeKeysClient();
                 }
                 if (tlsContext.getConfig().getDefaultLayerConfiguration()
                         == StackConfiguration.QUIC) {
                     try {
                         QuicPacketCryptoComputations.calculateHandshakeSecrets(
-                                tlsContext.getContext().getQuicContext());
+                                tlsContext.getContext());
                     } catch (NoSuchAlgorithmException
                             | NoSuchPaddingException
                             | CryptoException e) {
@@ -128,7 +130,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (suite != null) {
             tlsContext.setSelectedCipherSuite(suite);
-            LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+            LOGGER.debug("Set SelectedCipherSuite in Context to {}", suite.name());
         } else {
             LOGGER.warn("Unknown CipherSuite, did not adjust Context");
         }
@@ -150,7 +152,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (method != null) {
             tlsContext.setSelectedCompressionMethod(method);
-            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+            LOGGER.debug("Set SelectedCompressionMethod in Context to {}", method.name());
         } else {
             LOGGER.warn("Not adjusting CompressionMethod - Method is null!");
         }
@@ -171,7 +173,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         if (version != null) {
             tlsContext.setSelectedProtocolVersion(version);
-            LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+            LOGGER.debug("Set SelectedProtocolVersion in Context to {}", version.name());
         } else {
             LOGGER.warn(
                     "Did not Adjust ProtocolVersion since version is undefined {}",
@@ -195,12 +197,26 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
         if (tlsContext.getRecordLayer() != null) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
+                        && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
+                    // In DTLS 1.3 epoch 1 is only used for early data, if it was not used, we add
+                    // null for it.
+                    tlsContext.getRecordLayer().updateDecryptionCipher(null);
+                    tlsContext.getRecordLayer().updateEncryptionCipher(null);
+                }
                 tlsContext
                         .getRecordLayer()
                         .updateDecryptionCipher(
                                 RecordCipherFactory.getRecordCipher(
                                         tlsContext, serverKeySet, false));
             } else {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
+                        && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
+                    // In DTLS 1.3 epoch 1 is only used for early data, if it was not used, we add
+                    // null for it.
+                    tlsContext.getRecordLayer().updateDecryptionCipher(null);
+                    tlsContext.getRecordLayer().updateEncryptionCipher(null);
+                }
                 tlsContext
                         .getRecordLayer()
                         .updateEncryptionCipher(
@@ -210,32 +226,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
     }
 
-    private void setClientRecordCipher() {
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-        LOGGER.debug("Setting cipher for client to use handshake secrets");
-        KeySet clientKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveClientKeySetType());
-
-        if (tlsContext.getRecordLayer() != null) {
-            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-                tlsContext
-                        .getRecordLayer()
-                        .updateDecryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext, clientKeySet, false));
-            } else {
-                tlsContext
-                        .getRecordLayer()
-                        .updateEncryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext, clientKeySet, true));
-            }
-        }
-    }
-
     private KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(
+            return KeyDerivator.generateKeySet(
                     tlsContext,
                     this.tlsContext.getChooser().getSelectedProtocolVersion(),
                     keySetType);
@@ -246,10 +240,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContextAfterSerialize(ServerHelloMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                && !message.isTls13HelloRetryRequest()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().is13()
+                && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
-            setClientRecordCipher();
         }
     }
 
@@ -282,24 +275,28 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             digestAlgo.getJavaName(),
                             earlySecret,
                             HKDFunction.DERIVED,
-                            new byte[0]);
-            byte[] sharedSecret;
-            BigInteger privateKey =
-                    tlsContext
-                            .getConfig()
-                            .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
-            if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
-                sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
-            } else {
-                sharedSecret =
-                        KeyShareCalculator.computeSharedSecret(
-                                keyShareStoreEntry.getGroup(),
-                                privateKey,
-                                keyShareStoreEntry.getPublicKey());
-                // This is a workaround for Tls1.3 InvalidCurve attacks
-                if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
-                    LOGGER.debug("Using specified PMS instead of computed PMS");
-                    sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+                            new byte[0],
+                            tlsContext.getChooser().getSelectedProtocolVersion());
+            byte[] sharedSecret = new byte[0];
+            // if PSK_only mode is selected, the keyShare will be null, and there is no sharedSecret
+            if (keyShareStoreEntry != null) {
+                BigInteger privateKey =
+                        tlsContext
+                                .getConfig()
+                                .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
+                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
+                    sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
+                } else {
+                    sharedSecret =
+                            KeyShareCalculator.computeSharedSecret(
+                                    keyShareStoreEntry.getGroup(),
+                                    privateKey,
+                                    keyShareStoreEntry.getPublicKey());
+                    // This is a workaround for Tls1.3 InvalidCurve attacks
+                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                        LOGGER.debug("Using specified PMS instead of computed PMS");
+                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+                    }
                 }
             }
             byte[] handshakeSecret =
@@ -312,7 +309,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             digestAlgo.getJavaName(),
                             handshakeSecret,
                             HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
             LOGGER.debug(
                     "Set clientHandshakeTrafficSecret in Context to {}",
@@ -323,7 +321,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             digestAlgo.getJavaName(),
                             handshakeSecret,
                             HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug(
                     "Set serverHandshakeTrafficSecret in Context to {}",
@@ -367,13 +366,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             .mod(curve.getBasePointOrder());
         }
         LOGGER.debug("Element: {}", () -> PointFormatter.toRawFormat(keySharePoint));
-        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
+        LOGGER.debug("Scalar: {}", () -> DataConverter.bigIntegerToByteArray(scalar));
 
         Point sharedSecret =
                 curve.mult(
                         privateKeyScalar,
                         curve.add(curve.mult(scalar, passwordElement), keySharePoint));
-        return ArrayConverter.bigIntegerToByteArray(
+        return DataConverter.bigIntegerToByteArray(
                 sharedSecret.getFieldX().getData(), curveSize / Bits.IN_A_BYTE, true);
     }
 
@@ -494,16 +493,27 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] acceptConfirmationServer,
             ServerHelloMessage message) {
         Chooser chooser = tlsContext.getChooser();
+        ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
+
+        // for some reason we do not take any of the two hash functions defined in the ECH Config
+        // but instead use the
+        // hash function defined by the server's selected cipher suite.
         HKDFAlgorithm hkdfAlgorithm =
-                chooser.getEchConfig().getHpkeKeyDerivationFunction().getHkdfAlgorithm();
+                AlgorithmResolver.getHKDFAlgorithm(
+                        tlsContext.getChooser().getSelectedCipherSuite());
         try {
-            ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
             byte[] extract =
                     HKDFunction.extract(
                             hkdfAlgorithm, null, innerClientHello.getRandom().getValue());
             LOGGER.debug("Extract: {}", extract);
             byte[] acceptConfirmationClient =
-                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+                    HKDFunction.expandLabel(
+                            hkdfAlgorithm,
+                            extract,
+                            label,
+                            transcriptEchConf,
+                            8,
+                            chooser.getSelectedProtocolVersion());
             LOGGER.debug("Accept Confirmation Calculated: {}", acceptConfirmationClient);
             LOGGER.debug("Accept Confirmation Received: {}", acceptConfirmationServer);
             if (Arrays.equals(acceptConfirmationClient, acceptConfirmationServer)) {
@@ -542,7 +552,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             tlsContext
                     .getDigest()
                     .append(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     clientHelloHash.length,
                                     HandshakeByteLength.MESSAGE_LENGTH_FIELD));
             tlsContext.getDigest().append(clientHelloHash);
@@ -557,7 +567,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getMyConnectionPeer()) {
             // for TLS 1.3, this is handled in encrypted extensions
-            if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
                 if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
                         && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                     // this is supposed to result in a fatal error, just warning for now
@@ -590,7 +600,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         tlsContext.setSelectedGroup(selectedKeyShareStore.getGroup());
 
-        if (selectedKeyShareStore.getGroup().isCurve()) {
+        if (selectedKeyShareStore.getGroup().isEcGroup()) {
             Point publicPoint;
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
@@ -610,5 +620,24 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
 
         return selectedKeyShareStore;
+    }
+
+    private KeySet getKeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            KeySet keySet =
+                    KeyDerivator.generateKeySet(
+                            tlsContext,
+                            tlsContext.getChooser().getSelectedProtocolVersion(),
+                            keySetType);
+            return keySet;
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
+    }
+
+    private void precalculateHandshakeKeysClient() {
+        KeySet keySet = getKeySet(tlsContext, Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        tlsContext.setkeySetHandshake(keySet);
     }
 }

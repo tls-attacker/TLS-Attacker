@@ -12,15 +12,34 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 
 public class QuicPacketLayerHint implements LayerProcessingHint {
 
-    private QuicPacketType quicPacketType;
+    private final QuicPacketType quicPacketType;
 
-    public QuicPacketLayerHint() {}
+    private final boolean newPacket;
+
+    public QuicPacketLayerHint() {
+        quicPacketType = QuicPacketType.UNKNOWN;
+        newPacket = false;
+    }
 
     public QuicPacketLayerHint(QuicPacketType quicPacketType) {
         this.quicPacketType = quicPacketType;
+        this.newPacket = false;
+    }
+
+    public QuicPacketLayerHint(QuicPacketType quicPacketType, boolean newPacket) {
+        this.quicPacketType = quicPacketType;
+        this.newPacket = newPacket;
     }
 
     public QuicPacketType getQuicPacketType() {
         return quicPacketType;
+    }
+
+    public boolean isNewPacket() {
+        return newPacket;
+    }
+
+    public QuicPacketLayerHint asNewPacket(boolean newPacket) {
+        return new QuicPacketLayerHint(quicPacketType, newPacket);
     }
 }

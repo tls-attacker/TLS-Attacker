@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import java.util.ArrayList;
-import java.util.List;
 import org.bouncycastle.util.IPAddress;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
@@ -209,88 +206,5 @@ public final class SmtpSyntaxParser {
         parameter[1] = parameter[1].replaceAll("[\\[\\]]", "");
         parameter[1] = parameter[1].replace("\"=\"", "");
         return (isValidesmtpKeyword(parameter[0]) && isValidesmtpValue(parameter[1]));
-    }
-
-    public static SmtpServiceExtension parseKeyword(String ext, String parameters) {
-        // just ehlo-line
-        switch (ext) {
-            case "8BITMIME":
-                return new Smtp8BITMIMEExtension();
-            case "ATRN":
-                return new SmtpATRNExtension();
-            case "AUTH":
-                String[] sasl = parameters.split(" ");
-                return new SmtpAUTHExtension(new ArrayList<>(List.of(sasl)));
-            case "BINARYMIME":
-                return new SmtpBINARYMIMEExtension();
-            case "BURL":
-                // TODO: BURL parameter not understood in any way
-                return new SmtpBURLExtension(parameters);
-            case "CHECKPOINT":
-                return new SmtpCHECKPOINTExtension();
-            case "CHUNKING":
-                return new SmtpCHUNKINGExtension();
-            case "CONNEG":
-                return new SmtpCONNEGExtension();
-            case "CONPERM":
-                return new SmtpCONPERMExtension();
-            case "DELIVERBY":
-                return new SmtpDELIVERBYExtension();
-            case "DSN":
-                return new SmtpDSNExtension();
-            case "ENHANCEDSTATUSCODES":
-                return new SmtpENHANCEDSTATUSCODESExtension();
-            case "ETRN":
-                return new SmtpETRNExtension();
-            case "EXPN":
-                return new SmtpEXPNExtension();
-            case "FUTURERELEASE":
-                return new SmtpFUTURERELEASEExtension();
-            case "HELP":
-                return new SmtpHELPExtension();
-            case "LIMITS":
-                return new SmtpLIMITSExtension();
-            case "MT-PRIORITY":
-                // TODO: MT_PRIORITY parameter not understood in any way
-                return new SmtpMT_PRIORITYExtension(parameters);
-            case "MTRK":
-                return new SmtpMTRKExtension();
-            case "NO-SOLICITING":
-                // TODO: NO-SOLICITING parameter not understood in any way
-                return new SmtpNO_SOLICITINGExtension(parameters);
-            case "PIPELINING":
-                return new SmtpPIPELININGExtension();
-            case "REQUIRETLS":
-                return new SmtpREQUIRETLSExtension();
-            case "RRVS":
-                return new SmtpRRVSExtension();
-            case "SAML":
-                return new SmtpSAMLExtension();
-            case "SEND":
-                return new SmtpSENDExtension();
-            case "SIZE":
-                // TODO: SIZE can have a parameter
-                int size = Integer.parseInt(parameters);
-                return new SmtpSIZEExtension(size);
-            case "SMTPUTF8":
-                return new SmtpSMTPUTF8Extension();
-            case "SOML":
-                return new SmtpSOMLExtension();
-            case "STARTTLS":
-                return new SmtpSTARTTLSExtension();
-            case "SUBMITTER":
-                return new SmtpSUBMITTERExtension();
-            case "TURN":
-                return new SmtpTURNExtension();
-            case "VERB":
-                return new SmtpVERBExtension();
-            default:
-                if (ext.startsWith("X") || ext.startsWith("x")) {
-                    return new SmtpLocalServiceExtension(ext, parameters);
-                } else {
-                    throw new ParserException(
-                            "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);
-                }
-        }
     }
 }

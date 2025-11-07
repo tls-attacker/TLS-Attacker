@@ -14,12 +14,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -28,29 +28,26 @@ import java.util.List;
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     /** SRP modulus */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray modulus;
+    @ModifiableVariableProperty private ModifiableByteArray modulus;
 
     /** SRP modulus Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger modulusLength;
 
     /** SRP generator */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray generator;
+    @ModifiableVariableProperty private ModifiableByteArray generator;
 
     /** SRP generator Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable protected SRPClientComputations computations;
 
     /** SRP salt */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray salt;
+    @ModifiableVariableProperty private ModifiableByteArray salt;
 
     /** SRP salt Length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger saltLength;
 
     public SrpClientKeyExchangeMessage() {
@@ -120,22 +117,22 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public SrpClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new SrpClientKeyExchangeHandler(tlsContext);
+    public SrpClientKeyExchangeHandler getHandler(Context context) {
+        return new SrpClientKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public SrpClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrpClientKeyExchangeParser(stream, tlsContext);
+    public SrpClientKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new SrpClientKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public SrpClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new SrpClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public SrpClientKeyExchangePreparator getPreparator(Context context) {
+        return new SrpClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SrpClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public SrpClientKeyExchangeSerializer getSerializer(Context context) {
         return new SrpClientKeyExchangeSerializer(this);
     }
 

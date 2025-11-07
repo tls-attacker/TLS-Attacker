@@ -29,9 +29,9 @@ public class Pop3LISTCommandTest {
         Pop3LISTCommand listCommand = new Pop3LISTCommand();
         String message = "LIST\r\n";
 
-        Pop3CommandParser<Pop3LISTCommand> parser =
+        Pop3CommandParser parser =
                 listCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(listCommand);
 
@@ -46,9 +46,9 @@ public class Pop3LISTCommandTest {
         Pop3LISTCommand listCommand = new Pop3LISTCommand();
         String message = "LIST 1\r\n";
 
-        Pop3CommandParser<Pop3LISTCommand> parser =
+        Pop3CommandParser parser =
                 listCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(listCommand);
 
@@ -61,8 +61,8 @@ public class Pop3LISTCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3LISTCommand listCommand = new Pop3LISTCommand();
-        Pop3LISTCommandPreparator preparator = listCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = listCommand.getSerializer(context);
+        Pop3LISTCommandPreparator preparator = listCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = listCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();
@@ -74,8 +74,8 @@ public class Pop3LISTCommandTest {
     void testSerializeScanListing() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3LISTCommand listCommand = new Pop3LISTCommand(1);
-        Pop3LISTCommandPreparator preparator = listCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = listCommand.getSerializer(context);
+        Pop3LISTCommandPreparator preparator = listCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = listCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

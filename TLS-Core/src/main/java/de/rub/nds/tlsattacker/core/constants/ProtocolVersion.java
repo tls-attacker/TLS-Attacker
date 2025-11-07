@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
 import java.util.*;
 
@@ -37,6 +37,7 @@ public enum ProtocolVersion {
     DTLS10_DRAFT(new byte[] {(byte) 0x01, (byte) 0x00}),
     DTLS10(new byte[] {(byte) 0xFE, (byte) 0xFF}),
     DTLS12(new byte[] {(byte) 0xFE, (byte) 0xFD}),
+    DTLS13(new byte[] {(byte) 0xFE, (byte) 0xFC}),
 
     // GREASE constants
     GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}),
@@ -60,13 +61,13 @@ public enum ProtocolVersion {
 
     private static final Map<Integer, ProtocolVersion> MAP;
 
-    private ProtocolVersion(byte[] value) {
+    ProtocolVersion(byte[] value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ProtocolVersion c : ProtocolVersion.values()) {
+        for (ProtocolVersion c : values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }
@@ -80,7 +81,7 @@ public enum ProtocolVersion {
     }
 
     public boolean isDTLS() {
-        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT;
+        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT || this == DTLS13;
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
@@ -153,7 +154,7 @@ public enum ProtocolVersion {
     public static ProtocolVersion fromString(String protocolVersion) {
         protocolVersion = protocolVersion.replaceFirst("v", "");
         protocolVersion = protocolVersion.replaceFirst("\\.", "");
-        for (ProtocolVersion pv : ProtocolVersion.values()) {
+        for (ProtocolVersion pv : values()) {
             if (protocolVersion.equalsIgnoreCase(pv.toString())) {
                 return pv;
             }
@@ -163,7 +164,7 @@ public enum ProtocolVersion {
                         + protocolVersion
                         + " cannot be converted to a protocol version. "
                         + "Available values are: "
-                        + Arrays.toString(ProtocolVersion.values()));
+                        + Arrays.toString(values()));
     }
 
     /**
@@ -195,6 +196,14 @@ public enum ProtocolVersion {
      */
     public boolean isTLS13() {
         return this == TLS13 || this.getMajor() == 0x7F;
+    }
+
+    public boolean isDTLS13() {
+        return this == DTLS13;
+    }
+
+    public boolean is13() {
+        return isTLS13() || isDTLS13();
     }
 
     /**
@@ -262,8 +271,8 @@ public enum ProtocolVersion {
             return 0;
         }
 
-        if (ArrayConverter.bytesToInt(protocolVersion1.getValue())
-                > ArrayConverter.bytesToInt(protocolVersion2.getValue())) {
+        if (DataConverter.bytesToInt(protocolVersion1.getValue())
+                > DataConverter.bytesToInt(protocolVersion2.getValue())) {
             return 1;
         }
 
@@ -307,6 +316,8 @@ public enum ProtocolVersion {
                 return "DTLS 1.0";
             case DTLS12:
                 return "DTLS 1.2";
+            case DTLS13:
+                return "DTLS 1.3";
             case SSL2:
                 return "SSL 2.0";
             case SSL3:

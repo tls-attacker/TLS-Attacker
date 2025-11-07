@@ -19,7 +19,6 @@ public class Pop3PASSCommandPreparator extends Pop3CommandPreparator<Pop3PASSCom
 
     @Override
     public void prepare() {
-        this.getObject().setKeyword("PASS");
         if (this.getObject().getPassword() == null) {
             this.getObject().setPassword(chooser.getConfig().getDefaultPop3Password());
         }

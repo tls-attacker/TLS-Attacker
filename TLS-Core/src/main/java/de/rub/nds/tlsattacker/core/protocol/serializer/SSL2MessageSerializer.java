@@ -9,18 +9,20 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SSL2MessageSerializer<T extends SSL2Message>
-        extends ProtocolMessageSerializer<T> {
+public abstract class SSL2MessageSerializer<T extends SSL2Message> extends Serializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    protected final T message;
+
     public SSL2MessageSerializer(T ssl2HandshakeMessage) {
-        super(ssl2HandshakeMessage);
+        super();
+        this.message = ssl2HandshakeMessage;
     }
 
     @Override
@@ -37,11 +39,11 @@ public abstract class SSL2MessageSerializer<T extends SSL2Message>
             throw new UnsupportedOperationException("Long record headers are not supported");
         }
         appendInt(message.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
+        LOGGER.debug("MessageLength: {}", message.getMessageLength().getValue());
     }
 
     protected void writeType() {
         appendByte(message.getType().getValue());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 }

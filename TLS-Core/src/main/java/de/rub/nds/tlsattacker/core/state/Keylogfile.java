@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.logging.log4j.LogManager;
@@ -44,15 +45,14 @@ public class Keylogfile {
 
     public void writeKey(String identifier, byte[] key) {
         synchronized (Keylogfile.class) {
-            if (!this.writeKeylog) {
+            if (!this.writeKeylog || tlsContext.getClientRandom() == null) {
                 return;
             }
-
             try {
                 File f = new File(this.path);
                 assert f.getParentFile().exists() || f.getParentFile().mkdirs();
                 assert f.exists() || f.createNewFile();
-                try (FileWriter fw = new FileWriter(this.path, true)) {
+                try (FileWriter fw = new FileWriter(this.path, StandardCharsets.ISO_8859_1, true)) {
                     fw.write(
                             identifier
                                     + " "
@@ -61,16 +61,6 @@ public class Keylogfile {
                                     + DatatypeConverter.printHexBinary(key)
                                     + "\n");
                 }
-
-                FileWriter fw = new FileWriter(this.path, true);
-                fw.write(
-                        identifier
-                                + " "
-                                + DatatypeConverter.printHexBinary(tlsContext.getClientRandom())
-                                + " "
-                                + DatatypeConverter.printHexBinary(key)
-                                + "\n");
-                fw.close();
             } catch (Exception e) {
                 LOGGER.error(e);
             }

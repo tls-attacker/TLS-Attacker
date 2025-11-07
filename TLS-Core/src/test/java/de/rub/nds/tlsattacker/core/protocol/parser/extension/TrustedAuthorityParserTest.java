@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import java.io.ByteArrayInputStream;
@@ -30,10 +30,10 @@ public class TrustedAuthorityParserTest {
                         null,
                         null),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "01da39a3ee5e6b4b0d3255bfef95601890afd80709"),
                         TrustedCaIndicationIdentifierType.KEY_SHA1_HASH,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "da39a3ee5e6b4b0d3255bfef95601890afd80709"),
                         null,
                         null),
@@ -44,10 +44,10 @@ public class TrustedAuthorityParserTest {
                         5,
                         new byte[] {0x01, 0x02, 0x03, 0x04, 0x05}),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "03da39a3ee5e6b4b0d3255bfef95601890afd80709"),
                         TrustedCaIndicationIdentifierType.CERT_SHA1_HASH,
-                        ArrayConverter.hexStringToByteArray(
+                        DataConverter.hexStringToByteArray(
                                 "da39a3ee5e6b4b0d3255bfef95601890afd80709"),
                         null,
                         null));

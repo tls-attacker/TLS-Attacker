@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,36 +50,28 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
             entry.setCertificateBytes(new byte[0]);
         }
 
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(entry.getCertificateBytes().getValue()));
+        LOGGER.debug("Certificate: {}", entry.getCertificateBytes().getValue());
     }
 
     private void prepareCertificateLength(CertificateEntry entry) {
         entry.setCertificateLength(entry.getCertificateBytes().getValue().length);
-        LOGGER.debug("CertificateLength: " + entry.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", entry.getCertificateLength().getValue());
     }
 
     private void prepareExtensions(CertificateEntry entry) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         if (entry.getExtensionList() != null) {
             for (ExtensionMessage extensionMessage : entry.getExtensionList()) {
-                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
-                try {
-                    stream.write(extensionMessage.getExtensionBytes().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
-                }
+                extensionMessage.getPreparator(chooser.getContext()).prepare();
+                stream.write(extensionMessage.getExtensionBytes().getValue());
             }
             entry.setExtensionBytes(stream.toByteArray());
         }
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(entry.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", entry.getExtensionBytes().getValue());
     }
 
     private void prepareExtensionLength(CertificateEntry entry) {
         entry.setExtensionsLength(entry.getExtensionBytes().getValue().length);
-        LOGGER.debug("ExtensionLength: " + entry.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", entry.getExtensionsLength().getValue());
     }
 }

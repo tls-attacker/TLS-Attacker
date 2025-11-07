@@ -117,8 +117,8 @@ public class MAILCommandTest {
     public void testSerialization() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpMAILCommand mailCommand = new SmtpMAILCommand("seal@upb.de");
-        SmtpMAILCommandPreparator preparator = mailCommand.getPreparator(context);
-        Serializer serializer = mailCommand.getSerializer(context);
+        SmtpMAILCommandPreparator preparator = mailCommand.getPreparator(context.getContext());
+        Serializer serializer = mailCommand.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         assertEquals("MAIL FROM:<seal@upb.de>\r\n", serializer.getOutputStream().toString());
@@ -128,7 +128,7 @@ public class MAILCommandTest {
     public void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpMAILCommand mailCommand = new SmtpMAILCommand("seal@upb.de");
-        Handler handler = mailCommand.getHandler(context);
+        Handler handler = mailCommand.getHandler(context.getContext());
         handler.adjustContext(mailCommand);
 
         assertEquals(context.getReversePathBuffer().get(0), mailCommand.getReversePath());

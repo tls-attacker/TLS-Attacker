@@ -34,7 +34,7 @@ class Pop3LISTReplyTest {
         listReply.setMessageNumbers(messageNumbers);
         listReply.setMessageSizes(octetNumbers);
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = listReply.getSerializer(context);
+        Serializer<?> serializer = listReply.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals("+OK\r\n1 350\r\n2 120\r\n.\r\n", serializer.getOutputStream().toString());
@@ -49,7 +49,7 @@ class Pop3LISTReplyTest {
         Pop3LISTReply listReply = new Pop3LISTReply();
         Pop3LISTReplyParser parser =
                 listReply.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(listReply);
         List<Integer> messageNumbers = Arrays.asList(1, 2);
@@ -69,7 +69,8 @@ class Pop3LISTReplyTest {
 
         Pop3LISTReplyParser parser =
                 listReply.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> parser.parse(listReply));
         assertEquals(listReply.getStatusIndicator(), "-ERR");
@@ -85,7 +86,8 @@ class Pop3LISTReplyTest {
 
         Pop3LISTReplyParser parser =
                 listReply.getParser(
-                        context, new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+                        context.getContext(),
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> parser.parse(listReply));
         assertEquals(listReply.getStatusIndicator(), "+OK");
@@ -101,7 +103,7 @@ class Pop3LISTReplyTest {
         listReply.setMessageSizes(List.of(128));
 
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = listReply.getSerializer(context);
+        Serializer<?> serializer = listReply.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals(

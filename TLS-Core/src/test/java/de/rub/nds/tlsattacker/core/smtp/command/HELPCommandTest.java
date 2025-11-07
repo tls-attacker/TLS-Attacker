@@ -34,7 +34,7 @@ public class HELPCommandTest {
         SmtpHELPCommand HELPCommand = new SmtpHELPCommand();
         Parser parser =
                 HELPCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(HELPCommand);
         assertEquals("HELP", HELPCommand.getVerb());
@@ -49,7 +49,7 @@ public class HELPCommandTest {
         SmtpHELPCommand HELPCommand = new SmtpHELPCommand();
         Parser parser =
                 HELPCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(HELPCommand);
         assertEquals("HELP", HELPCommand.getVerb());
@@ -64,7 +64,7 @@ public class HELPCommandTest {
         SmtpHELPCommand HELPCommand = new SmtpHELPCommand();
         Parser parser =
                 HELPCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(HELPCommand);
         assertEquals("HELP", HELPCommand.getVerb());
@@ -75,7 +75,7 @@ public class HELPCommandTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpHELPCommand HELPCommand = new SmtpHELPCommand();
-        Serializer serializer = HELPCommand.getSerializer(context);
+        Serializer serializer = HELPCommand.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals("HELP\r\n", serializer.getOutputStream().toString());
     }

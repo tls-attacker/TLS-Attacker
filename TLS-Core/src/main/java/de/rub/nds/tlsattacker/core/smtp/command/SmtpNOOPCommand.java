@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -20,9 +21,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class SmtpNOOPCommand extends SmtpCommand {
-    private static final String COMMAND = "NOOP";
-
     public SmtpNOOPCommand() {
-        super(COMMAND);
+        super(SmtpCommandType.NOOP);
     }
 }

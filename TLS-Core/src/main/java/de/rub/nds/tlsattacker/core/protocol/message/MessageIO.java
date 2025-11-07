@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -24,6 +25,7 @@ import org.reflections.Reflections;
 
 public class MessageIO {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static JAXBContext context;
@@ -71,7 +73,7 @@ public class MessageIO {
 
     public static ProtocolMessage copyTlsAction(ProtocolMessage message)
             throws JAXBException, IOException, XMLStreamException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
         MessageIO.write(stream, message);
         stream.flush();
         return MessageIO.read(new ByteArrayInputStream(stream.toByteArray()));

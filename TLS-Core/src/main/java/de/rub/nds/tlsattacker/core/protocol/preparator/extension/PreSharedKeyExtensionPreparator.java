@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
@@ -24,8 +29,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -80,15 +83,11 @@ public class PreSharedKeyExtensionPreparator
     }
 
     private void prepareIdentityListBytes() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (msg.getIdentities() != null) {
             for (PSKIdentity pskIdentity : msg.getIdentities()) {
                 PSKIdentitySerializer serializer = new PSKIdentitySerializer(pskIdentity);
-                try {
-                    outputStream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
-                }
+                outputStream.write(serializer.serialize());
             }
         } else {
             LOGGER.debug("No PSK available, setting empty identity list");
@@ -98,15 +97,11 @@ public class PreSharedKeyExtensionPreparator
     }
 
     private void prepareBinderListBytes() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (msg.getBinders() != null) {
             for (PSKBinder pskBinder : msg.getBinders()) {
                 PSKBinderSerializer serializer = new PSKBinderSerializer(pskBinder);
-                try {
-                    outputStream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
-                }
+                outputStream.write(serializer.serialize());
             }
         } else {
             LOGGER.debug("No PSK available, setting empty binder list");
@@ -183,16 +178,20 @@ public class PreSharedKeyExtensionPreparator
                                         digestAlgo.getJavaName(),
                                         earlySecret,
                                         HKDFunction.BINDER_KEY_RES,
-                                        ArrayConverter.hexStringToByteArray(""));
+                                        DataConverter.hexStringToByteArray(""),
+                                        tlsContext.getChooser().getSelectedProtocolVersion());
                         byte[] binderFinKey =
                                 HKDFunction.expandLabel(
                                         hkdfAlgorithm,
                                         binderKey,
                                         HKDFunction.FINISHED,
                                         new byte[0],
-                                        mac.getMacLength());
-
-                        tlsContext.getDigest().setRawBytes(relevantBytes);
+                                        mac.getMacLength(),
+                                        tlsContext.getChooser().getSelectedProtocolVersion());
+                        byte[] hashBefore = tlsContext.getDigest().getRawBytes();
+                        tlsContext
+                                .getDigest()
+                                .setRawBytes(DataConverter.concatenate(hashBefore, relevantBytes));
                         SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                         mac.init(keySpec);
                         mac.update(
@@ -202,7 +201,7 @@ public class PreSharedKeyExtensionPreparator
                                                 ProtocolVersion.TLS13,
                                                 pskSets.get(x).getCipherSuite()));
                         byte[] binderVal = mac.doFinal();
-                        tlsContext.getDigest().setRawBytes(new byte[0]);
+                        tlsContext.getDigest().setRawBytes(hashBefore);
 
                         LOGGER.debug("Using PSK: {}", psk);
                         LOGGER.debug("Calculated Binder: {}", binderVal);

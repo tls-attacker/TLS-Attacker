@@ -13,17 +13,19 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.modifiablevariable.util.SuppressingTrueBooleanAdapter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
 
 @XmlSeeAlso({
@@ -77,25 +79,34 @@ import java.io.InputStream;
     QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
-public abstract class ExtensionMessage extends ModifiableVariableHolder
-        implements DataContainer<TlsContext> {
+public abstract class ExtensionMessage extends ModifiableVariableHolder implements DataContainer {
 
     protected ExtensionType extensionTypeConstant;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray extensionType;
+    @ModifiableVariableProperty private ModifiableByteArray extensionType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger extensionLength;
 
     @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
 
     @ModifiableVariableProperty private ModifiableByteArray extensionContent;
 
+    @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
+    private Boolean shouldPrepare = null;
+
     public ExtensionMessage() {}
 
     public ExtensionMessage(ExtensionType type) {
         this.extensionTypeConstant = type;
+    }
+
+    public boolean shouldPrepare() {
+        return shouldPrepare;
+    }
+
+    public void setShouldPrepare(boolean shouldPrepare) {
+        this.shouldPrepare = shouldPrepare;
     }
 
     public ModifiableByteArray getExtensionType() {
@@ -145,7 +156,7 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder
             sb.append("\n    Extension type: null");
         } else {
             sb.append("\n    Extension type: ")
-                    .append(ArrayConverter.bytesToHexString(extensionType.getValue()));
+                    .append(DataConverter.bytesToHexString(extensionType.getValue()));
         }
         if (extensionLength == null || extensionLength.getValue() == null) {
             sb.append("\n    Extension length: null");
@@ -170,17 +181,15 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder
     }
 
     @Override
-    public abstract ExtensionHandler<? extends ExtensionMessage> getHandler(TlsContext context);
+    public abstract ExtensionHandler<? extends ExtensionMessage> getHandler(Context context);
 
     @Override
     public abstract ExtensionParser<? extends ExtensionMessage> getParser(
-            TlsContext context, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
-    public abstract ExtensionPreparator<? extends ExtensionMessage> getPreparator(
-            TlsContext context);
+    public abstract ExtensionPreparator<? extends ExtensionMessage> getPreparator(Context context);
 
     @Override
-    public abstract ExtensionSerializer<? extends ExtensionMessage> getSerializer(
-            TlsContext context);
+    public abstract ExtensionSerializer<? extends ExtensionMessage> getSerializer(Context context);
 }

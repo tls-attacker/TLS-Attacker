@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
@@ -62,8 +61,10 @@ public class EarlyCcsAction extends TlsAction {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message =
                 factory.createClientKeyExchangeMessage(
-                        AlgorithmResolver.getKeyExchangeAlgorithm(
-                                state.getTlsContext().getChooser().getSelectedCipherSuite()));
+                        state.getTlsContext()
+                                .getChooser()
+                                .getSelectedCipherSuite()
+                                .getKeyExchangeAlgorithm());
         if (message == null) {
             // the factory will fail to provide a CKE message in some cases
             // e.g for TLS_CECPQ1 cipher suites
@@ -74,13 +75,13 @@ public class EarlyCcsAction extends TlsAction {
         }
         message.setAdjustContext(Modifiable.explicit(false));
         ClientKeyExchangeHandler handler =
-                (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
-        message.getPreparator(state.getTlsContext()).prepare();
+                (ClientKeyExchangeHandler) message.getHandler(state.getContext());
+        message.getPreparator(state.getContext()).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
             handler.adjustMasterSecret(message);
         }
-        byte[] serialized = message.getSerializer(state.getTlsContext()).serialize();
+        byte[] serialized = message.getSerializer(state.getContext()).serialize();
         handler.adjustContextAfterSerialize(message);
         try {
             state.getTlsContext()

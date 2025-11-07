@@ -19,83 +19,79 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.ConnectionCloseFrameHandle
 import de.rub.nds.tlsattacker.core.quic.parser.frame.ConnectionCloseFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.ConnectionCloseFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.ConnectionCloseFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * An endpoint sends a CONNECTION_CLOSE frame (type=0x1c or 0x1d) to notify its peer that the
+ * connection is being closed.
+ */
 @XmlRootElement
 public class ConnectionCloseFrame extends QuicFrame {
 
-    /**
-     * A variable-length integer that indicates the reason for closing this connection. A
-     * CONNECTION_CLOSE frame of type 0x1c uses codes from the space defined in Section 20.1. A
-     * CONNECTION_CLOSE frame of type 0x1d uses codes defined by the application protocol; see
-     * Section 20.2.
-     */
     @ModifiableVariableProperty private ModifiableLong errorCode;
 
-    /**
-     * A variable-length integer encoding the type of frame that triggered the error. A value of 0
-     * (equivalent to the mention of the PADDING frame) is used when the frame type is unknown. The
-     * application-specific variant of CONNECTION_CLOSE (type 0x1d) does not include this field.
-     */
     @ModifiableVariableProperty private ModifiableLong triggerFrameType;
 
-    /**
-     * A variable-length integer specifying the length of the reason phrase in bytes. Because a
-     * CONNECTION_CLOSE frame cannot be split between packets, any limits on packet size will also
-     * limit the space available for a reason phrase.
-     */
     @ModifiableVariableProperty private ModifiableLong reasonPhraseLength;
 
-    /**
-     * Additional diagnostic information for the closure. This can be zero length if the sender
-     * chooses not to give details beyond the Error Code value. This SHOULD be a UTF-8 encoded
-     * string [RFC3629], though the frame does not carry information, such as language tags, that
-     * would aid comprehension by any entity other than the one that created the text.
-     */
     @ModifiableVariableProperty private ModifiableByteArray reasonPhrase;
 
-    public ConnectionCloseFrame() {
-        super(QuicFrameType.CONNECTION_CLOSE_FRAME);
-        this.setReasonPhraseLength(0);
-        this.setTriggerFrameType(0);
+    private long errorCodeConfig;
+    private long triggerFrameTypeConfig;
+    private long reasonPhraseLengthConfig;
+    private byte[] reasonPhraseConfig;
+
+    @SuppressWarnings("unused") // JAXB
+    private ConnectionCloseFrame() {}
+
+    public ConnectionCloseFrame(boolean isQuicLayer) {
+        if (isQuicLayer) {
+            setFrameType(QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME);
+        } else {
+            setFrameType(QuicFrameType.CONNECTION_CLOSE_APPLICATION_FRAME);
+        }
+        ackEliciting = false;
     }
 
-    public ConnectionCloseFrame(long errorCode) {
-        this();
-        this.errorCode = ModifiableVariableFactory.safelySetValue(this.errorCode, errorCode);
+    public ConnectionCloseFrame(long errorCodeConfig) {
+        this(true);
+        this.errorCodeConfig = errorCodeConfig;
     }
 
-    public ConnectionCloseFrame(long errorCode, String reasonPhrase) {
-        this(errorCode);
-        this.setReasonPhrase(reasonPhrase.getBytes(StandardCharsets.UTF_8));
-        this.setReasonPhraseLength(this.reasonPhrase.getValue().length);
+    public ConnectionCloseFrame(int errorCodeConfig, String reasonPhraseConfig) {
+        this(errorCodeConfig);
+        this.reasonPhraseConfig = reasonPhraseConfig.getBytes(StandardCharsets.UTF_8);
+        this.reasonPhraseLengthConfig = this.reasonPhraseConfig.length;
     }
 
-    public ConnectionCloseFrame(int errorCode, String reasonPhrase, long triggerFrameType) {
-        this(errorCode, reasonPhrase);
-        this.setTriggerFrameType(triggerFrameType);
+    public ConnectionCloseFrame(
+            int errorCodeConfig, long triggerFrameTypeConfig, String reasonPhraseConfig) {
+        this(errorCodeConfig);
+        this.reasonPhraseConfig = reasonPhraseConfig.getBytes(StandardCharsets.UTF_8);
+        this.reasonPhraseLengthConfig = this.reasonPhraseConfig.length;
+        this.triggerFrameTypeConfig = triggerFrameTypeConfig;
     }
 
     @Override
-    public ConnectionCloseFrameHandler getHandler(QuicContext context) {
-        return new ConnectionCloseFrameHandler(context);
+    public ConnectionCloseFrameHandler getHandler(Context context) {
+        return new ConnectionCloseFrameHandler(context.getQuicContext());
     }
 
     @Override
-    public ConnectionCloseFrameSerializer getSerializer(QuicContext context) {
+    public ConnectionCloseFrameSerializer getSerializer(Context context) {
         return new ConnectionCloseFrameSerializer(this);
     }
 
     @Override
-    public ConnectionCloseFramePreparator getPreparator(QuicContext context) {
+    public ConnectionCloseFramePreparator getPreparator(Context context) {
         return new ConnectionCloseFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public ConnectionCloseFrameParser getParser(QuicContext context, InputStream stream) {
+    public ConnectionCloseFrameParser getParser(Context context, InputStream stream) {
         return new ConnectionCloseFrameParser(stream);
     }
 
@@ -108,7 +104,7 @@ public class ConnectionCloseFrame extends QuicFrame {
     }
 
     public void setErrorCode(int errorCode) {
-        this.errorCode = ModifiableVariableFactory.safelySetValue(this.errorCode, (long) errorCode);
+        this.setErrorCode((long) errorCode);
     }
 
     public ModifiableLong getTriggerFrameType() {
@@ -147,6 +143,38 @@ public class ConnectionCloseFrame extends QuicFrame {
                 ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
     }
 
+    public long getErrorCodeConfig() {
+        return errorCodeConfig;
+    }
+
+    public void setErrorCodeConfig(long errorCodeConfig) {
+        this.errorCodeConfig = errorCodeConfig;
+    }
+
+    public long getTriggerFrameTypeConfig() {
+        return triggerFrameTypeConfig;
+    }
+
+    public void setTriggerFrameTypeConfig(long triggerFrameTypeConfig) {
+        this.triggerFrameTypeConfig = triggerFrameTypeConfig;
+    }
+
+    public long getReasonPhraseLengthConfig() {
+        return reasonPhraseLengthConfig;
+    }
+
+    public void setReasonPhraseLengthConfig(long reasonPhraseLengthConfig) {
+        this.reasonPhraseLengthConfig = reasonPhraseLengthConfig;
+    }
+
+    public byte[] getReasonPhraseConfig() {
+        return reasonPhraseConfig;
+    }
+
+    public void setReasonPhraseConfig(byte[] reasonPhraseConfig) {
+        this.reasonPhraseConfig = reasonPhraseConfig;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -163,9 +191,13 @@ public class ConnectionCloseFrame extends QuicFrame {
                                         .name());
 
             } else {
-                sb.append(
-                        QuicTransportErrorCodes.getErrorCode(errorCode.getValue().byteValue())
-                                .getName());
+                QuicTransportErrorCodes transportErrorCode =
+                        QuicTransportErrorCodes.getErrorCode(errorCode.getValue().byteValue());
+                if (transportErrorCode != null) {
+                    sb.append(transportErrorCode.getName());
+                } else {
+                    sb.append(errorCode.getValue());
+                }
             }
 
         } else {
@@ -176,7 +208,7 @@ public class ConnectionCloseFrame extends QuicFrame {
             if (triggerFrameType.getValue() == 0) {
                 sb.append("unknown");
             } else {
-                sb.append(QuicFrameType.getFrameType(triggerFrameType.getValue().byteValue()));
+                sb.append(QuicFrameType.getFrameType(triggerFrameType.getValue()));
             }
         } else {
             sb.append("null");

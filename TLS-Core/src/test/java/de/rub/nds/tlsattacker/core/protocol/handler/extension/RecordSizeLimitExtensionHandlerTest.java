@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.rub.nds.protocol.exception.AdjustmentException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -32,7 +32,7 @@ public class RecordSizeLimitExtensionHandlerTest
                 RecordSizeLimitExtensionMessage::new,
                 RecordSizeLimitExtensionHandler::new,
                 () -> {
-                    Config config = Config.createConfig();
+                    Config config = new Config();
                     config.setDefaultRunningMode(RunningModeType.SERVER);
                     return new Context(new State(config), new InboundConnection()).getTlsContext();
                 });
@@ -42,20 +42,20 @@ public class RecordSizeLimitExtensionHandlerTest
     @Test
     @Override
     public void testadjustTLSExtensionContext() {
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
 
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] {(byte) 0x05, (byte) 0x39});
-        assertNull(context.getOutboundRecordSizeLimit());
+        assertNull(tlsContext.getOutboundRecordSizeLimit());
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(1337, (int) context.getOutboundRecordSizeLimit());
+        assertEquals(1337, (int) tlsContext.getOutboundRecordSizeLimit());
     }
 
     @Test
     public void testadjustTLSExtensionContextInvalidSize() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] {(byte) 0x05, (byte) 0x39, (byte) 0x00});
-        assertNull(context.getOutboundRecordSizeLimit());
+        assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertThrows(AdjustmentException.class, () -> handler.adjustTLSExtensionContext(msg));
     }
 
@@ -64,8 +64,8 @@ public class RecordSizeLimitExtensionHandlerTest
     public void testadjustTLSExtensionContextSizeTooSmall() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
         msg.setRecordSizeLimit(new byte[] {(byte) 0x00, (byte) 0x2A});
-        assertNull(context.getOutboundRecordSizeLimit());
+        assertNull(tlsContext.getOutboundRecordSizeLimit());
         handler.adjustContext(msg);
-        assertNull(context.getOutboundRecordSizeLimit());
+        assertNull(tlsContext.getOutboundRecordSizeLimit());
     }
 }

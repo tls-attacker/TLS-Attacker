@@ -28,7 +28,7 @@ class Pop3QUITReplyTest {
         quit.setStatusIndicator("+OK");
         quit.setHumanReadableMessage("dewey POP3 server signing off");
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
-        Serializer<?> serializer = quit.getSerializer(context);
+        Serializer<?> serializer = quit.getSerializer(context.getContext());
         serializer.serialize();
 
         assertEquals(
@@ -43,7 +43,7 @@ class Pop3QUITReplyTest {
         Pop3QUITReply quit = new Pop3QUITReply();
         Pop3GenericReplyParser<Pop3QUITReply> parser =
                 quit.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quit);
 

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -41,8 +41,7 @@ public class NewSessionTicketSerializer
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
-        if (version.isTLS13()) {
-            // TLS 1.3
+        if (version.is13()) {
             writeTicketAgeAdd(msg);
             writeTicketNonceLength(msg);
             writeTicketNonce(msg);
@@ -59,26 +58,26 @@ public class NewSessionTicketSerializer
 
     private void writeLifetimeHint(NewSessionTicketMessage msg) {
         appendBytes(
-                ArrayConverter.longToBytes(
+                DataConverter.longToBytes(
                         msg.getTicketLifetimeHint().getValue(),
                         HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
         LOGGER.debug(
                 "LifetimeHint: {}",
                 () ->
-                        ArrayConverter.longToBytes(
+                        DataConverter.longToBytes(
                                 msg.getTicketLifetimeHint().getValue(),
                                 HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
     }
 
     private void writeTicketLength(NewSessionTicketMessage msg) {
         appendBytes(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         msg.getTicket().getIdentityLength().getValue(),
                         HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
         LOGGER.debug(
                 "TicketLength: {}",
                 () ->
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getTicket().getIdentityLength().getValue(),
                                 HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
     }
@@ -95,10 +94,10 @@ public class NewSessionTicketSerializer
 
     private void writeTicketNonceLength(NewSessionTicketMessage msg) {
         appendBytes(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         msg.getTicket().getTicketNonceLength().getValue(),
                         HandshakeByteLength.TICKET_NONCE_LENGTH));
-        LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
+        LOGGER.debug("TicketNonceLength: {}", msg.getTicket().getTicketNonceLength().getValue());
     }
 
     private void writeTicketNonce(NewSessionTicketMessage msg) {
@@ -108,10 +107,10 @@ public class NewSessionTicketSerializer
 
     private void writeTicketIdentityLength(NewSessionTicketMessage msg) {
         appendBytes(
-                ArrayConverter.intToBytes(
+                DataConverter.intToBytes(
                         msg.getTicket().getIdentityLength().getValue(),
                         ExtensionByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("TicketIdentityLength: " + msg.getTicket().getIdentityLength().getValue());
+        LOGGER.debug("TicketIdentityLength: {}", msg.getTicket().getIdentityLength().getValue());
     }
 
     private void writeTicketIdentity(NewSessionTicketMessage msg) {

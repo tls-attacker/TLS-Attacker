@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
@@ -69,7 +69,7 @@ public class KeyShareCalculator {
             }
         } else if (namedGroup.isDhGroup()) {
             BigInteger publicKey = (BigInteger) group.nTimesGroupOperationOnGenerator(privateKey);
-            return ArrayConverter.bigIntegerToNullPaddedByteArray(
+            return DataConverter.bigIntegerToNullPaddedByteArray(
                     publicKey, ((FfdhGroup) group).getParameters().getElementSizeBytes());
         } else {
             LOGGER.warn("Cannot create Public Key for group {}", namedGroup.name());
@@ -119,7 +119,7 @@ public class KeyShareCalculator {
             throw new IllegalArgumentException(
                     "Cannot compute dh shared secret for non ffdhe group");
         }
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(
+        return DataConverter.bigIntegerToNullPaddedByteArray(
                 sharedSecret, group.getGroupParameters().getElementSizeBytes());
     }
 
@@ -146,7 +146,7 @@ public class KeyShareCalculator {
 
         Point sharedPoint = curve.nTimesGroupOperation(publicKey, privateKey);
         int elementLength = parameters.getElementSizeBytes();
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(
+        return DataConverter.bigIntegerToNullPaddedByteArray(
                 sharedPoint.getFieldX().getData(), elementLength);
     }
 }

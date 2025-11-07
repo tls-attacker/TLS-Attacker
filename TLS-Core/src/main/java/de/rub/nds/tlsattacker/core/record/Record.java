@@ -15,7 +15,10 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.modifiablevariable.util.SuppressingTrueBooleanAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.Dtls13UnifiedHeaderBits;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -23,13 +26,16 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
+import de.rub.nds.tlsattacker.core.record.handler.RecordHandler;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
@@ -37,56 +43,59 @@ import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+public class Record extends ModifiableVariableHolder implements DataContainer {
 
     @XmlTransient protected boolean shouldPrepareDefault = true;
 
     /** maximum length configuration for this record */
     private Integer maxRecordLengthConfig;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray completeRecordBytes;
+    @ModifiableVariableProperty private ModifiableByteArray completeRecordBytes;
 
     /**
      * protocol message bytes transported in the record as seen on the transport layer if encryption
      * is active this is encrypted if not its plaintext
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray protocolMessageBytes;
+    @ModifiableVariableProperty private ModifiableByteArray protocolMessageBytes;
 
     /** The decrypted , unpadded, unmaced record bytes */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
-    private ModifiableByteArray cleanProtocolMessageBytes;
+    @ModifiableVariableProperty private ModifiableByteArray cleanProtocolMessageBytes;
 
     private ProtocolMessageType contentMessageType;
 
     /** Content type */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte contentType;
+    @ModifiableVariableProperty private ModifiableByte contentType;
 
     /** Record Layer Protocol Version */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
     /** total length of the protocol message (handshake, alert..) included in the record layer */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger length;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger epoch;
+    /** The epoch number for DTLS */
+    @ModifiableVariableProperty private ModifiableInteger epoch;
 
     /**
      * This is the implicit sequence number in TLS and also the explicit sequence number in DTLS
      * This could also have been a separate field within the computations struct but i chose to only
      * keep one of them as the whole situation is already complicated enough
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableBigInteger sequenceNumber;
+    @ModifiableVariableProperty private ModifiableBigInteger sequenceNumber;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
-    private ModifiableByteArray connectionId;
+    /** The encrypted sequence number for DTLS 1.3 */
+    @ModifiableVariableProperty private ModifiableByteArray encryptedSequenceNumber;
+
+    /** The connectin ID for DTLS */
+    @ModifiableVariableProperty private ModifiableByteArray connectionId;
+
+    /** DTLS 1.3 unified header */
+    @ModifiableVariableProperty private ModifiableByte unifiedHeader;
 
     private RecordCryptoComputations computations;
+
+    @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
+    private Boolean shouldPrepare = null;
 
     public Record(Config config) {
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
@@ -169,6 +178,20 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
+    public ModifiableByteArray getEncryptedSequenceNumber() {
+        return encryptedSequenceNumber;
+    }
+
+    public void setEncryptedSequenceNumber(ModifiableByteArray encryptedSequenceNumber) {
+        this.encryptedSequenceNumber = encryptedSequenceNumber;
+    }
+
+    public void setEncryptedSequenceNumber(byte[] encryptedSequenceNumber) {
+        this.encryptedSequenceNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedSequenceNumber, encryptedSequenceNumber);
+    }
+
     public ModifiableByteArray getConnectionId() {
         return connectionId;
     }
@@ -197,12 +220,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     public RecordSerializer getRecordSerializer() {
         return new RecordSerializer(this);
-    }
-
-    public void adjustContext(TlsContext tlsContext) {
-        ProtocolVersion version =
-                ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
-        tlsContext.setLastRecordVersion(version);
     }
 
     public ProtocolMessageType getContentMessageType() {
@@ -248,6 +265,31 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
+    public ModifiableByte getUnifiedHeader() {
+        return unifiedHeader;
+    }
+
+    public void setUnifiedHeader(byte unifiedHeader) {
+        this.unifiedHeader =
+                ModifiableVariableFactory.safelySetValue(this.unifiedHeader, unifiedHeader);
+    }
+
+    public void setUnifiedHeader(ModifiableByte unifiedHeader) {
+        this.unifiedHeader = unifiedHeader;
+    }
+
+    public boolean isUnifiedHeaderCidPresent() {
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.CID_PRESENT) != 0;
+    }
+
+    public boolean isUnifiedHeaderSqnLong() {
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.SQN_LONG) != 0;
+    }
+
+    public boolean isUnifiedHeaderLengthPresent() {
+        return (unifiedHeader.getValue() & Dtls13UnifiedHeaderBits.LENGTH_PRESENT) != 0;
+    }
+
     public ModifiableByteArray getCompleteRecordBytes() {
         return completeRecordBytes;
     }
@@ -278,13 +320,68 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     @Override
     public String toString() {
+
+        String contentTypeString;
+        if (contentType == null || contentType.getOriginalValue() == null) {
+            contentTypeString = "null";
+        } else {
+            ProtocolMessageType type = ProtocolMessageType.getContentType(contentType.getValue());
+            if (type == null) {
+                contentTypeString = "UNKNOWN";
+            } else {
+                contentTypeString = type.name();
+            }
+        }
+        String protocolVersionString;
+        if (protocolVersion == null || protocolVersion.getOriginalValue() == null) {
+            protocolVersionString = "null";
+        } else {
+            ProtocolVersion version =
+                    ProtocolVersion.getProtocolVersion(protocolVersion.getValue());
+            if (version == null) {
+                protocolVersionString = "UNKNOWN";
+            } else {
+                protocolVersionString = version.name();
+            }
+        }
+        String lengthString;
+        if (length == null || length.getOriginalValue() == null) {
+            lengthString = "null";
+        } else {
+            lengthString = length.getValue().toString();
+        }
+        return "Record["
+                + contentTypeString
+                + ", "
+                + protocolVersionString
+                + ", "
+                + lengthString
+                + ']';
+    }
+
+    @Override
+    public String toCompactString() {
+        String stringContentType = "unspecified";
+        String stringProtocolVersion = "unspecified";
+        String stringLength = "unspecified";
+        if (contentType != null && contentType.getValue() != null) {
+            stringContentType = contentType.getValue().toString();
+        }
+        if (protocolVersion != null && protocolVersion.getValue() != null) {
+            stringContentType = DataConverter.bytesToHexString(protocolVersion.getValue());
+        }
+        if (length != null && length.getValue() != null) {
+            stringLength = length.getValue().toString();
+        } else if (maxRecordLengthConfig != null) {
+            stringLength = maxRecordLengthConfig.toString();
+        }
         return "Record{"
                 + "contentType="
-                + contentType
+                + stringContentType
                 + ", protocolVersion="
-                + protocolVersion
+                + stringProtocolVersion
                 + ", length="
-                + length
+                + stringLength
                 + '}';
     }
 
@@ -296,8 +393,10 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         hash = 29 * hash + Objects.hashCode(this.length);
         hash = 29 * hash + Objects.hashCode(this.epoch);
         hash = 29 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 29 * hash + Objects.hashCode(this.encryptedSequenceNumber);
         hash = 29 * hash + Objects.hashCode(this.connectionId);
         hash = 29 * hash + Objects.hashCode(this.computations);
+        hash = 29 * hash + Objects.hashCode(this.unifiedHeader);
         return hash;
     }
 
@@ -328,10 +427,16 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         if (!Objects.equals(this.sequenceNumber, other.sequenceNumber)) {
             return false;
         }
+        if (!Objects.equals(this.encryptedSequenceNumber, other.encryptedSequenceNumber)) {
+            return false;
+        }
         if (!Objects.equals(this.connectionId, other.connectionId)) {
             return false;
         }
         if (!Objects.equals(this.computations, other.computations)) {
+            return false;
+        }
+        if (!Objects.equals(this.unifiedHeader, other.unifiedHeader)) {
             return false;
         }
         return true;
@@ -354,22 +459,23 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     // TODO Fix this mess for records
     @Override
-    public RecordParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RecordParser(stream, tlsContext.getLastRecordVersion(), tlsContext);
+    public RecordParser getParser(Context context, InputStream stream) {
+        return new RecordParser(
+                stream, context.getTlsContext().getLastRecordVersion(), context.getTlsContext());
     }
 
     @Override
-    public RecordPreparator getPreparator(TlsContext tlsContext) {
-        return new RecordPreparator(tlsContext, this, null, contentMessageType, null);
+    public RecordPreparator getPreparator(Context context) {
+        return new RecordPreparator(context.getTlsContext(), this, null, contentMessageType, null);
     }
 
     @Override
-    public RecordSerializer getSerializer(TlsContext context) {
+    public RecordSerializer getSerializer(Context context) {
         return new RecordSerializer(this);
     }
 
     @Override
-    public Handler<Record> getHandler(TlsContext tlsContext) {
-        return null; // TODO
+    public Handler<Record> getHandler(Context context) {
+        return new RecordHandler(context.getTlsContext());
     }
 }

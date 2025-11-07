@@ -13,16 +13,16 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -31,14 +31,14 @@ import java.util.Objects;
 public class CertificateVerifyMessage extends HandshakeMessage {
 
     /** selected Signature and Hashalgorithm */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray signatureHashAlgorithm;
+    @ModifiableVariableProperty private ModifiableByteArray signatureHashAlgorithm;
+
     /** signature length */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger signatureLength;
+
     /** signature */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    private ModifiableByteArray signature;
+    @ModifiableVariableProperty private ModifiableByteArray signature;
 
     @HoldsModifiableVariable private SignatureComputations signatureComputations;
 
@@ -100,7 +100,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         builder.append("CertificateVerifyMessage:");
         builder.append("\n  SignatureAndHashAlgorithm: ");
         if (signatureHashAlgorithm != null && signatureHashAlgorithm.getValue() != null) {
-            builder.append(ArrayConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
+            builder.append(DataConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
         } else {
             builder.append("null");
         }
@@ -112,7 +112,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         }
         builder.append("\n  Signature: ");
         if (signature != null && signature.getValue() != null) {
-            builder.append(ArrayConverter.bytesToHexString(signature.getValue()));
+            builder.append(DataConverter.bytesToHexString(signature.getValue()));
         } else {
             builder.append("null");
         }
@@ -125,24 +125,24 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateVerifyHandler getHandler(TlsContext tlsContext) {
-        return new CertificateVerifyHandler(tlsContext);
+    public CertificateVerifyHandler getHandler(Context context) {
+        return new CertificateVerifyHandler(context.getTlsContext());
     }
 
     @Override
-    public CertificateVerifyParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new CertificateVerifyParser(stream, tlsContext);
+    public CertificateVerifyParser getParser(Context context, InputStream stream) {
+        return new CertificateVerifyParser(stream, context.getTlsContext());
     }
 
     @Override
-    public CertificateVerifyPreparator getPreparator(TlsContext tlsContext) {
-        return new CertificateVerifyPreparator(tlsContext.getChooser(), this);
+    public CertificateVerifyPreparator getPreparator(Context context) {
+        return new CertificateVerifyPreparator(context.getChooser(), this);
     }
 
     @Override
-    public CertificateVerifySerializer getSerializer(TlsContext tlsContext) {
+    public CertificateVerifySerializer getSerializer(Context context) {
         return new CertificateVerifySerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

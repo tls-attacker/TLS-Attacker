@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import org.junit.jupiter.api.Test;
@@ -29,12 +29,12 @@ public class SupportedVersionsExtensionHandlerTest
     public void testadjustTLSExtensionContext() {
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         ProtocolVersion.TLS12.getValue(), ProtocolVersion.TLS13.getValue()));
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(2, context.getClientSupportedProtocolVersions().size());
+        assertEquals(2, tlsContext.getClientSupportedProtocolVersions().size());
         assertEquals(
-                context.getHighestClientProtocolVersion().getValue(),
+                tlsContext.getHighestClientProtocolVersion().getValue(),
                 ProtocolVersion.TLS13.getValue());
     }
 
@@ -43,9 +43,9 @@ public class SupportedVersionsExtensionHandlerTest
         SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
         msg.setSupportedVersions(new byte[] {0, 1, 2, 3, 3, 3});
         handler.adjustTLSExtensionContext(msg);
-        assertEquals(1, context.getClientSupportedProtocolVersions().size());
+        assertEquals(1, tlsContext.getClientSupportedProtocolVersions().size());
         assertEquals(
-                context.getHighestClientProtocolVersion().getValue(),
+                tlsContext.getHighestClientProtocolVersion().getValue(),
                 ProtocolVersion.TLS12.getValue());
     }
 }

@@ -22,10 +22,9 @@ public class ServerNamePair extends ModifiableVariableHolder {
     private Byte serverNameTypeConfig;
     private byte[] serverNameConfig;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte serverNameType;
+    @ModifiableVariableProperty private ModifiableByte serverNameType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger serverNameLength;
 
     @ModifiableVariableProperty private ModifiableByteArray serverName;

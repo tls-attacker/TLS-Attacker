@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import java.util.List;
@@ -39,6 +39,6 @@ public class SRPExtensionParserTest
                         List.of(),
                         ExtensionType.SRP,
                         5,
-                        List.of(4, ArrayConverter.hexStringToByteArray("01020304"))));
+                        List.of(4, DataConverter.hexStringToByteArray("01020304"))));
     }
 }

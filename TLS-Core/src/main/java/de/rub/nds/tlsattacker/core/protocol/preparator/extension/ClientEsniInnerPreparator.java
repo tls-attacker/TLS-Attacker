@@ -8,15 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +22,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final ClientEsniInner msg;
-    private ByteArrayOutputStream serverNamePairListStream;
+    private SilentByteArrayOutputStream serverNamePairListStream;
 
     public ClientEsniInnerPreparator(Chooser chooser, ClientEsniInner message) {
         super(chooser, message);
@@ -50,16 +48,12 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerPariNameList(ClientEsniInner msg) {
 
-        serverNamePairListStream = new ByteArrayOutputStream();
+        serverNamePairListStream = new SilentByteArrayOutputStream();
         for (ServerNamePair pair : msg.getServerNameList()) {
             ServerNamePairPreparator preparator = new ServerNamePairPreparator(chooser, pair);
             preparator.prepare();
             ServerNamePairSerializer serializer = new ServerNamePairSerializer(pair);
-            try {
-                serverNamePairListStream.write(serializer.serialize());
-            } catch (IOException e) {
-                throw new PreparationException("Could not write byte[] from ServerNamePair", e);
-            }
+            serverNamePairListStream.write(serializer.serialize());
         }
     }
 

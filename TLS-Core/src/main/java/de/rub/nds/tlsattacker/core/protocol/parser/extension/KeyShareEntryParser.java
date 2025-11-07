@@ -48,7 +48,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
      */
     private void parseKeyShareLength(KeyShareEntry pair) {
         pair.setPublicKeyLength(parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH));
-        LOGGER.debug("KeyShareLength: " + pair.getPublicKeyLength().getValue());
+        LOGGER.debug("KeyShareLength: {}", pair.getPublicKeyLength().getValue());
     }
 
     /** Reads the next bytes as the keyShare of the Extension and writes them in the message */

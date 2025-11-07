@@ -18,19 +18,20 @@ public enum ProtocolMessageType {
     HANDSHAKE((byte) 22),
     APPLICATION_DATA((byte) 23),
     HEARTBEAT((byte) 24),
-    TLS12_CID((byte) 25);
+    TLS12_CID((byte) 25),
+    ACK((byte) 26);
 
     private byte value;
 
     private static final Map<Byte, ProtocolMessageType> MAP;
 
-    private ProtocolMessageType(byte value) {
+    ProtocolMessageType(byte value) {
         this.value = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (ProtocolMessageType cm : ProtocolMessageType.values()) {
+        for (ProtocolMessageType cm : values()) {
             MAP.put(cm.value, cm);
         }
     }

@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
 
 public interface StaticReceivingAction {
-    List<List<DataContainer<?>>> getExpectedDataContainerLists();
+    List<List<DataContainer>> getExpectedDataContainerLists();
 
     /**
      * Returns a list of the specified class from the expected DataContainers. Always returns the
@@ -23,7 +23,7 @@ public interface StaticReceivingAction {
      * @return
      */
     default <T> List<T> getExpectedList(Class<T> clazz) {
-        for (List<DataContainer<?>> containerList : getExpectedDataContainerLists()) {
+        for (List<DataContainer> containerList : getExpectedDataContainerLists()) {
             if (!containerList.isEmpty() && clazz.isInstance(containerList.get(0))) {
                 return (List<T>) containerList;
             }

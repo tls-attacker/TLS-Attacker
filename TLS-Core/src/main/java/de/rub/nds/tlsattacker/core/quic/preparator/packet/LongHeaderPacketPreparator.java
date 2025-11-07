@@ -10,19 +10,38 @@ package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
 import de.rub.nds.tlsattacker.core.quic.packet.LongHeaderPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class LongHeaderPacketPreparator<T extends LongHeaderPacket>
         extends QuicPacketPreparator<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public LongHeaderPacketPreparator(Chooser chooser, T packet) {
         super(chooser, packet);
-        this.packet = packet;
     }
 
     protected void prepareLongHeaderPacket() {
-        packet.setQuicVersion(context.getQuicVersion());
-        packet.setSourceConnectionId(context.getSourceConnectionId());
-        packet.setSourceConnectionIdLength((byte) packet.getSourceConnectionId().getValue().length);
+        prepareQuicVersion();
+        prepareSourceConnectionId();
+        prepareSourceConnectionIdLength();
         prepareQuicPacket();
+    }
+
+    protected void prepareSourceConnectionIdLength() {
+        packet.setSourceConnectionIdLength((byte) packet.getSourceConnectionId().getValue().length);
+        LOGGER.debug(
+                "Source Connection ID Length: {}", packet.getSourceConnectionIdLength().getValue());
+    }
+
+    protected void prepareSourceConnectionId() {
+        packet.setSourceConnectionId(context.getSourceConnectionId());
+        LOGGER.debug("Source Connection ID: {}", packet.getSourceConnectionId().getValue());
+    }
+
+    public void prepareQuicVersion() {
+        packet.setQuicVersion(context.getQuicVersion());
+        LOGGER.debug("Quic Version: {}", packet.getQuicVersion().getValue());
     }
 }

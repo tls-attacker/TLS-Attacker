@@ -24,6 +24,6 @@ public class SmtpQUITCommandHandler extends SmtpCommandHandler<SmtpQUITCommand> 
      */
     @Override
     public void adjustContextSpecific(SmtpQUITCommand smtpCommand) {
-        this.getContext().setClientRequestedClose(true);
+        this.getContext().getSmtpContext().setClientRequestedClose(true);
     }
 }

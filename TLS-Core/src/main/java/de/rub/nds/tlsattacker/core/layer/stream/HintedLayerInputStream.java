@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.layer.stream;
 
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,11 +21,11 @@ import java.io.InputStream;
  */
 public class HintedLayerInputStream extends HintedInputStream {
 
-    private final ProtocolLayer layer;
+    private final ProtocolLayer<?, ?, ?> layer;
 
     private ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
 
-    public HintedLayerInputStream(LayerProcessingHint hint, ProtocolLayer layer) {
+    public HintedLayerInputStream(LayerProcessingHint hint, ProtocolLayer<?, ?, ?> layer) {
         super(hint);
         this.layer = layer;
     }
@@ -60,7 +60,7 @@ public class HintedLayerInputStream extends HintedInputStream {
     @Override
     public void extendStream(byte[] bytes) {
         try {
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            SilentByteArrayOutputStream outStream = new SilentByteArrayOutputStream();
             stream.transferTo(outStream);
             outStream.write(bytes);
             stream = new ByteArrayInputStream(outStream.toByteArray());

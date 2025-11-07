@@ -8,24 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3DELECommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
 
 /** The Pop3DELECommand deletes a message with the specified messageNumber. */
 @XmlRootElement
 public class Pop3DELECommand extends Pop3Command implements Pop3MessageNumber {
     private Integer messageNumber;
-    private static final String commandName = "DELE";
 
     public Pop3DELECommand() {
-        super(commandName);
+        super(Pop3CommandType.DELE, null);
     }
 
     public Pop3DELECommand(int messageNumber) {
-        super(commandName, String.valueOf(messageNumber));
+        super(Pop3CommandType.DELE, String.valueOf(messageNumber));
         this.messageNumber = messageNumber;
     }
 
@@ -38,12 +36,7 @@ public class Pop3DELECommand extends Pop3Command implements Pop3MessageNumber {
     }
 
     @Override
-    public Pop3CommandParser<Pop3DELECommand> getParser(Pop3Context context, InputStream stream) {
-        return new Pop3CommandParser<>(stream);
-    }
-
-    @Override
-    public Pop3DELECommandPreparator getPreparator(Pop3Context context) {
-        return new Pop3DELECommandPreparator(context, this);
+    public Pop3DELECommandPreparator getPreparator(Context context) {
+        return new Pop3DELECommandPreparator(context.getPop3Context(), this);
     }
 }

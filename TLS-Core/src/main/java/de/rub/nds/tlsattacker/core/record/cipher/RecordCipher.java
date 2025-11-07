@@ -8,21 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.CryptoException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.core.crypto.cipher.BaseCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.tlsattacker.core.crypto.cipher.EncryptionCipher;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +32,7 @@ public abstract class RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final byte[] SEQUENCE_NUMBER_PLACEHOLDER =
+    private static final byte[] SEQUENCE_NUMBER_PLACEHOLDER =
             new byte[] {
                 (byte) 0xFF,
                 (byte) 0xFF,
@@ -64,6 +65,87 @@ public abstract class RecordCipher {
 
     public abstract void decrypt(Record record) throws CryptoException;
 
+    public void encryptDtls13SequenceNumber(Record record) {
+        int length =
+                tlsContext.getConfig().getUseDtls13HeaderSeqNumSizeLongEncoding()
+                        ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
+                        : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
+
+        byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
+        if (sequenceNumber.length < 2) {
+            // Ensure the sequence number is at least two bytes long. If it is shorter, pad with a
+            // leading zero.
+            sequenceNumber = new byte[] {0, sequenceNumber[0]};
+        }
+        if (sequenceNumber.length < length) {
+            sequenceNumber = Arrays.copyOf(sequenceNumber, length);
+        }
+
+        byte[] mask;
+        if (getState().getKeySet() == null) {
+            mask = new byte[length];
+            LOGGER.warn(
+                    "No keys available for DTLS 1.3 mask derivation for sequence number encryption. Using null encryption.");
+        } else {
+            try {
+                mask =
+                        ((BaseCipher) encryptCipher)
+                                .getDtls13Mask(
+                                        getState()
+                                                .getKeySet()
+                                                .getWriteSnKey(getLocalConnectionEndType()),
+                                        record.getProtocolMessageBytes().getValue());
+                if (mask.length < length) {
+                    mask = Arrays.copyOf(mask, length);
+                    LOGGER.warn(
+                            "DTLS 1.3 mask does not have enough bytes for encrypting the sequence number. Padding it to the required length with zero bytes.");
+                }
+            } catch (CryptoException ex) {
+                LOGGER.warn("Failed to generate DTLS 1.3 mask. Generating a zero‑byte mask.");
+                mask = new byte[length];
+            }
+        }
+
+        byte[] encryptedSequenceNumber = new byte[length];
+        for (int i = 0; i < length; i++) {
+            encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
+        }
+        record.setEncryptedSequenceNumber(encryptedSequenceNumber);
+        LOGGER.debug(
+                "Encrypted Sequence Number: {}", record.getEncryptedSequenceNumber().getValue());
+    }
+
+    public void decryptDtls13SequenceNumber(Record record) {
+        byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
+        byte[] mask;
+
+        try {
+            mask =
+                    ((BaseCipher) decryptCipher)
+                            .getDtls13Mask(
+                                    getState()
+                                            .getKeySet()
+                                            .getReadSnKey(getLocalConnectionEndType()),
+                                    record.getProtocolMessageBytes().getValue());
+            if (mask.length < encryptedSequenceNumber.length) {
+                LOGGER.warn(
+                        "DTLS 1.3 mask does not have enough bytes for decrypting the sequence number. Padding it to the required length with zero bytes.");
+                mask = Arrays.copyOf(mask, encryptedSequenceNumber.length);
+            }
+        } catch (CryptoException ex) {
+            LOGGER.warn("Failed to generate DTLS 1.3 mask. Generating a zero‑byte mask.");
+            mask = new byte[encryptedSequenceNumber.length];
+        }
+
+        byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];
+        for (int i = 0; i < sequenceNumber.length; i++) {
+            sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
+        }
+
+        record.setSequenceNumber(new BigInteger(1, sequenceNumber));
+        LOGGER.debug("Decrypted Sequence Number: {}", record.getSequenceNumber().getValue());
+    }
+
     /**
      * This function collects data needed for computing MACs and other authentication tags in
      * CBC/CCM/GCM cipher suites.
@@ -81,85 +163,119 @@ public abstract class RecordCipher {
      */
     protected final byte[] collectAdditionalAuthenticatedData(
             Record record, ProtocolVersion protocolVersion) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            if (protocolVersion.isTLS13()) {
-                stream.write(record.getContentType().getValue());
-                stream.write(record.getProtocolVersion().getValue());
+        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
+        // TLS 1.3
+        if (protocolVersion.isTLS13()) {
+            stream.write(record.getContentType().getValue());
+            stream.write(record.getProtocolVersion().getValue());
+            if (record.getLength() != null && record.getLength().getValue() != null) {
+                stream.write(
+                        DataConverter.intToBytes(
+                                record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
+            } else {
+                // It may happen that the record does not have a length prepared - in that case
+                // we will need to add
+                // the length of the data content
+                // This is mostly interesting for fuzzing
+                stream.write(
+                        DataConverter.intToBytes(
+                                record.getCleanProtocolMessageBytes().getValue().length,
+                                RecordByteLength.RECORD_LENGTH));
+            }
+            return stream.toByteArray();
+            // DTLS 1.3
+        } else if (protocolVersion.isDTLS13()) {
+            // Adding the first byte of the unified header
+            byte firstByte = record.getUnifiedHeader().getValue();
+            stream.write(firstByte);
+            // Adding the connection id if present
+            if (record.isUnifiedHeaderCidPresent()) {
+                stream.write(record.getConnectionId().getValue());
+            }
+            // Adding the sequence number
+            byte[] sequenceNumberBytes =
+                    DataConverter.longToUint48Bytes(
+                            record.getSequenceNumber().getValue().longValue());
+            if (record.isUnifiedHeaderSqnLong()) {
+                stream.write(
+                        sequenceNumberBytes,
+                        sequenceNumberBytes.length
+                                - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG,
+                        RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG);
+            } else {
+                stream.write(
+                        sequenceNumberBytes,
+                        sequenceNumberBytes.length
+                                - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT,
+                        RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT);
+            }
+            // Adding the length if present
+            if (record.isUnifiedHeaderLengthPresent()) {
                 if (record.getLength() != null && record.getLength().getValue() != null) {
                     stream.write(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     record.getLength().getValue(), RecordByteLength.RECORD_LENGTH));
                 } else {
-                    // It may happen that the record does not have a length prepared - in that case
-                    // we will need to add
-                    // the length of the data content
-                    // This is mostly interessting for fuzzing
                     stream.write(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     record.getCleanProtocolMessageBytes().getValue().length,
                                     RecordByteLength.RECORD_LENGTH));
                 }
-                return stream.toByteArray();
-            } else {
-                if (protocolVersion.isDTLS()) {
-                    if (ProtocolMessageType.getContentType(record.getContentType().getValue())
-                            == ProtocolMessageType.TLS12_CID) {
-                        stream.write(SEQUENCE_NUMBER_PLACEHOLDER);
-                        stream.write(ProtocolMessageType.TLS12_CID.getValue());
-                        stream.write(record.getConnectionId().getValue().length);
-                    } else {
-                        stream.write(
-                                ArrayConverter.intToBytes(
-                                        record.getEpoch().getValue().shortValue(),
-                                        RecordByteLength.DTLS_EPOCH));
-                        stream.write(
-                                ArrayConverter.longToUint48Bytes(
-                                        record.getSequenceNumber().getValue().longValue()));
-                    }
+            }
+            return stream.toByteArray();
+            // Other
+        } else {
+            if (protocolVersion.isDTLS()) {
+                if (ProtocolMessageType.getContentType(record.getContentType().getValue())
+                        == ProtocolMessageType.TLS12_CID) {
+                    stream.write(SEQUENCE_NUMBER_PLACEHOLDER);
+                    stream.write(ProtocolMessageType.TLS12_CID.getValue());
+                    stream.write(record.getConnectionId().getValue().length);
                 } else {
                     stream.write(
-                            ArrayConverter.longToUint64Bytes(
-                                    record.getSequenceNumber().getValue().longValue()));
-                }
-                stream.write(record.getContentType().getValue());
-                byte[] version;
-                if (!protocolVersion.isSSL()) {
-                    version = record.getProtocolVersion().getValue();
-                } else {
-                    version = new byte[0];
-                }
-                stream.write(version);
-                if (protocolVersion.isDTLS()
-                        && ProtocolMessageType.getContentType(record.getContentType().getValue())
-                                == ProtocolMessageType.TLS12_CID) {
-                    stream.write(
-                            ArrayConverter.intToBytes(
+                            DataConverter.intToBytes(
                                     record.getEpoch().getValue().shortValue(),
                                     RecordByteLength.DTLS_EPOCH));
                     stream.write(
-                            ArrayConverter.longToUint48Bytes(
+                            DataConverter.longToUint48Bytes(
                                     record.getSequenceNumber().getValue().longValue()));
-                    stream.write(record.getConnectionId().getValue());
                 }
-                int length;
-                if (record.getComputations().getAuthenticatedNonMetaData() == null
-                        || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue()
-                                == null) {
-                    // This case is required for TLS 1.2 aead encryption
-                    length = record.getComputations().getPlainRecordBytes().getValue().length;
-                } else {
-                    length =
-                            record.getComputations()
-                                    .getAuthenticatedNonMetaData()
-                                    .getValue()
-                                    .length;
-                }
-                stream.write(ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
-                return stream.toByteArray();
+            } else {
+                stream.write(
+                        DataConverter.longToUint64Bytes(
+                                record.getSequenceNumber().getValue().longValue()));
             }
-        } catch (IOException e) {
-            throw new WorkflowExecutionException("Could not write data to ByteArrayOutputStream");
+            stream.write(record.getContentType().getValue());
+            byte[] version;
+            if (!protocolVersion.isSSL()) {
+                version = record.getProtocolVersion().getValue();
+            } else {
+                version = new byte[0];
+            }
+            stream.write(version);
+            if (protocolVersion.isDTLS()
+                    && ProtocolMessageType.getContentType(record.getContentType().getValue())
+                            == ProtocolMessageType.TLS12_CID) {
+                stream.write(
+                        DataConverter.intToBytes(
+                                record.getEpoch().getValue().shortValue(),
+                                RecordByteLength.DTLS_EPOCH));
+                stream.write(
+                        DataConverter.longToUint48Bytes(
+                                record.getSequenceNumber().getValue().longValue()));
+                stream.write(record.getConnectionId().getValue());
+            }
+            int length;
+            if (record.getComputations().getAuthenticatedNonMetaData() == null
+                    || record.getComputations().getAuthenticatedNonMetaData().getOriginalValue()
+                            == null) {
+                // This case is required for TLS 1.2 aead encryption
+                length = record.getComputations().getPlainRecordBytes().getValue().length;
+            } else {
+                length = record.getComputations().getAuthenticatedNonMetaData().getValue().length;
+            }
+            stream.write(DataConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH));
+            return stream.toByteArray();
         }
     }
 
@@ -194,7 +310,7 @@ public abstract class RecordCipher {
                 record.getComputations().getPadding() != null
                         ? record.getComputations().getPadding().getValue()
                         : new byte[0];
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 record.getCleanProtocolMessageBytes().getValue(),
                 new byte[] {record.getContentType().getValue()},
                 padding);
@@ -268,11 +384,6 @@ public abstract class RecordCipher {
         @Override
         public byte[] parseByteArrayField(int length) {
             return super.parseByteArrayField(length);
-        }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
         }
     }
 }

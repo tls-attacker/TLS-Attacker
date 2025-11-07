@@ -49,7 +49,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
      */
     private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
-        LOGGER.debug("SerializedPublicKexLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKexLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /** Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[] */

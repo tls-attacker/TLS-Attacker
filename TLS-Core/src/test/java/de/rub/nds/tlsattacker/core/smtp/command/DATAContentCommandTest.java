@@ -70,8 +70,8 @@ public class DATAContentCommandTest {
         String content = lines[0] + CRLF + lines[1] + CRLF + lines[2] + CRLF + "." + CRLF;
         SmtpDATAContentCommand dcc = new SmtpDATAContentCommand(lines);
 
-        Preparator preparator = dcc.getPreparator(context);
-        Serializer serializer = dcc.getSerializer(context);
+        Preparator preparator = dcc.getPreparator(context.getContext());
+        Serializer serializer = dcc.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         assertEquals(content, serializer.getOutputStream().toString());
@@ -86,7 +86,7 @@ public class DATAContentCommandTest {
                 new SmtpDATAContentParser(
                         new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         parser.parse(dcc);
-        Handler handler = dcc.getHandler(context);
+        Handler handler = dcc.getHandler(context.getContext());
         handler.adjustContext(dcc);
         System.out.println(context.getMailDataBuffer());
         System.out.println(dcc.getLines());

@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,8 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
         setRsaParams();
         prepareRsaParams();
 
-        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
+        selectedSignatureHashAlgo =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, false);
         prepareSignatureAndHashAlgorithm(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
         prepareSignature(msg);
@@ -64,16 +66,16 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     protected byte[] generateToBeSigned() {
         byte[] rsaParams =
-                ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(
+                DataConverter.concatenate(
+                        DataConverter.intToBytes(
                                 msg.getModulusLength().getValue(),
                                 HandshakeByteLength.RSA_MODULUS_LENGTH),
                         msg.getModulus().getValue(),
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 msg.getPublicKeyLength().getValue(),
                                 HandshakeByteLength.RSA_MODULUS_LENGTH),
                         msg.getPublicKey().getValue());
-        return ArrayConverter.concatenate(
+        return DataConverter.concatenate(
                 msg.getKeyExchangeComputations().getClientServerRandom().getValue(), rsaParams);
     }
 
@@ -85,7 +87,7 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
     protected void prepareClientServerRandom(T msg) {
         msg.getKeyExchangeComputations()
                 .setClientServerRandom(
-                        ArrayConverter.concatenate(
+                        DataConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: {}",
@@ -99,6 +101,6 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 }

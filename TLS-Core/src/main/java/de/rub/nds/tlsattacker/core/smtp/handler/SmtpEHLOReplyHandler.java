@@ -18,7 +18,7 @@ public class SmtpEHLOReplyHandler extends SmtpReplyHandler<SmtpEHLOReply> {
 
     @Override
     public void adjustContext(SmtpEHLOReply container) {
-        this.getContext().setServerIdentity(container.getDomain());
-        this.getContext().setNegotiatedExtensions(container.getExtensions());
+        this.getContext().getSmtpContext().setServerIdentity(container.getDomain());
+        this.getContext().getSmtpContext().setNegotiatedExtensions(container.getExtensions());
     }
 }

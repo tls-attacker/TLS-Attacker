@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -62,22 +62,22 @@ public class UnknownMessage extends ProtocolMessage {
     }
 
     @Override
-    public UnknownMessageHandler getHandler(TlsContext tlsContext) {
-        return new UnknownMessageHandler(tlsContext);
+    public UnknownMessageHandler getHandler(Context context) {
+        return new UnknownMessageHandler(context.getTlsContext());
     }
 
     @Override
-    public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+    public UnknownMessageParser getParser(Context context, InputStream stream) {
         return new UnknownMessageParser(stream);
     }
 
     @Override
-    public UnknownMessagePreparator getPreparator(TlsContext tlsContext) {
-        return new UnknownMessagePreparator(tlsContext.getChooser(), this);
+    public UnknownMessagePreparator getPreparator(Context context) {
+        return new UnknownMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public UnknownMessageSerializer getSerializer(TlsContext tlsContext) {
+    public UnknownMessageSerializer getSerializer(Context context) {
         return new UnknownMessageSerializer(this);
     }
 
@@ -88,7 +88,7 @@ public class UnknownMessage extends ProtocolMessage {
         sb.append("\n  Data: ");
         if (getCompleteResultingMessage() != null
                 && getCompleteResultingMessage().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
+            sb.append(DataConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
         } else {
             sb.append("null");
         }

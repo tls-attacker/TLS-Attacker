@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.InputStream;
 
 /**
@@ -20,7 +20,7 @@ import java.io.InputStream;
 public class SmtpUnterminatedReply extends SmtpUnknownReply {
     @Override
     public SmtpReplyParser<? extends SmtpUnterminatedReply> getParser(
-            SmtpContext context, InputStream stream) {
+            Context context, InputStream stream) {
         return new SmtpReplyParser<>(stream) {
             @Override
             public void parse(SmtpUnterminatedReply message) {

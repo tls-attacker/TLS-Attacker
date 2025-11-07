@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EchConfigParser;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -31,7 +31,7 @@ public class EchDelegate extends Delegate {
     public void applyDelegate(Config config) throws ConfigurationException {
         EchConfigParser parser =
                 new EchConfigParser(
-                        new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(echConfig)),
+                        new ByteArrayInputStream(DataConverter.hexStringToByteArray(echConfig)),
                         new Context(new State(config), new OutboundConnection()).getTlsContext());
         List<EchConfig> echConfigList = new LinkedList<>();
         parser.parse(echConfigList);

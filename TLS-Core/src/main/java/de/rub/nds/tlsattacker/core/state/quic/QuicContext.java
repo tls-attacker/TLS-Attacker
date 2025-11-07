@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.state.quic;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
@@ -20,11 +21,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
@@ -128,9 +125,12 @@ public class QuicContext extends LayerContext {
     private final LinkedList<Integer> receivedHandshakePacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedOneRTTPacketNumbers = new LinkedList<>();
 
+    private final List<byte[]> receivedStatelessResetTokens = new ArrayList<>();
+
     private List<byte[]> supportedVersions = new ArrayList<>();
 
     private ConnectionCloseFrame receivedConnectionCloseFrame;
+    private boolean receivedStatelessResetToken = false;
 
     private byte[] pathChallengeData;
 
@@ -162,7 +162,7 @@ public class QuicContext extends LayerContext {
 
     private byte[] generateRandomConnectionId(int length) {
         byte[] arr = new byte[length];
-        new Random().nextBytes(arr);
+        RandomHelper.getRandom().nextBytes(arr);
         return arr;
     }
 
@@ -213,6 +213,8 @@ public class QuicContext extends LayerContext {
 
         this.supportedVersions.clear();
         this.receivedConnectionCloseFrame = null;
+        this.receivedStatelessResetToken = false;
+        this.receivedStatelessResetTokens.clear();
     }
 
     public int getOneRTTPacketPacketNumber() {
@@ -727,5 +729,27 @@ public class QuicContext extends LayerContext {
 
     public void setPathChallengeData(byte[] pathChallengeData) {
         this.pathChallengeData = pathChallengeData;
+    }
+
+    public void addStatelessResetToken(byte[] token) {
+        LOGGER.debug("Adding new Stateless Reset Token: {}", token);
+        receivedStatelessResetTokens.add(token);
+    }
+
+    public boolean isStatelessResetToken(byte[] token) {
+        for (byte[] tokenToTest : receivedStatelessResetTokens) {
+            if (Arrays.equals(tokenToTest, token)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setReceivedStatelessResetToken(boolean receivedStatelessResetToken) {
+        this.receivedStatelessResetToken = receivedStatelessResetToken;
+    }
+
+    public boolean hasReceivedStatelessResetToken() {
+        return receivedStatelessResetToken;
     }
 }

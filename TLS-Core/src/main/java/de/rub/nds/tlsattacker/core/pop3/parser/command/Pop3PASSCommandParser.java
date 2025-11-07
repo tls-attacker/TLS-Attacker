@@ -25,9 +25,6 @@ public class Pop3PASSCommandParser extends Pop3CommandParser<Pop3PASSCommand> {
     public void parse(Pop3PASSCommand passCommand) {
         String line = parseSingleLine();
         String[] lineContents = line.split(" ", 2);
-        String keyword = lineContents[0];
-
-        passCommand.setKeyword(keyword);
 
         if (lineContents.length == 2) {
             String password = lineContents[1];

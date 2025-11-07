@@ -18,11 +18,9 @@ public class SmtpEXPNCommandPreparator extends SmtpCommandPreparator<SmtpEXPNCom
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("EXPN");
-        if (this.getObject().getMailingList() != null) {
-            this.getObject().setParameters(getObject().getMailingList());
-        } else {
-            this.getObject().setParameters(chooser.getConfig().getDefaultSmtpMailingList());
+        if (this.getObject().getMailingList() == null) {
+            this.getObject().setMailingList(chooser.getConfig().getDefaultSmtpMailingList());
         }
+        this.getObject().setParameters(this.getObject().getMailingList());
     }
 }

@@ -27,18 +27,42 @@ public class RecordSerializer extends Serializer<Record> {
     @Override
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing Record");
-        writeContentType(record);
-        writeProtocolVersion(record);
-        if (record.getEpoch() != null) {
-            writeEpoch(record);
-            writeSequenceNumber(record);
+        // DTLS 1.3
+        if (record.getUnifiedHeader() != null) {
+            writeUnifiedHeader(record);
+            if (record.getConnectionId() != null) {
+                writeConnectionId(record);
+            }
+            writeEncryptedSequenceNumber(record);
+            writeLength(record);
+            // Other
+        } else {
+            writeContentType(record);
+            writeProtocolVersion(record);
+            if (record.getEpoch() != null) {
+                writeEpoch(record);
+                writeSequenceNumber(record);
+            }
+            if (record.getConnectionId() != null) {
+                writeConnectionId(record);
+            }
+            writeLength(record);
         }
-        if (record.getConnectionId() != null) {
-            writeConnectionId(record);
-        }
-        writeLength(record);
         writeProtocolMessageBytes(record);
         return getAlreadySerialized();
+    }
+
+    private void writeUnifiedHeader(Record record) {
+        appendByte(record.getUnifiedHeader().getValue());
+        LOGGER.debug(
+                "UnifiedHeader: 00{}",
+                Integer.toBinaryString(record.getUnifiedHeader().getValue()));
+    }
+
+    private void writeEncryptedSequenceNumber(Record record) {
+        appendBytes(record.getEncryptedSequenceNumber().getValue());
+        LOGGER.debug(
+                "Encrypted SequenceNumber: {}", record.getEncryptedSequenceNumber().getValue());
     }
 
     private void writeContentType(Record record) {

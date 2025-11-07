@@ -16,58 +16,77 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.handler.packet.RetryPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
+import de.rub.nds.tlsattacker.core.quic.preparator.packet.RetryPacketPreparator;
+import de.rub.nds.tlsattacker.core.quic.serializer.packet.RetryPacketSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import javax.crypto.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.Arrays;
 
 /**
  * A Retry packet carries an address validation token created by the server. It is used by a server
- * that wishes to perform a retry
+ * that wishes to perform a retry.
  */
 @XmlRootElement
 public class RetryPacket extends LongHeaderPacket {
 
-    /** An opaque token that the server can use to validate the client's address. */
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @ModifiableVariableProperty protected ModifiableByteArray retryToken;
 
-    /**
-     * Retry packets (see Section 17.2.5 of [QUIC-TRANSPORT]) carry a Retry Integrity Tag that
-     * provides two properties: it allows the discarding of packets that have accidentally been
-     * corrupted by the network, and only an entity that observes an Initial packet can send a valid
-     * Retry packet.
-     */
     @ModifiableVariableProperty protected ModifiableByteArray retryIntegrityTag;
 
     public RetryPacket() {
         super(QuicPacketType.RETRY_PACKET);
-        // TODO this does also not match the header set in QuicPacketType
-        this.setUnprotectedFlags((byte) 0x3c);
+        // TODO: Constant fixed, but not sure whether we should set this here
+        this.setUnprotectedFlags((byte) 0xf0);
     }
 
     public RetryPacket(byte flags) {
         super(QuicPacketType.RETRY_PACKET);
         this.setProtectedFlags(flags);
+        // We do not have any header protection in Retry packets
+        this.setUnprotectedFlags(flags);
         protectedHeaderHelper.write(flags);
     }
 
-    @Override
-    public RetryPacketHandler getHandler(QuicContext context) {
-        return new RetryPacketHandler(context);
+    /**
+     * Verifies the correctness of the Integrity Tag within this Retry Packet to determine
+     * processing
+     *
+     * @param context Current QUIC Context
+     * @return Whether the Retry Packet's Integrity is confirmed
+     */
+    public boolean verifyRetryIntegrityTag(QuicContext context) {
+        byte[] computedTag = QuicPacketCryptoComputations.calculateRetryIntegrityTag(context, this);
+
+        boolean tagsEqual = Arrays.areEqual(getRetryIntegrityTag().getValue(), computedTag);
+        LOGGER.debug("Retry Integrity Tag is valid? {}", tagsEqual);
+        return tagsEqual;
     }
 
     @Override
-    public Serializer<RetryPacket> getSerializer(QuicContext context) {
-        return null;
+    public RetryPacketHandler getHandler(Context context) {
+        return new RetryPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public Preparator<RetryPacket> getPreparator(QuicContext context) {
-        return null;
+    public Serializer<RetryPacket> getSerializer(Context context) {
+        return new RetryPacketSerializer(this);
     }
 
     @Override
-    public RetryPacketParser getParser(QuicContext context, InputStream stream) {
-        return new RetryPacketParser(stream, context);
+    public Preparator<RetryPacket> getPreparator(Context context) {
+        return new RetryPacketPreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public RetryPacketParser getParser(Context context, InputStream stream) {
+        return new RetryPacketParser(stream, context.getQuicContext());
     }
 
     public ModifiableByteArray getRetryToken() {
@@ -78,6 +97,10 @@ public class RetryPacket extends LongHeaderPacket {
         this.retryToken = ModifiableVariableFactory.safelySetValue(this.retryToken, retryToken);
     }
 
+    public void setRetryToken(ModifiableByteArray retryToken) {
+        this.retryToken = retryToken;
+    }
+
     public ModifiableByteArray getRetryIntegrityTag() {
         return retryIntegrityTag;
     }
@@ -85,5 +108,9 @@ public class RetryPacket extends LongHeaderPacket {
     public void setRetryIntegrityTag(byte[] retryIntegrityTag) {
         this.retryIntegrityTag =
                 ModifiableVariableFactory.safelySetValue(this.retryIntegrityTag, retryIntegrityTag);
+    }
+
+    public void setRetryIntegrityTag(ModifiableByteArray retryIntegrityTag) {
+        this.retryIntegrityTag = retryIntegrityTag;
     }
 }

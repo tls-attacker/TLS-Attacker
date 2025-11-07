@@ -19,11 +19,11 @@ public class SmtpMAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCom
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("MAIL");
         if (this.getObject().getReversePath() == null) {
             this.getObject().setReversePath(chooser.getConfig().getDefaultSmtpReversePath());
         }
         StringBuilder pars = new StringBuilder("FROM:<" + this.getObject().getReversePath() + ">");
+        // TODO: This would love modern Java Streams
         if (this.getObject().getMAILparameters() != null) {
             for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {
                 pars.append(" ").append(MAILparameters.serialize());

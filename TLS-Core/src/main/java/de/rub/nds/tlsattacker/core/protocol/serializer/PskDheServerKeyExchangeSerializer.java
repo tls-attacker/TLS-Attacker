@@ -44,7 +44,7 @@ public class PskDheServerKeyExchangeSerializer
 
     private void writePSKIdentityHintLength(PskDheServerKeyExchangeMessage msg) {
         appendInt(msg.getIdentityHintLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityHintLength: " + msg.getIdentityHintLength());
+        LOGGER.debug("SerializedPSKIdentityHintLength: {}", msg.getIdentityHintLength());
     }
 
     /**

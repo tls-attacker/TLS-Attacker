@@ -12,25 +12,21 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDhClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDhClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDhClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskEcDhClientKeyExchange")
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(
-            format = ModifiableVariableProperty.Format.PKCS1,
-            type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger identityLength;
 
     public PskEcDhClientKeyExchangeMessage() {
@@ -49,7 +45,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
         }
         sb.append("\n  PSKIdentity: ");
         if (identity != null) {
-            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+            sb.append(DataConverter.bytesToHexString(identity.getValue()));
         } else {
             sb.append("null");
         }
@@ -82,23 +78,22 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     }
 
     @Override
-    public ECDHClientKeyExchangeHandler<PskEcDhClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
-        return new PskEcDhClientKeyExchangeHandler(tlsContext);
+    public PskEcDhClientKeyExchangeHandler getHandler(Context context) {
+        return new PskEcDhClientKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PskEcDhClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PskEcDhClientKeyExchangeParser(stream, tlsContext);
+    public PskEcDhClientKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PskEcDhClientKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PskEcDhClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PskEcDhClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PskEcDhClientKeyExchangePreparator getPreparator(Context context) {
+        return new PskEcDhClientKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PskEcDhClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PskEcDhClientKeyExchangeSerializer getSerializer(Context context) {
         return new PskEcDhClientKeyExchangeSerializer(this);
     }
 

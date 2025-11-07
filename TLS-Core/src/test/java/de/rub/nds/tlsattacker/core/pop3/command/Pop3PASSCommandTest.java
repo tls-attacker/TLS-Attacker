@@ -31,7 +31,7 @@ public class Pop3PASSCommandTest {
 
         Pop3PASSCommandParser parser =
                 passCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(passCommand);
 
@@ -43,8 +43,8 @@ public class Pop3PASSCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3PASSCommand passCommand = new Pop3PASSCommand("qwertzuiop");
-        Pop3PASSCommandPreparator preparator = passCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context);
+        Pop3PASSCommandPreparator preparator = passCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();
@@ -56,8 +56,8 @@ public class Pop3PASSCommandTest {
     void testDefaultSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3PASSCommand passCommand = new Pop3PASSCommand();
-        Pop3PASSCommandPreparator preparator = passCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context);
+        Pop3PASSCommandPreparator preparator = passCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = passCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();

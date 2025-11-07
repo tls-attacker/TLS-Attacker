@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -28,7 +27,7 @@ public class CipherState {
     /** sequence number used for the decryption */
     private long readSequenceNumber = 0;
 
-    private byte[] connectionId = null;
+    private byte[] connectionId = new byte[0];
 
     private Boolean encryptThenMac;
 
@@ -122,6 +121,6 @@ public class CipherState {
     }
 
     public CipherAlgorithm getCipherAlg() {
-        return AlgorithmResolver.getCipher(cipherSuite);
+        return cipherSuite.getCipherAlgorithm();
     }
 }

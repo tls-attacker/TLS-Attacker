@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -22,7 +22,7 @@ public class AlpnExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<AlpnExtensionMessage, AlpnExtensionHandler> {
 
     private final byte[] announcedProtocols =
-            ArrayConverter.hexStringToByteArray("02683208687474702f312e31");
+            DataConverter.hexStringToByteArray("02683208687474702f312e31");
     private final int announcedProtocolsLength = 12;
 
     public AlpnExtensionHandlerTest() {
@@ -39,10 +39,10 @@ public class AlpnExtensionHandlerTest
         alpnEntryList.add(new AlpnEntry(new String(announcedProtocols)));
         alpnEntryList.get(0).setAlpnEntry(new String(announcedProtocols));
         msg.setAlpnEntryList(alpnEntryList);
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustContext(msg);
         List<String> alpnStringList = new LinkedList<>();
         alpnStringList.add(new String(announcedProtocols));
-        assertEquals(alpnStringList, context.getProposedAlpnProtocols());
+        assertEquals(alpnStringList, tlsContext.getProposedAlpnProtocols());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.tlsattacker.core.pop3.Pop3MappingUtil;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -17,6 +16,11 @@ import java.util.List;
 
 public class Pop3Context extends LayerContext {
 
+    /**
+     * Stores the last command that was sent to the server, because it may contain information a
+     * reply operates on. E.g., the DELE command may contain a message number that cannot be
+     * determined from the reply itself.
+     */
     private Pop3Command lastCommand = new Pop3InitialGreetingDummy();
 
     private boolean greetingReceived = false;
@@ -35,11 +39,12 @@ public class Pop3Context extends LayerContext {
 
     public Pop3Context(Context context) {
         super(context);
+        context.setPop3Context(this);
     }
 
     public Pop3Reply getExpectedNextReplyType() {
         Pop3Command command = getLastCommand();
-        return Pop3MappingUtil.getMatchingReply(command);
+        return command.getCommandType().createReply();
     }
 
     public Pop3Command getLastCommand() {

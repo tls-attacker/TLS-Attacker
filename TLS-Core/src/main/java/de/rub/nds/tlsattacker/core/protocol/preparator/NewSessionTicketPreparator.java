@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
@@ -43,7 +43,7 @@ public class NewSessionTicketPreparator
 
     private void prepareTicketLifetimeHint(NewSessionTicketMessage msg) {
         msg.setTicketLifetimeHint(generateTicketLifetimeHint());
-        LOGGER.debug("TicketLifetimeHint: " + msg.getTicketLifetimeHint().getValue());
+        LOGGER.debug("TicketLifetimeHint: {}", msg.getTicketLifetimeHint().getValue());
     }
 
     private void prepareTicket(NewSessionTicketMessage msg) {
@@ -80,10 +80,10 @@ public class NewSessionTicketPreparator
         byte[] keyHMAC = config.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
         byte[] macInput =
-                ArrayConverter.concatenate(
+                DataConverter.concatenate(
                         config.getSessionTicketKeyName(),
                         iv,
-                        ArrayConverter.intToBytes(
+                        DataConverter.intToBytes(
                                 encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
                         encryptedState);
         byte[] hmac;
@@ -109,7 +109,7 @@ public class NewSessionTicketPreparator
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             prepareTicketTls13(msg);
         } else {
             prepareTicket(msg);
@@ -140,7 +140,7 @@ public class NewSessionTicketPreparator
 
     @Override
     public void prepareAfterParse() {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             msg.setIncludeInDigest(false);
         }
     }

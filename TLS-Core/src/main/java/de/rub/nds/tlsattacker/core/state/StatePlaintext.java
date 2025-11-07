@@ -19,21 +19,17 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
 public class StatePlaintext {
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion;
+    @ModifiableVariableProperty private ModifiableByteArray protocolVersion;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray cipherSuite;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuite;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte compressionMethod;
+    @ModifiableVariableProperty private ModifiableByte compressionMethod;
 
     @ModifiableVariableProperty() private ModifiableByteArray masterSecret;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte clientAuthenticationType;
+    @ModifiableVariableProperty private ModifiableByte clientAuthenticationType;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger clientAuthenticationDataLength;
 
     @ModifiableVariableProperty() private ModifiableByteArray clientAuthenticationData;

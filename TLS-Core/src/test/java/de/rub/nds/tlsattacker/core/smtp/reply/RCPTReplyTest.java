@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
@@ -35,8 +35,8 @@ class RCPTReplyTest {
         reply.setHumanReadableMessage("OK");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = reply.getPreparator(context);
-        Serializer serializer = reply.getSerializer(context);
+        Preparator preparator = reply.getPreparator(context.getContext());
+        Serializer serializer = reply.getSerializer(context.getContext());
         preparator.prepare();
         serializer.serialize();
         assertEquals("250 OK\r\n", serializer.getOutputStream().toString());
@@ -65,7 +65,7 @@ class RCPTReplyTest {
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             SmtpReplyParser parser =
                     RCPT.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(RCPT);
             //            assertTrue(RCPT.isValidReply());
@@ -83,7 +83,7 @@ class RCPTReplyTest {
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             SmtpReplyParser parser =
                     RCPT.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(RCPT);
             //            assertFalse(RCPT.isValidReply());
@@ -102,7 +102,7 @@ class RCPTReplyTest {
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             SmtpReplyParser parser =
                     RCPT.getParser(
-                            context,
+                            context.getContext(),
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             assertThrows(ParserException.class, () -> parser.parse(RCPT));
         }

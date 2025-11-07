@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EchConfigVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -15,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
@@ -68,13 +68,13 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
     private void parseVersion(EchConfig echConfig) {
         byte[] version = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_VERSION);
         echConfig.setConfigVersion(EchConfigVersion.getEnumByByte(version));
-        LOGGER.debug("Version: " + echConfig.getConfigVersion());
+        LOGGER.debug("Version: {}", echConfig.getConfigVersion());
     }
 
     private void parseLength(EchConfig echConfig) {
         int length = this.parseIntField(ExtensionByteLength.ECH_CONFIG_LENGTH);
         echConfig.setLength(length);
-        LOGGER.debug("Length: " + echConfig.getLength());
+        LOGGER.debug("Length: {}", echConfig.getLength());
     }
 
     private void parseEchContents(EchConfig echConfig) {
@@ -97,9 +97,9 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
                 parseMaximumNameLength(echConfig);
                 parseExtensions(echConfig);
                 break;
-                // this case is slightly broken in the RFC, the same version byte refers to two
-                // different EchConfig versions
-                // we interpret it as the newer one here
+            // this case is slightly broken in the RFC, the same version byte refers to two
+            // different EchConfig versions
+            // we interpret it as the newer one here
             case DRAFT_FF0A:
             case DRAFT_FF0B:
             case DRAFT_FF0C:
@@ -115,7 +115,7 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
     private void parseMaximumNameLength(EchConfig echConfig) {
         int length = this.parseIntField(ExtensionByteLength.ECH_CONFIG_MAX_NAME_LENGTH);
         echConfig.setMaximumNameLength(length);
-        LOGGER.debug("Maximum Name Length: " + echConfig.getMaximumNameLength());
+        LOGGER.debug("Maximum Name Length: {}", echConfig.getMaximumNameLength());
     }
 
     private void parsePublicName(EchConfig echConfig, boolean parseShort) {
@@ -152,14 +152,14 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
     private void parseConfigId(EchConfig echConfig) {
         int configId = this.parseIntField(ExtensionByteLength.ECH_CONFIG_ID);
         echConfig.setConfigId(configId);
-        LOGGER.debug("Config ID: " + echConfig.getConfigId());
+        LOGGER.debug("Config ID: {}", echConfig.getConfigId());
     }
 
     private void parseKemId(EchConfig echConfig) {
         byte[] kemId = this.parseByteArrayField(ExtensionByteLength.ECH_CONFIG_KEM_ID);
         HpkeKeyEncapsulationMechanism kem = HpkeKeyEncapsulationMechanism.getEnumByByte(kemId);
         echConfig.setKem(kem);
-        LOGGER.debug("KEM ID: " + echConfig.getKem());
+        LOGGER.debug("KEM ID: {}", echConfig.getKem());
     }
 
     private void parsePublicKey(EchConfig echConfig) {

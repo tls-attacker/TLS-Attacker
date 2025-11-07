@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
@@ -28,10 +28,9 @@ import java.util.List;
 @XmlRootElement(name = "RSAServerKeyExchange")
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableByteArray modulus;
+    @ModifiableVariableProperty protected ModifiableByteArray modulus;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     protected ModifiableInteger modulusLength;
 
     @HoldsModifiableVariable protected RSAServerComputations computations;
@@ -53,24 +52,27 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public RSAServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new RSAServerKeyExchangeHandler(tlsContext);
+    public RSAServerKeyExchangeHandler getHandler(Context context) {
+        return new RSAServerKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAServerKeyExchangeParser(stream, tlsContext);
+    public RSAServerKeyExchangeParser<RSAServerKeyExchangeMessage> getParser(
+            Context context, InputStream stream) {
+        return new RSAServerKeyExchangeParser<>(stream, context.getTlsContext());
     }
 
     @Override
-    public RSAServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new RSAServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public RSAServerKeyExchangePreparator<RSAServerKeyExchangeMessage> getPreparator(
+            Context context) {
+        return new RSAServerKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public RSAServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new RSAServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public RSAServerKeyExchangeSerializer<RSAServerKeyExchangeMessage> getSerializer(
+            Context context) {
+        return new RSAServerKeyExchangeSerializer<>(
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -79,13 +81,13 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("RSAServerKeyExchangeMessage:");
         sb.append("\n  Modulus N: ");
         if (modulus != null && modulus.getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
+            sb.append(DataConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key e: ");
         if (getPublicKey() != null && getPublicKey().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
+            sb.append(DataConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
@@ -94,13 +96,13 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // (D)TLS 1.2
         if (this.getSignatureAndHashAlgorithm() != null
                 && this.getSignatureAndHashAlgorithm().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+            sb.append(DataConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature: ");
         if (this.getSignature() != null && this.getSignature().getValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
+            sb.append(DataConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");
         }

@@ -8,14 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.MacAlgorithm;
+
 public enum PRFAlgorithm {
-    TLS_PRF_LEGACY(MacAlgorithm.NULL),
+    TLS_PRF_LEGACY(null),
     TLS_PRF_SHA256(MacAlgorithm.HMAC_SHA256),
     TLS_PRF_SHA384(MacAlgorithm.HMAC_SHA384),
     TLS_PRF_GOSTR3411(MacAlgorithm.HMAC_GOSTR3411),
     TLS_PRF_GOSTR3411_2012_256(MacAlgorithm.HMAC_GOSTR3411_2012_256);
 
-    private PRFAlgorithm(MacAlgorithm macAlgorithm) {
+    PRFAlgorithm(MacAlgorithm macAlgorithm) {
         this.macAlgorithm = macAlgorithm;
     }
 

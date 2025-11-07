@@ -57,7 +57,7 @@ public class DATAReplyTest {
         dataReply.setReplyCode(354);
         dataReply.setHumanReadableMessage("Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;");
 
-        Serializer<?> serializer = dataReply.getSerializer(context);
+        Serializer<?> serializer = dataReply.getSerializer(context.getContext());
         serializer.serialize();
         assertEquals(
                 "354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;\r\n",

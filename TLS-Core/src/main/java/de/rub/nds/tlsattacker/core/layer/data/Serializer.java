@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +24,12 @@ public abstract class Serializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** The ByteArrayOutputStream with which the byte[] is constructed. */
-    private ByteArrayOutputStream outputStream;
+    /** The SilentByteArrayOutputStream with which the byte[] is constructed. */
+    private SilentByteArrayOutputStream outputStream;
 
     /** Constructor for the Serializer */
     public Serializer() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
     }
 
     /**
@@ -49,19 +48,16 @@ public abstract class Serializer<T> {
      * @param length The number of bytes which should be reserved for this Integer
      */
     public final void appendInt(int i, int length) {
-        byte[] bytes = ArrayConverter.intToBytes(i, length);
-        int reconvertedInt = ArrayConverter.bytesToInt(bytes);
+        byte[] bytes = DataConverter.intToBytes(i, length);
+        int reconvertedInt = DataConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
             LOGGER.warn(
-                    "Int \""
-                            + i
-                            + "\" is too long to write in field of size "
-                            + length
-                            + ". Only using last "
-                            + length
-                            + " bytes.");
+                    "Int \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
+                    i,
+                    length,
+                    length);
         }
-        appendBytes(ArrayConverter.intToBytes(i, length));
+        appendBytes(bytes);
     }
 
     /**
@@ -75,10 +71,10 @@ public abstract class Serializer<T> {
         byte[] bytes;
         // special case for which bigIntegerToByteArray
         // wrongly returns an empty array
-        if (i.equals(new BigInteger("0"))) {
-            bytes = ArrayConverter.intToBytes(0, length);
+        if (i.equals(BigInteger.ZERO)) {
+            bytes = DataConverter.intToBytes(0, length);
         } else {
-            bytes = ArrayConverter.bigIntegerToByteArray(i, length, true);
+            bytes = DataConverter.bigIntegerToByteArray(i, length, true);
         }
         appendBytes(bytes);
     }
@@ -98,12 +94,7 @@ public abstract class Serializer<T> {
      * @param bytes bytes that should be added
      */
     public final void appendBytes(byte[] bytes) {
-        try {
-            outputStream.write(bytes);
-        } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
-            LOGGER.debug(ex);
-        }
+        outputStream.write(bytes);
     }
 
     public final byte[] getAlreadySerialized() {
@@ -116,12 +107,12 @@ public abstract class Serializer<T> {
      * @return The final byte[]
      */
     public final byte[] serialize() {
-        outputStream = new ByteArrayOutputStream();
+        outputStream = new SilentByteArrayOutputStream();
         serializeBytes();
         return getAlreadySerialized();
     }
 
-    public ByteArrayOutputStream getOutputStream() {
+    public SilentByteArrayOutputStream getOutputStream() {
         return outputStream;
     }
 }

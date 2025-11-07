@@ -8,18 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.pop3.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3GenericReplyParser;
 import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3ReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
 public class Pop3UnknownReply extends Pop3Reply {
+    public Pop3UnknownReply() {
+        super(Pop3CommandType.UNKNOWN);
+    }
+
     @Override
-    public Pop3ReplyParser<? extends Pop3Message> getParser(
-            Pop3Context context, InputStream stream) {
+    public Pop3ReplyParser<? extends Pop3Message> getParser(Context context, InputStream stream) {
         return new Pop3GenericReplyParser<>(stream);
     }
 }

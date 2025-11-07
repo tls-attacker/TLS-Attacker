@@ -21,41 +21,39 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
 
     @Override
     public void applyFilter(Config config) {
-        Config defaultConfig = Config.createConfig();
+        Config defaultConfig = new Config();
         for (Field field : Config.class.getDeclaredFields()) {
-            if (!(Modifier.isStatic(field.getModifiers())
-                    || Modifier.isFinal(field.getModifiers()))) {
-                if (field.getType().isArray() || !field.getType().isPrimitive()) {
-                    field.setAccessible(true);
-                    try {
-                        Object defaultValue = field.get(defaultConfig);
-                        Object configValue = field.get(config);
-                        if (configValue != null) {
-                            if (field.getType().isArray()) {
-                                if (Array.getLength(defaultValue) == Array.getLength(configValue)) {
-                                    boolean equal = true;
-                                    for (int i = 0; i < Array.getLength(defaultValue); i++) {
-                                        if (!Array.get(defaultValue, i)
-                                                .equals(Array.get(configValue, i))) {
-                                            equal = false;
-                                            break;
-                                        }
-                                    }
-                                    if (equal) {
-                                        field.set(config, null);
+            if (!(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()))
+                    && (field.getType().isArray() || !field.getType().isPrimitive())) {
+                field.setAccessible(true);
+                try {
+                    Object defaultValue = field.get(defaultConfig);
+                    Object configValue = field.get(config);
+                    if (configValue != null) {
+                        if (field.getType().isArray()) {
+                            if (Array.getLength(defaultValue) == Array.getLength(configValue)) {
+                                boolean equal = true;
+                                for (int i = 0; i < Array.getLength(defaultValue); i++) {
+                                    if (!Array.get(defaultValue, i)
+                                            .equals(Array.get(configValue, i))) {
+                                        equal = false;
+                                        break;
                                     }
                                 }
-                            } else {
-                                if (defaultValue.equals(configValue)) {
+                                if (equal) {
                                     field.set(config, null);
                                 }
                             }
+                        } else {
+                            if (defaultValue.equals(configValue)) {
+                                field.set(config, null);
+                            }
                         }
-                    } catch (IllegalAccessException e) {
-                        LOGGER.warn("Could not remove field in Config!", e);
                     }
-                    field.setAccessible(false);
+                } catch (IllegalAccessException e) {
+                    LOGGER.warn("Could not remove field in Config!", e);
                 }
+                field.setAccessible(false);
             }
         }
     }

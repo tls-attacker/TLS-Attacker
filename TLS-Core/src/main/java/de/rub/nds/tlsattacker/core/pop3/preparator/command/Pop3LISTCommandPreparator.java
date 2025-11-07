@@ -19,9 +19,6 @@ public class Pop3LISTCommandPreparator extends Pop3CommandPreparator<Pop3LISTCom
 
     @Override
     public void prepare() {
-        this.getObject()
-                .setKeyword(
-                        "LIST"); // list may have no arguments, hence no default argument necessary
         if (this.getObject().hasMessageNumber()) {
             this.getObject().setArguments(String.valueOf(this.getObject().getMessageNumber()));
         }

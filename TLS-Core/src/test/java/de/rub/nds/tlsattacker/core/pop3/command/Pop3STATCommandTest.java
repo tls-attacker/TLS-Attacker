@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
 import de.rub.nds.tlsattacker.core.pop3.parser.command.Pop3CommandParser;
-import de.rub.nds.tlsattacker.core.pop3.preparator.command.Pop3STATCommandPreparator;
+import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3CommandPreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -29,9 +29,9 @@ public class Pop3STATCommandTest {
         Pop3STATCommand statCommand = new Pop3STATCommand();
         String message = "STAT\r\n";
 
-        Pop3CommandParser<Pop3STATCommand> parser =
+        Pop3CommandParser parser =
                 statCommand.getParser(
-                        context,
+                        context.getContext(),
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(statCommand);
 
@@ -42,8 +42,8 @@ public class Pop3STATCommandTest {
     void testSerialize() {
         Pop3Context context = new Pop3Context(new Context(new State(), new OutboundConnection()));
         Pop3STATCommand statCommand = new Pop3STATCommand();
-        Pop3STATCommandPreparator preparator = statCommand.getPreparator(context);
-        Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context);
+        Pop3CommandPreparator preparator = statCommand.getPreparator(context.getContext());
+        Pop3MessageSerializer<?> serializer = statCommand.getSerializer(context.getContext());
 
         preparator.prepare();
         serializer.serialize();
