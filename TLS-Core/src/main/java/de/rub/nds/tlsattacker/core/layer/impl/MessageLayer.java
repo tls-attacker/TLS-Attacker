@@ -70,6 +70,12 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
         this.tlsContext = context.getTlsContext();
     }
 
+    public MessageLayer(Context context, boolean enabled) {
+        super(ImplementedLayers.MESSAGE, enabled);
+        this.context = context;
+        this.tlsContext = context.getTlsContext();
+    }
+
     /**
      * Sends the given handshake messages using the lower layer.
      *

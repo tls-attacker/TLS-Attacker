@@ -74,6 +74,16 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
         decompressor = new RecordDecompressor(tlsContext);
     }
 
+    public RecordLayer(Context context, boolean enabled) {
+        super(ImplementedLayers.RECORD, enabled);
+        this.context = context;
+        this.tlsContext = context.getTlsContext();
+        encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
+        decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
+        compressor = new RecordCompressor(tlsContext);
+        decompressor = new RecordDecompressor(tlsContext);
+    }
+
     /**
      * Sends the records given in the LayerConfiguration using the lower layer.
      *

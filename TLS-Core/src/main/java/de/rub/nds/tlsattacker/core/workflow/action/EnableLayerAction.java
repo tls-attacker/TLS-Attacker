@@ -8,23 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.impl.ToggleableLayerWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.function.Predicate;
+
 @XmlRootElement
-public class EnableLayerAction extends ToggleLayerAction {
-    public EnableLayerAction(ImplementedLayers... targetedLayers) {
-        super(targetedLayers);
-    }
+public class EnableLayerAction extends ChangeLayerEnabledAction {
 
     public EnableLayerAction() {
-        // JAXB
-        super();
+    }
+    public EnableLayerAction(ImplementedLayers... layers) {
+        super(layers);
     }
 
     @Override
-    protected void updateLayerState(ToggleableLayerWrapper<?, ?> layerWrapper) {
-        layerWrapper.setActive(true);
+    public boolean layerPredicate(ProtocolLayer<?, ?, ?> layer) {
+        return true;
     }
 }

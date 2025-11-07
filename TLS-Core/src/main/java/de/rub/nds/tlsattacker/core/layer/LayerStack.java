@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
-import de.rub.nds.tlsattacker.core.layer.impl.ToggleableLayerWrapper;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.util.*;
@@ -52,19 +51,17 @@ public class LayerStack {
         }
     }
 
-    public final ProtocolLayer getLayer(Class<? extends ProtocolLayer> layerClass) {
-        for (ProtocolLayer layer : getLayerList()) {
+    public final <T extends ProtocolLayer<?, ?, ?>> T getLayer(Class<T> layerClass) {
+        for (ProtocolLayer<?, ?, ?> layer : getLayerList()) {
             if (layer.getClass().equals(layerClass)) {
-                return layer;
-            } else if (layer instanceof ToggleableLayerWrapper<?, ?> && ((ToggleableLayerWrapper<?, ?>) layer).getWrappedLayer().getClass().equals(layerClass)) {
-                // we cannot override getClass() and this method is used too often to be ignored
-                return layer;
+                // unchecked cast, but type can technically be inferred from the layerClass parameter
+                return (T) layer;
             }
         }
         return null;
     }
 
-    public final ProtocolLayer getLayer(LayerType type) {
+    public final ProtocolLayer<?, ?, ?> getLayer(LayerType type) {
         for (ProtocolLayer layer : getLayerList()) {
             if (layer.getLayerType().equals(type)) {
                 return layer;
