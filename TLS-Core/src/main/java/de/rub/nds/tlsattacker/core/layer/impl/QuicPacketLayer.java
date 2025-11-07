@@ -79,7 +79,7 @@ public class QuicPacketLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicPacket> sendConfiguration() throws IOException {
+    public LayerProcessingResult<QuicPacket> sendConfigurationInternal() throws IOException {
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
@@ -108,7 +108,7 @@ public class QuicPacketLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicPacket> sendData(LayerProcessingHint hint, byte[] data)
+    public LayerProcessingResult<QuicPacket> sendDataInternal(LayerProcessingHint hint, byte[] data)
             throws IOException {
         QuicPacketType hintedType = QuicPacketType.UNKNOWN;
         if (hint != null && hint instanceof QuicPacketLayerHint) {
@@ -162,7 +162,7 @@ public class QuicPacketLayer
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult<QuicPacket> receiveData() {
+    public LayerProcessingResult<QuicPacket> receiveDataInternal() {
         try {
             InputStream dataStream;
             do {
@@ -192,7 +192,7 @@ public class QuicPacketLayer
      * @throws IOException When no data can be read
      */
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         try {
             InputStream dataStream = getLowerLayer().getDataStream();
             // For now, we ignore the hint.

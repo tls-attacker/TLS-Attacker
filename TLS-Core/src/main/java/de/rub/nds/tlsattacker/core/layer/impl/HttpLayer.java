@@ -39,7 +39,7 @@ public class HttpLayer extends ProtocolLayer<Context, HttpLayerHint, HttpMessage
     }
 
     @Override
-    public LayerProcessingResult<HttpMessage> sendConfiguration() throws IOException {
+    public LayerProcessingResult<HttpMessage> sendConfigurationInternal() throws IOException {
         LayerConfiguration<HttpMessage> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (HttpMessage httpMsg : getUnprocessedConfiguredContainers()) {
@@ -58,18 +58,18 @@ public class HttpLayer extends ProtocolLayer<Context, HttpLayerHint, HttpMessage
     }
 
     @Override
-    public LayerProcessingResult<HttpMessage> sendData(
+    public LayerProcessingResult<HttpMessage> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public LayerProcessingResult<HttpMessage> receiveData() {
+    public LayerProcessingResult<HttpMessage> receiveDataInternal() {
         try {
             do {
                 // for now, we parse based on our endpoint

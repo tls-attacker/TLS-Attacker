@@ -81,7 +81,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<Record> sendConfiguration() throws IOException {
+    public LayerProcessingResult<Record> sendConfigurationInternal() throws IOException {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : getUnprocessedConfiguredContainers()) {
@@ -134,7 +134,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<Record> sendData(LayerProcessingHint hint, byte[] data)
+    public LayerProcessingResult<Record> sendDataInternal(LayerProcessingHint hint, byte[] data)
             throws IOException {
         ProtocolMessageType hintedType = ProtocolMessageType.UNKNOWN;
         if (hint != null && hint instanceof RecordLayerHint) {
@@ -222,7 +222,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
      * @throws IOException When no data can be read
      */
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
+    public void receiveMoreDataForHintInternal(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
                 new RecordParser(
@@ -405,7 +405,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
     }
 
     @Override
-    public LayerProcessingResult<Record> receiveData() {
+    public LayerProcessingResult<Record> receiveDataInternal() {
         try {
             receiveMoreDataForHint(null);
         } catch (Exception E) {

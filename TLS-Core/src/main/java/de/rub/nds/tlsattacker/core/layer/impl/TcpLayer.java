@@ -34,7 +34,7 @@ public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStr
     }
 
     @Override
-    public LayerProcessingResult<TcpStreamContainer> sendConfiguration() throws IOException {
+    public LayerProcessingResult<TcpStreamContainer> sendConfigurationInternal() throws IOException {
         LayerConfiguration<TcpStreamContainer> configuration = getLayerConfiguration();
         if (configuration != null) {
             for (TcpStreamContainer container : getUnprocessedConfiguredContainers()) {
@@ -49,7 +49,7 @@ public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStr
 
     /** Sends data over the TCP socket. */
     @Override
-    public LayerProcessingResult<TcpStreamContainer> sendData(LayerProcessingHint hint, byte[] data)
+    public LayerProcessingResult<TcpStreamContainer> sendDataInternal(LayerProcessingHint hint, byte[] data)
             throws IOException {
         TcpStreamContainer container;
         if (getUnprocessedConfiguredContainers().isEmpty()) {
@@ -66,7 +66,7 @@ public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStr
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         // There is nothing we can do here to fill up our stream, either there is data in it
         // or not
         byte[] receivedTcpData = getTransportHandler().fetchData();
@@ -87,7 +87,7 @@ public class TcpLayer extends ProtocolLayer<Context, LayerProcessingHint, TcpStr
     }
 
     @Override
-    public LayerProcessingResult<TcpStreamContainer> receiveData() {
+    public LayerProcessingResult<TcpStreamContainer> receiveDataInternal() {
         return new LayerProcessingResult<>(null, getLayerType(), true);
     }
 

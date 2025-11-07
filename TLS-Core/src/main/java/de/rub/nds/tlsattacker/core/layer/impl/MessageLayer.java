@@ -77,7 +77,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
      * @throws IOException When the data cannot be sent.
      */
     @Override
-    public LayerProcessingResult<ProtocolMessage> sendConfiguration() throws IOException {
+    public LayerProcessingResult<ProtocolMessage> sendConfigurationInternal() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ProtocolMessageType runningProtocolMessageType = null;
         List<byte[]> bufferedMessages = new LinkedList<>();
@@ -197,7 +197,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     }
 
     @Override
-    public LayerProcessingResult<ProtocolMessage> sendData(
+    public LayerProcessingResult<ProtocolMessage> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ApplicationMessage applicationMessage = getConfiguredApplicationMessage(configuration);
@@ -243,7 +243,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult<ProtocolMessage> receiveData() {
+    public LayerProcessingResult<ProtocolMessage> receiveDataInternal() {
         try {
             HintedInputStream dataStream;
             do {
@@ -430,7 +430,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) {
+    public void receiveMoreDataForHintInternal(LayerProcessingHint hint) {
         boolean continueProcessing;
 
         do {

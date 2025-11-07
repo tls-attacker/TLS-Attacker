@@ -32,6 +32,8 @@ import org.apache.logging.log4j.Logger;
  * itself. It can send messages using the layer below and forward received messages to the layer
  * above.
  *
+ * Layers can be disabled during workflow execution, which skips them entirely.
+ *
  * @param <Hint> Some layers need a hint which message they should send or receive across layers
  *     (see {@link de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint} for example).
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
@@ -60,6 +62,8 @@ public abstract class ProtocolLayer<
     private LayerType layerType;
 
     private byte[] unreadBytes;
+
+    private boolean enabled = true;
 
     protected ProtocolLayer(LayerType layerType) {
         producedDataContainers = new LinkedList<>();
@@ -91,17 +95,23 @@ public abstract class ProtocolLayer<
      *
      * <p>Implementors should look at {@link de.rub.nds.tlsattacker.core.layer.impl.MessageLayer}
      * for reference to see how to implement this method correctly (e.g. using {@link
-     * #readDataContainer(DataContainer, LayerContext, InputStream)} and {@link
+     * #readDataContainer(Container, Context)} and {@link
      * #addProducedContainer(DataContainer)}).
      *
      * <p>The layer-specific configurations are created by ActionHelperUtil.
+     *
+     * <p>This is a public-facing wrapper for {@link #sendConfigurationInternal()}.
      *
      * @see de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil
      * @return LayerProcessingResult Contains information about the used data containers.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
-    public abstract LayerProcessingResult<Container> sendConfiguration() throws IOException;
+    public LayerProcessingResult<Container> sendConfiguration() throws IOException {
+        return sendConfigurationInternal();
+    }
+
+    protected abstract LayerProcessingResult<Container> sendConfigurationInternal() throws IOException;
 
     /**
      * Sends byte data through this layer to the lower layer. This should only be called by the next
@@ -112,11 +122,18 @@ public abstract class ProtocolLayer<
      * may need to know additional information about the data to send it. The hint parameter can be
      * used to encapsulate this information.
      *
+     * <p>This is a public-facing wrapper for {@link #sendDataInternal(LayerProcessingHint, byte[])}.
+     *
      * @param hint a hint which can encapsulate information about the data to send
      * @param additionalData the byte data to send
      * @return LayerProcessingResult Contains information about the used data containers.
      */
-    public abstract LayerProcessingResult<Container> sendData(
+    public LayerProcessingResult<Container> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
+        return sendDataInternal(hint, additionalData);
+    }
+
+    protected abstract LayerProcessingResult<Container> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException;
 
     public LayerConfiguration<Container> getLayerConfiguration() {
@@ -183,7 +200,10 @@ public abstract class ProtocolLayer<
      *
      * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
-    public abstract LayerProcessingResult<Container> receiveData();
+    public LayerProcessingResult<Container> receiveData() {
+        return receiveDataInternal();
+    }
+    protected abstract LayerProcessingResult<Container> receiveDataInternal();
 
     /**
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the
@@ -194,7 +214,10 @@ public abstract class ProtocolLayer<
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
-    public abstract void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException;
+    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+        receiveMoreDataForHint(hint);
+    }
+    public abstract void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException;
 
     /**
      * Returns a datastream from which currently should be read
@@ -350,5 +373,13 @@ public abstract class ProtocolLayer<
 
     public boolean hasReachedTimeout() {
         return reachedTimeout;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
