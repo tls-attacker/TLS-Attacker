@@ -30,9 +30,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * This class provides methods that create the LayerConfigurations for the different layers of the
  * LayerStack. They are used by the {@link SendAction} and {@link ReceiveAction} classes to actually
- * send and receive data. TODO: This class hardcodes all implemented layers using one big signature.
- * This is not very flexible when implementing new protocols and should be made more dynamic in the
- * future.
+ * send and receive data.
  *
  * @see SendAction
  * @see ReceiveAction
