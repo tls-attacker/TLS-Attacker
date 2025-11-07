@@ -39,6 +39,7 @@ public class Pop3Context extends LayerContext {
 
     public Pop3Context(Context context) {
         super(context);
+        context.setPop3Context(this);
     }
 
     public Pop3Reply getExpectedNextReplyType() {

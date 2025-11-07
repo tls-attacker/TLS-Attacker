@@ -107,6 +107,7 @@ public class SmtpContext extends LayerContext {
 
     public SmtpContext(Context context) {
         super(context);
+        context.setSmtpContext(this);
     }
 
     /** Clear all buffers. */
