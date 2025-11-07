@@ -13,11 +13,12 @@ import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.impl.HttpLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
-import de.rub.nds.tlsattacker.core.layer.impl.ToggleableLayerWrapper;
 import de.rub.nds.tlsattacker.core.state.State;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EnableLayerActionTest {
     private Config config;
@@ -31,61 +32,68 @@ public class EnableLayerActionTest {
 
     @Test
     public void testDisabledLayer() {
+        HttpLayer httpLayer = new HttpLayer(state.getContext());
+        TcpLayer tcpLayer = new TcpLayer(state.getContext());
         LayerStack layerStack =
                 new LayerStack(
                         state.getContext(),
-                        new ToggleableLayerWrapper<>(
-                                new HttpLayer(state.getContext().getHttpContext()), false),
-                        new TcpLayer(state.getContext().getTcpContext()));
+                        httpLayer,
+                        tcpLayer
+
+                );
         state.getContext().setLayerStack(layerStack);
-        ToggleableLayerWrapper wrapper =
-                (ToggleableLayerWrapper)
-                        state.getContext().getLayerStack().getLayer(HttpLayer.class);
-        assert wrapper != null;
+
+        httpLayer.setEnabled(false);
 
         EnableLayerAction action = new EnableLayerAction(ImplementedLayers.HTTP);
-        assert !wrapper.isActive();
         action.execute(state);
-        assert wrapper.isActive();
-        assert action.executedAsPlanned();
-        assert action.isExecuted();
+
+        assertTrue(action.isExecuted());
+        assertTrue(action.executedAsPlanned());
+
+        assertTrue(httpLayer.isEnabled());
     }
 
     @Test
     public void testAlreadyEnabledLayer() {
+        HttpLayer httpLayer = new HttpLayer(state.getContext());
+        TcpLayer tcpLayer = new TcpLayer(state.getContext());
         LayerStack layerStack =
                 new LayerStack(
                         state.getContext(),
-                        new ToggleableLayerWrapper<>(
-                                new HttpLayer(state.getContext().getHttpContext())),
-                        new TcpLayer(state.getContext().getTcpContext()));
+                        httpLayer,
+                        tcpLayer
+
+                );
         state.getContext().setLayerStack(layerStack);
-        ToggleableLayerWrapper wrapper =
-                (ToggleableLayerWrapper)
-                        state.getContext().getLayerStack().getLayer(HttpLayer.class);
-        assert wrapper != null;
+
+        assertTrue(httpLayer.isEnabled());
 
         EnableLayerAction action = new EnableLayerAction(ImplementedLayers.HTTP);
-        assert wrapper.isActive();
         action.execute(state);
-        assert wrapper.isActive();
-        assert action.executedAsPlanned();
-        assert action.isExecuted();
+
+        assertTrue(action.isExecuted());
+        assertTrue(action.executedAsPlanned());
+
+        assertTrue(httpLayer.isEnabled());
     }
 
     @Test
     public void testEnableLayerNotInStack() {
+        HttpLayer httpLayer = new HttpLayer(state.getContext());
+        TcpLayer tcpLayer = new TcpLayer(state.getContext());
         LayerStack layerStack =
                 new LayerStack(
                         state.getContext(),
-                        new ToggleableLayerWrapper<>(
-                                new HttpLayer(state.getContext().getHttpContext())),
-                        new TcpLayer(state.getContext().getTcpContext()));
-        state.getContext().setLayerStack(layerStack);
+                        httpLayer,
+                        tcpLayer
 
+                );
+        state.getContext().setLayerStack(layerStack);
         EnableLayerAction action = new EnableLayerAction(ImplementedLayers.SMTP);
         action.execute(state);
-        Assertions.assertFalse(action.executedAsPlanned());
-        assert action.isExecuted();
+
+        assertTrue(action.isExecuted());
+        assertFalse(action.executedAsPlanned());
     }
 }
