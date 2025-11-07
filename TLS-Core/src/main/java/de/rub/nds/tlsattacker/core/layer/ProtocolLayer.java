@@ -195,8 +195,11 @@ public abstract class ProtocolLayer<
     }
 
     /**
-     * A receive call which tries to read till either a timeout occurs or the configuration is
-     * fullfilled
+     * Read data from the lower layer and tries to parse it into containers until the specified layer configuration is satisfied.
+     * This should access data coming from {@link #getLowerLayer()} layer using {@link #getDataStream()}.
+     *
+     * Using {@link #getDataStream()} may implicitly trigger {@link #receiveMoreDataForHint(LayerProcessingHint)} which passes data to higher layers.
+     * TODO: Is this correct? I think the way LayerStack works, you couldn't pass data from here if you wanted (or they would be processed in a subsequent receiveData call?)
      *
      * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
@@ -206,9 +209,12 @@ public abstract class ProtocolLayer<
     protected abstract LayerProcessingResult<Container> receiveDataInternal();
 
     /**
-     * Tries to fill up the current Stream with more data, if instead unprocessable data (for the
-     * calling layer) is produced, the data is instead cached in the next inputstream. It may be
+     * Tries to fill up the current stream with more data, if instead unprocessable data (for the
+     * calling layer) is produced, the data is instead cached in the next input stream. It may be
      * that the current input stream is null when this method is called.
+     *
+     * This is typically triggered when a higher layer uses {@link #getDataStream()} to receive data.
+     * To then pass the received data to a higher layer extend/assign <code>currentInputStream</code> or <code>nextInputStream</code>, which will be returned by {@link #getDataStream()}.
      *
      * @param hint This hint from the calling layer specifies which data its wants to read.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
@@ -220,7 +226,8 @@ public abstract class ProtocolLayer<
     public abstract void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException;
 
     /**
-     * Returns a datastream from which currently should be read
+     * Returns a data stream from which currently should be read (typically used by a higher layer).
+     * When no data is available, data will be read by this layer using {@link #receiveMoreDataForHint(LayerProcessingHint)}.
      *
      * @return The next data stream with data available.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
