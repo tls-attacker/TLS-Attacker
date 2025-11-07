@@ -29,7 +29,7 @@ public class ToggleTLSLayersAction extends ConnectionBoundAction {
     @Override
     public void reset() {
         toggleLayerAction.reset();
-        setExecuted(true);
+        setExecuted(false);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class EnableTLSLayersAction extends ConnectionBoundAction {
     @Override
     public void reset() {
         enableLayerAction.reset();
-        setExecuted(true);
+        setExecuted(false);
     }
 
     @Override

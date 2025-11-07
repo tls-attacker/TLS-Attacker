@@ -27,7 +27,7 @@ public class DisableTLSLayersAction extends ConnectionBoundAction {
     @Override
     public void reset() {
         disableLayersAction.reset();
-        setExecuted(true);
+        setExecuted(false);
     }
 
     @Override
