@@ -71,8 +71,7 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<SmtpMessage> configuration = getLayerConfiguration();
-        ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
-        if (configuration != null && configuration.getContainerList() != null) {
+        if (configuration != null && configuration.getContainerList() != null && !configuration.getContainerList().isEmpty()) {
             for (SmtpMessage smtpMsg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(smtpMsg, context)) {
                     continue;
@@ -81,10 +80,10 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
                 handler.adjustContext(smtpMsg);
                 Serializer<?> serializer = smtpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                serializedMessages.write(serializedMessage);
+//                serializedMessages.write(serializedMessage);
+                getLowerLayer().sendData(null, serializedMessage);
                 addProducedContainer(smtpMsg);
             }
-            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
         return getLayerResult();
     }

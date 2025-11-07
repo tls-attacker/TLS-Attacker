@@ -68,7 +68,6 @@ public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3M
     @Override
     public LayerProcessingResult<Pop3Message> sendConfiguration() throws IOException {
         LayerConfiguration<Pop3Message> configuration = getLayerConfiguration();
-        ByteArrayOutputStream serializedMessages = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Pop3Message pop3Msg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(pop3Msg, context)) {
@@ -78,10 +77,9 @@ public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3M
                 handler.adjustContext(pop3Msg);
                 Serializer<?> serializer = pop3Msg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                serializedMessages.write(serializedMessage);
                 addProducedContainer(pop3Msg);
+                getLowerLayer().sendData(null, serializedMessage);
             }
-            getLowerLayer().sendData(null, serializedMessages.toByteArray());
         }
         return getLayerResult();
     }
