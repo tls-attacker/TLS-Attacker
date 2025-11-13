@@ -1340,9 +1340,9 @@ public class Config implements Serializable {
     // endregion
 
     // region pop3
-    private int defaultPop3MessageNumber = 1;
+    private Integer defaultPop3MessageNumber = 1;
 
-    public int getDefaultPop3MessageNumber() {
+    public Integer getDefaultPop3MessageNumber() {
         return defaultPop3MessageNumber;
     }
 
