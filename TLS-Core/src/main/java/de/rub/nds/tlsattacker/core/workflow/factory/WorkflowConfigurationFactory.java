@@ -678,14 +678,11 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(0, new SendAction(new Pop3STLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
         // POP3 layer stack has disabled RECORD+MESSAGE per default
-        trace.addTlsAction(2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
+        trace.addTlsAction(
+                2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
 
         List<TlsAction> pop3Actions = createPop3Workflow().getTlsActions();
-        try {
-            trace.addTlsAction(0, pop3Actions.get(0));
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("lol");
-        }
+        trace.addTlsAction(0, pop3Actions.get(0));
         for (int i = 1; i < pop3Actions.size(); i++) {
             trace.addTlsAction(pop3Actions.get(i));
         }
@@ -725,7 +722,8 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(0, new SendAction(new SmtpSTARTTLSCommand()));
         trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
         // SMTP layer stack has disabled RECORD+MESSAGE per default
-        trace.addTlsAction(2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
+        trace.addTlsAction(
+                2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
 
         // put InitialGreeting back to the front
         List<TlsAction> smtpActions = createSmtpWorkflow().getTlsActions();
