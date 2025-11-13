@@ -65,13 +65,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
     private int readEpoch = 0;
 
     public RecordLayer(Context context) {
-        super(ImplementedLayers.RECORD);
-        this.context = context;
-        this.tlsContext = context.getTlsContext();
-        encryptor = new RecordEncryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
-        decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(tlsContext), tlsContext);
-        compressor = new RecordCompressor(tlsContext);
-        decompressor = new RecordDecompressor(tlsContext);
+        this(context, true);
     }
 
     public RecordLayer(Context context, boolean enabled) {
@@ -91,7 +85,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<Record> sendConfigurationInternal() throws IOException {
+    protected LayerProcessingResult<Record> sendConfigurationInternal() throws IOException {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : getUnprocessedConfiguredContainers()) {
@@ -144,7 +138,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<Record> sendDataInternal(LayerProcessingHint hint, byte[] data)
+    protected LayerProcessingResult<Record> sendDataInternal(LayerProcessingHint hint, byte[] data)
             throws IOException {
         ProtocolMessageType hintedType = ProtocolMessageType.UNKNOWN;
         if (hint != null && hint instanceof RecordLayerHint) {
@@ -232,7 +226,8 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
      * @throws IOException When no data can be read
      */
     @Override
-    public void receiveMoreDataForHintInternal(LayerProcessingHint desiredHint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint desiredHint)
+            throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
                 new RecordParser(
@@ -415,7 +410,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
     }
 
     @Override
-    public LayerProcessingResult<Record> receiveDataInternal() {
+    protected LayerProcessingResult<Record> receiveDataInternal() {
         try {
             receiveMoreDataForHint(null);
         } catch (Exception E) {
