@@ -82,7 +82,6 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
                 handler.adjustContext(smtpMsg);
                 Serializer<?> serializer = smtpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-                //                serializedMessages.write(serializedMessage);
                 getLowerLayer().sendData(null, serializedMessage);
                 addProducedContainer(smtpMsg);
             }
