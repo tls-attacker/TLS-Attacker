@@ -65,9 +65,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     private final TlsContext tlsContext;
 
     public MessageLayer(Context context) {
-        super(ImplementedLayers.MESSAGE);
-        this.context = context;
-        this.tlsContext = context.getTlsContext();
+        this(context, true);
     }
 
     public MessageLayer(Context context, boolean enabled) {
