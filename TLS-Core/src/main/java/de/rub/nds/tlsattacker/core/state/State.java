@@ -204,14 +204,6 @@ public class State {
         return getContext().getTlsContext();
     }
 
-    public StarttlsContext getStarttlsContext() {
-        return getContext().getStarttlsContext();
-    }
-
-    public StarttlsContext getStarttlsContext(String alias) {
-        return getContext(alias).getStarttlsContext();
-    }
-
     public HttpContext getHttpContext(String alias) {
         return getContext(alias).getHttpContext();
     }

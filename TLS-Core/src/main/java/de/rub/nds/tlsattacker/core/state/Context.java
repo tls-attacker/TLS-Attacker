@@ -47,8 +47,6 @@ public class Context {
 
     private Pop3Context pop3Context;
 
-    private StarttlsContext starttlsContext;
-
     private TlsContext tlsContext;
 
     private QuicContext quicContext;
@@ -105,14 +103,6 @@ public class Context {
 
     public void setPop3Context(Pop3Context pop3Context) {
         this.pop3Context = pop3Context;
-    }
-
-    public StarttlsContext getStarttlsContext() {
-        return starttlsContext;
-    }
-
-    public void setStarttlsContext(StarttlsContext starttlsContext) {
-        this.starttlsContext = starttlsContext;
     }
 
     public TlsContext getTlsContext() {
@@ -200,7 +190,6 @@ public class Context {
         httpContext = new HttpContext(this);
         smtpContext = new SmtpContext(this);
         pop3Context = new Pop3Context(this);
-        starttlsContext = new StarttlsContext(this);
         tcpContext = new TcpContext(this);
         quicContext = new QuicContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);
