@@ -154,6 +154,9 @@ public abstract class ProtocolLayer<
     public final LayerProcessingResult<Container> sendData(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
         if (!isEnabled()) {
+            if (getLowerLayer() == null) {
+                throw new IOException("Lowest layer was disabled, no layer to send data via.");
+            }
             return getLowerLayer().sendData(hint, additionalData);
         }
         return sendDataInternal(hint, additionalData);
@@ -270,6 +273,9 @@ public abstract class ProtocolLayer<
      */
     public final void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         if (!isEnabled()) {
+            if (getLowerLayer() == null) {
+                throw new IOException("Lowest layer was disabled, no layer to receive data from.");
+            }
             getLowerLayer().receiveMoreDataForHint(hint);
             return;
         }
