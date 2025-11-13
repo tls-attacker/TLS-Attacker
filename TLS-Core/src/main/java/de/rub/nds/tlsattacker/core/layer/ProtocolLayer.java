@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  * itself. It can send messages using the layer below and forward received messages to the layer
  * above.
  *
- * Layers can be disabled during workflow execution, which skips them entirely.
+ * <p>Layers can be disabled during workflow execution, which skips them entirely.
  *
  * @param <Hint> Some layers need a hint which message they should send or receive across layers
  *     (see {@link de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint} for example).
@@ -67,13 +67,13 @@ public abstract class ProtocolLayer<
     private boolean enabled = true;
 
     protected ProtocolLayer(LayerType layerType) {
-        producedDataContainers = new LinkedList<>();
-        this.layerType = layerType;
-        this.unreadBytes = new byte[0];
+        this(layerType, true);
     }
 
     protected ProtocolLayer(LayerType layerType, boolean enabled) {
-        this(layerType);
+        producedDataContainers = new LinkedList<>();
+        this.layerType = layerType;
+        this.unreadBytes = new byte[0];
         this.enabled = enabled;
     }
 
@@ -100,33 +100,40 @@ public abstract class ProtocolLayer<
      * layer.
      *
      * <p>Implementors should look at {@link de.rub.nds.tlsattacker.core.layer.impl.MessageLayer}
-     * for reference to see how to implement this method correctly (e.g. using {@link
-     * #readDataContainer(Container, Context)} and {@link
-     * #addProducedContainer(DataContainer)}).
+     * for reference to see how to implement this method correctly (e.g., using {@link
+     * #readDataContainer(Container, Context)} and {@link #addProducedContainer(DataContainer)}).
      *
      * <p>The layer-specific configurations are created by ActionHelperUtil.
      *
-     * <p>This is a public-facing wrapper for {@link #sendConfigurationInternal()} to allow protocol-agnostic features (e.g., enabling/disabling layers).
+     * <p>This is a public-facing wrapper for {@link #sendConfigurationInternal()} to allow
+     * protocol-agnostic features (e.g., enabling/disabling layers).
      *
      * @see de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil
      * @return LayerProcessingResult Contains information about the used data containers.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
-    public LayerProcessingResult<Container> sendConfiguration() throws IOException {
-        if(!isEnabled()) {
-            if(getLayerConfiguration().getContainerList() != null && !getLayerConfiguration().getContainerList().isEmpty()) {
-                //TODO: this is called regardless of whether the layer is enabled, but perhaps not enabled + configurationList is noteworthy?
+    public final LayerProcessingResult<Container> sendConfiguration() throws IOException {
+        if (!isEnabled()) {
+            if (getLayerConfiguration().getContainerList() != null
+                    && !getLayerConfiguration().getContainerList().isEmpty()) {
+                throw new IOException(
+                        "Layer is disabled but has configured containers: "
+                                + getLayerConfiguration().getContainerList());
             }
             return new LayerProcessingResult<>(new ArrayList<>(), getLayerType(), true);
+        } else {
+            return sendConfigurationInternal();
         }
-        return sendConfigurationInternal();
     }
 
     /**
-     * See {@link #sendConfiguration()} for more information.
+     * This function implements the actual functionality of <code>sendConfiguration</code>. It is
+     * called if <code>sendConfiguration</code> is called and the layer is enabled. See {@link
+     * #sendConfiguration()} for more information.
      */
-    protected abstract LayerProcessingResult<Container> sendConfigurationInternal() throws IOException;
+    protected abstract LayerProcessingResult<Container> sendConfigurationInternal()
+            throws IOException;
 
     /**
      * Sends byte data through this layer to the lower layer. This should only be called by the next
@@ -137,22 +144,25 @@ public abstract class ProtocolLayer<
      * may need to know additional information about the data to send it. The hint parameter can be
      * used to encapsulate this information.
      *
-     * <p>This is a public-facing wrapper for {@link #sendDataInternal(LayerProcessingHint, byte[])}.
+     * <p>This is a public-facing wrapper for {@link #sendDataInternal(LayerProcessingHint,
+     * byte[])}.
      *
      * @param hint a hint which can encapsulate information about the data to send
      * @param additionalData the byte data to send
      * @return LayerProcessingResult Contains information about the used data containers.
      */
-    public LayerProcessingResult<Container> sendData(
+    public final LayerProcessingResult<Container> sendData(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
-        if(!isEnabled()) {
+        if (!isEnabled()) {
             return getLowerLayer().sendData(hint, additionalData);
         }
         return sendDataInternal(hint, additionalData);
     }
 
     /**
-     * See {@link #sendData(LayerProcessingHint, byte[])}} for more information.
+     * This function implements the actual functionality of <code>sendData</code>. It is called if
+     * <code>sendData</code> is called and the layer is enabled. See {@link
+     * #sendData(LayerProcessingHint, byte[])} for more information.
      */
     protected abstract LayerProcessingResult<Container> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException;
@@ -216,25 +226,29 @@ public abstract class ProtocolLayer<
     }
 
     /**
-     * Read data from the lower layer and tries to parse it into containers until the specified layer configuration is satisfied.
-     * This should access data coming from {@link #getLowerLayer()} layer using {@link #getDataStream()}.
+     * Read data from the lower layer and try to parse it into containers until the specified layer
+     * configuration is satisfied. This should access data coming from {@link #getLowerLayer()}
+     * layer using {@link #getDataStream()}.
      *
-     * Using {@link #getDataStream()} may implicitly trigger {@link #receiveMoreDataForHint(LayerProcessingHint)} which passes data to higher layers.
-     * TODO: Is this correct? I think the way LayerStack works, you couldn't pass data from here if you wanted (or they would be processed in a subsequent receiveData call?)
+     * <p>Using {@link #getDataStream()} may implicitly trigger {@link
+     * #receiveMoreDataForHint(LayerProcessingHint)} on the layer below which then passes data to
+     * higher layers.
      *
      * <p>This is a public-facing wrapper for {@link #receiveDataInternal()}.
      *
      * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
-    public LayerProcessingResult<Container> receiveData() {
-        if(!isEnabled()) {
-            throw new RuntimeException("Layer is disabled");
+    public final LayerProcessingResult<Container> receiveData() {
+        if (!isEnabled()) {
+            throw new RuntimeException("Cannot receive data from disabled layer.");
         }
         return receiveDataInternal();
     }
 
     /**
-     * See {@link #receiveData()} for more information.
+     * This function implements the actual functionality of <code>receiveData</code>. It is called
+     * if <code>receiveData</code> is called and the layer is enabled. See {@link #receiveData()}
+     * for more information.
      */
     protected abstract LayerProcessingResult<Container> receiveDataInternal();
 
@@ -243,37 +257,45 @@ public abstract class ProtocolLayer<
      * calling layer) is produced, the data is instead cached in the next input stream. It may be
      * that the current input stream is null when this method is called.
      *
-     * This is typically triggered when a higher layer uses {@link #getDataStream()} to receive data.
-     * To then pass the received data to a higher layer extend/assign <code>currentInputStream</code> or <code>nextInputStream</code>, which will be returned by {@link #getDataStream()}.
+     * <p>This is typically triggered when a higher layer uses {@link #getDataStream()} to receive
+     * data. To then pass the received data to a higher layer extend/assign <code>currentInputStream
+     * </code> or <code>nextInputStream</code>, which will be returned by {@link #getDataStream()}.
      *
-     * <p>This is a public-facing wrapper for {@link #receiveMoreDataForHintInternal(LayerProcessingHint)}}.
+     * <p>This is a public-facing wrapper for {@link
+     * #receiveMoreDataForHintInternal(LayerProcessingHint)}}.
      *
      * @param hint This hint from the calling layer specifies which data it wants to read.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        if(!isEnabled()) {
+    public final void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+        if (!isEnabled()) {
             getLowerLayer().receiveMoreDataForHint(hint);
             return;
         }
         receiveMoreDataForHintInternal(hint);
     }
+
     /**
-     * See {@link #receiveMoreDataForHint(LayerProcessingHint)} ()} for more information.
+     * This function implements the actual functionality of <code>receiveMoreDataForHintInternal
+     * </code>. It is called if <code>receiveMoreDataForHintInternal</code> is called and the layer
+     * is enabled. See {@link #receiveMoreDataForHint(LayerProcessingHint)} for more
+     * information.
      */
-    public abstract void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException;
+    protected abstract void receiveMoreDataForHintInternal(LayerProcessingHint hint)
+            throws IOException;
 
     /**
      * Returns a data stream from which currently should be read (typically used by a higher layer).
-     * When no data is available, data will be read by this layer using {@link #receiveMoreDataForHint(LayerProcessingHint)}.
+     * When no data is available, data will be read by this layer using {@link
+     * #receiveMoreDataForHint(LayerProcessingHint)}.
      *
      * @return The next data stream with data available.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
     public HintedInputStream getDataStream() throws IOException {
-        if(!isEnabled()) {
+        if (!isEnabled()) {
             return getLowerLayer().getDataStream();
         }
         if (currentInputStream == null) {
