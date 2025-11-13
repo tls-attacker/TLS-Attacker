@@ -89,7 +89,7 @@ public class QuicFrameLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicFrame> sendConfiguration() throws IOException {
+    protected LayerProcessingResult<QuicFrame> sendConfigurationInternal() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
 
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
@@ -133,8 +133,8 @@ public class QuicFrameLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicFrame> sendData(LayerProcessingHint hint, byte[] data)
-            throws IOException {
+    protected LayerProcessingResult<QuicFrame> sendDataInternal(
+            LayerProcessingHint hint, byte[] data) throws IOException {
         ProtocolMessageType hintedType;
         boolean hintedFirstMessage;
         if (hint instanceof QuicFrameLayerHint) {
@@ -231,7 +231,7 @@ public class QuicFrameLayer
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult<QuicFrame> receiveData() {
+    protected LayerProcessingResult<QuicFrame> receiveDataInternal() {
         try {
             InputStream dataStream;
             do {
@@ -263,7 +263,7 @@ public class QuicFrameLayer
      * @throws IOException When no data can be read
      */
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         try {
             InputStream dataStream = getLowerLayer().getDataStream();
             // For now, we ignore the hint

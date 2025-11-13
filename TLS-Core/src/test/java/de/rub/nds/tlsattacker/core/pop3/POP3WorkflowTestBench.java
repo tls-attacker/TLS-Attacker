@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.pop3;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -34,8 +36,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
@@ -145,7 +145,6 @@ public class POP3WorkflowTestBench {
                 factory.createWorkflowTrace(
                         WorkflowTraceType.POP3_STARTTLS, RunningModeType.CLIENT);
 
-        System.out.println(trace);
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =

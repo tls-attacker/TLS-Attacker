@@ -69,9 +69,11 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
      * @throws IOException if sending the message fails for any reason
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    protected LayerProcessingResult sendConfigurationInternal() throws IOException {
         LayerConfiguration<SmtpMessage> configuration = getLayerConfiguration();
-        if (configuration != null && configuration.getContainerList() != null && !configuration.getContainerList().isEmpty()) {
+        if (configuration != null
+                && configuration.getContainerList() != null
+                && !configuration.getContainerList().isEmpty()) {
             for (SmtpMessage smtpMsg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(smtpMsg, context)) {
                     continue;
@@ -80,7 +82,6 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
                 handler.adjustContext(smtpMsg);
                 Serializer<?> serializer = smtpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
-//                serializedMessages.write(serializedMessage);
                 getLowerLayer().sendData(null, serializedMessage);
                 addProducedContainer(smtpMsg);
             }
@@ -98,7 +99,7 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
      * @throws IOException
      */
     @Override
-    public LayerProcessingResult<SmtpMessage> sendData(
+    protected LayerProcessingResult<SmtpMessage> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -115,7 +116,7 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
      * @see SmtpCommandType
      */
     @Override
-    public LayerProcessingResult<SmtpMessage> receiveData() {
+    protected LayerProcessingResult<SmtpMessage> receiveDataInternal() {
         try {
             HintedInputStream dataStream;
             do {
@@ -200,7 +201,7 @@ public class SmtpLayer extends ProtocolLayer<Context, LayerProcessingHint, SmtpM
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

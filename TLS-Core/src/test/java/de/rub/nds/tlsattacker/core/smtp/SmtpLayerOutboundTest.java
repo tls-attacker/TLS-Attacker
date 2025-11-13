@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -32,8 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the SmtpLayer where TLS-Attacker acts as a client, i.e. sends commands and receives
@@ -62,8 +62,9 @@ public class SmtpLayerOutboundTest {
         context.setLastCommand(new SmtpUnknownCommand());
         LayerProcessingResult<SmtpMessage> result = smtpLayer.receiveData();
         System.out.println(result.getUsedContainers());
-        assertTrue((result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof SmtpUnterminatedReply));
+        assertTrue(
+                (result.getUsedContainers().size() == 1)
+                        && (result.getUsedContainers().get(0) instanceof SmtpUnterminatedReply));
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -73,8 +74,9 @@ public class SmtpLayerOutboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         context.setLastCommand(new SmtpUnknownCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
-        assertTrue((result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply));
+        assertTrue(
+                (result.getUsedContainers().size() == 1)
+                        && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply));
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -84,9 +86,10 @@ public class SmtpLayerOutboundTest {
         SmtpLayer smtpLayer = (SmtpLayer) context.getLayerStack().getLayer(SmtpLayer.class);
         context.setLastCommand(new SmtpUnknownCommand());
         LayerProcessingResult result = smtpLayer.receiveData();
-        assertTrue((result.getUsedContainers().size() == 2)
-                && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply)
-                && (result.getUsedContainers().get(1) instanceof SmtpUnknownReply));
+        assertTrue(
+                (result.getUsedContainers().size() == 2)
+                        && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply)
+                        && (result.getUsedContainers().get(1) instanceof SmtpUnknownReply));
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -104,8 +107,9 @@ public class SmtpLayerOutboundTest {
         System.out.println(result.getUsedContainers());
         System.out.println(Arrays.toString(result.getUnreadBytes()));
         ;
-        assertTrue((result.getUsedContainers().size() == 1)
-                && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply));
+        assertTrue(
+                (result.getUsedContainers().size() == 1)
+                        && (result.getUsedContainers().get(0) instanceof SmtpUnknownReply));
         assertEquals(0, result.getUnreadBytes().length);
     }
 
@@ -133,7 +137,8 @@ public class SmtpLayerOutboundTest {
         smtpLayer.setLayerConfiguration(layerConfiguration);
         LayerProcessingResult result = smtpLayer.sendConfiguration();
         assertEquals(2, result.getUsedContainers().size());
-        assertTrue((result.getUsedContainers().get(0) instanceof SmtpEHLOCommand)
-                && (result.getUsedContainers().get(1) instanceof SmtpNOOPCommand));
+        assertTrue(
+                (result.getUsedContainers().get(0) instanceof SmtpEHLOCommand)
+                        && (result.getUsedContainers().get(1) instanceof SmtpNOOPCommand));
     }
 }

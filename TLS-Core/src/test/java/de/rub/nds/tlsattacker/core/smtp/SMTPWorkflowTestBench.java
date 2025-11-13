@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -31,13 +33,11 @@ import java.io.IOException;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
-public class SMTPWorkflowTestBench {
+class SMTPWorkflowTestBench {
 
     public static final int PLAIN_PORT = 2525;
     public static final int IMPLICIT_TLS_PORT = 4465;

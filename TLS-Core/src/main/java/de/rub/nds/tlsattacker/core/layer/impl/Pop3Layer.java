@@ -66,7 +66,7 @@ public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3M
      * @throws IOException if sending the message fails for any reason
      */
     @Override
-    public LayerProcessingResult<Pop3Message> sendConfiguration() throws IOException {
+    protected LayerProcessingResult<Pop3Message> sendConfigurationInternal() throws IOException {
         LayerConfiguration<Pop3Message> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Pop3Message pop3Msg : getUnprocessedConfiguredContainers()) {
@@ -85,8 +85,8 @@ public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3M
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    protected LayerProcessingResult sendDataInternal(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -106,7 +106,7 @@ public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3M
      *     different layers
      */
     @Override
-    public LayerProcessingResult<Pop3Message> receiveData() {
+    protected LayerProcessingResult<Pop3Message> receiveDataInternal() {
         try {
             HintedInputStream dataStream;
             do {
@@ -189,7 +189,7 @@ public class Pop3Layer extends ProtocolLayer<Context, LayerProcessingHint, Pop3M
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
