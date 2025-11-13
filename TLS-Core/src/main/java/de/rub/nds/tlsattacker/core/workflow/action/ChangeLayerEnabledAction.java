@@ -14,15 +14,14 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-
 /**
- * This action changes the <code>enable </code> flag for one or more layers, which allows modifying the LayerStack at runtime.
+ * This action changes the <code>enabled</code> flag for one or more layers, which allows modifying
+ * the LayerStack at runtime.
  */
 @XmlRootElement
 public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
@@ -39,6 +38,7 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
 
     /**
      * Creates a new instance of ChangeLayerEnabledAction.
+     *
      * @param targetedLayers the layer(s) to change
      */
     public ChangeLayerEnabledAction(ImplementedLayers... targetedLayers) {
@@ -61,17 +61,20 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
     }
 
     /**
-     * Given a layer, this method checks what the updated enabled state should be.
+     * Given a layer, this method determines what the updated enabled state should be.
+     *
      * @param layer the layer to check
      * @return true if the layer should be enabled, false otherwise
      */
     public abstract boolean layerPredicate(ProtocolLayer<?, ?, ?> layer);
 
     /**
-     * Checks whether the layers that were supposed to be toggled were able to be found in the layer
-     * stack. If not, the action was not executed as planned.
-     * <p>It is important to note that this method does not check whether the active layers were actually changed, only whether they were
-     * found (i.e., ToggleLayerAction will executed as planned for an already enabled layer).
+     * Checks whether the layers supposed to be toggled were able to be found in the layer stack. If
+     * not, the action was not executed as planned.
+     *
+     * <p>It is important to note that this method does not check whether the active layers were
+     * actually changed, only whether they were found (i.e., EnableLayerAction will execute as
+     * planned for an already enabled layer).
      *
      * @return true if the action was executed as planned, false otherwise
      */

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.pop3;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -32,8 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the Pop3Layer where TLS-Attacker acts as a server, i.e. receiving commands and sending
@@ -63,8 +63,9 @@ public class Pop3LayerInboundTest {
         LayerProcessingResult result = smtpLayer.receiveData();
         assertEquals(1, result.getUsedContainers().size());
         assertInstanceOf(Pop3USERCommand.class, result.getUsedContainers().getFirst());
-        assertEquals(Pop3CommandType.USER, ((Pop3Command) result.getUsedContainers().getFirst())
-                .getCommandType());
+        assertEquals(
+                Pop3CommandType.USER,
+                ((Pop3Command) result.getUsedContainers().getFirst()).getCommandType());
         assertEquals("xyz", ((Pop3Command) result.getUsedContainers().getFirst()).getArguments());
         assertEquals(0, result.getUnreadBytes().length);
     }
@@ -77,10 +78,14 @@ public class Pop3LayerInboundTest {
         System.out.println(result.getUsedContainers());
         assertEquals(1, result.getUsedContainers().size());
         assertInstanceOf(Pop3UnknownCommand.class, result.getUsedContainers().getFirst());
-        assertEquals(Pop3CommandType.UNKNOWN, ((Pop3Command) result.getUsedContainers().getFirst())
-                .getCommandType());
+        assertEquals(
+                Pop3CommandType.UNKNOWN,
+                ((Pop3Command) result.getUsedContainers().getFirst()).getCommandType());
         assertEquals("xyz", ((Pop3Command) result.getUsedContainers().getFirst()).getArguments());
-        assertEquals("UNKW", ((Pop3UnknownCommand) result.getUsedContainers().getFirst()).getUnknownCommandVerb());
+        assertEquals(
+                "UNKW",
+                ((Pop3UnknownCommand) result.getUsedContainers().getFirst())
+                        .getUnknownCommandVerb());
         assertEquals(0, result.getUnreadBytes().length);
     }
 

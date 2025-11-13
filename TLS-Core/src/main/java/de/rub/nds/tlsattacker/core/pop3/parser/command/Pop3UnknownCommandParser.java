@@ -1,9 +1,14 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3UnknownCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpUnknownCommand;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
-
 import java.io.InputStream;
 
 public class Pop3UnknownCommandParser extends Pop3CommandParser<Pop3UnknownCommand> {
@@ -13,8 +18,10 @@ public class Pop3UnknownCommandParser extends Pop3CommandParser<Pop3UnknownComma
     }
 
     /**
-     * Special parser for unknown commands which also accesses the verb string.
-     * Other parsers do not have access to the verb string, because they are created based on the verb string matching a known verb.
+     * Special parser for unknown commands which also accesses the verb string. Other parsers do not
+     * have access to the verb string, because they are created based on the verb string matching a
+     * known verb.
+     *
      * @param pop3Command
      */
     @Override
@@ -33,6 +40,5 @@ public class Pop3UnknownCommandParser extends Pop3CommandParser<Pop3UnknownComma
         if (verbAndParams.length == 2) {
             pop3Command.setArguments(verbAndParams[1]);
         }
-
     }
 }

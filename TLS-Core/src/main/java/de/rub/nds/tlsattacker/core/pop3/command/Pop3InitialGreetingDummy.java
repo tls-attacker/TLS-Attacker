@@ -26,6 +26,7 @@ public class Pop3InitialGreetingDummy extends Pop3Command {
     public Pop3InitialGreetingDummy() {
         super(Pop3CommandType.INITIAL_GREETING, null);
     }
+
     @Override
     public Pop3CommandParser<? extends Pop3Message> getParser(Context context, InputStream stream) {
         throw new UnsupportedOperationException(

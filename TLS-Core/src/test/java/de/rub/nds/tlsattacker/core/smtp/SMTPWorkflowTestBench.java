@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -30,8 +32,6 @@ import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.*;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
@@ -167,10 +167,10 @@ public class SMTPWorkflowTestBench {
         trace.removeTlsAction(trace.getTlsActions().size() - 1);
         trace.removeTlsAction(trace.getTlsActions().size() - 1);
 
-//        trace.addTlsAction(new ToggleTLSLayersAction());
+        //        trace.addTlsAction(new ToggleTLSLayersAction());
         trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
         // still does not work, because the server is still in TLS mode
-//        trace.addTlsAction(new ToggleTLSLayersAction());
+        //        trace.addTlsAction(new ToggleTLSLayersAction());
         trace.addTlsAction(new SendAction(new SmtpHELPCommand()));
 
         runWorkflowTrace(trace);

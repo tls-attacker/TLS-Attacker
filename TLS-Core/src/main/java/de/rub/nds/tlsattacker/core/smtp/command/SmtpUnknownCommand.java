@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpUnknownCommandParser;
 import de.rub.nds.tlsattacker.core.state.Context;
-
 import java.io.InputStream;
 
 public class SmtpUnknownCommand extends SmtpCommand {
@@ -35,5 +34,4 @@ public class SmtpUnknownCommand extends SmtpCommand {
     public void setUnknownCommandVerb(String unknownCommandVerb) {
         this.unknownCommandVerb = unknownCommandVerb;
     }
-
 }

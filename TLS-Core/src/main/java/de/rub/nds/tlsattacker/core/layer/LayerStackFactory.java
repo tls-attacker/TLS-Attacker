@@ -61,11 +61,13 @@ public class LayerStackFactory {
                                 new TcpLayer(context));
                 return layerStack;
             case POP3:
-                layerStack = new LayerStack(context,
-                        new Pop3Layer(context),
-                        new MessageLayer(context, false),
-                        new RecordLayer(context, false),
-                        new TcpLayer(context));
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new Pop3Layer(context),
+                                new MessageLayer(context, false),
+                                new RecordLayer(context, false),
+                                new TcpLayer(context));
                 return layerStack;
             case POP3S:
                 layerStack =
@@ -77,11 +79,13 @@ public class LayerStackFactory {
                                 new TcpLayer(context));
                 return layerStack;
             case SMTP:
-                layerStack = new LayerStack(context,
-                        new SmtpLayer(context),
-                        new MessageLayer(context, false),
-                        new RecordLayer(context, false),
-                        new TcpLayer(context));
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new SmtpLayer(context),
+                                new MessageLayer(context, false),
+                                new RecordLayer(context, false),
+                                new TcpLayer(context));
                 return layerStack;
             case SMTPS:
                 layerStack =

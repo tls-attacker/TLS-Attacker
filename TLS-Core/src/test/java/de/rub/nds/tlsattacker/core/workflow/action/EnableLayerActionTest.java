@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -16,9 +19,6 @@ import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EnableLayerActionTest {
     private Config config;
@@ -34,13 +34,8 @@ public class EnableLayerActionTest {
     public void testDisabledLayer() {
         HttpLayer httpLayer = new HttpLayer(state.getContext());
         TcpLayer tcpLayer = new TcpLayer(state.getContext());
-        LayerStack layerStack =
-                new LayerStack(
-                        state.getContext(),
-                        httpLayer,
-                        tcpLayer
+        LayerStack layerStack = new LayerStack(state.getContext(), httpLayer, tcpLayer);
 
-                );
         state.getContext().setLayerStack(layerStack);
 
         httpLayer.setEnabled(false);
@@ -58,13 +53,8 @@ public class EnableLayerActionTest {
     public void testAlreadyEnabledLayer() {
         HttpLayer httpLayer = new HttpLayer(state.getContext());
         TcpLayer tcpLayer = new TcpLayer(state.getContext());
-        LayerStack layerStack =
-                new LayerStack(
-                        state.getContext(),
-                        httpLayer,
-                        tcpLayer
+        LayerStack layerStack = new LayerStack(state.getContext(), httpLayer, tcpLayer);
 
-                );
         state.getContext().setLayerStack(layerStack);
 
         assertTrue(httpLayer.isEnabled());
@@ -82,13 +72,8 @@ public class EnableLayerActionTest {
     public void testEnableLayerNotInStack() {
         HttpLayer httpLayer = new HttpLayer(state.getContext());
         TcpLayer tcpLayer = new TcpLayer(state.getContext());
-        LayerStack layerStack =
-                new LayerStack(
-                        state.getContext(),
-                        httpLayer,
-                        tcpLayer
+        LayerStack layerStack = new LayerStack(state.getContext(), httpLayer, tcpLayer);
 
-                );
         state.getContext().setLayerStack(layerStack);
         EnableLayerAction action = new EnableLayerAction(ImplementedLayers.SMTP);
         action.execute(state);

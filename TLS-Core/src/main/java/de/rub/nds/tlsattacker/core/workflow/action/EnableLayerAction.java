@@ -12,13 +12,11 @@ import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.util.function.Predicate;
-
 @XmlRootElement
 public class EnableLayerAction extends ChangeLayerEnabledAction {
 
-    public EnableLayerAction() {
-    }
+    public EnableLayerAction() {}
+
     public EnableLayerAction(ImplementedLayers... layers) {
         super(layers);
     }
