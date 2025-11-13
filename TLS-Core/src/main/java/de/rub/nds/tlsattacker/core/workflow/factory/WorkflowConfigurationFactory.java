@@ -661,7 +661,6 @@ public class WorkflowConfigurationFactory {
             appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand());
             appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand(1));
             appendPop3CommandAndReplyActions(connection, trace, new Pop3RETRCommand(1));
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3DELECommand(1));
             appendPop3CommandAndReplyActions(connection, trace, new Pop3QUITCommand());
         } else {
             throw new ConfigurationException("POP3 Server workflow not supported yet");
