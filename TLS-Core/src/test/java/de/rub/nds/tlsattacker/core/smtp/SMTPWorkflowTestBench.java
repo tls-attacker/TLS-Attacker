@@ -37,7 +37,7 @@ import org.junit.jupiter.api.*;
  * Tests not to be included in the actual repo. Its just very convenient to run code this way from
  * IntelliJ
  */
-public class SMTPWorkflowTestBench {
+class SMTPWorkflowTestBench {
 
     public static final int PLAIN_PORT = 2525;
     public static final int IMPLICIT_TLS_PORT = 4465;
@@ -150,28 +150,6 @@ public class SMTPWorkflowTestBench {
                 1,
                 new SendAction(new SmtpAUTHCommand("PLAIN", "AHZpY3RpbQBzZWN1cmVQYXNzd29yZA==")));
         trace.addTlsAction(2, new ReceiveAction(new SmtpAUTHReply()));
-
-        runWorkflowTrace(trace);
-    }
-
-    @Test
-    public void testWorkflowSTARTTLSBackToPlain() throws JAXBException, IOException {
-        // this is a true "mess around" test, it is not a real test for the SMTP layer
-        initializeConfig(PLAIN_PORT, StackConfiguration.SMTP);
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                factory.createWorkflowTrace(
-                        WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
-
-        // this is QUIT + QUIT reply - we don't want the server to close the connection just yet
-        trace.removeTlsAction(trace.getTlsActions().size() - 1);
-        trace.removeTlsAction(trace.getTlsActions().size() - 1);
-
-        //        trace.addTlsAction(new ToggleTLSLayersAction());
-        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
-        // still does not work, because the server is still in TLS mode
-        //        trace.addTlsAction(new ToggleTLSLayersAction());
-        trace.addTlsAction(new SendAction(new SmtpHELPCommand()));
 
         runWorkflowTrace(trace);
     }

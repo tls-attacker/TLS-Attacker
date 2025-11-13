@@ -285,8 +285,7 @@ public abstract class ProtocolLayer<
     /**
      * This function implements the actual functionality of <code>receiveMoreDataForHintInternal
      * </code>. It is called if <code>receiveMoreDataForHintInternal</code> is called and the layer
-     * is enabled. See {@link #receiveMoreDataForHint(LayerProcessingHint)} for more
-     * information.
+     * is enabled. See {@link #receiveMoreDataForHint(LayerProcessingHint)} for more information.
      */
     protected abstract void receiveMoreDataForHintInternal(LayerProcessingHint hint)
             throws IOException;
