@@ -16,9 +16,11 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class DisableLayerAction extends ChangeLayerEnabledAction {
 
     public DisableLayerAction() {}
-    public DisableLayerAction(ImplementedLayers layer) {
+
+    public DisableLayerAction(ImplementedLayers... layer) {
         super(layer);
     }
+
     @Override
     public boolean layerPredicate(ProtocolLayer<?, ?, ?> layer) {
         return false;
