@@ -9,18 +9,24 @@
 package de.rub.nds.tlsattacker.core.pop3;
 
 import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
 import de.rub.nds.tlsattacker.core.pop3.handler.Pop3MessageHandler;
 import de.rub.nds.tlsattacker.core.pop3.parser.Pop3MessageParser;
 import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3Reply;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3ReplySerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({Pop3Command.class, Pop3Reply.class})
 public abstract class Pop3Message extends Message {
 
     protected Pop3CommandType commandType = Pop3CommandType.UNKNOWN;
