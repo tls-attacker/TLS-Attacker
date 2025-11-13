@@ -62,7 +62,7 @@ public abstract class SmtpMessage extends Message {
      * Returns the preparator responsible for preparing this type of message. In general, the
      * preparator fills in default values (if necessary) and sets the parameter string correctly.
      * This means that a single generic serializer can be used for all messages. Also see {@link
-     * #getSerializer(SmtpContext)}
+     * #getSerializer(Context)}
      *
      * @param context the {@link SmtpContext}
      * @return a preparator for this message
@@ -75,7 +75,7 @@ public abstract class SmtpMessage extends Message {
      * Returns the serializer responsible for serializing this type of message. The serializer is
      * responsible for converting a prepared message object into a string. Because the preparator
      * does most of the work, a single generic serializer is currently used for all messages. Also
-     * see {@link #getPreparator(SmtpContext)}
+     * see {@link #getPreparator(Context)}
      *
      * @param context the {@link SmtpContext}
      * @return a serializer for this message
