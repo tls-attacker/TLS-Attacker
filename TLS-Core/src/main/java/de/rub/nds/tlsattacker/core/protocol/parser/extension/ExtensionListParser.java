@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
@@ -39,6 +40,17 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
         while (getBytesLeft() > 0) {
             byte[] typeBytes = parseByteArrayField(ExtensionByteLength.TYPE);
             ExtensionType extensionType = ExtensionType.getExtensionType(typeBytes);
+            if (extensionType == ExtensionType.ENCRYPTED_CLIENT_HELLO
+                    || extensionType == ExtensionType.ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS) {
+                extensionType =
+                        switch (tlsContext.getTalkingConnectionEndType()) {
+                            // the server sends the ECH extension containing retry configs
+                            case ConnectionEndType.SERVER ->
+                                    ExtensionType.ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS;
+                            // the client sends the normal ECH extension
+                            case ConnectionEndType.CLIENT -> ExtensionType.ENCRYPTED_CLIENT_HELLO;
+                        };
+            }
             LOGGER.debug("ExtensionType: {} ({})", typeBytes, extensionType);
             int length = parseExtensionLength();
             byte[] extensionPayload = parseByteArrayField(length);
