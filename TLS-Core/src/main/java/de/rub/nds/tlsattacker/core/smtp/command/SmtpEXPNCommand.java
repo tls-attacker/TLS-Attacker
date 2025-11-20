@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpEXPNCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpEXPNCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -32,11 +33,11 @@ public class SmtpEXPNCommand extends SmtpCommand {
     private String mailingList;
 
     public SmtpEXPNCommand() {
-        super(COMMAND_NAME, null);
+        super(SmtpCommandType.EXPN);
     }
 
     public SmtpEXPNCommand(String mailingList) {
-        super(COMMAND_NAME, mailingList);
+        this();
         this.mailingList = mailingList;
     }
 
