@@ -642,8 +642,7 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createPop3sWorkflow() {
         AliasedConnection connection = getConnection();
 
-        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
-        trace.addTlsActions(createDynamicHandshakeWorkflow(connection).getTlsActions());
+        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
         if (config.getStarttlsType() == StarttlsType.NONE) {
             trace.addTlsAction(
                     MessageActionFactory.createPop3Action(

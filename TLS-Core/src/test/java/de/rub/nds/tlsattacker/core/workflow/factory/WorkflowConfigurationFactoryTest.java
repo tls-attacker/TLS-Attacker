@@ -428,12 +428,14 @@ public class WorkflowConfigurationFactoryTest {
                         : MessageActionDirection.RECEIVING;
 
         Config cfg = new Config();
-        cfg.setStarttlsType(StarttlsType.NONE);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
-
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.SMTPS, runningMode);
         WorkflowTrace tlsTrace =
                 factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+
+        cfg.setStarttlsType(StarttlsType.NONE);
+        factory = new WorkflowConfigurationFactory(cfg);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.SMTPS, runningMode);
+
         assertNotNull(trace);
         int index = 0;
 
@@ -472,12 +474,13 @@ public class WorkflowConfigurationFactoryTest {
                         : MessageActionDirection.RECEIVING;
 
         Config cfg = new Config();
-        cfg.setStarttlsType(StarttlsType.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
-
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.SMTPS, runningMode);
         WorkflowTrace tlsTrace =
                 factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+
+        cfg.setStarttlsType(StarttlsType.SMTP);
+        factory = new WorkflowConfigurationFactory(cfg);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.SMTPS, runningMode);
         assertNotNull(trace);
         int index = 0;
 
@@ -533,12 +536,13 @@ public class WorkflowConfigurationFactoryTest {
                         : MessageActionDirection.RECEIVING;
 
         Config cfg = new Config();
-        cfg.setStarttlsType(StarttlsType.NONE);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
-
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.POP3S, runningMode);
         WorkflowTrace tlsTrace =
                 factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+
+        cfg.setStarttlsType(StarttlsType.NONE);
+        factory = new WorkflowConfigurationFactory(cfg);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.POP3S, runningMode);
         assertNotNull(trace);
         int index = 0;
 
@@ -578,12 +582,13 @@ public class WorkflowConfigurationFactoryTest {
                         : MessageActionDirection.RECEIVING;
 
         Config cfg = new Config();
-        cfg.setStarttlsType(StarttlsType.POP3);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
-
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.POP3S, runningMode);
         WorkflowTrace tlsTrace =
                 factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+
+        cfg.setStarttlsType(StarttlsType.POP3);
+        factory = new WorkflowConfigurationFactory(cfg);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.POP3S, runningMode);
         assertNotNull(trace);
         int index = 0;
 
