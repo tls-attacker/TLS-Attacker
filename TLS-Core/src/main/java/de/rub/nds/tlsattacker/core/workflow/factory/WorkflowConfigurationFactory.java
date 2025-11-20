@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
-import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -72,7 +71,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
@@ -82,6 +80,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -123,14 +122,10 @@ public class WorkflowConfigurationFactory {
                 return createDynamicClientRenegotiationWithoutResumption();
             case HTTPS:
                 return createHttpsWorkflow();
-            case POP3:
-                return createPop3Workflow();
-            case POP3_STARTTLS:
-                return createPop3StarttlsWorkflow();
-            case SMTP:
-                return createSmtpWorkflow();
-            case SMTP_STARTTLS:
-                return createSmtpStarttlsWorkflow();
+            case POP3S:
+                return createPop3sWorkflow();
+            case SMTPS:
+                return createSmtpsWorkflow();
             case RESUMPTION:
                 return createResumptionWorkflow();
             case FULL_RESUMPTION:
@@ -202,6 +197,8 @@ public class WorkflowConfigurationFactory {
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
+            workflowTrace.addTlsAction(
+                    new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
         }
 
         if (config.getQuicRetryFlowRequired()) {
@@ -642,57 +639,30 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private WorkflowTrace createPop3Workflow() {
+    private WorkflowTrace createPop3sWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
 
-        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
+        trace.addTlsActions(createDynamicHandshakeWorkflow(connection).getTlsActions());
+        if (config.getStarttlsType() == StarttlsType.NONE) {
             trace.addTlsAction(
                     MessageActionFactory.createPop3Action(
                             config,
                             connection,
                             ConnectionEndType.SERVER,
                             new Pop3InitialGreeting()));
-
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3USERCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3PASSCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3NOOPCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3STATCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand());
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3LISTCommand(1));
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3RETRCommand(1));
-            appendPop3CommandAndReplyActions(connection, trace, new Pop3QUITCommand());
-        } else {
-            throw new ConfigurationException("POP3 Server workflow not supported yet");
         }
 
+        appendPop3CommandAndReplyActions(connection, trace, new Pop3NOOPCommand());
         return trace;
     }
 
-    private WorkflowTrace createPop3StarttlsWorkflow() {
+    private WorkflowTrace createSmtpsWorkflow() {
         AliasedConnection connection = getConnection();
-        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
-        // kind of dirty changing it from the back, but otherwise we have to rework the whole
-        // dynamic handshake mechanism
-        trace.addTlsAction(0, new SendAction(new Pop3STLSCommand()));
-        trace.addTlsAction(1, new ReceiveAction(new Pop3STLSReply()));
-        // POP3 layer stack has disabled RECORD+MESSAGE per default
-        trace.addTlsAction(
-                2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
 
-        List<TlsAction> pop3Actions = createPop3Workflow().getTlsActions();
-        trace.addTlsAction(0, pop3Actions.get(0));
-        for (int i = 1; i < pop3Actions.size(); i++) {
-            trace.addTlsAction(pop3Actions.get(i));
-        }
-
-        return trace;
-    }
-
-    private WorkflowTrace createSmtpWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
+        trace.addTlsActions(createDynamicHandshakeWorkflow(connection).getTlsActions());
+        if (config.getStarttlsType() == StarttlsType.NONE) {
             trace.addTlsAction(
                     MessageActionFactory.createSmtpAction(
                             config,
@@ -700,37 +670,8 @@ public class WorkflowConfigurationFactory {
                             ConnectionEndType.SERVER,
                             new SmtpInitialGreeting()));
         }
+
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpAUTHCredentialsCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpDATACommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpDATAContentCommand("Test"));
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpQUITCommand());
-
-        return trace;
-    }
-
-    private WorkflowTrace createSmtpStarttlsWorkflow() {
-        AliasedConnection connection = getConnection();
-        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
-        // kind of dirty changing it from the back, but otherwise we have to rework the whole
-        // dynamic handshake mechanism
-        trace.addTlsAction(0, new SendAction(new SmtpSTARTTLSCommand()));
-        trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
-        // SMTP layer stack has disabled RECORD+MESSAGE per default
-        trace.addTlsAction(
-                2, new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
-
-        // put InitialGreeting back to the front
-        List<TlsAction> smtpActions = createSmtpWorkflow().getTlsActions();
-        trace.addTlsAction(0, smtpActions.get(0));
-        for (int i = 1; i < smtpActions.size(); i++) {
-            trace.addTlsAction(smtpActions.get(i));
-        }
-
         return trace;
     }
 
@@ -1300,40 +1241,61 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
-        // TODO: fix for the new layer system since we removed ascii actions, leaving the old code
-        // for when this is
-        /*
-         * switch (type) { case FTP: { workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection,
-         * ConnectionEndType.SERVER, StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.FTP_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.FTP_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } case IMAP: {
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.IMAP_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.IMAP_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } case POP3: {
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.POP3_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.POP3_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } case SMTP: {
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.SMTP_S_OK.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.SMTP_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.SMTP_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } default: return
-         * workflowTrace;
-         */
-        return null;
+        // TODO: fix for the new layer system since we removed ascii actions, leaving the old
+        // messages in comments
+
+        switch (type) {
+            case FTP:
+                {
+                    throw new NotImplementedException("FTP STARTTLS not implemented yet");
+                    // server: "211-Extensions supported\r\nAUTH TLS\r\n211 END\r\n"
+                    // client: "AUTH TLS\r\n"
+                    // server: "234 AUTH command ok. Initializing TLS Connection.\r\n"
+                }
+            case IMAP:
+                {
+                    throw new NotImplementedException("IMAP STARTTLS not implemented yet");
+                    // server: ". OK IMAP4rev1 Service Ready\r\n"
+                    // client: "a STARTTLS\r\n"
+                    // server: "a OK BEGIN TLS NEGOTIATION\r\n"
+                }
+            case POP3:
+                {
+                    // server: "+OK Service Ready\r\n"
+                    // client: "STLS\r\n"
+                    // server: "+OK Begin TLS negotiation\r\n"
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createPop3Action(
+                                    config,
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new Pop3InitialGreeting()));
+                    appendPop3CommandAndReplyActions(
+                            connection, workflowTrace, new Pop3STLSCommand());
+                    return workflowTrace;
+                }
+            case SMTP:
+                {
+                    // server: "220 mail.example.com SMTP service ready\r\n"
+                    // client: "EHLO mail.example.org\r\n"
+                    // server: "250-mail.example.org offers a warm hug of welcome\r\n"
+                    // client: "STARTTLS\r\n"
+                    // server: "220 GO AHEAD\r\n"
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createSmtpAction(
+                                    config,
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new SmtpInitialGreeting()));
+                    appendSmtpCommandAndReplyActions(
+                            connection, workflowTrace, new SmtpEHLOCommand());
+                    appendSmtpCommandAndReplyActions(
+                            connection, workflowTrace, new SmtpSTARTTLSCommand());
+                    return workflowTrace;
+                }
+            default:
+                throw new NotImplementedException("Unknown starttls type: " + type);
+        }
     }
 
     /**

@@ -14,6 +14,7 @@ import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
@@ -89,7 +90,7 @@ class SMTPWorkflowTestBench {
                 new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 workflowConfigurationFactory.createWorkflowTrace(
-                        WorkflowTraceType.SMTP, RunningModeType.CLIENT);
+                        WorkflowTraceType.SMTPS, RunningModeType.CLIENT);
 
         runWorkflowTrace(trace);
     }
@@ -129,10 +130,10 @@ class SMTPWorkflowTestBench {
     @Test
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
         initializeConfig(PLAIN_PORT, StackConfiguration.SMTP);
+        config.setStarttlsType(StarttlsType.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
-                factory.createWorkflowTrace(
-                        WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
+                factory.createWorkflowTrace(WorkflowTraceType.SMTPS, RunningModeType.CLIENT);
 
         runWorkflowTrace(trace);
     }
@@ -141,10 +142,10 @@ class SMTPWorkflowTestBench {
     @Test
     public void testCitadel() throws IOException, JAXBException {
         initializeConfig(587, StackConfiguration.SMTP);
+        config.setStarttlsType(StarttlsType.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
-                factory.createWorkflowTrace(
-                        WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
+                factory.createWorkflowTrace(WorkflowTraceType.SMTPS, RunningModeType.CLIENT);
 
         trace.addTlsAction(
                 1,

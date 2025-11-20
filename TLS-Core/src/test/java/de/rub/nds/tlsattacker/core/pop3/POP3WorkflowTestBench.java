@@ -14,6 +14,7 @@ import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
@@ -62,7 +63,7 @@ public class POP3WorkflowTestBench {
                 new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 workflowConfigurationFactory.createWorkflowTrace(
-                        WorkflowTraceType.POP3, RunningModeType.CLIENT);
+                        WorkflowTraceType.POP3S, RunningModeType.CLIENT);
 
         State state = new State(config, trace);
 
@@ -139,11 +140,11 @@ public class POP3WorkflowTestBench {
         config.setWriteKeylogFile(true);
         config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+        config.setStarttlsType(StarttlsType.POP3);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
-                factory.createWorkflowTrace(
-                        WorkflowTraceType.POP3_STARTTLS, RunningModeType.CLIENT);
+                factory.createWorkflowTrace(WorkflowTraceType.POP3S, RunningModeType.CLIENT);
 
         State state = new State(config, trace);
 

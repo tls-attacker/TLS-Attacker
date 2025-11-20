@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.rub.nds.tlsattacker.core.workflow.action.MessageAction.MessageActionDirection;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -18,6 +17,12 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3NOOPCommand;
+import de.rub.nds.tlsattacker.core.pop3.command.Pop3STLSCommand;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3NOOPReply;
+import de.rub.nds.tlsattacker.core.pop3.reply.Pop3STLSReply;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -27,18 +32,22 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpSTARTTLSCommand;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAsciiAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.util.List;
+import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class WorkflowConfigurationFactoryTest {
 
@@ -352,5 +361,258 @@ public class WorkflowConfigurationFactoryTest {
         assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
         assertEquals(
                 GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
+    }
+
+    private static void assertMessage(
+            MessageActionDirection expectedDirection,
+            TlsAction action,
+            Class<? extends DataContainer>... expectedMessageClasses) {
+        assertInstanceOf(MessageAction.class, action, "Expected a MessageAction");
+        MessageActionDirection actualDirection = ((MessageAction) action).getMessageDirection();
+
+        assertEquals(
+                expectedDirection,
+                actualDirection,
+                () -> {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Message action direction does not match\n");
+                    sb.append("Expected direction: ").append(expectedDirection).append("\n");
+                    sb.append("Expected Messages:\n");
+                    for (Class<?> msgClass : expectedMessageClasses) {
+                        sb.append(" - ").append(msgClass.getSimpleName()).append("\n");
+                    }
+                    sb.append("Actual action:\n");
+                    sb.append(action.toString());
+                    return sb.toString();
+                });
+
+        List<List<DataContainer>> containerLists;
+        if (actualDirection == MessageActionDirection.SENDING) {
+            containerLists = ((SendAction) action).getConfiguredDataContainerLists();
+        } else {
+            containerLists = ((ReceiveAction) action).getExpectedDataContainerLists();
+        }
+
+        List<DataContainer> actualMessages = null;
+        for (List<DataContainer> msgList : containerLists) {
+            if (msgList.size() > 0) {
+                if (actualMessages != null) {
+                    throw new NotImplementedException(
+                            "Bad Test/Assertion: This assertion can only handle a single layer to be configured in a send/receive action.");
+                }
+                actualMessages = msgList;
+            }
+        }
+
+        assertEquals(expectedMessageClasses.length, actualMessages.size());
+        for (int i = 0; i < expectedMessageClasses.length; i++) {
+            assertEquals(
+                    expectedMessageClasses[i],
+                    actualMessages.get(i).getClass(),
+                    "Message " + i + " does not match");
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = RunningModeType.class,
+            names = {"CLIENT", "SERVER"})
+    void testCreateSmtpsClientWorkflow(RunningModeType runningMode) {
+        MessageActionDirection SERVER_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.RECEIVING
+                        : MessageActionDirection.SENDING;
+        MessageActionDirection CLIENT_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.SENDING
+                        : MessageActionDirection.RECEIVING;
+
+        Config cfg = new Config();
+        cfg.setStarttlsType(StarttlsType.NONE);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
+
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.SMTPS, runningMode);
+        WorkflowTrace tlsTrace =
+                factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+        assertNotNull(trace);
+        int index = 0;
+
+        // TLS handshake
+        for (int n = 0; n < tlsTrace.getTlsActions().size(); n++) {
+            assertEquals(tlsTrace.getTlsActions().get(n), trace.getTlsActions().get(index++));
+        }
+        // server: SMTP greeting
+        assertMessage(
+                SERVER_MSG_DIRECTION,
+                trace.getTlsActions().get(index++),
+                SmtpInitialGreeting.class);
+        // client: EHLO
+        assertMessage(
+                CLIENT_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpEHLOCommand.class);
+        // server: 250 response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpEHLOReply.class);
+
+        // done
+        assertEquals(index, trace.getTlsActions().size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = RunningModeType.class,
+            names = {"CLIENT", "SERVER"})
+    void testCreateSmtpStarttlsClientWorkflow(RunningModeType runningMode) {
+        MessageActionDirection SERVER_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.RECEIVING
+                        : MessageActionDirection.SENDING;
+        MessageActionDirection CLIENT_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.SENDING
+                        : MessageActionDirection.RECEIVING;
+
+        Config cfg = new Config();
+        cfg.setStarttlsType(StarttlsType.SMTP);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
+
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.SMTPS, runningMode);
+        WorkflowTrace tlsTrace =
+                factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+        assertNotNull(trace);
+        int index = 0;
+
+        // server: SMTP greeting
+        assertMessage(
+                SERVER_MSG_DIRECTION,
+                trace.getTlsActions().get(index++),
+                SmtpInitialGreeting.class);
+        // client: EHLO
+        assertMessage(
+                CLIENT_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpEHLOCommand.class);
+        // server: 250 response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpEHLOReply.class);
+        // client: STARTTLS command
+        assertMessage(
+                CLIENT_MSG_DIRECTION,
+                trace.getTlsActions().get(index++),
+                SmtpSTARTTLSCommand.class);
+        // server: 220 response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpSTARTTLSReply.class);
+
+        // enable TLS layers
+        assertEquals(trace.getTlsActions().get(index++).getClass(), EnableLayerAction.class);
+        // TLS handshake
+        for (int n = 0; n < tlsTrace.getTlsActions().size(); n++) {
+            assertEquals(tlsTrace.getTlsActions().get(n), trace.getTlsActions().get(index++));
+        }
+        // client: EHLO
+        assertMessage(
+                CLIENT_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpEHLOCommand.class);
+        // server: 250 response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), SmtpEHLOReply.class);
+
+        // done
+        assertEquals(index, trace.getTlsActions().size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = RunningModeType.class,
+            names = {"CLIENT", "SERVER"})
+    void testCreatePop3sClientWorkflow(RunningModeType runningMode) {
+        MessageActionDirection SERVER_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.RECEIVING
+                        : MessageActionDirection.SENDING;
+        MessageActionDirection CLIENT_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.SENDING
+                        : MessageActionDirection.RECEIVING;
+
+        Config cfg = new Config();
+        cfg.setStarttlsType(StarttlsType.NONE);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
+
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.POP3S, runningMode);
+        WorkflowTrace tlsTrace =
+                factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+        assertNotNull(trace);
+        int index = 0;
+
+        // TLS handshake
+        for (int n = 0; n < tlsTrace.getTlsActions().size(); n++) {
+            assertEquals(tlsTrace.getTlsActions().get(n), trace.getTlsActions().get(index++));
+        }
+
+        // server: POP3 greeting
+        assertMessage(
+                SERVER_MSG_DIRECTION,
+                trace.getTlsActions().get(index++),
+                Pop3InitialGreeting.class);
+        // client: NOOP
+        assertMessage(
+                CLIENT_MSG_DIRECTION, trace.getTlsActions().get(index++), Pop3NOOPCommand.class);
+        // server: +OK response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), Pop3NOOPReply.class);
+
+        // done
+        assertEquals(index, trace.getTlsActions().size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = RunningModeType.class,
+            names = {"CLIENT", "SERVER"})
+    void testCreatePop3StarttlsClientWorkflow(RunningModeType runningMode) {
+        MessageActionDirection SERVER_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.RECEIVING
+                        : MessageActionDirection.SENDING;
+        MessageActionDirection CLIENT_MSG_DIRECTION =
+                (runningMode == RunningModeType.CLIENT)
+                        ? MessageActionDirection.SENDING
+                        : MessageActionDirection.RECEIVING;
+
+        Config cfg = new Config();
+        cfg.setStarttlsType(StarttlsType.POP3);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(cfg);
+
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.POP3S, runningMode);
+        WorkflowTrace tlsTrace =
+                factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, runningMode);
+        assertNotNull(trace);
+        int index = 0;
+
+        // server: POP3 greeting
+        assertMessage(
+                SERVER_MSG_DIRECTION,
+                trace.getTlsActions().get(index++),
+                Pop3InitialGreeting.class);
+        // client: STLS command
+        assertMessage(
+                CLIENT_MSG_DIRECTION, trace.getTlsActions().get(index++), Pop3STLSCommand.class);
+        // server: +OK response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), Pop3STLSReply.class);
+
+        // enable TLS layers
+        assertEquals(trace.getTlsActions().get(index++).getClass(), EnableLayerAction.class);
+        // TLS handshake
+        for (int n = 0; n < tlsTrace.getTlsActions().size(); n++) {
+            assertEquals(tlsTrace.getTlsActions().get(n), trace.getTlsActions().get(index++));
+        }
+        // client: NOOP
+        assertMessage(
+                CLIENT_MSG_DIRECTION, trace.getTlsActions().get(index++), Pop3NOOPCommand.class);
+        // server: +OK response
+        assertMessage(
+                SERVER_MSG_DIRECTION, trace.getTlsActions().get(index++), Pop3NOOPReply.class);
+
+        // done
+        assertEquals(index, trace.getTlsActions().size());
     }
 }
