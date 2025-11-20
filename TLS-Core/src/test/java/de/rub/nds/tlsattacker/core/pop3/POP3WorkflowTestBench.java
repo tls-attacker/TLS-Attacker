@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.*;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -33,38 +34,37 @@ import java.io.IOException;
 import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 /**
- * Tests not to be included in the actual repo. Its just very convenient to run code this way from
- * IntelliJ
+ * Integration tests for the POP3 protocol.
+ * Experimental: Requires a running POP3 server, which the CI does not provide.
  */
-@Disabled
+@Disabled("CI does not provide a proper POP3 server setup")
 public class POP3WorkflowTestBench {
     int PLAIN_PORT = 11100;
+    int IMPLICIT_TLS_PORT = 11101;
+    private Config config;
+
+    @BeforeAll
+    public static void addSecurityProvider() {
+        ProviderUtil.addBouncyCastleProvider();
+    }
 
     @BeforeEach
     public void changeLoglevel() {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
     }
 
-    @Tag(TestCategories.INTEGRATION_TEST)
-    @Test
-    public void testWorkFlow() throws IOException, JAXBException {
-        Security.addProvider(new BouncyCastleProvider());
-        Config config = new Config();
-        config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
-        config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+    private void initializeConfig(int port, StackConfiguration stackConfiguration) {
+        config = new Config();
+        config.setDefaultClientConnection(new OutboundConnection(port, "localhost"));
+        config.setDefaultLayerConfiguration(stackConfiguration);
+        config.setKeylogFilePath("/tmp/keylogfile");
+        config.setWriteKeylogFile(true);
+    }
 
-        WorkflowConfigurationFactory workflowConfigurationFactory =
-                new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                workflowConfigurationFactory.createWorkflowTrace(
-                        WorkflowTraceType.POP3S, RunningModeType.CLIENT);
-
+    public void runWorkflowTrace(WorkflowTrace trace) throws JAXBException, IOException {
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =
@@ -78,8 +78,6 @@ public class POP3WorkflowTestBench {
                     "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             System.out.println(ex);
         }
-
-        System.out.println(state.getWorkflowTrace().executedAsPlanned());
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
@@ -88,16 +86,9 @@ public class POP3WorkflowTestBench {
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowPop3Simple() throws IOException, JAXBException {
-        Security.addProvider(new BouncyCastleProvider());
-        Config config = new Config();
-        config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
-        config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+        initializeConfig(PLAIN_PORT, StackConfiguration.POP3);
 
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = new WorkflowTrace();
-        //                factory.createWorkflowTrace(
-        //                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
-
         // Example pop3 session:
         trace.addTlsAction(new ReceiveAction(new Pop3InitialGreeting()));
         trace.addTlsAction(new SendAction(new Pop3USERCommand()));
@@ -111,57 +102,32 @@ public class POP3WorkflowTestBench {
         trace.addTlsAction(new SendAction(new Pop3QUITCommand()));
         trace.addTlsAction(new ReceiveAction(new Pop3QUITReply()));
 
-        System.out.println(trace);
-        State state = new State(config, trace);
-
-        WorkflowExecutor workflowExecutor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
-
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            System.out.println(
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
-            System.out.println(ex);
-        }
-
-        System.out.println(state.getWorkflowTrace());
-        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
-        assertTrue(state.getWorkflowTrace().executedAsPlanned());
+        runWorkflowTrace(trace);
     }
 
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
-        Security.addProvider(new BouncyCastleProvider());
-        Config config = new Config();
-        config.setKeylogFilePath("/tmp/keylogfile");
-        config.setWriteKeylogFile(true);
-        config.setDefaultClientConnection(new OutboundConnection(PLAIN_PORT, "localhost"));
-        config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+        initializeConfig(PLAIN_PORT, StackConfiguration.POP3);
+
         config.setStarttlsType(StarttlsType.POP3);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(WorkflowTraceType.POP3S, RunningModeType.CLIENT);
 
-        State state = new State(config, trace);
+        runWorkflowTrace(trace);
+    }
 
-        WorkflowExecutor workflowExecutor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
+    @Tag(TestCategories.INTEGRATION_TEST)
+    @Test
+    public void testWorkFlowPOP3S() throws IOException, JAXBException {
+        initializeConfig(PLAIN_PORT, StackConfiguration.POP3);
 
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            System.out.println(
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
-            System.out.println(ex);
-        }
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(WorkflowTraceType.POP3S, RunningModeType.CLIENT);
 
-        System.out.println(state.getWorkflowTrace());
-        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
-        assertTrue(state.getWorkflowTrace().executedAsPlanned());
+        runWorkflowTrace(trace);
     }
 }

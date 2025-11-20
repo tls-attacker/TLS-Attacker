@@ -35,9 +35,10 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.*;
 
 /**
- * Tests not to be included in the actual repo. Its just very convenient to run code this way from
- * IntelliJ
+ * Integration tests for the SMTP protocol.
+ * Experimental: Requires a running SMTP server, which the CI does not provide.
  */
+@Disabled("CI does not provide a proper SMTP server setup")
 class SMTPWorkflowTestBench {
 
     public static final int PLAIN_PORT = 2525;
@@ -81,7 +82,6 @@ class SMTPWorkflowTestBench {
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 
-    @Disabled("Requires a running SMTPS server at IMPLICIT_TLS_PORT")
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowSMTPS() throws IOException, JAXBException {
@@ -111,7 +111,6 @@ class SMTPWorkflowTestBench {
         runWorkflowTrace(trace);
     }
 
-    @Disabled("Requires a running SMTP server at PLAIN_PORT with STARTTLS support")
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
@@ -120,23 +119,6 @@ class SMTPWorkflowTestBench {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(WorkflowTraceType.SMTPS, RunningModeType.CLIENT);
-
-        runWorkflowTrace(trace);
-    }
-
-    @Disabled
-    @Test
-    public void testCitadel() throws IOException, JAXBException {
-        initializeConfig(587, StackConfiguration.SMTP);
-        config.setStarttlsType(StarttlsType.SMTP);
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                factory.createWorkflowTrace(WorkflowTraceType.SMTPS, RunningModeType.CLIENT);
-
-        trace.addTlsAction(
-                1,
-                new SendAction(new SmtpAUTHCommand("PLAIN", "AHZpY3RpbQBzZWN1cmVQYXNzd29yZA==")));
-        trace.addTlsAction(2, new ReceiveAction(new SmtpAUTHReply()));
 
         runWorkflowTrace(trace);
     }
