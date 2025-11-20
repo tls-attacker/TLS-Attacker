@@ -660,8 +660,7 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createSmtpsWorkflow() {
         AliasedConnection connection = getConnection();
 
-        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
-        trace.addTlsActions(createDynamicHandshakeWorkflow(connection).getTlsActions());
+        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
         if (config.getStarttlsType() == StarttlsType.NONE) {
             trace.addTlsAction(
                     MessageActionFactory.createSmtpAction(

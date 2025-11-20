@@ -81,20 +81,6 @@ class SMTPWorkflowTestBench {
         assertTrue(state.getWorkflowTrace().executedAsPlanned());
     }
 
-    @Disabled("Requires a running SMTP server at PLAIN_PORT")
-    @Tag(TestCategories.INTEGRATION_TEST)
-    @Test
-    public void testPlainSmtpWorkFlow() throws IOException, JAXBException {
-        initializeConfig(PLAIN_PORT, StackConfiguration.SMTP);
-        WorkflowConfigurationFactory workflowConfigurationFactory =
-                new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                workflowConfigurationFactory.createWorkflowTrace(
-                        WorkflowTraceType.SMTPS, RunningModeType.CLIENT);
-
-        runWorkflowTrace(trace);
-    }
-
     @Disabled("Requires a running SMTPS server at IMPLICIT_TLS_PORT")
     @Tag(TestCategories.INTEGRATION_TEST)
     @Test
