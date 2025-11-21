@@ -35,8 +35,8 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.*;
 
 /**
- * Integration tests for the SMTP protocol.
- * Experimental: Requires a running SMTP server, which the CI does not provide.
+ * Integration tests for the SMTP protocol. Experimental: Requires a running SMTP server, which the
+ * CI does not provide.
  */
 @Disabled("CI does not provide a proper SMTP server setup")
 class SMTPWorkflowTestBench {

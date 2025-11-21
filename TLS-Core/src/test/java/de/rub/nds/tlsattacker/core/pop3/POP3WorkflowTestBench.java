@@ -31,14 +31,12 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
-import java.security.Security;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.*;
 
 /**
- * Integration tests for the POP3 protocol.
- * Experimental: Requires a running POP3 server, which the CI does not provide.
+ * Integration tests for the POP3 protocol. Experimental: Requires a running POP3 server, which the
+ * CI does not provide.
  */
 @Disabled("CI does not provide a proper POP3 server setup")
 public class POP3WorkflowTestBench {
