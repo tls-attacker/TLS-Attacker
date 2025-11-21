@@ -1272,6 +1272,106 @@ public class Config implements Serializable {
     /** Padding for the list of alpn values */
     private Integer defaultMaxEchAlpnPadding = 25;
 
+    // region smtp
+    private String defaultSmtpReversePath = "seal@upb.de";
+    private List<String> defaultSmtpMessage =
+            new ArrayList<>(List.of("Hello!", "This is seal.", "Bye!"));
+
+    public String getDefaultSmtpAuth() {
+        return defaultSmtpAuth;
+    }
+
+    public String getDefaultSmtpAuthCredentials() {
+        return defaultSmtpAuthCredentials;
+    }
+
+    public void setDefaultSmtpAuth(String defaultSmtpAuth) {
+        this.defaultSmtpAuth = defaultSmtpAuth;
+    }
+
+    private String defaultSmtpAuth = "PLAIN";
+    private String defaultSmtpAuthCredentials = "AHNlYWxAdXBiLmRlAHBhc3N3b3Jk";
+    private String defaultSmtpMailingList = "members@seal.upb.de";
+
+    public String getDefaultSmtpClientIdentity() {
+        return defaultSmtpClientIdentity;
+    }
+
+    public void setDefaultSmtpClientIdentity(String defaultSmtpClientIdentity) {
+        this.defaultSmtpClientIdentity = defaultSmtpClientIdentity;
+    }
+
+    private String defaultSmtpClientIdentity = "seal.upb.de";
+
+    public String getDefaultSmtpForwardPath() {
+        return defaultSmtpForwardPath;
+    }
+
+    public void setDefaultSmtpForwardPath(String defaultSmtpForwardPath) {
+        this.defaultSmtpForwardPath = defaultSmtpForwardPath;
+    }
+
+    public String getDefaultSmtpReversePath() {
+        return defaultSmtpReversePath;
+    }
+
+    public void setDefaultSmtpReversePath(String defaultSmtpReversePath) {
+        this.defaultSmtpReversePath = defaultSmtpReversePath;
+    }
+
+    private String defaultSmtpForwardPath = "test@example.com";
+
+    public List<String> getDefaultSmtpMessage() {
+        return defaultSmtpMessage;
+    }
+
+    public void setDefaultSmtpMessage(List<String> defaultSmtpMessage) {
+        this.defaultSmtpMessage = defaultSmtpMessage;
+    }
+
+    public String getDefaultSmtpMailingList() {
+        return defaultSmtpMailingList;
+    }
+
+    public void setDefaultSmtpMailingList(String defaultSmtpMailingList) {
+        this.defaultSmtpMailingList = defaultSmtpMailingList;
+    }
+
+    // endregion
+
+    // region pop3
+    private Integer defaultPop3MessageNumber = 1;
+
+    public Integer getDefaultPop3MessageNumber() {
+        return defaultPop3MessageNumber;
+    }
+
+    public void setDefaultPop3MessageNumber(int messageNumber) {
+        this.defaultPop3MessageNumber = messageNumber;
+    }
+
+    private String defaultPop3Username = "seal@upb.de";
+
+    public String getDefaultPop3Username() {
+        return this.defaultPop3Username;
+    }
+
+    public void setDefaultPop3Username(String username) {
+        this.defaultPop3Username = username;
+    }
+
+    private String defaultPop3Password = "s34l-p4ssw0rd!!";
+
+    public String getDefaultPop3Password() {
+        return this.defaultPop3Password;
+    }
+
+    public void setDefaultPop3Password(String password) {
+        this.defaultPop3Password = password;
+    }
+
+    // endregion
+
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
     /** DTLS 1.3 */

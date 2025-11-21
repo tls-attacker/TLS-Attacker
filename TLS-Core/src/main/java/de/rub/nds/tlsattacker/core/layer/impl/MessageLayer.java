@@ -65,7 +65,11 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     private final TlsContext tlsContext;
 
     public MessageLayer(Context context) {
-        super(ImplementedLayers.MESSAGE);
+        this(context, true);
+    }
+
+    public MessageLayer(Context context, boolean enabled) {
+        super(ImplementedLayers.MESSAGE, enabled);
         this.context = context;
         this.tlsContext = context.getTlsContext();
     }
@@ -77,7 +81,8 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
      * @throws IOException When the data cannot be sent.
      */
     @Override
-    public LayerProcessingResult<ProtocolMessage> sendConfiguration() throws IOException {
+    protected LayerProcessingResult<ProtocolMessage> sendConfigurationInternal()
+            throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ProtocolMessageType runningProtocolMessageType = null;
         List<byte[]> bufferedMessages = new LinkedList<>();
@@ -197,7 +202,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     }
 
     @Override
-    public LayerProcessingResult<ProtocolMessage> sendData(
+    protected LayerProcessingResult<ProtocolMessage> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ApplicationMessage applicationMessage = getConfiguredApplicationMessage(configuration);
@@ -243,7 +248,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult<ProtocolMessage> receiveData() {
+    protected LayerProcessingResult<ProtocolMessage> receiveDataInternal() {
         try {
             HintedInputStream dataStream;
             do {
@@ -430,7 +435,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) {
         boolean continueProcessing;
 
         do {

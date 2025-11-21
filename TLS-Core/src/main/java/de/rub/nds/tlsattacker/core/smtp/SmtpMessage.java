@@ -1,0 +1,90 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp;
+
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import java.io.InputStream;
+
+/**
+ * Base class for all SMTP messages. SMTP messages are further divided into commands and replies.
+ *
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand
+ * @see de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({SmtpCommand.class, SmtpReply.class})
+public abstract class SmtpMessage extends Message {
+
+    protected SmtpCommandType commandType = SmtpCommandType.UNKNOWN;
+
+    /**
+     * Returns the handler responsible for handling this type of message.
+     *
+     * @param context the context of the SmtpLayer
+     * @return a handler for this message
+     * @see de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler
+     */
+    @Override
+    public abstract SmtpMessageHandler<? extends SmtpMessage> getHandler(Context context);
+
+    /**
+     * Returns the parser responsible for parsing this type of message.
+     *
+     * @param context the {@link SmtpContext}
+     * @param stream an InputStream containing the message to be parsed
+     * @return a parser for this message
+     * @see de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser
+     */
+    @Override
+    public abstract SmtpMessageParser<? extends SmtpMessage> getParser(
+            Context context, InputStream stream);
+
+    /**
+     * Returns the preparator responsible for preparing this type of message. In general, the
+     * preparator fills in default values (if necessary) and sets the parameter string correctly.
+     * This means that a single generic serializer can be used for all messages. Also see {@link
+     * #getSerializer(Context)}
+     *
+     * @param context the {@link SmtpContext}
+     * @return a preparator for this message
+     * @see de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator
+     */
+    @Override
+    public abstract SmtpMessagePreparator<? extends SmtpMessage> getPreparator(Context context);
+
+    /**
+     * Returns the serializer responsible for serializing this type of message. The serializer is
+     * responsible for converting a prepared message object into a string. Because the preparator
+     * does most of the work, a single generic serializer is currently used for all messages. Also
+     * see {@link #getPreparator(Context)}
+     *
+     * @param context the {@link SmtpContext}
+     * @return a serializer for this message
+     * @see de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer
+     */
+    @Override
+    public abstract SmtpMessageSerializer<? extends SmtpMessage> getSerializer(Context context);
+
+    public SmtpCommandType getCommandType() {
+        return commandType;
+    }
+}

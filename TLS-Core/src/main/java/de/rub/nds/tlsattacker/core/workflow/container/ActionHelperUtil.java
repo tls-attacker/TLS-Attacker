@@ -20,11 +20,22 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.*;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This class provides methods that create the LayerConfigurations for the different layers of the
+ * LayerStack. They are used by the {@link SendAction} and {@link ReceiveAction} classes to actually
+ * send and receive data.
+ *
+ * @see SendAction
+ * @see ReceiveAction
+ * @see LayerStack
+ */
 public class ActionHelperUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();

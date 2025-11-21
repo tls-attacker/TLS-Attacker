@@ -1,0 +1,36 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.parser.command;
+
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import java.io.InputStream;
+import org.bouncycastle.util.IPAddress;
+
+public class SmtpEHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
+    public SmtpEHLOCommandParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parseArguments(SmtpEHLOCommand command, String arguments) {
+        if (arguments == null) {
+            throw new ParserException("EHLO command requires parameters.");
+        }
+        if (arguments.startsWith("[") && arguments.endsWith("]")) {
+            String address = arguments.substring(1, arguments.length() - 1);
+            command.setClientIdentity(address);
+            if (IPAddress.isValid(address)) {
+                command.setHasAddressLiteral(true);
+            }
+        } else {
+            command.setClientIdentity(arguments);
+        }
+    }
+}

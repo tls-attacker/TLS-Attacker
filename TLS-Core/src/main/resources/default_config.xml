@@ -1936,6 +1936,18 @@
     </defaultEchConfig>
     <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
     <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
+    <defaultSmtpReversePath>seal@upb.de</defaultSmtpReversePath>
+    <defaultSmtpMessage>Hello!</defaultSmtpMessage>
+    <defaultSmtpMessage>This is seal.</defaultSmtpMessage>
+    <defaultSmtpMessage>Bye!</defaultSmtpMessage>
+    <defaultSmtpAuth>PLAIN</defaultSmtpAuth>
+    <defaultSmtpAuthCredentials>AHNlYWxAdXBiLmRlAHBhc3N3b3Jk</defaultSmtpAuthCredentials>
+    <defaultSmtpMailingList>members@seal.upb.de</defaultSmtpMailingList>
+    <defaultSmtpClientIdentity>seal.upb.de</defaultSmtpClientIdentity>
+    <defaultSmtpForwardPath>test@example.com</defaultSmtpForwardPath>
+    <defaultPop3MessageNumber>1</defaultPop3MessageNumber>
+    <defaultPop3Username>seal@upb.de</defaultPop3Username>
+    <defaultPop3Password>s34l-p4ssw0rd!!</defaultPop3Password>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <canSkipMessageSequenceNumber>false</canSkipMessageSequenceNumber>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
