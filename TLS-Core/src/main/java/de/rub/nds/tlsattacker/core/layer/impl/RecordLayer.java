@@ -274,7 +274,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
                 }
             }
         } catch (ParserException e) {
-            setUnreadBytes(parser.getAlreadyParsed());
+            appendUnreadBytes(parser.getAlreadyParsed());
             LOGGER.warn(
                     "Could not parse Record as a Record. Passing data to upper layer as unknown data",
                     e);
@@ -291,7 +291,7 @@ public class RecordLayer extends ProtocolLayer<Context, RecordLayerHint, Record>
             LOGGER.warn(e);
             setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
+            appendUnreadBytes(parser.getAlreadyParsed());
             LOGGER.debug("Reached end of stream, cannot parse more records");
             LOGGER.trace(ex);
             throw ex;
