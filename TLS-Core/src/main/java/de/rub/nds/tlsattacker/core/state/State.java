@@ -15,9 +15,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -212,6 +210,22 @@ public class State {
 
     public HttpContext getHttpContext() {
         return getContext().getHttpContext();
+    }
+
+    public Pop3Context getPop3Context(String alias) {
+        return getContext(alias).getPop3Context();
+    }
+
+    public Pop3Context getPop3Context() {
+        return getContext().getPop3Context();
+    }
+
+    public SmtpContext getSmtpContext(String alias) {
+        return getContext(alias).getSmtpContext();
+    }
+
+    public SmtpContext getSmtpContext() {
+        return getContext().getSmtpContext();
     }
 
     public TcpContext getTcpContext(String alias) {

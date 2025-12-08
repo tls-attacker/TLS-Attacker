@@ -45,7 +45,7 @@ public class SSL2Layer extends ProtocolLayer<Context, LayerProcessingHint, SSL2M
     }
 
     @Override
-    public LayerProcessingResult<SSL2Message> sendConfiguration() throws IOException {
+    protected LayerProcessingResult<SSL2Message> sendConfigurationInternal() throws IOException {
         LayerConfiguration<SSL2Message> configuration = getLayerConfiguration();
         if (configuration != null
                 && configuration.getContainerList() != null
@@ -72,13 +72,13 @@ public class SSL2Layer extends ProtocolLayer<Context, LayerProcessingHint, SSL2M
     }
 
     @Override
-    public LayerProcessingResult<SSL2Message> sendData(
+    protected LayerProcessingResult<SSL2Message> sendDataInternal(
             LayerProcessingHint hint, byte[] additionalData) throws IOException {
         return sendConfiguration();
     }
 
     @Override
-    public LayerProcessingResult<SSL2Message> receiveData() {
+    protected LayerProcessingResult<SSL2Message> receiveDataInternal() {
         try {
             int messageLength = 0;
             byte paddingLength = 0;
@@ -153,7 +153,7 @@ public class SSL2Layer extends ProtocolLayer<Context, LayerProcessingHint, SSL2M
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

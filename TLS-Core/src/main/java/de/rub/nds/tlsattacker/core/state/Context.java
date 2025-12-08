@@ -14,9 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -44,6 +42,10 @@ public class Context {
     private TcpContext tcpContext;
 
     private HttpContext httpContext;
+
+    private SmtpContext smtpContext;
+
+    private Pop3Context pop3Context;
 
     private TlsContext tlsContext;
 
@@ -85,6 +87,22 @@ public class Context {
 
     public void setHttpContext(HttpContext httpContext) {
         this.httpContext = httpContext;
+    }
+
+    public SmtpContext getSmtpContext() {
+        return smtpContext;
+    }
+
+    public void setSmtpContext(SmtpContext smtpContext) {
+        this.smtpContext = smtpContext;
+    }
+
+    public Pop3Context getPop3Context() {
+        return pop3Context;
+    }
+
+    public void setPop3Context(Pop3Context pop3Context) {
+        this.pop3Context = pop3Context;
     }
 
     public TlsContext getTlsContext() {
@@ -170,6 +188,8 @@ public class Context {
     public void prepareWithLayers(StackConfiguration type) {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
+        smtpContext = new SmtpContext(this);
+        pop3Context = new Pop3Context(this);
         tcpContext = new TcpContext(this);
         quicContext = new QuicContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);

@@ -12,11 +12,13 @@ import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
@@ -70,6 +72,16 @@ public class DummyReceivingAction extends MessageAction
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
         throw new UnsupportedOperationException("Unimplemented method 'getReceivedHttpMessages'");
+    }
+
+    @Override
+    public List<Pop3Message> getReceivedPop3Messages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedPop3Messages'");
+    }
+
+    @Override
+    public List<SmtpMessage> getReceivedSmtpMessages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedSmtpMessages'");
     }
 
     @Override

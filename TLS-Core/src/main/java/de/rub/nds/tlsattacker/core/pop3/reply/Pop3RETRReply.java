@@ -1,0 +1,70 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.pop3.reply;
+
+import de.rub.nds.tlsattacker.core.pop3.Pop3CommandType;
+import de.rub.nds.tlsattacker.core.pop3.parser.reply.Pop3RETRReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/** This class stores the actual message of a mail, which can span over multiple lines. */
+@XmlRootElement
+public class Pop3RETRReply extends Pop3Reply {
+    private List<String> message = new ArrayList<>();
+
+    public Pop3RETRReply() {
+        super(Pop3CommandType.RETR);
+    }
+
+    @Override
+    public Pop3RETRReplyParser getParser(Context context, InputStream stream) {
+        return new Pop3RETRReplyParser(stream);
+    }
+
+    public List<String> getMessage() {
+        return message;
+    }
+
+    public void setMessage(List<String> message) {
+        this.message = message;
+    }
+
+    public void addMessagePart(String messagePart) {
+        this.message.add(messagePart);
+    }
+
+    @Override
+    public String serialize() {
+        char SP = ' ';
+        String CRLF = "\r\n";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.statusIndicator);
+
+        if (!this.humanReadableMessages.isEmpty()) {
+            sb.append(SP);
+            sb.append(this.humanReadableMessages.get(0));
+        }
+
+        sb.append(CRLF);
+        for (String part : this.message) {
+            sb.append(part);
+            sb.append(CRLF);
+        }
+        if (!this.message.isEmpty()) {
+            sb.append(".");
+            sb.append(CRLF);
+        }
+
+        return sb.toString();
+    }
+}

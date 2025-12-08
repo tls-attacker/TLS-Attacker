@@ -9,23 +9,9 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 public enum StarttlsType {
-    NONE(""),
-    FTP("234"),
-    IMAP("negotiation"),
-    POP3("+OK"),
-    SMTP("220");
-
-    /**
-     * This string is used to identify if the server accepted a STARTTLS command. If it is present
-     * in the response we believe that the server supports starttls.
-     */
-    private String negotiatationString;
-
-    StarttlsType(String negotiatationString) {
-        this.negotiatationString = negotiatationString;
-    }
-
-    public String getNegotiatationString() {
-        return negotiatationString;
-    }
+    NONE,
+    FTP,
+    IMAP,
+    POP3,
+    SMTP;
 }

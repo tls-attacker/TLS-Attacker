@@ -1,0 +1,108 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.command;
+
+import de.rub.nds.tlsattacker.core.smtp.*;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+
+/**
+ * High level representation of an SMTP command. Commands are one line consisting of a verb and
+ * optional parameters ending with CRLF. Example:
+ *
+ * <pre>
+ *     C: RCPT TO:&lt;seal@upb.de&gt;
+ * </pre>
+ *
+ * where RCPT is the verb and TO:&lt;seal@upb.de&gt; is the parameter. This superclass is
+ * intentionally not abstract to allow for easy creation of custom commands, e.g. see
+ * CustomCommandTest.
+ */
+@XmlRootElement
+public class SmtpCommand extends SmtpMessage {
+
+    final String verb;
+    // this field is used by preparator+serializer for the command parameters, it should not be used
+    // for the actual contents
+    String parameters;
+
+    public SmtpCommand(String verb, String parameters) {
+        // use for easy creation of custom commands
+        this.verb = verb;
+        this.parameters = parameters;
+        this.commandType = SmtpCommandType.CUSTOM;
+    }
+
+    public SmtpCommand(SmtpCommandType type, String parameters) {
+        this.verb = type.getKeyword();
+        this.parameters = parameters;
+        this.commandType = type;
+    }
+
+    public SmtpCommand(SmtpCommandType type) {
+        this.verb = type.getKeyword();
+        this.commandType = type;
+    }
+
+    public SmtpCommand() {
+        // JAXB Constructor
+        this("", "");
+    }
+
+    @Override
+    public SmtpCommandHandler<? extends SmtpCommand> getHandler(Context smtpContext) {
+        return new SmtpCommandHandler<>(smtpContext.getSmtpContext());
+    }
+
+    @Override
+    public SmtpCommandParser<? extends SmtpCommand> getParser(Context context, InputStream stream) {
+        return new SmtpCommandParser<>(stream);
+    }
+
+    @Override
+    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(Context context) {
+        return new SmtpCommandPreparator<>(context.getChooser(), this);
+    }
+
+    @Override
+    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(Context context) {
+        return new SmtpCommandSerializer<>(context.getSmtpContext(), this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "SMTP_CMD";
+    }
+
+    @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName()
+                + " ("
+                + verb
+                + (parameters != null ? " " + parameters : "")
+                + ")";
+    }
+
+    public String getVerb() {
+        return verb;
+    }
+
+    public String getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }
+}
