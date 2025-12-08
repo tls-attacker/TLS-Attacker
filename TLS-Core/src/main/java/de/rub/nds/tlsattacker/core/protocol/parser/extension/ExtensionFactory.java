@@ -26,6 +26,8 @@ public class ExtensionFactory {
                 return new EncryptedServerNameIndicationExtensionMessage();
             case ENCRYPTED_CLIENT_HELLO:
                 return new EncryptedClientHelloExtensionMessage();
+            case ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS:
+                return new EncryptedClientHelloEncryptedExtensionMessage();
             case HEARTBEAT:
                 return new HeartbeatExtensionMessage();
             case MAX_FRAGMENT_LENGTH:

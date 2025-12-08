@@ -69,6 +69,7 @@ public enum ExtensionType {
     ENCRYPTED_CLIENT_HELLO_DRAFT_11(new byte[] {(byte) 0xFF, (byte) 0x0b}),
     ENCRYPTED_CLIENT_HELLO_DRAFT_12(new byte[] {(byte) 0xFF, (byte) 0x0c}),
     ENCRYPTED_CLIENT_HELLO(new byte[] {(byte) 0xFE, (byte) 0x0D}),
+    ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS(new byte[] {(byte) 0xFE, (byte) 0x0D}),
 
     // Debug extension
     DEBUG(new byte[] {(byte) 0xFB, (byte) 0xFB}),
@@ -226,6 +227,7 @@ public enum ExtensionType {
         list.add(CONNECTION_ID);
         list.add(QUIC_TRANSPORT_PARAMETERS);
         list.add(ENCRYPTED_CLIENT_HELLO);
+        list.add(ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS);
 
         return list;
     }
@@ -253,6 +255,7 @@ public enum ExtensionType {
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
         list.add(ENCRYPTED_CLIENT_HELLO);
+        list.add(ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS);
 
         return list;
     }
@@ -269,6 +272,7 @@ public enum ExtensionType {
             case SERVER_CERTIFICATE_TYPE:
             case EARLY_DATA:
             case QUIC_TRANSPORT_PARAMETERS:
+            case ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS:
             case RECORD_SIZE_LIMIT:
                 return true;
             default:

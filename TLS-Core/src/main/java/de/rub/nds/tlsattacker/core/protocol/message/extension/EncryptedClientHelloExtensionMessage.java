@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
-/** The encrypted client hello extension */
+/** The encrypted client hello extension sent by the client */
 @XmlRootElement(name = "EncryptedClientHelloExtension")
 public class EncryptedClientHelloExtensionMessage extends ExtensionMessage {
 
