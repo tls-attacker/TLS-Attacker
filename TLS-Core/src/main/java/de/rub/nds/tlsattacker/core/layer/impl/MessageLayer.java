@@ -378,9 +378,7 @@ public class MessageLayer extends ProtocolLayer<Context, LayerProcessingHint, Pr
             LOGGER.error("Could not parse message header. Setting bytes as unread: ", ex);
             // not being able to parse the header leaves us with unreadable bytes
             // append instead of replace because we can read multiple messages in one read action
-            setUnreadBytes(
-                    DataConverter.concatenate(
-                            this.getUnreadBytes(), readBytesStream.toByteArray()));
+            appendUnreadBytes(readBytesStream.toByteArray());
             return;
         }
         HandshakeMessageHandler handler = handshakeMessage.getHandler(context);

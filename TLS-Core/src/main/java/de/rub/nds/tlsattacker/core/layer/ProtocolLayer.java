@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
@@ -415,6 +416,13 @@ public abstract class ProtocolLayer<
 
     public void setUnreadBytes(byte[] unreadBytes) {
         this.unreadBytes = unreadBytes;
+    }
+
+    public void appendUnreadBytes(byte[] additionalUnreadBytes) {
+        if (additionalUnreadBytes == null || additionalUnreadBytes.length == 0) {
+            return;
+        }
+        unreadBytes = DataConverter.concatenate(unreadBytes, additionalUnreadBytes);
     }
 
     public boolean prepareDataContainer(DataContainer dataContainer, Context context) {
