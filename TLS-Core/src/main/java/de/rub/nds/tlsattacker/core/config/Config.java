@@ -37,6 +37,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.config.extension.BasicConstraintsConfig;
+import de.rub.nds.x509attacker.constants.DefaultEncodingRule;
 import de.rub.nds.x509attacker.constants.X500AttributeType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -1403,13 +1405,19 @@ public class Config implements Serializable {
         rdn.add(
                 new Pair<>(
                         X500AttributeType.COMMON_NAME, "Attacker CA - Global Insecurity Provider"));
-        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "Global"));
+        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "DE"));
         rdn.add(new Pair<>(X500AttributeType.ORGANISATION_NAME, "TLS-Attacker"));
         X509CertificateConfig caConfig = new X509CertificateConfig();
         caConfig.setIssuer(rdn);
         caConfig.setSubject(rdn);
+        BasicConstraintsConfig bcConfig = new BasicConstraintsConfig();
+        bcConfig.setCa(true);
+        bcConfig.setPresent(true);
+        bcConfig.setCritical(true);
+        bcConfig.setIncludePathLenConstraint(DefaultEncodingRule.OMIT);
+        caConfig.addExtensions(bcConfig);
         byte[] serialNumber =
-                DataConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
+                DataConverter.hexStringToByteArray("0FCACACA0FCACACA0FCACACA0FCACACA0FCACACA");
         caConfig.setSerialNumber(new BigInteger(serialNumber));
 
         X509CertificateConfig leafConfig = new X509CertificateConfig();

@@ -18,7 +18,7 @@
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COUNTRY_NAME</leftElement>
-                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">Global</rightElement>
+                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">DE</rightElement>
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">ORGANISATION_NAME</leftElement>
@@ -63,6 +63,7 @@
             <removeFirstRdnIssuer>false</removeFirstRdnIssuer>
             <duplicateFirstRdnIssuer>false</duplicateFirstRdnIssuer>
             <subjectDomainComponentCaseInsensitive>false</subjectDomainComponentCaseInsensitive>
+            <extensions/>
             <publicKeyType>RSA</publicKeyType>
             <defaultIssuerPublicKeyType>RSA</defaultIssuerPublicKeyType>
             <rsaPssSalt>AAECAwQFBgcICQoLDA0ODxAREhM=</rsaPssSalt>
@@ -122,13 +123,14 @@
             <signatureInvalid>false</signatureInvalid>
             <signatureEmpty>false</signatureEmpty>
             <signatureAlgorithmOidInvalid>false</signatureAlgorithmOidInvalid>
+            <signatureTbsCertOidDifferent>false</signatureTbsCertOidDifferent>
             <appendUnexpectedCertificateField>false</appendUnexpectedCertificateField>
         </certificateConfig>
         <certificateConfig>
             <selfSigned>true</selfSigned>
             <signatureAlgorithm>SHA256_WITH_RSA_ENCRYPTION</signatureAlgorithm>
             <version>2</version>
-            <serialNumber>-190231024330861262386236484584007130589038788881</serialNumber>
+            <serialNumber>90157277532248489295393585489049105932334320330</serialNumber>
             <defaultIssuer>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COMMON_NAME</leftElement>
@@ -136,7 +138,7 @@
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COUNTRY_NAME</leftElement>
-                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">Global</rightElement>
+                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">DE</rightElement>
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">ORGANISATION_NAME</leftElement>
@@ -150,7 +152,7 @@
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COUNTRY_NAME</leftElement>
-                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">Global</rightElement>
+                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">DE</rightElement>
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">ORGANISATION_NAME</leftElement>
@@ -185,6 +187,19 @@
             <removeFirstRdnIssuer>false</removeFirstRdnIssuer>
             <duplicateFirstRdnIssuer>false</duplicateFirstRdnIssuer>
             <subjectDomainComponentCaseInsensitive>false</subjectDomainComponentCaseInsensitive>
+            <extensions>
+                <basicConstraints>
+                    <critical>true</critical>
+                    <includeCritical>FOLLOW_DEFAULT</includeCritical>
+                    <present>true</present>
+                    <ca>true</ca>
+                    <includeCA>FOLLOW_DEFAULT</includeCA>
+                    <includePathLenConstraint>OMIT</includePathLenConstraint>
+                    <invalidCriticalEncoding>false</invalidCriticalEncoding>
+                    <invalidExtensionContent>false</invalidExtensionContent>
+                    <pathLenConstraint>0</pathLenConstraint>
+                </basicConstraints>
+            </extensions>
             <publicKeyType>RSA</publicKeyType>
             <defaultIssuerPublicKeyType>RSA</defaultIssuerPublicKeyType>
             <rsaPssSalt>AAECAwQFBgcICQoLDA0ODxAREhM=</rsaPssSalt>
@@ -244,6 +259,7 @@
             <signatureInvalid>false</signatureInvalid>
             <signatureEmpty>false</signatureEmpty>
             <signatureAlgorithmOidInvalid>false</signatureAlgorithmOidInvalid>
+            <signatureTbsCertOidDifferent>false</signatureTbsCertOidDifferent>
             <appendUnexpectedCertificateField>false</appendUnexpectedCertificateField>
         </certificateConfig>
     </certificateChainConfig>
