@@ -330,6 +330,7 @@ public class QuicFrameLayer
                     };
             if (frame != null) {
                 isAckEliciting |= frame.isAckEliciting();
+                frame.setFrameType(frameTypeNumber);
                 readDataContainer(frame, context, inputStream);
             } else {
                 LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
