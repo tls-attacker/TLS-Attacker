@@ -285,102 +285,55 @@ public class QuicFrameLayer
             long frameTypeNumber =
                     VariableLengthIntegerEncoding.readVariableLengthInteger(inputStream);
             QuicFrameType frameType = QuicFrameType.getFrameType(frameTypeNumber);
-            QuicFrame frame = null;
-            switch (frameType) {
-                case ACK_FRAME:
-                    frame = new AckFrame(false);
-                    break;
-                case ACK_FRAME_WITH_ECN:
-                    frame = new AckFrame(true);
-                    break;
-                case CONNECTION_CLOSE_QUIC_FRAME:
-                    frame = new ConnectionCloseFrame(true);
-                    break;
-                case CONNECTION_CLOSE_APPLICATION_FRAME:
-                    frame = new ConnectionCloseFrame(false);
-                    break;
-                case CRYPTO_FRAME:
-                    recordLayerHint = new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
-                    CryptoFrame cryptoFrame = new CryptoFrame();
-                    cryptoFrameBuffer.add(cryptoFrame);
-                    frame = cryptoFrame;
-                    break;
-                case HANDSHAKE_DONE_FRAME:
-                    frame = new HandshakeDoneFrame();
-                    break;
-                case NEW_CONNECTION_ID_FRAME:
-                    frame = new NewConnectionIdFrame();
-                    break;
-                case RETIRE_CONNECTION_ID:
-                    frame = new RetireConnectionIdFrame();
-                    break;
-                case NEW_TOKEN_FRAME:
-                    frame = new NewTokenFrame();
-                    break;
-                case PADDING_FRAME:
-                    frame = new PaddingFrame();
-                    break;
-                case PATH_CHALLENGE_FRAME:
-                    frame = new PathChallengeFrame();
-                    break;
-                case PATH_RESPONSE_FRAME:
-                    frame = new PathResponseFrame();
-                    break;
-                case PING_FRAME:
-                    frame = new PingFrame();
-                    break;
-                case STREAM_FRAME:
-                case STREAM_FRAME_OFF_LEN_FIN:
-                case STREAM_FRAME_OFF_LEN:
-                case STREAM_FRAME_LEN_FIN:
-                case STREAM_FRAME_OFF_FIN:
-                case STREAM_FRAME_FIN:
-                case STREAM_FRAME_LEN:
-                case STREAM_FRAME_OFF:
-                    frame = new StreamFrame(frameType);
-                    break;
-                case RESET_STREAM_FRAME:
-                    frame = new ResetStreamFrame();
-                    break;
-                case STOP_SENDING_FRAME:
-                    frame = new StopSendingFrame();
-                    break;
-                case MAX_DATA_FRAME:
-                    frame = new MaxDataFrame();
-                    break;
-                case MAX_STREAM_DATA_FRAME:
-                    frame = new MaxStreamDataFrame();
-                    break;
-                case MAX_STREAMS_UNI_FRAME:
-                    frame = new MaxStreamsFrame(false);
-                    break;
-                case MAX_STREAMS_BIDI_FRAME:
-                    frame = new MaxStreamsFrame(true);
-                    break;
-                case DATA_BLOCKED_FRAME:
-                    frame = new DataBlockedFrame();
-                    break;
-                case STREAM_DATA_BLOCKED_FRAME:
-                    frame = new StreamDataBlockedFrame();
-                    break;
-                case STREAMS_BLOCKED_UNI_FRAME:
-                    frame = new StreamsBlockedFrame(false);
-                    break;
-                case STREAMS_BLOCKED_BIDI_FRAME:
-                    frame = new StreamsBlockedFrame(true);
-                    break;
-                case DATAGRAM_FRAME:
-                    frame = new DatagramFrame(false);
-                    break;
-                case DATAGRAM_FRAME_LEN:
-                    frame = new DatagramFrame(true);
-                    break;
-                default:
-                    LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
-                    continue;
+            QuicFrame frame =
+                    switch (frameType) {
+                        case ACK_FRAME -> new AckFrame(false);
+                        case ACK_FRAME_WITH_ECN -> new AckFrame(true);
+                        case CONNECTION_CLOSE_QUIC_FRAME -> new ConnectionCloseFrame(true);
+                        case CONNECTION_CLOSE_APPLICATION_FRAME -> new ConnectionCloseFrame(false);
+                        case CRYPTO_FRAME -> {
+                            recordLayerHint = new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
+                            CryptoFrame cryptoFrame = new CryptoFrame();
+                            cryptoFrameBuffer.add(cryptoFrame);
+                            yield cryptoFrame;
+                        }
+                        case HANDSHAKE_DONE_FRAME -> new HandshakeDoneFrame();
+                        case NEW_CONNECTION_ID_FRAME -> new NewConnectionIdFrame();
+                        case RETIRE_CONNECTION_ID -> new RetireConnectionIdFrame();
+                        case NEW_TOKEN_FRAME -> new NewTokenFrame();
+                        case PADDING_FRAME -> new PaddingFrame();
+                        case PATH_CHALLENGE_FRAME -> new PathChallengeFrame();
+                        case PATH_RESPONSE_FRAME -> new PathResponseFrame();
+                        case PING_FRAME -> new PingFrame();
+                        case STREAM_FRAME,
+                                STREAM_FRAME_OFF_LEN_FIN,
+                                STREAM_FRAME_OFF_LEN,
+                                STREAM_FRAME_LEN_FIN,
+                                STREAM_FRAME_OFF_FIN,
+                                STREAM_FRAME_FIN,
+                                STREAM_FRAME_LEN,
+                                STREAM_FRAME_OFF ->
+                                new StreamFrame(frameType);
+                        case RESET_STREAM_FRAME -> new ResetStreamFrame();
+                        case STOP_SENDING_FRAME -> new StopSendingFrame();
+                        case MAX_DATA_FRAME -> new MaxDataFrame();
+                        case MAX_STREAM_DATA_FRAME -> new MaxStreamDataFrame();
+                        case MAX_STREAMS_UNI_FRAME -> new MaxStreamsFrame(false);
+                        case MAX_STREAMS_BIDI_FRAME -> new MaxStreamsFrame(true);
+                        case DATA_BLOCKED_FRAME -> new DataBlockedFrame();
+                        case STREAM_DATA_BLOCKED_FRAME -> new StreamDataBlockedFrame();
+                        case STREAMS_BLOCKED_UNI_FRAME -> new StreamsBlockedFrame(false);
+                        case STREAMS_BLOCKED_BIDI_FRAME -> new StreamsBlockedFrame(true);
+                        case DATAGRAM_FRAME -> new DatagramFrame(false);
+                        case DATAGRAM_FRAME_LEN -> new DatagramFrame(true);
+                        default -> null;
+                    };
+            if (frame != null) {
+                isAckEliciting |= frame.isAckEliciting();
+                readDataContainer(frame, context, inputStream);
+            } else {
+                LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
             }
-            isAckEliciting |= frame.isAckEliciting();
-            readDataContainer(frame, context, inputStream);
         }
 
         // reorder cryptoFrames according to offset and check if they are consecutive and can be
