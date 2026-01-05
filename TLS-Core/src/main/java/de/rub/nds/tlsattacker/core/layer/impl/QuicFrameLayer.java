@@ -23,19 +23,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.CryptoFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PaddingFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.RetireConnectionIdFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.*;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -350,6 +338,42 @@ public class QuicFrameLayer
                 case STREAM_FRAME_LEN:
                 case STREAM_FRAME_OFF:
                     frame = new StreamFrame(frameType);
+                    break;
+                case RESET_STREAM_FRAME:
+                    frame = new ResetStreamFrame();
+                    break;
+                case STOP_SENDING_FRAME:
+                    frame = new StopSendingFrame();
+                    break;
+                case MAX_DATA_FRAME:
+                    frame = new MaxDataFrame();
+                    break;
+                case MAX_STREAM_DATA_FRAME:
+                    frame = new MaxStreamDataFrame();
+                    break;
+                case MAX_STREAMS_UNI_FRAME:
+                    frame = new MaxStreamsFrame(false);
+                    break;
+                case MAX_STREAMS_BIDI_FRAME:
+                    frame = new MaxStreamsFrame(true);
+                    break;
+                case DATA_BLOCKED_FRAME:
+                    frame = new DataBlockedFrame();
+                    break;
+                case STREAM_DATA_BLOCKED_FRAME:
+                    frame = new StreamDataBlockedFrame();
+                    break;
+                case STREAMS_BLOCKED_UNI_FRAME:
+                    frame = new StreamsBlockedFrame(false);
+                    break;
+                case STREAMS_BLOCKED_BIDI_FRAME:
+                    frame = new StreamsBlockedFrame(true);
+                    break;
+                case DATAGRAM_FRAME:
+                    frame = new DatagramFrame(false);
+                    break;
+                case DATAGRAM_FRAME_LEN:
+                    frame = new DatagramFrame(true);
                     break;
                 default:
                     LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
