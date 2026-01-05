@@ -1338,7 +1338,7 @@
     <quicVersion>VERSION_1</quicVersion>
     <quicImmediateCloseOnTlsError>false</quicImmediateCloseOnTlsError>
     <defaultQuicNewToken>qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/</defaultQuicNewToken>
-    <defaultQuicPathChallange>qrvM3Q==</defaultQuicPathChallange>
+    <defaultQuicPathChallange>qrvM3QARIjM=</defaultQuicPathChallange>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
