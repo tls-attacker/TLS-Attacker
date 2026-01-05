@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.parser.frame;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +25,8 @@ public class ConnectionCloseFrameParser extends QuicFrameParser<ConnectionCloseF
     @Override
     public void parse(ConnectionCloseFrame frame) {
         parseErrorCode(frame);
-        if (frame.getFrameType().getValue() == 0x1c) {
+        QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
+        if (frameType == QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME) {
             parseFrameType(frame);
         }
         parseReasonPhraseLength(frame);
