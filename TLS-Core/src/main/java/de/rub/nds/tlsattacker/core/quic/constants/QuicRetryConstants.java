@@ -23,17 +23,21 @@ public class QuicRetryConstants {
 
     public static byte[] getRetryIntegrityTagKey(QuicVersion version) {
         return switch (version) {
-            case VERSION_1 -> QUIC1_RETRY_INTEGRITY_TAG_KEY;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    QUIC1_RETRY_INTEGRITY_TAG_KEY;
             case VERSION_2 -> QUIC2_RETRY_INTEGRITY_TAG_KEY;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NULL_VERSION, NEGOTIATION_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 
     public static byte[] getRetryIntegrityTagIv(QuicVersion version) {
         return switch (version) {
-            case VERSION_1 -> QUIC1_RETRY_INTEGRITY_TAG_IV;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    QUIC1_RETRY_INTEGRITY_TAG_IV;
             case VERSION_2 -> QUIC2_RETRY_INTEGRITY_TAG_IV;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NULL_VERSION, NEGOTIATION_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 }
