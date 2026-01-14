@@ -47,7 +47,7 @@ public class DatagramFrame extends QuicFrame {
 
     public DatagramFrame(boolean isLengthField, int length, byte[] dataConfig) {
         this(isLengthField);
-        this.lengthConfig = dataConfig.length;
+        this.lengthConfig = length;
         this.dataConfig = dataConfig;
     }
 
