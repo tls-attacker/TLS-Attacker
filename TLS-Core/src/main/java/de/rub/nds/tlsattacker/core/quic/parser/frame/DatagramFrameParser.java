@@ -25,7 +25,8 @@ public class DatagramFrameParser extends QuicFrameParser<DatagramFrame> {
     @Override
     public void parse(DatagramFrame frame) {
         QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
-        if (frameType == QuicFrameType.DATAGRAM_FRAME_LEN) {
+        frame.setLengthField(frameType == QuicFrameType.DATAGRAM_FRAME_LEN);
+        if (frame.isLengthField()) {
             parseLength(frame);
         }
         parseData(frame);
