@@ -254,9 +254,12 @@ public class QuicFrameLayer
     @Override
     protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         try {
-            InputStream dataStream = getLowerLayer().getDataStream();
-            // For now, we ignore the hint
-            readFrames(dataStream);
+            while (currentInputStream == null || currentInputStream.available() == 0) {
+                InputStream dataStream = getLowerLayer().getDataStream();
+
+                // For now, we ignore the hint
+                readFrames(dataStream);
+            }
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
@@ -347,7 +350,7 @@ public class QuicFrameLayer
                 for (CryptoFrame frame : cryptoFrameBuffer) {
                     outputStream.write(frame.getCryptoData().getValue());
                 }
-                CryptoFrame lastFrame = cryptoFrameBuffer.get(cryptoFrameBuffer.size() - 1);
+                CryptoFrame lastFrame = cryptoFrameBuffer.getLast();
                 long nextExpectedCryptoOffset =
                         lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
                 if (!quicContext.isHandshakeSecretsInitialized()) {
@@ -371,11 +374,10 @@ public class QuicFrameLayer
 
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(recordLayerHint, this);
-            currentInputStream.extendStream(outputStream.toByteArray());
         } else {
             currentInputStream.setHint(recordLayerHint);
-            currentInputStream.extendStream(outputStream.toByteArray());
         }
+        currentInputStream.extendStream(outputStream.toByteArray());
 
         outputStream.flush();
     }
@@ -389,7 +391,7 @@ public class QuicFrameLayer
         } else {
             lastSeenCryptoOffset = applicationPhaseExpectedCryptoFrameOffset;
         }
-        if (cryptoFrameBuffer.get(0).getOffset().getValue() != lastSeenCryptoOffset) {
+        if (cryptoFrameBuffer.getFirst().getOffset().getValue() != lastSeenCryptoOffset) {
             LOGGER.warn(
                     "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
                     cryptoBufferToString(),

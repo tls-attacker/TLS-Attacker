@@ -311,18 +311,15 @@ public abstract class ProtocolLayer<
                         "Could not receive data stream from lower layer, nothing more to receive");
             }
         }
-        if (currentInputStream.available() > 0) {
-            return currentInputStream;
-        } else {
+        if (currentInputStream.available() == 0) {
             if (nextInputStream != null) {
                 currentInputStream = nextInputStream;
-                return currentInputStream;
             } else {
                 LOGGER.debug("Trying to get datastream while no data is available");
                 this.receiveMoreDataForHint(null);
-                return currentInputStream;
             }
         }
+        return currentInputStream;
     }
 
     /**
