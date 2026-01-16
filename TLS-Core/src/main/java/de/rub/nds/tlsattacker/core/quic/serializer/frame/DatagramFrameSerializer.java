@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
-import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.DatagramFrame;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +24,7 @@ public class DatagramFrameSerializer extends QuicFrameSerializer<DatagramFrame> 
     @Override
     protected byte[] serializeBytes() {
         writeFrameType();
-        QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
-        if (frameType == QuicFrameType.DATAGRAM_FRAME_LEN) {
+        if (frame.isLengthField()) {
             writeLength();
         }
         writeData();

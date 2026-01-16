@@ -21,7 +21,7 @@ public class PaddingFrameParser extends QuicFrameParser<PaddingFrame> {
 
     @Override
     public void parse(PaddingFrame frame) {
-        int length = 0;
+        int length = 1;
         while (true) {
             try {
                 if (this.getStream().available() == 0) {

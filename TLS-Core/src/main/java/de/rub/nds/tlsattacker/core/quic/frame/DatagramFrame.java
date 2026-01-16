@@ -31,11 +31,14 @@ public class DatagramFrame extends QuicFrame {
     private int lengthConfig;
     private byte[] dataConfig;
 
+    private boolean hasLengthField;
+
     @SuppressWarnings("unused") // JAXB
     private DatagramFrame() {}
 
-    public DatagramFrame(boolean isLengthField) {
-        if (isLengthField) {
+    public DatagramFrame(boolean hasLengthField) {
+        this.hasLengthField = hasLengthField;
+        if (hasLengthField) {
             setFrameType(QuicFrameType.DATAGRAM_FRAME_LEN);
         } else {
             setFrameType(QuicFrameType.DATAGRAM_FRAME);
@@ -44,7 +47,7 @@ public class DatagramFrame extends QuicFrame {
 
     public DatagramFrame(boolean isLengthField, int length, byte[] dataConfig) {
         this(isLengthField);
-        this.lengthConfig = dataConfig.length;
+        this.lengthConfig = length;
         this.dataConfig = dataConfig;
     }
 
@@ -106,5 +109,13 @@ public class DatagramFrame extends QuicFrame {
 
     public void setDataConfig(byte[] dataConfig) {
         this.dataConfig = dataConfig;
+    }
+
+    public boolean isLengthField() {
+        return hasLengthField;
+    }
+
+    public void setLengthField(boolean hasLengthField) {
+        this.hasLengthField = hasLengthField;
     }
 }

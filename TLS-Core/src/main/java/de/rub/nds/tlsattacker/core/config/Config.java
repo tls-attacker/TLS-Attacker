@@ -811,7 +811,8 @@ public class Config implements Serializable {
             DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
 
-    private byte[] defaultQuicPathChallange = DataConverter.hexStringToByteArray("AABBCCDD");
+    private byte[] defaultQuicPathChallange =
+            DataConverter.hexStringToByteArray("AABBCCDD00112233");
 
     private Boolean stopActionsAfterWarning = false;
 
