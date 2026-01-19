@@ -62,13 +62,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         } else {
             setTimeout(timeout);
             DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
-            try {
-                socket.receive(packet);
-            } catch (SocketException ex) {
-                if (!isClosed()) {
-                    LOGGER.error("Could not receive on socket", ex);
-                }
-            }
+            socket.receive(packet);
             if (!socket.isConnected()) {
                 socket.connect(packet.getSocketAddress());
             }
