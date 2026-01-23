@@ -14,8 +14,13 @@ package de.rub.nds.tlsattacker.core.smtp.extensions;
  */
 public class SmtpServiceExtension {
 
-    private final String ehloKeyword;
+    private String ehloKeyword;
     private String parameters = null;
+
+    /** Default constructor required for JAXB unmarshalling of workflow traces. */
+    public SmtpServiceExtension() {
+        // fields are set via setters during unmarshalling
+    }
 
     public SmtpServiceExtension(String ehloKeyword, String parameters) {
         this.ehloKeyword = ehloKeyword;
@@ -30,8 +35,16 @@ public class SmtpServiceExtension {
         return ehloKeyword;
     }
 
+    public void setEhloKeyword(String ehloKeyword) {
+        this.ehloKeyword = ehloKeyword;
+    }
+
     public String getParameters() {
         return parameters;
+    }
+
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
     }
 
     public String serialize() {
