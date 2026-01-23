@@ -41,20 +41,10 @@ class SmtpEHLOReplyJaxbTest {
                     + "<extensions/>"
                     + "</smtpEHLOReply>";
 
-    private static final String EHLO_REPLY_XML_WITH_KEYWORD =
-            "<smtpEHLOReply>"
-                    + "<commandType>EHLO</commandType>"
-                    + "<replyCode>250</replyCode>"
-                    + "<domain>mx.google.com</domain>"
-                    + "<greeting>at your service, [5.195.119.13]</greeting>"
-                    + "<extensions>STARTTLS</extensions>"
-                    + "</smtpEHLOReply>";
-
     @Test
     void unmarshalsEhloReplyWithEmptyExtensions() throws Exception {
         ByteArrayInputStream is =
-                new ByteArrayInputStream(
-                        EHLO_REPLY_XML_WITH_KEYWORD.getBytes(StandardCharsets.UTF_8));
+                new ByteArrayInputStream(EHLO_REPLY_XML.getBytes(StandardCharsets.UTF_8));
         SmtpEHLOReply reply =
                 assertDoesNotThrow(
                         () -> {
