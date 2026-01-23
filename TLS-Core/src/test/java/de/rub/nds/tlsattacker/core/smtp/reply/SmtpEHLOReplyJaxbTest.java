@@ -30,14 +30,8 @@ class SmtpEHLOReplyJaxbTest {
             "<smtpEHLOReply>"
                     + "<commandType>EHLO</commandType>"
                     + "<replyCode>250</replyCode>"
-                    + "<domain>mx.google.com</domain>"
-                    + "<greeting>at your service, [5.195.119.13]</greeting>"
-                    + "<extensions/>"
-                    + "<extensions/>"
-                    + "<extensions/>"
-                    + "<extensions/>"
-                    + "<extensions/>"
-                    + "<extensions/>"
+                    + "<domain>example.com</domain>"
+                    + "<greeting>at your service, [127.0.0.1]</greeting>"
                     + "<extensions/>"
                     + "</smtpEHLOReply>";
 
@@ -57,10 +51,10 @@ class SmtpEHLOReplyJaxbTest {
         assertNotNull(reply);
         assertEquals(SmtpCommandType.EHLO, reply.getCommandType());
         assertEquals(250, reply.getReplyCode());
-        assertEquals("mx.google.com", reply.getDomain());
-        assertEquals("at your service, [5.195.119.13]", reply.getGreeting());
+        assertEquals("example.com", reply.getDomain());
+        assertEquals("at your service, [127.0.0.1]", reply.getGreeting());
         // Was failing previously; presence of entries confirms list was created
-        assertEquals(7, reply.getExtensions().size());
+        assertEquals(1, reply.getExtensions().size());
     }
 
     @Test
