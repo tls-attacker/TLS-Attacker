@@ -8,19 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Generic SMTP Service Extension. Extensions are specified by the IANA, but for our purposes we
  * only store keywords and parameters.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SmtpServiceExtension {
 
     private String ehloKeyword;
     private String parameters = null;
 
     /** Default constructor required for JAXB unmarshalling of workflow traces. */
-    public SmtpServiceExtension() {
-        // fields are set via setters during unmarshalling
-    }
+    public SmtpServiceExtension() {}
 
     public SmtpServiceExtension(String ehloKeyword, String parameters) {
         this.ehloKeyword = ehloKeyword;
@@ -35,16 +37,8 @@ public class SmtpServiceExtension {
         return ehloKeyword;
     }
 
-    public void setEhloKeyword(String ehloKeyword) {
-        this.ehloKeyword = ehloKeyword;
-    }
-
     public String getParameters() {
         return parameters;
-    }
-
-    public void setParameters(String parameters) {
-        this.parameters = parameters;
     }
 
     public String serialize() {
