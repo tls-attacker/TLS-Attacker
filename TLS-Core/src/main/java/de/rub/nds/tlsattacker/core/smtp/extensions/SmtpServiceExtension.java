@@ -8,14 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Generic SMTP Service Extension. Extensions are specified by the IANA, but for our purposes we
  * only store keywords and parameters.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SmtpServiceExtension {
 
-    private final String ehloKeyword;
+    private String ehloKeyword;
     private String parameters = null;
+
+    /** Default constructor required for JAXB unmarshalling of workflow traces. */
+    private SmtpServiceExtension() {}
 
     public SmtpServiceExtension(String ehloKeyword, String parameters) {
         this.ehloKeyword = ehloKeyword;
