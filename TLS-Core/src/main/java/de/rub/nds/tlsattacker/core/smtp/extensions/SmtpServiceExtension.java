@@ -22,7 +22,7 @@ public class SmtpServiceExtension {
     private String parameters = null;
 
     /** Default constructor required for JAXB unmarshalling of workflow traces. */
-    public SmtpServiceExtension() {}
+    private SmtpServiceExtension() {}
 
     public SmtpServiceExtension(String ehloKeyword, String parameters) {
         this.ehloKeyword = ehloKeyword;
