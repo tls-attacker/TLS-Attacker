@@ -90,7 +90,11 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage>
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
         ExtensionListParser parser =
-                new ExtensionListParser(innerStream, tlsContext, helloRetryRequestHint);
+                new ExtensionListParser(
+                        innerStream,
+                        tlsContext,
+                        helloRetryRequestHint,
+                        message.getHandshakeMessageType());
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         message.setExtensions(extensionMessages);

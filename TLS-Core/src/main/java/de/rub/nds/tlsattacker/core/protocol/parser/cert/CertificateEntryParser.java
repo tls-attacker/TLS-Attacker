@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
@@ -88,7 +89,8 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
                 new ExtensionListParser(
                         new ByteArrayInputStream(pair.getExtensionBytes().getValue()),
                         context,
-                        false);
+                        false,
+                        HandshakeMessageType.CERTIFICATE);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         pair.setExtensionList(extensionMessages);

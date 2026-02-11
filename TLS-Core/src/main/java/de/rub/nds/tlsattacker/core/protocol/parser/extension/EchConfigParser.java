@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.protocol.exception.ParserException;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.EchConfigVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
@@ -144,7 +141,9 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
         byte[] extensionBytes = parseByteArrayField(extensionsLength);
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
-        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, false);
+        ExtensionListParser parser =
+                new ExtensionListParser(
+                        innerStream, tlsContext, false, HandshakeMessageType.CLIENT_HELLO);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         echConfig.getExtensions().addAll(extensionMessages);
