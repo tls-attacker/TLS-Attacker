@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class VersionNegotiationPacketPreparator
         extends LongHeaderPacketPreparator<VersionNegotiationPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public VersionNegotiationPacketPreparator(Chooser chooser, VersionNegotiationPacket packet) {
         super(chooser, packet);
@@ -20,9 +25,18 @@ public class VersionNegotiationPacketPreparator
 
     @Override
     public void prepare() {
+        prepareUnprotectedFlags();
         prepareSourceConnectionId();
         prepareSourceConnectionIdLength();
         prepareDestinationConnectionId();
         prepareDestinationConnectionIdLength();
+    }
+
+    private void prepareUnprotectedFlags() {
+        byte unprotectedFlags =
+                QuicPacketType.VERSION_NEGOTIATION.getHeader(context.getQuicVersion());
+        packet.setUnprotectedFlags(unprotectedFlags);
+        packet.setProtectedFlags(unprotectedFlags);
+        LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }
