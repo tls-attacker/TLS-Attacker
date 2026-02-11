@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,7 @@ public class VersionNegotiationPacketPreparator
     @Override
     public void prepare() {
         prepareUnprotectedFlags();
+        prepareQuicVersion();
         prepareSourceConnectionId();
         prepareSourceConnectionIdLength();
         prepareDestinationConnectionId();
@@ -38,5 +40,10 @@ public class VersionNegotiationPacketPreparator
         packet.setUnprotectedFlags(unprotectedFlags);
         packet.setProtectedFlags(unprotectedFlags);
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
+    }
+
+    @Override
+    public void prepareQuicVersion() {
+        packet.setQuicVersion(QuicVersion.NULL_VERSION);
     }
 }

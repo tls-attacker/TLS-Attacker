@@ -25,7 +25,7 @@ public class VersionNegotiationPacketSerializer
     @Override
     protected byte[] serializeBytes() {
         writeUnprotectedFlags(packet);
-        appendBytes(new byte[] {0x00, 0x00, 0x00, 0x00});
+        writeQuicVersion(packet); // Version set to 0x00000000 in preparator
         writeDestinationConnectionIdLength(packet);
         writeDestinationConnectionId(packet);
         writeSourceConnectionIdLength(packet);
