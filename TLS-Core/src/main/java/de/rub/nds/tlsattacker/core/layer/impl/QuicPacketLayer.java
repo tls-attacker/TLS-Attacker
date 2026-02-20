@@ -272,6 +272,13 @@ public class QuicPacketLayer
                                         "Received a Packet of Unknown Type");
                     };
 
+            byte[] expectedDCID;
+            if (!context.getConfig().isEchoQuic()) {
+                expectedDCID = context.getQuicContext().getSourceConnectionId();
+            } else {
+                expectedDCID = context.getQuicContext().getDestinationConnectionId();
+            }
+
             // Store the packet in the buffer for further processing.
             if (isStatelessResetPacket(readPacket)) {
                 quicContext.setReceivedStatelessResetToken(true);
@@ -279,8 +286,7 @@ public class QuicPacketLayer
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
             } else if (context.getConfig().isDiscardPacketsWithMismatchedSCID()
                     && !Arrays.equals(
-                            readPacket.getDestinationConnectionId().getValue(),
-                            context.getQuicContext().getSourceConnectionId())) {
+                            readPacket.getDestinationConnectionId().getValue(), expectedDCID)) {
                 LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
             } else {
                 receivedPacketBuffer.get(packetType).add(readPacket);
