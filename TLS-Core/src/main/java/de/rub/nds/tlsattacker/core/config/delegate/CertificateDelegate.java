@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.protocol.exception.ConfigurationException;
@@ -18,6 +16,7 @@ import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.signatureengine.keyparsers.PemUtil;
@@ -33,10 +32,8 @@ import java.security.cert.CertificateException;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.crypto.interfaces.DHPrivateKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -116,59 +113,119 @@ public class CertificateDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        Map<String, String> mandatoryParameters = new HashMap<>();
-        mandatoryParameters.put("keystore", keystore);
-        mandatoryParameters.put("password", password);
-        mandatoryParameters.put("alias", alias);
-
-        PrivateKey privateKey = null;
-        if (key != null) {
-            LOGGER.debug("Loading private key");
-            privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(
-                    config.getCertificateChainConfig().get(PREDEFINED_LEAF_CERT_INDEX), privateKey);
-        }
-        if (certificate != null) {
-            if (privateKey == null) {
-                LOGGER.warn("Certificate provided without private key");
-            }
-            LOGGER.debug("Loading certificate chain");
-            try (FileInputStream inputStream = new FileInputStream(certificate)) {
-                List<CertificateBytes> byteList =
-                        CertificateIo.readPemCertificateByteList(inputStream);
-                config.setDefaultExplicitCertificateChain(byteList);
-            } catch (Exception ex) {
-                LOGGER.warn("Could not read certificate", ex);
-            }
-        }
-        List<String> missingParameters = new ArrayList<>();
-        for (Map.Entry<String, String> entry : mandatoryParameters.entrySet()) {
-            if (entry.getValue() == null) {
-                missingParameters.add(entry.getKey());
-            }
-        }
-        if (missingParameters.size() == 3) {
-            return;
-        } else if (!missingParameters.isEmpty()) {
+        // For now, we only support either listed cert files OR a keystore
+        if (certKeyParametersProvided()) {
+            LOGGER.debug("Using certificate material from provided cert and key files");
+            applyCertKeyPaths(config);
+        } else if (keystoreParamtersProvided()) {
+            LOGGER.debug("Using certificate material from provided keystore");
+            applyKeystore(config);
+        } else if (anyParameterSet()) {
             throw new ParameterException(
-                    "The following parameters are required for loading a"
-                            + " keystore: "
-                            + join(mandatoryParameters.keySet()));
+                    "Missing parameters for certificates. Either provide paths to the certificates and keys or a keystore along with the password and certificate alias.");
         }
+    }
+
+    private void applyKeystore(Config config) {
         try {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             TlsCertificate cert = JKSLoader.loadTLSCertificate(store, alias);
-            privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
+            PrivateKey privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
             List<CertificateBytes> byteList = List.of(new CertificateBytes(cert.getEncoded()));
 
-            config.setDefaultExplicitCertificateChain(byteList);
-            adjustPrivateKey(config.getCertificateChainConfig().getFirst(), privateKey);
+            config.setDefaultCertificateChainBytes(List.of(byteList));
+            adjustPrivateKey(
+                    config.getCertificateChainConfigs().get(0).get(PREDEFINED_LEAF_CERT_INDEX),
+                    privateKey);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException
                 | NoSuchAlgorithmException
                 | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
+        }
+    }
+
+    private boolean anyParameterSet() {
+        return certificate != null
+                || key != null
+                || password != null
+                || keystore != null
+                || alias != null;
+    }
+
+    private boolean certKeyParametersProvided() {
+        return certificate != null && key != null;
+    }
+
+    private boolean keystoreParamtersProvided() {
+        return keystore != null && password != null && alias != null;
+    }
+
+    private void applyCertKeyPaths(Config config) {
+        String[] certPaths = certificate.split(",");
+        String[] keyPaths = key != null ? key.split(",") : new String[0];
+
+        if (keyPaths.length != certPaths.length) {
+            throw new ParameterException(
+                    "Number of certificate files ("
+                            + certPaths.length
+                            + ") must match number of key files ("
+                            + keyPaths.length
+                            + ")");
+        }
+
+        List<List<CertificateBytes>> allExplicitChains = new LinkedList<>();
+
+        for (int i = 0; i < certPaths.length; i++) {
+            String certPath = certPaths[i].trim();
+
+            if (i < keyPaths.length) {
+                String keyPath = keyPaths[i].trim();
+                LOGGER.debug("Loading private key from {}", keyPath);
+                PrivateKey privateKey = PemUtil.readPrivateKey(new File(keyPath));
+
+                if (i == 0) {
+                    adjustPrivateKey(
+                            config.getCertificateChainConfigs()
+                                    .get(0)
+                                    .get(PREDEFINED_LEAF_CERT_INDEX),
+                            privateKey);
+                } else {
+                    X509CertificateConfig leafConfig = new X509CertificateConfig();
+                    leafConfig.setPublicKeyType(getPublicKeyType(privateKey));
+                    adjustPrivateKey(leafConfig, privateKey);
+                    List<X509CertificateConfig> chainConfig = new LinkedList<>();
+                    chainConfig.add(leafConfig);
+                    config.getCertificateChainConfigs().add(chainConfig);
+                }
+            }
+
+            LOGGER.debug("Loading certificate chain from {}", certPath);
+            try (FileInputStream inputStream = new FileInputStream(certPath)) {
+                List<CertificateBytes> byteList =
+                        CertificateIo.readPemCertificateByteList(inputStream);
+                allExplicitChains.add(byteList);
+            } catch (Exception ex) {
+                LOGGER.warn("Could not read certificate file: " + certPath, ex);
+            }
+        }
+
+        config.setDefaultCertificateChainBytes(allExplicitChains);
+    }
+
+    private X509PublicKeyType getPublicKeyType(PrivateKey privateKey) {
+        if (privateKey instanceof RSAPrivateKey) {
+            return X509PublicKeyType.RSA;
+        } else if (privateKey instanceof ECPrivateKey) {
+            return X509PublicKeyType.ECDH_ECDSA;
+        } else if (privateKey instanceof DSAPrivateKey) {
+            return X509PublicKeyType.DSA;
+        } else if (privateKey instanceof DHPrivateKey) {
+            return X509PublicKeyType.DH;
+        } else {
+            throw new UnsupportedOperationException(
+                    "Unsupported private key type: " + privateKey.getClass().getName());
         }
     }
 

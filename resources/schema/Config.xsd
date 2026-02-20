@@ -349,7 +349,7 @@
       </xs:element>
       <xs:element name="autoAdjustCertificate" type="xs:boolean" minOccurs="0"/>
       <xs:element name="autoAdjustSignatureAndHashAlgorithm" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="certificateChainConfig" minOccurs="0">
+      <xs:element name="certificateChainConfigs" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="certificateConfig" type="x509CertificateConfig" minOccurs="0" maxOccurs="unbounded"/>
