@@ -175,7 +175,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     private boolean mustCreateCertificatesDynamically() {
         return chooser.getConfig().getDefaultExplicitCertificateChain() == null
-                && chooser.getConfig().getDefaultCertificateChainBytes() == null;
+                && (chooser.getConfig().getDefaultCertificateChainBytes() == null
+                        || chooser.getConfig().getDefaultCertificateChainBytes().isEmpty());
     }
 
     /**
