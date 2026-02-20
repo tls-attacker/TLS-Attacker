@@ -31,12 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -269,7 +264,9 @@ public class QuicPacketLayer
                         case ONE_RTT_PACKET -> readOneRTTPacket(firstByte, dataStream);
                         case RETRY_PACKET -> readRetryPacket(firstByte, dataStream);
                         case VERSION_NEGOTIATION -> readVersionNegotiationPacket(dataStream);
-                        case ZERO_RTT_PACKET, UNKNOWN ->
+                        case ZERO_RTT_PACKET ->
+                                readZeroRTTPacket(firstByte, versionBytes, dataStream);
+                        case UNKNOWN ->
                                 throw new UnsupportedOperationException(
                                         "Unknown Packet - Not supported yet.");
                         default ->
@@ -451,6 +448,23 @@ public class QuicPacketLayer
     private VersionNegotiationPacket readVersionNegotiationPacket(InputStream dataStream) {
         VersionNegotiationPacket packet = new VersionNegotiationPacket();
         packet.getParser(context, dataStream).parse(packet);
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private ZeroRTTPacket readZeroRTTPacket(
+            int flags, byte[] versionBytes, InputStream dataStream) {
+        ZeroRTTPacket packet = new ZeroRTTPacket((byte) flags, versionBytes);
+        packet.getParser(context, dataStream).parse(packet);
+        return packet;
+    }
+
+    private ZeroRTTPacket decryptZeroRTTPacket(ZeroRTTPacket packet) throws CryptoException {
+        decryptor.removeHeaderProtectionZeroRTT(packet);
+        packet.convertCompleteProtectedHeader();
+        decryptor.decryptZeroRTTPacket(packet);
+        quicContext.addReceivedZeroRTTPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
