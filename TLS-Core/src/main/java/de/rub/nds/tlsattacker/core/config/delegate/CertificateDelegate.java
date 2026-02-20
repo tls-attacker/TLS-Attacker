@@ -48,10 +48,12 @@ public class CertificateDelegate extends Delegate {
     @Parameter(
             names = "-cert",
             description =
-                    "PEM encoded certificate file (can contain multiple certificates for a certificate chain)")
+                    "PEM encoded certificate file (can contain multiple certificates for a certificate chain) or comma-separated list of full certificate chain files")
     private String certificate = null;
 
-    @Parameter(names = "-key", description = "PEM encoded private key")
+    @Parameter(
+            names = "-key",
+            description = "PEM encoded private key or comma-separated list of private key files")
     private String key = null;
 
     @Parameter(
@@ -117,7 +119,7 @@ public class CertificateDelegate extends Delegate {
         if (certKeyParametersProvided()) {
             LOGGER.debug("Using certificate material from provided cert and key files");
             applyCertKeyPaths(config);
-        } else if (keystoreParamtersProvided()) {
+        } else if (keystoreParametersProvided()) {
             LOGGER.debug("Using certificate material from provided keystore");
             applyKeystore(config);
         } else if (anyParameterSet()) {
@@ -158,7 +160,7 @@ public class CertificateDelegate extends Delegate {
         return certificate != null && key != null;
     }
 
-    private boolean keystoreParamtersProvided() {
+    private boolean keystoreParametersProvided() {
         return keystore != null && password != null && alias != null;
     }
 
@@ -176,7 +178,7 @@ public class CertificateDelegate extends Delegate {
         }
 
         List<List<CertificateBytes>> allExplicitChains = new LinkedList<>();
-
+        config.getCertificateChainConfigs().clear();
         for (int i = 0; i < certPaths.length; i++) {
             String certPath = certPaths[i].trim();
 
@@ -184,21 +186,12 @@ public class CertificateDelegate extends Delegate {
                 String keyPath = keyPaths[i].trim();
                 LOGGER.debug("Loading private key from {}", keyPath);
                 PrivateKey privateKey = PemUtil.readPrivateKey(new File(keyPath));
-
-                if (i == 0) {
-                    adjustPrivateKey(
-                            config.getCertificateChainConfigs()
-                                    .get(0)
-                                    .get(PREDEFINED_LEAF_CERT_INDEX),
-                            privateKey);
-                } else {
-                    X509CertificateConfig leafConfig = new X509CertificateConfig();
-                    leafConfig.setPublicKeyType(getPublicKeyType(privateKey));
-                    adjustPrivateKey(leafConfig, privateKey);
-                    List<X509CertificateConfig> chainConfig = new LinkedList<>();
-                    chainConfig.add(leafConfig);
-                    config.getCertificateChainConfigs().add(chainConfig);
-                }
+                X509CertificateConfig leafConfig = new X509CertificateConfig();
+                leafConfig.setPublicKeyType(getPublicKeyType(privateKey));
+                adjustPrivateKey(leafConfig, privateKey);
+                List<X509CertificateConfig> chainConfig = new LinkedList<>();
+                chainConfig.add(leafConfig);
+                config.getCertificateChainConfigs().add(chainConfig);
             }
 
             LOGGER.debug("Loading certificate chain from {}", certPath);
