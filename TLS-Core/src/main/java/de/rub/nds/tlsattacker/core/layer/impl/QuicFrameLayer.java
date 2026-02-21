@@ -224,6 +224,15 @@ public class QuicFrameLayer
         try {
             InputStream dataStream;
             do {
+                // Do not take actions that may delay after receiving connection close frames.
+                if (quicContext.getConfig().getQuicImmediateCloseOnTlsError()) {
+                    ConnectionCloseFrame frame = quicContext.getReceivedConnectionCloseFrame();
+                    if (frame != null
+                            && frame.getErrorCode().getValue() >= 0x0100
+                            && frame.getErrorCode().getValue() <= 0x01ff) {
+                        return getLayerResult();
+                    }
+                }
                 dataStream = getLowerLayer().getDataStream();
                 readFrames(dataStream);
             } while (shouldContinueProcessing());

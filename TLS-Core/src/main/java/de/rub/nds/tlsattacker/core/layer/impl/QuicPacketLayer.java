@@ -164,11 +164,9 @@ public class QuicPacketLayer
     @Override
     protected LayerProcessingResult<QuicPacket> receiveDataInternal() {
         try {
-            InputStream dataStream;
             do {
-                dataStream = getLowerLayer().getDataStream();
+                InputStream dataStream = getLowerLayer().getDataStream();
                 readPackets(dataStream);
-
             } while (shouldContinueProcessing());
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
