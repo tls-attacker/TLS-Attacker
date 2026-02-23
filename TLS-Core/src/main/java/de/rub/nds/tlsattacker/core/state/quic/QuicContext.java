@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -166,10 +167,12 @@ public class QuicContext extends LayerContext {
         this.sourceConnectionId = this.generateRandomConnectionId(16);
         this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
         this.destinationConnectionId = this.firstDestinationConnectionId;
-        try {
-            QuicPacketCryptoComputations.calculateInitialSecrets(this);
-        } catch (NoSuchAlgorithmException | CryptoException e) {
-            LOGGER.error("Could not initialize initial secrets: ", e);
+        if (getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            try {
+                QuicPacketCryptoComputations.calculateInitialSecrets(this);
+            } catch (NoSuchAlgorithmException | CryptoException e) {
+                LOGGER.error("Could not initialize initial secrets: ", e);
+            }
         }
         this.receivedStatelessResetToken = false;
         this.temporarilyDisabledAcks = false;
