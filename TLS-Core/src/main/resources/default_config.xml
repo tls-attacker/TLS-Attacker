@@ -1320,7 +1320,7 @@
     <isQuic>false</isQuic>
     <quicRetryFlowRequired>false</quicRetryFlowRequired>
     <quicVersion>VERSION_1</quicVersion>
-    <defaultQuicNewToken>qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/</defaultQuicNewToken>
+    <defaultQuicNewToken></defaultQuicNewToken>
     <defaultQuicPathChallange>qrvM3Q==</defaultQuicPathChallange>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
@@ -1475,7 +1475,7 @@
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
     <quicDoNotPadPackets>false</quicDoNotPadPackets>
-    <discardQuicPacketsWithMismatchedSCID>true</discardQuicPacketsWithMismatchedSCID>
+    <discardQuicPacketsWithMismatchedSCID>false</discardQuicPacketsWithMismatchedSCID>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>
