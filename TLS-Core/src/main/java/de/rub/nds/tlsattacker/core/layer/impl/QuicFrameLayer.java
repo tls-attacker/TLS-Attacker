@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.ResetStreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.RetireConnectionIdFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StopSendingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -292,6 +293,10 @@ public class QuicFrameLayer
                     break;
                 case NEW_CONNECTION_ID_FRAME:
                     readDataContainer(new NewConnectionIdFrame(), context, inputStream);
+                    isAckEliciting = true;
+                    break;
+                case RETIRE_CONNECTION_ID:
+                    readDataContainer(new RetireConnectionIdFrame(), context, inputStream);
                     isAckEliciting = true;
                     break;
                 case NEW_TOKEN_FRAME:
