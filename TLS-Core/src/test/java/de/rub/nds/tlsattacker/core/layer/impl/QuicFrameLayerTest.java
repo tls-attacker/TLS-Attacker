@@ -136,7 +136,7 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
         quicFramePayload = DataConverter.hexStringToByteArray("AABBCCDDEE");
         quicFrameBytes =
                 DataConverter.hexStringToByteArray(
-                        "0E020005AABBCCDDEE000000000000000000000000000000000000000000000000000000");
+                        "0E000005AABBCCDDEE000000000000000000000000000000000000000000000000000000");
         tlsContext
                 .getLayerStack()
                 .getLayer(QuicFrameLayer.class)
