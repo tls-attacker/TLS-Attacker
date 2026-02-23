@@ -143,6 +143,8 @@ public class QuicContext extends LayerContext {
     // Indicates whether a stateless reset packet was received
     private boolean receivedStatelessResetToken;
 
+    private List<Integer> receivedStreamsIds = new ArrayList<>();
+
     public QuicContext(Context context) {
         super(context);
         init(context);
@@ -771,5 +773,18 @@ public class QuicContext extends LayerContext {
 
     public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
         this.temporarilyDisabledAcks = temporarilyDisabledAcks;
+    }
+
+    public void addReceivedStreamsId(int id) {
+        receivedStreamsIds.add(id);
+    }
+
+    public boolean isReceivedStreamsId(int id) {
+        for (int streamId : receivedStreamsIds) {
+            if (streamId == id) {
+                return true;
+            }
+        }
+        return false;
     }
 }
