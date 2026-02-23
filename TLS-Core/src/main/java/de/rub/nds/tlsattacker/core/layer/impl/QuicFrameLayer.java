@@ -480,8 +480,10 @@ public class QuicFrameLayer
         if (context.getConfig().isQuicFrameLayerAllConfigurationsOnePacket()) {
             SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
             for (QuicFrame frame : frames) {
-                stream.writeBytes(writeFrame(frame));
+                byte[] bytes = writeFrame(frame);
+                stream.writeBytes(bytes);
                 addProducedContainer(frame);
+                hint.addFrameBoundary(bytes.length);
             }
             getLowerLayer().sendData(hint, stream.toByteArray());
         } else {

@@ -140,33 +140,78 @@ public class QuicPacketLayer
             hintedType = QuicPacketType.INITIAL_PACKET;
         }
 
-        List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
-        try {
-            if (getLayerConfiguration().getContainerList() != null && !givenPackets.isEmpty()) {
-                // If a configuration is provided, the hint will be ignored.
-                QuicPacket packet = givenPackets.getFirst();
-                byte[] bytes = writePacket(data, packet);
-                addProducedContainer(packet);
-                getLowerLayer().sendData(null, bytes);
-            } else {
-                QuicPacket packet =
-                        switch (hintedType) {
-                            case INITIAL_PACKET -> new InitialPacket();
-                            case HANDSHAKE_PACKET -> new HandshakePacket();
-                            case ONE_RTT_PACKET -> new OneRTTPacket();
-                            case ZERO_RTT_PACKET -> new ZeroRTTPacket();
-                            case RETRY_PACKET -> new RetryPacket();
-                            case VERSION_NEGOTIATION -> new VersionNegotiationPacket();
-                            default ->
-                                    throw new UnsupportedOperationException(
-                                            "Unknown Packet - Not supported yet.");
-                        };
-                byte[] packetBytes = writePacket(data, packet);
-                addProducedContainer(packet);
-                getLowerLayer().sendData(null, packetBytes);
+        if (((QuicPacketLayerHint) hint).getFrameBoundaries() != null
+                && !((QuicPacketLayerHint) hint).getFrameBoundaries().isEmpty()
+                && !context.getConfig().isQuicPacketLayerAllConfigurationsOnePacket()) {
+            int startIndex = 0;
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
+            for (int boundary : ((QuicPacketLayerHint) hint).getFrameBoundaries()) {
+                List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
+                try {
+                    if (getLayerConfiguration().getContainerList() != null
+                            && !givenPackets.isEmpty()) {
+                        // If a configuration is provided, the hint will be ignored.
+                        QuicPacket packet = givenPackets.getFirst();
+                        byte[] frameData =
+                                Arrays.copyOfRange(data, startIndex, startIndex + boundary);
+                        startIndex += boundary;
+                        byte[] bytes = writePacket(frameData, packet);
+                        addProducedContainer(packet);
+                        stream.writeBytes(bytes);
+                    } else {
+                        QuicPacket packet =
+                                switch (hintedType) {
+                                    case INITIAL_PACKET -> new InitialPacket();
+                                    case HANDSHAKE_PACKET -> new HandshakePacket();
+                                    case ONE_RTT_PACKET -> new OneRTTPacket();
+                                    case ZERO_RTT_PACKET -> new ZeroRTTPacket();
+                                    case RETRY_PACKET -> new RetryPacket();
+                                    case VERSION_NEGOTIATION -> new VersionNegotiationPacket();
+                                    default ->
+                                            throw new UnsupportedOperationException(
+                                                    "Unknown Packet - Not supported yet.");
+                                };
+                        byte[] frameData =
+                                Arrays.copyOfRange(data, startIndex, startIndex + boundary);
+                        startIndex += boundary;
+                        byte[] bytes = writePacket(frameData, packet);
+                        addProducedContainer(packet);
+                        stream.writeBytes(bytes);
+                    }
+                } catch (CryptoException ex) {
+                    LOGGER.error(ex);
+                }
             }
-        } catch (CryptoException ex) {
-            LOGGER.error(ex);
+            getLowerLayer().sendData(null, stream.toByteArray());
+        } else {
+            List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
+            try {
+                if (getLayerConfiguration().getContainerList() != null && !givenPackets.isEmpty()) {
+                    // If a configuration is provided, the hint will be ignored.
+                    QuicPacket packet = givenPackets.getFirst();
+                    byte[] bytes = writePacket(data, packet);
+                    addProducedContainer(packet);
+                    getLowerLayer().sendData(null, bytes);
+                } else {
+                    QuicPacket packet =
+                            switch (hintedType) {
+                                case INITIAL_PACKET -> new InitialPacket();
+                                case HANDSHAKE_PACKET -> new HandshakePacket();
+                                case ONE_RTT_PACKET -> new OneRTTPacket();
+                                case ZERO_RTT_PACKET -> new ZeroRTTPacket();
+                                case RETRY_PACKET -> new RetryPacket();
+                                case VERSION_NEGOTIATION -> new VersionNegotiationPacket();
+                                default ->
+                                        throw new UnsupportedOperationException(
+                                                "Unknown Packet - Not supported yet.");
+                            };
+                    byte[] packetBytes = writePacket(data, packet);
+                    addProducedContainer(packet);
+                    getLowerLayer().sendData(null, packetBytes);
+                }
+            } catch (CryptoException ex) {
+                LOGGER.error(ex);
+            }
         }
         return getLayerResult();
     }
