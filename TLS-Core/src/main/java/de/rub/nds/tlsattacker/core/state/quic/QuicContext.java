@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicPacketLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
@@ -230,6 +232,14 @@ public class QuicContext extends LayerContext {
 
         this.receivedStatelessResetToken = false;
         this.temporarilyDisabledAcks = false;
+    }
+
+    public QuicFrameLayer getQuicFrameLayer() {
+        return (QuicFrameLayer) getContext().getLayerStack().getLayer(QuicFrameLayer.class);
+    }
+
+    public QuicPacketLayer getQuicPacketLayer() {
+        return (QuicPacketLayer) getContext().getLayerStack().getLayer(QuicPacketLayer.class);
     }
 
     public int getOneRTTPacketPacketNumber() {

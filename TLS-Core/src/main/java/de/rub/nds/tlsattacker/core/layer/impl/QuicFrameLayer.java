@@ -559,4 +559,29 @@ public class QuicFrameLayer
                         "Unsupported packet type for WriteCryptoFrameOffset");
         }
     }
+
+    public long getInitialPhaseWriteCryptoFrameOffset() {
+        return initialPhaseWriteCryptoFrameOffset;
+    }
+
+    public void setInitialPhaseWriteCryptoFrameOffset(long initialPhaseWriteCryptoFrameOffset) {
+        this.initialPhaseWriteCryptoFrameOffset = initialPhaseWriteCryptoFrameOffset;
+    }
+
+    public long getHandshakePhaseWriteCryptoFrameOffset() {
+        return handshakePhaseWriteCryptoFrameOffset;
+    }
+
+    public void setHandshakePhaseWriteCryptoFrameOffset(long handshakePhaseWriteCryptoFrameOffset) {
+        this.handshakePhaseWriteCryptoFrameOffset = handshakePhaseWriteCryptoFrameOffset;
+    }
+
+    public long getApplicationPhaseWriteCryptoFrameOffset() {
+        return applicationPhaseWriteCryptoFrameOffset;
+    }
+
+    public void setApplicationPhaseWriteCryptoFrameOffset(
+            long applicationPhaseWriteCryptoFrameOffset) {
+        this.applicationPhaseWriteCryptoFrameOffset = applicationPhaseWriteCryptoFrameOffset;
+    }
 }

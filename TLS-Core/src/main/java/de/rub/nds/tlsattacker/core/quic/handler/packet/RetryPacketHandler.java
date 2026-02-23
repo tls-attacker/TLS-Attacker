@@ -56,6 +56,9 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
                 (QuicFrameLayer) quicContext.getLayerStack().getLayer(QuicFrameLayer.class);
         quicPacketLayer.clearReceivedPacketBuffer();
         quicFrameLayer.clearCryptoFrameBuffer();
+        quicFrameLayer.setInitialPhaseWriteCryptoFrameOffset(0);
+        quicFrameLayer.setHandshakePhaseWriteCryptoFrameOffset(0);
+        quicFrameLayer.setApplicationPhaseWriteCryptoFrameOffset(0);
 
         // reset tls context to state prior the first client hello
         TlsContext tlsContext = quicContext.getContext().getTlsContext();
