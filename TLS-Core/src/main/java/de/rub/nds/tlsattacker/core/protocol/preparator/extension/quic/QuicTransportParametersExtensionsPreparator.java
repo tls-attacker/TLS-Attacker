@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic.QuicTransportParametersEntrySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -50,6 +51,16 @@ public class QuicTransportParametersExtensionsPreparator
                                                 .getQuicContext()
                                                 .getSourceConnectionId())
                                 .toLowerCase()));
+        if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+            quicTransportEntrys.add(
+                    new QuicTransportParameterEntry(
+                            QuicTransportParameterEntryTypes.ORIGINAL_DESTINATION_CONNECTION_ID,
+                            DataConverter.bytesToRawHexString(
+                                            chooser.getContext()
+                                                    .getQuicContext()
+                                                    .getFirstDestinationConnectionId())
+                                    .toLowerCase()));
+        }
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
 
         for (QuicTransportParameterEntry parameterEntry : quicTransportEntrys) {

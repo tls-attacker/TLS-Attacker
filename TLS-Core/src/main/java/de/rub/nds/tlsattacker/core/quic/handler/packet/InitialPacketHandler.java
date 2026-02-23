@@ -20,6 +20,8 @@ public class InitialPacketHandler extends LongHeaderPacketHandler<InitialPacket>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private static boolean isFirstDestinationConnectionIdSet = false;
+
     public InitialPacketHandler(QuicContext quicContext) {
         super(quicContext);
     }
@@ -27,6 +29,11 @@ public class InitialPacketHandler extends LongHeaderPacketHandler<InitialPacket>
     @Override
     public void adjustContext(InitialPacket packet) {
         // update quic context
+        if (!isFirstDestinationConnectionIdSet) {
+            quicContext.setFirstDestinationConnectionId(
+                    packet.getDestinationConnectionId().getValue());
+            isFirstDestinationConnectionIdSet = true;
+        }
         quicContext.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
 
         // update quic keys
