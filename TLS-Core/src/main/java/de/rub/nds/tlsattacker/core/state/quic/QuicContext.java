@@ -36,7 +36,6 @@ public class QuicContext extends LayerContext {
     private static final Logger LOGGER = LogManager.getLogger();
 
     // TODO we may want to add config fields for these one day
-    public static final byte[] DEFAULT_INITIAL_PACKET_TOKEN = new byte[] {};
     public static final int DEFAULT_INITIAL_PACKET_NUMBER = 0;
 
     private QuicVersion quicVersion;
@@ -44,7 +43,7 @@ public class QuicContext extends LayerContext {
     private byte[] firstDestinationConnectionId;
     private byte[] destinationConnectionId;
     private byte[] sourceConnectionId;
-    private byte[] initialPacketToken = DEFAULT_INITIAL_PACKET_TOKEN;
+    private byte[] initialPacketToken;
     private QuicTransportParameters receivedTransportParameters;
 
     private byte[] initialSalt;

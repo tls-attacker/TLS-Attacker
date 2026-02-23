@@ -363,4 +363,6 @@ public abstract class Chooser {
     public abstract SrtpProtectionProfile getSelectedSrtpProtectionProfile();
 
     public abstract byte[] getQuicPathChallengeData();
+
+    public abstract byte[] getQuicInitialPacketToken();
 }

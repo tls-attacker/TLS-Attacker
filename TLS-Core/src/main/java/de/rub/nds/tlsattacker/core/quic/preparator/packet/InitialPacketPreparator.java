@@ -34,13 +34,8 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
     }
 
     private void prepareToken() {
-        if (context.getInitialPacketToken() != null) {
-            packet.setToken(context.getInitialPacketToken());
-            packet.setTokenLength(context.getInitialPacketToken().length);
-        } else {
-            packet.setToken(new byte[] {});
-            packet.setTokenLength(0);
-        }
+        packet.setToken(chooser.getQuicInitialPacketToken());
+        packet.setTokenLength(chooser.getQuicInitialPacketToken().length);
         LOGGER.debug("Token: {}", packet.getToken().getValue());
         LOGGER.debug("Token Length: {}", packet.getTokenLength());
     }

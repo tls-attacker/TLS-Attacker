@@ -809,9 +809,7 @@ public class Config implements Serializable {
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
-    private byte[] defaultQuicNewToken =
-            DataConverter.hexStringToByteArray(
-                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
+    private byte[] defaultQuicNewToken = new byte[0];
 
     private byte[] defaultQuicPathChallange = DataConverter.hexStringToByteArray("AABBCCDD");
 

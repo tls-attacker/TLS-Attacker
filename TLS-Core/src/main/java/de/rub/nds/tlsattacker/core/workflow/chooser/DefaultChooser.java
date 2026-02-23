@@ -1186,4 +1186,13 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultQuicPathChallange();
         }
     }
+
+    @Override
+    public byte[] getQuicInitialPacketToken() {
+        if (context.getQuicContext().getInitialPacketToken() != null) {
+            return context.getQuicContext().getInitialPacketToken();
+        } else {
+            return config.getDefaultQuicNewToken();
+        }
+    }
 }
