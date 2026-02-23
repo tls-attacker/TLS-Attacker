@@ -46,6 +46,8 @@ public class OneRTTPacket extends QuicPacket {
 
     @Override
     public void buildUnprotectedPacketHeader() {
+        unprotectedHeaderHelper.reset();
+        
         unprotectedHeaderHelper.write(unprotectedFlags.getValue());
         offsetToPacketNumber++;
 

@@ -48,6 +48,8 @@ public abstract class LongHeaderPacket extends QuicPacket {
 
     @Override
     public void buildUnprotectedPacketHeader() {
+        unprotectedHeaderHelper.reset();
+
         unprotectedHeaderHelper.write(unprotectedFlags.getValue());
         offsetToPacketNumber++;
 
