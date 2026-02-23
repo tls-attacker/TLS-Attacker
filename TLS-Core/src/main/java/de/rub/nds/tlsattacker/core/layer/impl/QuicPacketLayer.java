@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicDecryptor;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicEncryptor;
+import de.rub.nds.tlsattacker.core.quic.handler.packet.InitialPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
@@ -503,6 +504,14 @@ public class QuicPacketLayer
     }
 
     private void decryptInitialPacketsInBuffer() {
+        if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
+                && !quicContext.isInitialSecretsInitialized()) {
+            InitialPacketHandler initialPacketHandler = new InitialPacketHandler(quicContext);
+            InitialPacket initialPacket =
+                    (InitialPacket)
+                            receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).getFirst();
+            initialPacketHandler.adjustContext(initialPacket);
+        }
         if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
                 && quicContext.isInitialSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
