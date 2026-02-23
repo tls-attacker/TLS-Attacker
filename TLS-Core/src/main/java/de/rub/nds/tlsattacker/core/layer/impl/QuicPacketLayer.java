@@ -355,7 +355,6 @@ public class QuicPacketLayer
     private byte[] writeInitialPacket(InitialPacket packet) throws CryptoException {
         packet.getPreparator(context).prepare();
         encryptor.encryptInitialPacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionInitial(packet);
         return packet.getSerializer(context).serialize();
     }
@@ -363,7 +362,6 @@ public class QuicPacketLayer
     private byte[] writeHandshakePacket(HandshakePacket packet) throws CryptoException {
         packet.getPreparator(context).prepare();
         encryptor.encryptHandshakePacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionHandshake(packet);
         return packet.getSerializer(context).serialize();
     }
@@ -371,7 +369,6 @@ public class QuicPacketLayer
     private byte[] writeOneRTTPacket(OneRTTPacket packet) throws CryptoException {
         packet.getPreparator(context).prepare();
         encryptor.encryptOneRRTPacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionOneRRT(packet);
         return packet.getSerializer(context).serialize();
     }
@@ -379,7 +376,6 @@ public class QuicPacketLayer
     private byte[] writeZeroRTTPacket(ZeroRTTPacket packet) throws CryptoException {
         packet.getPreparator(context).prepare();
         encryptor.encryptZeroRTTPacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
         encryptor.addHeaderProtectionZeroRTT(packet);
         return packet.getSerializer(context).serialize();
     }

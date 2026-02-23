@@ -38,6 +38,7 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
         preparePadding();
         prepareUnprotectedPayload();
         preparePacketLength();
+        packet.updateFlagsWithEncodedPacketNumber();
         packet.buildUnprotectedPacketHeader();
     }
 
