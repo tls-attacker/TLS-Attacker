@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
@@ -42,6 +44,12 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
         List<ExtensionMessage> configuredExtensions = new LinkedList<>();
         if (config.isAddRecordSizeLimitExtension()) {
             configuredExtensions.add(new RecordSizeLimitExtensionMessage());
+        }
+        if (config.isAddAlpnExtension()) {
+            configuredExtensions.add(new AlpnExtensionMessage());
+        }
+        if (config.isAddQuicTransportParametersExtension()) {
+            configuredExtensions.add(new QuicTransportParametersExtensionMessage());
         }
         return configuredExtensions;
     }
