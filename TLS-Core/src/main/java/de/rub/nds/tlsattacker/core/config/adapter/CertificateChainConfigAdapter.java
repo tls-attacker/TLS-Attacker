@@ -36,24 +36,26 @@ public class CertificateChainConfigAdapter
     }
 
     @Override
-    public List<List<X509CertificateConfig>> unmarshal(CertificateChainList v) throws Exception {
-        if (v == null) {
+    public List<List<X509CertificateConfig>> unmarshal(CertificateChainList chainList)
+            throws Exception {
+        if (chainList == null) {
             return null;
         }
         List<List<X509CertificateConfig>> result = new ArrayList<>();
-        for (CertificateChainEntry entry : v.chains) {
+        for (CertificateChainEntry entry : chainList.chains) {
             result.add(entry.certificateConfigs);
         }
         return result;
     }
 
     @Override
-    public CertificateChainList marshal(List<List<X509CertificateConfig>> v) throws Exception {
-        if (v == null) {
+    public CertificateChainList marshal(List<List<X509CertificateConfig>> configChains)
+            throws Exception {
+        if (configChains == null) {
             return null;
         }
         CertificateChainList list = new CertificateChainList();
-        for (List<X509CertificateConfig> chain : v) {
+        for (List<X509CertificateConfig> chain : configChains) {
             CertificateChainEntry entry = new CertificateChainEntry();
             entry.certificateConfigs = chain;
             list.chains.add(entry);

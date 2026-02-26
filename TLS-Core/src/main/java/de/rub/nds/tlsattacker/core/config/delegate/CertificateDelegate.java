@@ -166,7 +166,7 @@ public class CertificateDelegate extends Delegate {
 
     private void applyCertKeyPaths(Config config) {
         String[] certPaths = certificate.split(",");
-        String[] keyPaths = key != null ? key.split(",") : new String[0];
+        String[] keyPaths = key.split(",");
 
         if (keyPaths.length != certPaths.length) {
             throw new ParameterException(
