@@ -216,18 +216,19 @@ public class QuicPacketLayer
         if (dataStream.available() == 0) {
             throw new EndOfStreamException();
         }
-        int firstByte = 0;
-        int paddingReceived = 0;
+        int firstByte = -1;
+        int amountPaddingReceived = 0;
         while (dataStream.available() > 0) {
             firstByte = dataStream.read();
+            // Read until first byte is no longer 0x00 (Padding) or stream is over.
             if (firstByte == 0x00) {
-                paddingReceived++;
+                amountPaddingReceived++;
             } else {
                 break;
             }
         }
-        quicContext.addAmoutOfPaddingBytesReceived(paddingReceived);
-        // Check again as it might have changed
+        quicContext.addAmoutOfPaddingBytesReceived(amountPaddingReceived);
+
         if (firstByte != 0x00) {
             // The QUIC version needs to be parsed to determine the packet type, as the version
             // negotiation packet can only be identified by the version being 0.
