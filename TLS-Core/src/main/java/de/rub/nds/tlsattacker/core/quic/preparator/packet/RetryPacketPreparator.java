@@ -40,7 +40,9 @@ public class RetryPacketPreparator extends LongHeaderPacketPreparator<RetryPacke
     }
 
     private void prepareUnprotectedFlags() {
-        packet.setUnprotectedFlags(QuicPacketType.RETRY_PACKET.getHeader(context.getQuicVersion()));
+        byte unprotectedFlags = QuicPacketType.RETRY_PACKET.getHeader(context.getQuicVersion());
+        packet.setUnprotectedFlags(unprotectedFlags);
+        packet.setProtectedFlags(unprotectedFlags);
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 
