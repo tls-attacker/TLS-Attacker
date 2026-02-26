@@ -133,6 +133,7 @@ public class QuicContext extends LayerContext {
     private boolean receivedStatelessResetToken = false;
 
     private byte[] pathChallengeData;
+    private int amoutOfPaddingBytesReceived = 0;
 
     public QuicContext(Context context) {
         super(context);
@@ -215,6 +216,8 @@ public class QuicContext extends LayerContext {
         this.receivedConnectionCloseFrame = null;
         this.receivedStatelessResetToken = false;
         this.receivedStatelessResetTokens.clear();
+
+        this.amoutOfPaddingBytesReceived = 0;
     }
 
     public int getOneRTTPacketPacketNumber() {
@@ -751,5 +754,13 @@ public class QuicContext extends LayerContext {
 
     public boolean hasReceivedStatelessResetToken() {
         return receivedStatelessResetToken;
+    }
+
+    public int getAmoutOfPaddingBytesReceived() {
+        return amoutOfPaddingBytesReceived;
+    }
+
+    public void addAmoutOfPaddingBytesReceived(int amoutOfPaddingBytesReceived) {
+        this.amoutOfPaddingBytesReceived += amoutOfPaddingBytesReceived;
     }
 }
