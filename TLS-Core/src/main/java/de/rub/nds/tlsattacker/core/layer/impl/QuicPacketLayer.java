@@ -216,21 +216,17 @@ public class QuicPacketLayer
         if (dataStream.available() == 0) {
             throw new EndOfStreamException();
         }
-        int firstByte = dataStream.read();
-        if (firstByte == 0x00) {
-            // If the first byte is 0, it indicates UDP padding. In this case, read all available
-            // data.
-            int paddingReceived = 0;
-            while (dataStream.available() > 0) {
-                firstByte = dataStream.read();
-                if (firstByte == 0x00) {
-                    paddingReceived++;
-                } else {
-                    break;
-                }
+        int firstByte = 0;
+        int paddingReceived = 0;
+        while (dataStream.available() > 0) {
+            firstByte = dataStream.read();
+            if (firstByte == 0x00) {
+                paddingReceived++;
+            } else {
+                break;
             }
-            quicContext.addAmoutOfPaddingBytesReceived(paddingReceived);
         }
+        quicContext.addAmoutOfPaddingBytesReceived(paddingReceived);
         // Check again as it might have changed
         if (firstByte != 0x00) {
             // The QUIC version needs to be parsed to determine the packet type, as the version
