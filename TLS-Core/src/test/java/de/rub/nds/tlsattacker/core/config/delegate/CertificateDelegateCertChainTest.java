@@ -64,7 +64,7 @@ public class CertificateDelegateCertChainTest extends AbstractDelegateTest<Certi
         delegate.applyDelegate(config);
 
         // Verify that the certificate chain was loaded
-        List<CertificateBytes> certChain = config.getDefaultExplicitCertificateChain();
+        List<CertificateBytes> certChain = config.getDefaultCertificateChainBytes().get(0);
         assertNotNull(certChain, "Certificate chain should not be null");
         assertEquals(2, certChain.size(), "Certificate chain should contain 2 certificates");
 
@@ -115,7 +115,7 @@ public class CertificateDelegateCertChainTest extends AbstractDelegateTest<Certi
         delegate.applyDelegate(config);
 
         // Verify that the certificate chain was loaded
-        List<CertificateBytes> certChain = config.getDefaultExplicitCertificateChain();
+        List<CertificateBytes> certChain = config.getDefaultCertificateChainBytes().get(0);
         assertNotNull(certChain, "Certificate chain should not be null");
         assertEquals(3, certChain.size(), "Certificate chain should contain 3 certificates");
 
@@ -147,7 +147,7 @@ public class CertificateDelegateCertChainTest extends AbstractDelegateTest<Certi
         delegate.applyDelegate(config);
 
         // Verify that the single certificate was loaded
-        List<CertificateBytes> certChain = config.getDefaultExplicitCertificateChain();
+        List<CertificateBytes> certChain = config.getDefaultCertificateChainBytes().get(0);
         assertNotNull(certChain, "Certificate chain should not be null");
         assertEquals(1, certChain.size(), "Certificate chain should contain 1 certificate");
         assertNotNull(certChain.get(0).getBytes(), "Certificate should not be null");
