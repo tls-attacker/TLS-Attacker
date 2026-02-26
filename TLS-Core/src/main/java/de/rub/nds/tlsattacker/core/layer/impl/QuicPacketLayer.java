@@ -217,17 +217,17 @@ public class QuicPacketLayer
             throw new EndOfStreamException();
         }
         int firstByte = -1;
-        int amountPaddingReceived = 0;
+        int amountUdpPaddingReceived = 0;
         while (dataStream.available() > 0) {
             firstByte = dataStream.read();
             // Read until first byte is no longer 0x00 (Padding) or stream is over.
             if (firstByte == 0x00) {
-                amountPaddingReceived++;
+                amountUdpPaddingReceived++;
             } else {
                 break;
             }
         }
-        quicContext.addAmoutOfPaddingBytesReceived(amountPaddingReceived);
+        quicContext.addAmountOfUdpPaddingBytesReceived(amountUdpPaddingReceived);
 
         if (firstByte != 0x00) {
             // The QUIC version needs to be parsed to determine the packet type, as the version

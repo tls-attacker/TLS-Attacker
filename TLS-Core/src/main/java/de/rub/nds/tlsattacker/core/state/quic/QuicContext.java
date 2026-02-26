@@ -133,7 +133,7 @@ public class QuicContext extends LayerContext {
     private boolean receivedStatelessResetToken = false;
 
     private byte[] pathChallengeData;
-    private int amoutOfPaddingBytesReceived = 0;
+    private int amountOfUdpPaddingBytesReceived;
 
     public QuicContext(Context context) {
         super(context);
@@ -159,6 +159,7 @@ public class QuicContext extends LayerContext {
         } catch (NoSuchAlgorithmException | CryptoException e) {
             LOGGER.error("Could not initialize initial secrets: ", e);
         }
+        this.amountOfUdpPaddingBytesReceived = 0;
     }
 
     private byte[] generateRandomConnectionId(int length) {
@@ -217,7 +218,7 @@ public class QuicContext extends LayerContext {
         this.receivedStatelessResetToken = false;
         this.receivedStatelessResetTokens.clear();
 
-        this.amoutOfPaddingBytesReceived = 0;
+        this.amountOfUdpPaddingBytesReceived = 0;
     }
 
     public int getOneRTTPacketPacketNumber() {
@@ -756,11 +757,11 @@ public class QuicContext extends LayerContext {
         return receivedStatelessResetToken;
     }
 
-    public int getAmoutOfPaddingBytesReceived() {
-        return amoutOfPaddingBytesReceived;
+    public int getAmountOfUdpPaddingBytesReceived() {
+        return amountOfUdpPaddingBytesReceived;
     }
 
-    public void addAmoutOfPaddingBytesReceived(int amoutOfPaddingBytesReceived) {
-        this.amoutOfPaddingBytesReceived += amoutOfPaddingBytesReceived;
+    public void addAmountOfUdpPaddingBytesReceived(int amountOfUdpPaddingBytesReceived) {
+        this.amountOfUdpPaddingBytesReceived += amountOfUdpPaddingBytesReceived;
     }
 }
