@@ -17,6 +17,7 @@ import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.protocol.xml.Pair;
+import de.rub.nds.tlsattacker.core.config.adapter.CertificateChainConfigAdapter;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -46,6 +47,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.ByteArrayInputStream;
@@ -132,13 +134,18 @@ public class Config implements Serializable {
     private Boolean autoAdjustSignatureAndHashAlgorithm = true;
 
     /**
-     * A list of X509CertificateConfigurations that are used to automatically create the certificate
-     * chain that is used in the CertificateMessage. The first config should be the leaf
-     * certificate.
+     * A list of certificate chain configurations. Each inner list represents a certificate chain
+     * (leaf certificate first). Index 0 is the default chain. Additional indices hold chains loaded
+     * via comma-separated -cert/-key CLI parameters for multi-certificate support.
      */
-    @XmlElement(name = "certificateConfig")
-    @XmlElementWrapper
-    private List<X509CertificateConfig> certificateChainConfig;
+    @XmlJavaTypeAdapter(CertificateChainConfigAdapter.class)
+    private List<List<X509CertificateConfig>> certificateChainConfigs;
+
+    /**
+     * Certificate chain bytes to use for certificateChainConfigs we parsed from a given certificate
+     * file.
+     */
+    @XmlTransient private List<List<CertificateBytes>> defaultCertificateChainBytes = null;
 
     /** List of filters to apply on workflow traces before serialization. */
     @XmlElement(name = "outputFilter")
@@ -1401,7 +1408,8 @@ public class Config implements Serializable {
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     public Config() {
-        this.certificateChainConfig = new LinkedList<>();
+        this.certificateChainConfigs = new LinkedList<>();
+        List<X509CertificateConfig> defaultChain = new LinkedList<>();
         List<Pair<X500AttributeType, String>> rdn = new LinkedList<>();
         rdn.add(
                 new Pair<>(
@@ -1432,8 +1440,9 @@ public class Config implements Serializable {
                 DataConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
         leafConfig.setSerialNumber(new BigInteger(serialNumber));
 
-        certificateChainConfig.add(leafConfig);
-        certificateChainConfig.add(caConfig);
+        defaultChain.add(leafConfig);
+        defaultChain.add(caConfig);
+        certificateChainConfigs.add(defaultChain);
         defaultLayerConfiguration = StackConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
@@ -1630,12 +1639,22 @@ public class Config implements Serializable {
         this.defaultDsaNonce = defaultDsaNonce;
     }
 
-    public List<X509CertificateConfig> getCertificateChainConfig() {
-        return certificateChainConfig;
+    public List<List<X509CertificateConfig>> getCertificateChainConfigs() {
+        return certificateChainConfigs;
     }
 
-    public void setCertificateChainConfig(List<X509CertificateConfig> certificateChainConfig) {
-        this.certificateChainConfig = certificateChainConfig;
+    public void setCertificateChainConfigs(
+            List<List<X509CertificateConfig>> certificateChainConfigs) {
+        this.certificateChainConfigs = certificateChainConfigs;
+    }
+
+    public List<List<CertificateBytes>> getDefaultCertificateChainBytes() {
+        return defaultCertificateChainBytes;
+    }
+
+    public void setDefaultCertificateChainBytes(
+            List<List<CertificateBytes>> defaultCertificateChainBytes) {
+        this.defaultCertificateChainBytes = defaultCertificateChainBytes;
     }
 
     public List<CertificateBytes> getDefaultExplicitCertificateChain() {
