@@ -166,7 +166,9 @@ public class QuicPacketLayer
         try {
             do {
                 InputStream dataStream = getLowerLayer().getDataStream();
-                readPackets(dataStream);
+                while (dataStream.available() > 0) {
+                    readPacket(dataStream);
+                }
             } while (shouldContinueProcessing());
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
@@ -194,7 +196,9 @@ public class QuicPacketLayer
         try {
             InputStream dataStream = getLowerLayer().getDataStream();
             // For now, we ignore the hint.
-            readPackets(dataStream);
+            while (dataStream.available() > 0) {
+                readPacket(dataStream);
+            }
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
@@ -207,8 +211,11 @@ public class QuicPacketLayer
         }
     }
 
-    /** Reads all packets in one UDP datagram and add to packet buffer. */
-    private void readPackets(InputStream dataStream) throws IOException {
+    /**
+     * Reads one packets in one UDP datagram and add to packet buffer, then attempts decryption in
+     * packet buffer.
+     */
+    private void readPacket(InputStream dataStream) throws IOException {
         SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
 
         if (dataStream.available() == 0) {
