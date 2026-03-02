@@ -610,4 +610,8 @@ public class QuicPacketLayer
     public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
         this.temporarilyDisabledAcks = temporarilyDisabledAcks;
     }
+
+    public boolean hasBufferedPackets(QuicPacketType packetType) {
+        return !receivedPacketBuffer.get(packetType).isEmpty();
+    }
 }
