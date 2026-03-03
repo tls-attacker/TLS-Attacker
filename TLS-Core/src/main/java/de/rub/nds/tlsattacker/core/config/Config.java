@@ -813,6 +813,12 @@ public class Config implements Serializable {
 
     private byte[] defaultQuicPathChallange = DataConverter.hexStringToByteArray("AABBCCDD");
 
+    private byte[] defaultQuicEncryptionKey = new byte[0];
+
+    private byte[] defaultQuicEncryptionIv = new byte[12];
+
+    private byte[] defaultQuicHeaderProtectionKey = new byte[0];
+
     private Boolean stopActionsAfterWarning = false;
 
     /** This CipherSuite will be used if no cipherSuite has been negotiated yet */
@@ -4391,5 +4397,29 @@ public class Config implements Serializable {
 
     public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
         this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
+    }
+
+    public byte[] getDefaultQuicEncryptionKey() {
+        return defaultQuicEncryptionKey;
+    }
+
+    public void setDefaultQuicEncryptionKey(byte[] defaultQuicEncryptionKey) {
+        this.defaultQuicEncryptionKey = defaultQuicEncryptionKey;
+    }
+
+    public byte[] getDefaultQuicEncryptionIv() {
+        return defaultQuicEncryptionIv;
+    }
+
+    public void setDefaultQuicEncryptionIv(byte[] defaultQuicEncryptionIv) {
+        this.defaultQuicEncryptionIv = defaultQuicEncryptionIv;
+    }
+
+    public byte[] getDefaultQuicHeaderProtectionKey() {
+        return defaultQuicHeaderProtectionKey;
+    }
+
+    public void setDefaultQuicHeaderProtectionKey(byte[] defaultQuicHeaderProtectionKey) {
+        this.defaultQuicHeaderProtectionKey = defaultQuicHeaderProtectionKey;
     }
 }

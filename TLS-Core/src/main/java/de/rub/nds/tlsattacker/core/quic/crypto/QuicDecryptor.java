@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -30,65 +31,83 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The QuicDecryptor decrypts {@link QuicPacket} objects. It uses the {@link QuicContext} to get the
+ * The QuicDecryptor decrypts {@link QuicPacket} objects. It uses the {@link Chooser} to get the
  * necessary keys and cipher.
  */
 public class QuicDecryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final QuicContext context;
+    private final Chooser chooser;
+    private final QuicContext quicContext;
 
-    public QuicDecryptor(QuicContext context) {
-        this.context = context;
+    public QuicDecryptor(Chooser chooser) {
+        this.chooser = chooser;
+        this.quicContext = chooser.getContext().getQuicContext();
     }
 
     public void removeHeaderProtectionInitial(InitialPacket packet) throws CryptoException {
         this.removeHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateInitialServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateInitialClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getInitalHeaderProtectionCipher(),
+                        chooser.getQuicInitialServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getInitalHeaderProtectionCipher(),
+                        chooser.getQuicInitialClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void removeHeaderProtectionHandshake(HandshakePacket packet) throws CryptoException {
         this.removeHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateHandshakeServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateHandshakeClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicHandshakeServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicHandshakeClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void removeHeaderProtectionZeroRTT(QuicPacket packet) throws CryptoException {
         this.removeHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateZeroRTTServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateZeroRTTClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getZeroRTTHeaderProtectionCipher(),
+                        chooser.getQuicZeroRTTServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getZeroRTTHeaderProtectionCipher(),
+                        chooser.getQuicZeroRTTClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void removeHeaderProtectionOneRTT(QuicPacket packet) throws CryptoException {
         this.removeHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateOneRTTServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateOneRRTClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicApplicationServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicApplicationClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void removeHeaderProtection(
             QuicPacket packet,
             byte[] serverHeaderProtectionMask,
             byte[] clientHeaderProtectionMask) {
-        ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
+        ConnectionEndType connectionEndType = chooser.getTalkingConnectionEnd();
         byte[] headerProtectionMask;
 
         // when attempting to read echoed ClientHello messages we have to use our keys for static
         // decryption
-        if (context.getConfig().isEchoQuic()) {
+        if (chooser.getConfig().isEchoQuic()) {
             connectionEndType = connectionEndType.getPeer();
         }
 
@@ -139,18 +158,18 @@ public class QuicDecryptor {
         int largest_Pn = 0;
         switch (packet.getPacketType()) {
             case INITIAL_PACKET:
-                if (!context.getReceivedInitialPacketNumbers().isEmpty()) {
-                    largest_Pn = context.getReceivedInitialPacketNumbers().getLast();
+                if (!quicContext.getReceivedInitialPacketNumbers().isEmpty()) {
+                    largest_Pn = quicContext.getReceivedInitialPacketNumbers().getLast();
                 }
                 break;
             case HANDSHAKE_PACKET:
-                if (!context.getReceivedHandshakePacketNumbers().isEmpty()) {
-                    largest_Pn = context.getReceivedHandshakePacketNumbers().getLast();
+                if (!quicContext.getReceivedHandshakePacketNumbers().isEmpty()) {
+                    largest_Pn = quicContext.getReceivedHandshakePacketNumbers().getLast();
                 }
                 break;
             case ONE_RTT_PACKET:
-                if (!context.getReceivedOneRTTPacketNumbers().isEmpty()) {
-                    largest_Pn = context.getReceivedOneRTTPacketNumbers().getLast();
+                if (!quicContext.getReceivedOneRTTPacketNumbers().isEmpty()) {
+                    largest_Pn = quicContext.getReceivedOneRTTPacketNumbers().getLast();
                 }
                 break;
             default:
@@ -179,31 +198,31 @@ public class QuicDecryptor {
     public void decryptInitialPacket(InitialPacket packet) throws CryptoException {
         this.decrypt(
                 packet,
-                context.getInitialServerIv(),
-                context.getInitialServerKey(),
-                context.getInitialClientIv(),
-                context.getInitialClientKey(),
-                context.getInitialAeadCipher());
+                chooser.getQuicInitialServerIv(),
+                chooser.getQuicInitialServerKey(),
+                chooser.getQuicInitialClientIv(),
+                chooser.getQuicInitialClientKey(),
+                quicContext.getInitialAeadCipher());
     }
 
     public void decryptHandshakePacket(HandshakePacket packet) throws CryptoException {
         this.decrypt(
                 packet,
-                context.getHandshakeServerIv(),
-                context.getHandshakeServerKey(),
-                context.getHandshakeClientIv(),
-                context.getHandshakeClientKey(),
-                context.getAeadCipher());
+                chooser.getQuicHandshakeServerIv(),
+                chooser.getQuicHandshakeServerKey(),
+                chooser.getQuicHandshakeClientIv(),
+                chooser.getQuicHandshakeClientKey(),
+                quicContext.getAeadCipher());
     }
 
     public void decryptOneRTTPacket(QuicPacket packet) throws CryptoException {
         this.decrypt(
                 packet,
-                context.getApplicationServerIv(),
-                context.getApplicationServerKey(),
-                context.getApplicationClientIv(),
-                context.getApplicationClientKey(),
-                context.getAeadCipher());
+                chooser.getQuicApplicationServerIv(),
+                chooser.getQuicApplicationServerKey(),
+                chooser.getQuicApplicationClientIv(),
+                chooser.getQuicApplicationClientKey(),
+                quicContext.getAeadCipher());
     }
 
     private void decrypt(
@@ -214,13 +233,13 @@ public class QuicDecryptor {
             byte[] clientKey,
             Cipher cipher)
             throws CryptoException {
-        ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
+        ConnectionEndType connectionEndType = chooser.getTalkingConnectionEnd();
         byte[] decryptionIv;
         byte[] decryptionKey;
 
         // when attempting to read echoed ClientHello messages we have to use our keys for static
         // decryption
-        if (context.getConfig().isEchoQuic()) {
+        if (chooser.getConfig().isEchoQuic()) {
             connectionEndType = connectionEndType.getPeer();
         }
 

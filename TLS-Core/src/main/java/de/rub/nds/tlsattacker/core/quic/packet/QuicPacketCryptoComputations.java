@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.packet;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -213,6 +214,12 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         context.setInitialSecretsInitialized(true);
     }
 
+    public static void resolveQuicAeadCipher(QuicContext quicContext, CipherSuite cipherSuite)
+            throws NoSuchAlgorithmException, NoSuchPaddingException {
+        quicContext.setAeadCipher(
+                Cipher.getInstance(AlgorithmResolver.getCipher(cipherSuite).getJavaName()));
+    }
+
     /**
      * Calculates all handshake client and server secrets including key, IV, and the key for header
      * protection.
@@ -221,33 +228,11 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Handshake Secrets");
         QuicContext quicContext = context.getQuicContext();
-        quicContext.setAeadCipher(
-                Cipher.getInstance(
-                        AlgorithmResolver.getCipher(
-                                        context.getTlsContext().getSelectedCipherSuite())
-                                .getJavaName()));
+        resolveQuicAeadCipher(quicContext, context.getTlsContext().getSelectedCipherSuite());
 
-        int keyLength = 16;
-        switch (context.getTlsContext().getSelectedCipherSuite()) {
-            case TLS_AES_128_CCM_SHA256:
-            case TLS_AES_128_GCM_SHA256:
-                keyLength = 16;
-                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
-                break;
-            case TLS_AES_256_GCM_SHA384:
-                keyLength = 32;
-                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
-                break;
-            case TLS_CHACHA20_POLY1305_SHA256:
-                keyLength = 32;
-                quicContext.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
-                break;
-            default:
-                LOGGER.warn(
-                        "Unsupported Cipher Suite: {}",
-                        context.getTlsContext().getSelectedCipherSuite());
-                break;
-        }
+        int keyLength =
+                resolveQuicHeaderCipher(
+                        quicContext, context.getTlsContext().getSelectedCipherSuite());
 
         quicContext.setHkdfAlgorithm(
                 AlgorithmResolver.getHKDFAlgorithm(
@@ -281,6 +266,30 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         version, hkdfAlgorithm, quicContext.getHandshakeServerSecret(), keyLength));
 
         quicContext.setHandshakeSecretsInitialized(true);
+    }
+
+    public static int resolveQuicHeaderCipher(QuicContext quicContext, CipherSuite cipherSuite)
+            throws NoSuchAlgorithmException, NoSuchPaddingException {
+        int keyLength = 16;
+        switch (cipherSuite) {
+            case TLS_AES_128_CCM_SHA256:
+            case TLS_AES_128_GCM_SHA256:
+                keyLength = 16;
+                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                break;
+            case TLS_AES_256_GCM_SHA384:
+                keyLength = 32;
+                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                break;
+            case TLS_CHACHA20_POLY1305_SHA256:
+                keyLength = 32;
+                quicContext.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
+                break;
+            default:
+                LOGGER.warn("Unsupported Cipher Suite: {}", cipherSuite);
+                break;
+        }
+        return keyLength;
     }
 
     /**
