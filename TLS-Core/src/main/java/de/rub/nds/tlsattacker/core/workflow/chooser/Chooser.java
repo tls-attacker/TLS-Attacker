@@ -419,4 +419,18 @@ public abstract class Chooser {
     public abstract byte[] getQuicZeroRTTClientHpKey();
 
     public abstract byte[] getQuicZeroRTTServerHpKey();
+
+    // QUIC Cipher Algorithms
+
+    public abstract String getQuicInitialAeadCipher();
+
+    public abstract String getQuicInitialHeaderProtectionCipher();
+
+    public abstract String getQuicAeadCipher();
+
+    public abstract String getQuicHeaderProtectionCipher();
+
+    public abstract String getQuicZeroRTTAeadCipher();
+
+    public abstract String getQuicZeroRTTHeaderProtectionCipher();
 }

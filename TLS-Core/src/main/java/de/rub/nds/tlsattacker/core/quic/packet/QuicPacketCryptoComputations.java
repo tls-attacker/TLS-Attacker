@@ -43,10 +43,12 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
 
     /** Generates header protection mask. */
     public static byte[] generateHeaderProtectionMask(
-            Cipher cipher, byte[] headerProtectionKey, byte[] sample) throws CryptoException {
+            String cipherAlgorithm, byte[] headerProtectionKey, byte[] sample)
+            throws CryptoException {
         try {
+            Cipher cipher = Cipher.getInstance(cipherAlgorithm);
             byte[] mask;
-            if (cipher.getAlgorithm().equals("ChaCha20")) {
+            if (cipherAlgorithm.equals("ChaCha20")) {
                 // Based on RFC 9001 Section 5.4.4
                 // https://www.rfc-editor.org/rfc/rfc9001#name-chacha20-based-header-prote
                 ByteBuffer wrapped = ByteBuffer.wrap(Arrays.copyOfRange(sample, 0, 4));
@@ -54,8 +56,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 int counter = wrapped.getInt();
                 byte[] nonce = Arrays.copyOfRange(sample, 4, 16);
                 ChaCha20ParameterSpec param = new ChaCha20ParameterSpec(nonce, counter);
-                SecretKeySpec keySpec =
-                        new SecretKeySpec(headerProtectionKey, cipher.getAlgorithm());
+                SecretKeySpec keySpec = new SecretKeySpec(headerProtectionKey, cipherAlgorithm);
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, param);
                 mask = cipher.doFinal(new byte[] {0, 0, 0, 0, 0});
             } else {
@@ -69,7 +70,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         } catch (BadPaddingException
                 | IllegalBlockSizeException
                 | InvalidKeyException
-                | InvalidAlgorithmParameterException e) {
+                | InvalidAlgorithmParameterException
+                | NoSuchAlgorithmException
+                | NoSuchPaddingException e) {
             throw new CryptoException("Could not generate header protection mask", e);
         }
     }
@@ -214,10 +217,8 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         context.setInitialSecretsInitialized(true);
     }
 
-    public static void resolveQuicAeadCipher(QuicContext quicContext, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException, NoSuchPaddingException {
-        quicContext.setAeadCipher(
-                Cipher.getInstance(AlgorithmResolver.getCipher(cipherSuite).getJavaName()));
+    public static void resolveQuicAeadCipher(QuicContext quicContext, CipherSuite cipherSuite) {
+        quicContext.setAeadCipher(AlgorithmResolver.getCipher(cipherSuite).getJavaName());
     }
 
     /**
@@ -225,7 +226,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
      * protection.
      */
     public static void calculateHandshakeSecrets(Context context)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
+            throws NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Handshake Secrets");
         QuicContext quicContext = context.getQuicContext();
         resolveQuicAeadCipher(quicContext, context.getTlsContext().getSelectedCipherSuite());
@@ -268,22 +269,21 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         quicContext.setHandshakeSecretsInitialized(true);
     }
 
-    public static int resolveQuicHeaderCipher(QuicContext quicContext, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public static int resolveQuicHeaderCipher(QuicContext quicContext, CipherSuite cipherSuite) {
         int keyLength = 16;
         switch (cipherSuite) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
                 keyLength = 16;
-                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setHeaderProtectionCipher("AES/ECB/NoPadding");
                 break;
             case TLS_AES_256_GCM_SHA384:
                 keyLength = 32;
-                quicContext.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setHeaderProtectionCipher("AES/ECB/NoPadding");
                 break;
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
-                quicContext.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
+                quicContext.setHeaderProtectionCipher("ChaCha20");
                 break;
             default:
                 LOGGER.warn("Unsupported Cipher Suite: {}", cipherSuite);
@@ -297,7 +297,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
      * header protection.
      */
     public static void calculateApplicationSecrets(Context context)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
+            throws NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Application Secrets");
         QuicContext quicContext = context.getQuicContext();
         int keyLength = 16;
@@ -366,38 +366,34 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
      * protection.
      *
      * @param context
-     * @throws NoSuchPaddingException
      * @throws CryptoException
      * @throws NoSuchAlgorithmException
      */
     public static void calculateZeroRTTSecrets(Context context)
-            throws CryptoException, NoSuchPaddingException, NoSuchAlgorithmException {
+            throws CryptoException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic 0-RTT Secrets");
         QuicContext quicContext = context.getQuicContext();
         quicContext.setZeroRTTCipherSuite(context.getTlsContext().getEarlyDataCipherSuite());
         quicContext.setZeroRTTAeadCipher(
-                Cipher.getInstance(
-                        context.getTlsContext()
-                                .getEarlyDataCipherSuite()
-                                .getCipherAlgorithm()
-                                .getJavaName()));
+                context.getTlsContext()
+                        .getEarlyDataCipherSuite()
+                        .getCipherAlgorithm()
+                        .getJavaName());
 
         int keyLength = 16;
         switch (quicContext.getZeroRTTCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
                 keyLength = 16;
-                quicContext.setZeroRTTHeaderProtectionCipher(
-                        Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setZeroRTTHeaderProtectionCipher("AES/ECB/NoPadding");
                 break;
             case TLS_AES_256_GCM_SHA384:
                 keyLength = 32;
-                quicContext.setZeroRTTHeaderProtectionCipher(
-                        Cipher.getInstance("AES/ECB/NoPadding"));
+                quicContext.setZeroRTTHeaderProtectionCipher("AES/ECB/NoPadding");
                 break;
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
-                quicContext.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
+                quicContext.setZeroRTTHeaderProtectionCipher("ChaCha20");
                 break;
             default:
                 LOGGER.warn("Unsupported Cipher Suite: {}", quicContext.getZeroRTTCipherSuite());

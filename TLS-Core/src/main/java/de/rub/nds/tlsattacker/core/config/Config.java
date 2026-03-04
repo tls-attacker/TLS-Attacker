@@ -819,6 +819,10 @@ public class Config implements Serializable {
 
     private byte[] defaultQuicHeaderProtectionKey = new byte[0];
 
+    private String defaultQuicAeadCipherAlgorithm = "AES/GCM/NoPadding";
+
+    private String defaultQuicHeaderProtectionCipherAlgorithm = "AES/ECB/NoPadding";
+
     private Boolean stopActionsAfterWarning = false;
 
     /** This CipherSuite will be used if no cipherSuite has been negotiated yet */
@@ -4421,5 +4425,23 @@ public class Config implements Serializable {
 
     public void setDefaultQuicHeaderProtectionKey(byte[] defaultQuicHeaderProtectionKey) {
         this.defaultQuicHeaderProtectionKey = defaultQuicHeaderProtectionKey;
+    }
+
+    public String getDefaultQuicAeadCipherAlgorithm() {
+        return defaultQuicAeadCipherAlgorithm;
+    }
+
+    public void setDefaultQuicAeadCipherAlgorithm(String defaultQuicAeadCipherAlgorithm) {
+        this.defaultQuicAeadCipherAlgorithm = defaultQuicAeadCipherAlgorithm;
+    }
+
+    public String getDefaultQuicHeaderProtectionCipherAlgorithm() {
+        return defaultQuicHeaderProtectionCipherAlgorithm;
+    }
+
+    public void setDefaultQuicHeaderProtectionCipherAlgorithm(
+            String defaultQuicHeaderProtectionCipherAlgorithm) {
+        this.defaultQuicHeaderProtectionCipherAlgorithm =
+                defaultQuicHeaderProtectionCipherAlgorithm;
     }
 }

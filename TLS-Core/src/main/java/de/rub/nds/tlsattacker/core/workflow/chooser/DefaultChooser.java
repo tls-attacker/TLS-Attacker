@@ -1417,4 +1417,60 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultQuicHeaderProtectionKey();
         }
     }
+
+    // QUIC Cipher Algorithms
+
+    @Override
+    public String getQuicInitialAeadCipher() {
+        if (context.getQuicContext().getInitialAeadCipher() != null) {
+            return context.getQuicContext().getInitialAeadCipher();
+        } else {
+            return config.getDefaultQuicAeadCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicInitialHeaderProtectionCipher() {
+        if (context.getQuicContext().getInitalHeaderProtectionCipher() != null) {
+            return context.getQuicContext().getInitalHeaderProtectionCipher();
+        } else {
+            return config.getDefaultQuicHeaderProtectionCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicAeadCipher() {
+        if (context.getQuicContext().getAeadCipher() != null) {
+            return context.getQuicContext().getAeadCipher();
+        } else {
+            return config.getDefaultQuicAeadCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicHeaderProtectionCipher() {
+        if (context.getQuicContext().getHeaderProtectionCipher() != null) {
+            return context.getQuicContext().getHeaderProtectionCipher();
+        } else {
+            return config.getDefaultQuicHeaderProtectionCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicZeroRTTAeadCipher() {
+        if (context.getQuicContext().getZeroRTTAeadCipher() != null) {
+            return context.getQuicContext().getZeroRTTAeadCipher();
+        } else {
+            return config.getDefaultQuicAeadCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicZeroRTTHeaderProtectionCipher() {
+        if (context.getQuicContext().getZeroRTTHeaderProtectionCipher() != null) {
+            return context.getQuicContext().getZeroRTTHeaderProtectionCipher();
+        } else {
+            return config.getDefaultQuicHeaderProtectionCipherAlgorithm();
+        }
+    }
 }

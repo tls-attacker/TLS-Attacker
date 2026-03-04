@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
@@ -40,22 +39,20 @@ public class QuicEncryptor {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Chooser chooser;
-    private final QuicContext quicContext;
 
     public QuicEncryptor(Chooser chooser) {
         this.chooser = chooser;
-        this.quicContext = chooser.getContext().getQuicContext();
     }
 
     public void addHeaderProtectionInitial(InitialPacket packet) throws CryptoException {
         this.addHeaderProtection(
                 packet,
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getInitalHeaderProtectionCipher(),
+                        chooser.getQuicInitialHeaderProtectionCipher(),
                         chooser.getQuicInitialServerHpKey(),
                         packet.getHeaderProtectionSample()),
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getInitalHeaderProtectionCipher(),
+                        chooser.getQuicInitialHeaderProtectionCipher(),
                         chooser.getQuicInitialClientHpKey(),
                         packet.getHeaderProtectionSample()));
     }
@@ -64,11 +61,11 @@ public class QuicEncryptor {
         this.addHeaderProtection(
                 packet,
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicHeaderProtectionCipher(),
                         chooser.getQuicHandshakeServerHpKey(),
                         packet.getHeaderProtectionSample()),
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicHeaderProtectionCipher(),
                         chooser.getQuicHandshakeClientHpKey(),
                         packet.getHeaderProtectionSample()));
     }
@@ -77,11 +74,11 @@ public class QuicEncryptor {
         this.addHeaderProtection(
                 packet,
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getZeroRTTHeaderProtectionCipher(),
+                        chooser.getQuicZeroRTTHeaderProtectionCipher(),
                         chooser.getQuicZeroRTTServerHpKey(),
                         packet.getHeaderProtectionSample()),
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getZeroRTTHeaderProtectionCipher(),
+                        chooser.getQuicZeroRTTHeaderProtectionCipher(),
                         chooser.getQuicZeroRTTClientHpKey(),
                         packet.getHeaderProtectionSample()));
     }
@@ -90,11 +87,11 @@ public class QuicEncryptor {
         this.addHeaderProtection(
                 packet,
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicHeaderProtectionCipher(),
                         chooser.getQuicApplicationServerHpKey(),
                         packet.getHeaderProtectionSample()),
                 QuicPacketCryptoComputations.generateHeaderProtectionMask(
-                        quicContext.getHeaderProtectionCipher(),
+                        chooser.getQuicHeaderProtectionCipher(),
                         chooser.getQuicApplicationClientHpKey(),
                         packet.getHeaderProtectionSample()));
     }
@@ -144,7 +141,7 @@ public class QuicEncryptor {
                 chooser.getQuicInitialServerKey(),
                 chooser.getQuicInitialClientIv(),
                 chooser.getQuicInitialClientKey(),
-                quicContext.getInitialAeadCipher());
+                chooser.getQuicInitialAeadCipher());
     }
 
     public void encryptHandshakePacket(HandshakePacket packet) throws CryptoException {
@@ -154,7 +151,7 @@ public class QuicEncryptor {
                 chooser.getQuicHandshakeServerKey(),
                 chooser.getQuicHandshakeClientIv(),
                 chooser.getQuicHandshakeClientKey(),
-                quicContext.getAeadCipher());
+                chooser.getQuicAeadCipher());
     }
 
     public void encryptOneRRTPacket(QuicPacket packet) throws CryptoException {
@@ -164,7 +161,7 @@ public class QuicEncryptor {
                 chooser.getQuicApplicationServerKey(),
                 chooser.getQuicApplicationClientIv(),
                 chooser.getQuicApplicationClientKey(),
-                quicContext.getAeadCipher());
+                chooser.getQuicAeadCipher());
     }
 
     public void encryptZeroRTTPacket(QuicPacket packet) throws CryptoException {
@@ -174,7 +171,7 @@ public class QuicEncryptor {
                 chooser.getQuicZeroRTTServerKey(),
                 chooser.getQuicZeroRTTClientIv(),
                 chooser.getQuicZeroRTTClientKey(),
-                quicContext.getZeroRTTAeadCipher());
+                chooser.getQuicZeroRTTAeadCipher());
     }
 
     private void encrypt(
@@ -183,7 +180,7 @@ public class QuicEncryptor {
             byte[] serverKey,
             byte[] clientIv,
             byte[] clientKey,
-            Cipher cipher)
+            String cipherAlgorithm)
             throws CryptoException {
         ConnectionEndType connectionEndType = chooser.getTalkingConnectionEnd();
         byte[] encryptionIv;
@@ -223,7 +220,12 @@ public class QuicEncryptor {
 
         try {
             byte[] encryptedPayload =
-                    aeadEncrypt(associatedData, decryptedPayload, nonce, encryptionKey, cipher);
+                    aeadEncrypt(
+                            associatedData,
+                            decryptedPayload,
+                            nonce,
+                            encryptionKey,
+                            cipherAlgorithm);
             packet.setProtectedPayload(encryptedPayload);
         } catch (IllegalStateException
                 | IllegalBlockSizeException
@@ -233,15 +235,17 @@ public class QuicEncryptor {
             throw new CryptoException("Could not encrypt " + packet.getPacketType().getName(), ex);
         } catch (InvalidAlgorithmParameterException ex) {
             LOGGER.info("Ignoring InvalidArgumentException");
-        } catch (NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
+            throw new CryptoException("Could not encrypt " + packet.getPacketType().getName(), e);
         }
     }
 
     private byte[] aeadEncrypt(
-            byte[] associatedData, byte[] plaintext, byte[] nonce, byte[] key, Cipher aeadCipher)
+            byte[] associatedData,
+            byte[] plaintext,
+            byte[] nonce,
+            byte[] key,
+            String cipherAlgorithm)
             throws InvalidKeyException,
                     IllegalBlockSizeException,
                     BadPaddingException,
@@ -250,16 +254,16 @@ public class QuicEncryptor {
                     InvalidAlgorithmParameterException {
         AlgorithmParameterSpec parameterSpec;
         String algo;
-        Cipher _cipher = Cipher.getInstance(aeadCipher.getAlgorithm());
-        if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
+        Cipher cipher = Cipher.getInstance(cipherAlgorithm);
+        if (cipherAlgorithm.equals("ChaCha20-Poly1305")) {
             algo = "ChaCha20";
             parameterSpec = new IvParameterSpec(nonce);
         } else {
             algo = "AES";
             parameterSpec = new GCMParameterSpec(128, nonce);
         }
-        _cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
-        _cipher.updateAAD(associatedData);
-        return _cipher.doFinal(plaintext);
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
+        cipher.updateAAD(associatedData);
+        return cipher.doFinal(plaintext);
     }
 }
