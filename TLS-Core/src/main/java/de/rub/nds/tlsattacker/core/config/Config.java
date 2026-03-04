@@ -813,11 +813,11 @@ public class Config implements Serializable {
 
     private byte[] defaultQuicPathChallange = DataConverter.hexStringToByteArray("AABBCCDD");
 
-    private byte[] defaultQuicEncryptionKey = new byte[0];
+    private byte[] defaultQuicEncryptionKey = new byte[16];
 
     private byte[] defaultQuicEncryptionIv = new byte[12];
 
-    private byte[] defaultQuicHeaderProtectionKey = new byte[0];
+    private byte[] defaultQuicHeaderProtectionKey = new byte[16];
 
     private String defaultQuicAeadCipherAlgorithm = "AES/GCM/NoPadding";
 
