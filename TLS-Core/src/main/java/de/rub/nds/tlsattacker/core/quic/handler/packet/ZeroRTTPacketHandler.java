@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +34,7 @@ public class ZeroRTTPacketHandler extends LongHeaderPacketHandler<ZeroRTTPacket>
             if (!quicContext.isZeroRTTSecretsInitialized()) {
                 QuicPacketCryptoComputations.calculateZeroRTTSecrets(quicContext.getContext());
             }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
+        } catch (NoSuchAlgorithmException | CryptoException e) {
             LOGGER.error("Could not calculate 0-RTT secrets", e);
         }
     }

@@ -71,8 +71,8 @@ public class QuicPacketLayer
         super(ImplementedLayers.QUICPACKET);
         this.context = context;
         this.quicContext = context.getQuicContext();
-        decryptor = new QuicDecryptor(context.getQuicContext());
-        encryptor = new QuicEncryptor(context.getQuicContext());
+        decryptor = new QuicDecryptor(context.getChooser());
+        encryptor = new QuicEncryptor(context.getChooser());
         Arrays.stream(QuicPacketType.values())
                 .forEach(
                         quicPacketType ->

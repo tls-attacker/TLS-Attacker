@@ -365,4 +365,72 @@ public abstract class Chooser {
     public abstract byte[] getQuicPathChallengeData();
 
     public abstract byte[] getQuicInitialPacketToken();
+
+    // QUIC Encryption Keys
+
+    public abstract byte[] getQuicInitialClientKey();
+
+    public abstract byte[] getQuicInitialServerKey();
+
+    public abstract byte[] getQuicHandshakeClientKey();
+
+    public abstract byte[] getQuicHandshakeServerKey();
+
+    public abstract byte[] getQuicApplicationClientKey();
+
+    public abstract byte[] getQuicApplicationServerKey();
+
+    public abstract byte[] getQuicZeroRTTClientKey();
+
+    public abstract byte[] getQuicZeroRTTServerKey();
+
+    // QUIC Encryption IVs
+
+    public abstract byte[] getQuicInitialClientIv();
+
+    public abstract byte[] getQuicInitialServerIv();
+
+    public abstract byte[] getQuicHandshakeClientIv();
+
+    public abstract byte[] getQuicHandshakeServerIv();
+
+    public abstract byte[] getQuicApplicationClientIv();
+
+    public abstract byte[] getQuicApplicationServerIv();
+
+    public abstract byte[] getQuicZeroRTTClientIv();
+
+    public abstract byte[] getQuicZeroRTTServerIv();
+
+    // QUIC Header Protection Keys
+
+    public abstract byte[] getQuicInitialClientHpKey();
+
+    public abstract byte[] getQuicInitialServerHpKey();
+
+    public abstract byte[] getQuicHandshakeClientHpKey();
+
+    public abstract byte[] getQuicHandshakeServerHpKey();
+
+    public abstract byte[] getQuicApplicationClientHpKey();
+
+    public abstract byte[] getQuicApplicationServerHpKey();
+
+    public abstract byte[] getQuicZeroRTTClientHpKey();
+
+    public abstract byte[] getQuicZeroRTTServerHpKey();
+
+    // QUIC Cipher Algorithms
+
+    public abstract String getQuicInitialAeadCipher();
+
+    public abstract String getQuicInitialHeaderProtectionCipher();
+
+    public abstract String getQuicAeadCipher();
+
+    public abstract String getQuicHeaderProtectionCipher();
+
+    public abstract String getQuicZeroRTTAeadCipher();
+
+    public abstract String getQuicZeroRTTHeaderProtectionCipher();
 }

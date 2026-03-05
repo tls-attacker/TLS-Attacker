@@ -28,9 +28,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,18 +48,18 @@ public class QuicContext extends LayerContext {
 
     private byte[] initialSalt;
     private HKDFAlgorithm initialHKDFAlgorithm;
-    private Cipher initialAeadCipher;
-    private Cipher initalHeaderProtectionCipher;
+    private String initialAeadCipher;
+    private String initalHeaderProtectionCipher;
     private CipherSuite initialCipherSuite;
 
     private HKDFAlgorithm zeroRTTHKDFAlgorithm;
-    private Cipher zeroRTTAeadCipher;
-    private Cipher zeroRTTHeaderProtectionCipher;
+    private String zeroRTTAeadCipher;
+    private String zeroRTTHeaderProtectionCipher;
     private CipherSuite zeroRTTCipherSuite;
 
     private HKDFAlgorithm hkdfAlgorithm;
-    private Cipher aeadCipher;
-    private Cipher headerProtectionCipher;
+    private String aeadCipher;
+    private String headerProtectionCipher;
 
     // Initial Keys
     private boolean initialSecretsInitialized;
@@ -158,12 +155,8 @@ public class QuicContext extends LayerContext {
         this.initialSalt = quicVersion.getInitialSalt();
         this.initialCipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         this.initialHKDFAlgorithm = AlgorithmResolver.getHKDFAlgorithm(getInitialCipherSuite());
-        try {
-            this.initialAeadCipher = Cipher.getInstance("AES/GCM/NoPadding");
-            this.initalHeaderProtectionCipher = Cipher.getInstance("AES/ECB/NoPadding");
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            e.printStackTrace();
-        }
+        this.initialAeadCipher = "AES/GCM/NoPadding";
+        this.initalHeaderProtectionCipher = "AES/ECB/NoPadding";
         this.sourceConnectionId = this.generateRandomConnectionId(16);
         this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
         this.destinationConnectionId = this.firstDestinationConnectionId;
@@ -344,7 +337,7 @@ public class QuicContext extends LayerContext {
         return initialCipherSuite;
     }
 
-    public Cipher getInitialAeadCipher() {
+    public String getInitialAeadCipher() {
         return initialAeadCipher;
     }
 
@@ -675,27 +668,27 @@ public class QuicContext extends LayerContext {
         this.hkdfAlgorithm = hkdfAlgorithm;
     }
 
-    public Cipher getAeadCipher() {
+    public String getAeadCipher() {
         return aeadCipher;
     }
 
-    public void setAeadCipher(Cipher aeadCipher) {
+    public void setAeadCipher(String aeadCipher) {
         this.aeadCipher = aeadCipher;
     }
 
-    public Cipher getInitalHeaderProtectionCipher() {
+    public String getInitalHeaderProtectionCipher() {
         return initalHeaderProtectionCipher;
     }
 
-    public void setInitalHeaderProtectionCipher(Cipher initalHeaderProtectionCipher) {
+    public void setInitalHeaderProtectionCipher(String initalHeaderProtectionCipher) {
         this.initalHeaderProtectionCipher = initalHeaderProtectionCipher;
     }
 
-    public Cipher getHeaderProtectionCipher() {
+    public String getHeaderProtectionCipher() {
         return headerProtectionCipher;
     }
 
-    public void setHeaderProtectionCipher(Cipher headerProtectionCipher) {
+    public void setHeaderProtectionCipher(String headerProtectionCipher) {
         this.headerProtectionCipher = headerProtectionCipher;
     }
 
@@ -727,19 +720,19 @@ public class QuicContext extends LayerContext {
         this.zeroRTTHKDFAlgorithm = zeroRTTHKDFAlgorithm;
     }
 
-    public Cipher getZeroRTTAeadCipher() {
+    public String getZeroRTTAeadCipher() {
         return zeroRTTAeadCipher;
     }
 
-    public void setZeroRTTAeadCipher(Cipher zeroRTTAeadCipher) {
+    public void setZeroRTTAeadCipher(String zeroRTTAeadCipher) {
         this.zeroRTTAeadCipher = zeroRTTAeadCipher;
     }
 
-    public Cipher getZeroRTTHeaderProtectionCipher() {
+    public String getZeroRTTHeaderProtectionCipher() {
         return zeroRTTHeaderProtectionCipher;
     }
 
-    public void setZeroRTTHeaderProtectionCipher(Cipher zeroRTTHeaderProtectionCipher) {
+    public void setZeroRTTHeaderProtectionCipher(String zeroRTTHeaderProtectionCipher) {
         this.zeroRTTHeaderProtectionCipher = zeroRTTHeaderProtectionCipher;
     }
 
