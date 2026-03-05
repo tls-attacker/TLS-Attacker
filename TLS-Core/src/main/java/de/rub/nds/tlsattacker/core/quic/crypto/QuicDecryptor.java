@@ -311,9 +311,9 @@ public class QuicDecryptor {
                 | BadPaddingException
                 | InvalidKeyException
                 | IllegalArgumentException
-                | InvalidAlgorithmParameterException ex) {
-            throw new CryptoException("Could not decrypt " + packet.getPacketType().getName(), ex);
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException ex) {
+                | InvalidAlgorithmParameterException
+                | NoSuchPaddingException
+                | NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not decrypt " + packet.getPacketType().getName(), ex);
         }
     }
