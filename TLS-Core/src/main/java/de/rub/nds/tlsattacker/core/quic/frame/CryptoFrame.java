@@ -150,6 +150,6 @@ public class CryptoFrame extends QuicFrame {
 
     @Override
     public String toShortString() {
-        return "CF";
+        return "CRY";
     }
 }
