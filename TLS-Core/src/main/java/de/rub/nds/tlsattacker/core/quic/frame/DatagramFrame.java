@@ -107,4 +107,9 @@ public class DatagramFrame extends QuicFrame {
     public void setDataConfig(byte[] dataConfig) {
         this.dataConfig = dataConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "DG";
+    }
 }

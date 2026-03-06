@@ -217,4 +217,9 @@ public class ConnectionCloseFrame extends QuicFrame {
         }
         return sb.toString();
     }
+
+    @Override
+    public String toShortString() {
+        return "CC";
+    }
 }

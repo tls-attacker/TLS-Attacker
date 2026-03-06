@@ -91,4 +91,9 @@ public class OneRTTPacket extends QuicPacket {
     public OneRTTPacketParser getParser(Context context, InputStream stream) {
         return new OneRTTPacketParser(stream, context.getQuicContext());
     }
+
+    @Override
+    public String toShortString() {
+        return "1-RTT";
+    }
 }

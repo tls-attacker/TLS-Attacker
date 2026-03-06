@@ -29,6 +29,11 @@ public class StatelessResetPseudoPacket extends QuicPacket {
     }
 
     @Override
+    public String toShortString() {
+        return "SR";
+    }
+
+    @Override
     public void buildUnprotectedPacketHeader() {
         throw new NotImplementedException();
     }

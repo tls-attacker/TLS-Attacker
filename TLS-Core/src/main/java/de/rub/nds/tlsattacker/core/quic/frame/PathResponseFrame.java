@@ -63,4 +63,9 @@ public class PathResponseFrame extends QuicFrame {
     public void setData(ModifiableByteArray data) {
         this.data = data;
     }
+
+    @Override
+    public String toShortString() {
+        return "PR";
+    }
 }

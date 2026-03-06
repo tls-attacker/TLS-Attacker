@@ -64,4 +64,9 @@ public class PaddingFrame extends QuicFrame {
     public PaddingFrameParser getParser(Context context, InputStream stream) {
         return new PaddingFrameParser(stream);
     }
+
+    @Override
+    public String toShortString() {
+        return "PAD";
+    }
 }
