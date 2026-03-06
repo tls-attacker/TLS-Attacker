@@ -65,6 +65,11 @@ public class VersionNegotiationPacket extends LongHeaderPacket {
         return new VersionNegotiationPacketParser(stream, context.getQuicContext());
     }
 
+    @Override
+    public String toShortString() {
+        return "VN";
+    }
+
     public ModifiableByteArray getSupportedVersions() {
         return supportedVersions;
     }

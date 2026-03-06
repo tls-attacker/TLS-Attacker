@@ -161,4 +161,9 @@ public class StreamFrame extends QuicFrame {
     public void setFinalFrameConfig(boolean finalFrameConfig) {
         this.finalFrameConfig = finalFrameConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "STR";
+    }
 }

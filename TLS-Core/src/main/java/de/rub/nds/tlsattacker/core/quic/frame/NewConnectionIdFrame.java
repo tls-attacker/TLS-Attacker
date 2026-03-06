@@ -180,4 +180,9 @@ public class NewConnectionIdFrame extends QuicFrame {
     public void setStatelessResetTokenConfig(byte[] statelessResetTokenConfig) {
         this.statelessResetTokenConfig = statelessResetTokenConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "NCID";
+    }
 }

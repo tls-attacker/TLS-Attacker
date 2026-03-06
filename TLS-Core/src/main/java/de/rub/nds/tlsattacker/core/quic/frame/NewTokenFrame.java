@@ -75,4 +75,9 @@ public class NewTokenFrame extends QuicFrame {
     public void setToken(byte[] token) {
         this.token = ModifiableVariableFactory.safelySetValue(this.token, token);
     }
+
+    @Override
+    public String toShortString() {
+        return "NT";
+    }
 }

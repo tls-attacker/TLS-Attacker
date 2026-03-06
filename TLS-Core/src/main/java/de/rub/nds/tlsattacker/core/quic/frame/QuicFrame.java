@@ -64,7 +64,11 @@ public abstract class QuicFrame extends ModifiableVariableHolder implements Data
             // Exceptions
             return "NULL";
         }
-        return QuicFrameType.getFrameType(frameType.getValue()).getName();
+        String name = QuicFrameType.getFrameType(frameType.getValue()).getName();
+        if (name.endsWith("_FRAME")) {
+            return name.substring(0, name.length() - "_FRAME".length());
+        }
+        return name;
     }
 
     @Override

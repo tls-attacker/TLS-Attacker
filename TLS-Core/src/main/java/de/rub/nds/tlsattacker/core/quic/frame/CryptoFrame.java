@@ -147,4 +147,9 @@ public class CryptoFrame extends QuicFrame {
     public void setLengthConfig(long lengthConfig) {
         this.lengthConfig = lengthConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "CF";
+    }
 }

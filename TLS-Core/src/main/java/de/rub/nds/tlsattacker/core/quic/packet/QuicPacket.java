@@ -195,7 +195,11 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
 
     @Override
     public String toCompactString() {
-        return this.packetType.getName();
+        String name = this.packetType.getName();
+        if (name.endsWith("_PACKET")) {
+            return name.substring(0, name.length() - "_PACKET".length());
+        }
+        return name;
     }
 
     public void setProtectedFlags(byte protectedFlags) {

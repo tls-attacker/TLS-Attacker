@@ -87,6 +87,11 @@ public class RetryPacket extends LongHeaderPacket {
         return new RetryPacketParser(stream, context.getQuicContext());
     }
 
+    @Override
+    public String toShortString() {
+        return "RT";
+    }
+
     public ModifiableByteArray getRetryToken() {
         return retryToken;
     }
