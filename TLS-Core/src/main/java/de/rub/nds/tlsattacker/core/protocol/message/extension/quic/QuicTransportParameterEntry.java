@@ -28,13 +28,6 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
     public QuicTransportParameterEntry() {}
 
     public QuicTransportParameterEntry(
-            QuicTransportParameterEntryTypes entryType, String entryValue) {
-        this.entryType = entryType;
-        this.setEntryValue(DataConverter.hexStringToByteArray(entryValue));
-        this.setEntryLength(this.entryValue.getValue().length);
-    }
-
-    public QuicTransportParameterEntry(
             QuicTransportParameterEntryTypes entryType, byte[] entryValue) {
         this.entryType = entryType;
         this.setEntryValue(entryValue);
