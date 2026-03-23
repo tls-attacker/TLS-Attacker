@@ -19,6 +19,8 @@ import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group6144;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group8192;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.crypto.pq.HybridGroupParameters;
+import de.rub.nds.tlsattacker.core.crypto.pq.MLKEMGroupParameters;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.util.Random;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jcajce.spec.MLKEMParameterSpec;
 
 public enum NamedGroup {
     SECT163K1(new byte[] {(byte) 0, (byte) 1}, NamedEllipticCurveParameters.SECT163K1),
@@ -85,12 +88,27 @@ public enum NamedGroup {
     FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new Rfc7919Group4096()),
     FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new Rfc7919Group6144()),
     FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new Rfc7919Group8192()),
-    MLKEM512(new byte[] {(byte) 2, (byte) 0}, null),
-    MLKEM768(new byte[] {(byte) 2, (byte) 1}, null),
-    MLKEM1024(new byte[] {(byte) 2, (byte) 2}, null),
-    SECP256R1_MLKEM768(new byte[] {0x11, (byte) 0xEB}, null),
-    X25519_MLKEM768(new byte[] {0x11, (byte) 0xEC}, null),
-    SECP384R1_MLKEM1024(new byte[] {0x11, (byte) 0xED}, null),
+    MLKEM512(
+            new byte[] {(byte) 2, (byte) 0},
+            new MLKEMGroupParameters(MLKEMParameterSpec.ml_kem_512)),
+    MLKEM768(
+            new byte[] {(byte) 2, (byte) 1},
+            new MLKEMGroupParameters(MLKEMParameterSpec.ml_kem_768)),
+    MLKEM1024(
+            new byte[] {(byte) 2, (byte) 2},
+            new MLKEMGroupParameters(MLKEMParameterSpec.ml_kem_1024)),
+    SECP256R1_MLKEM768(
+            new byte[] {0x11, (byte) 0xEB},
+            new HybridGroupParameters(
+                    NamedEllipticCurveParameters.SECP256R1, MLKEMParameterSpec.ml_kem_768)),
+    X25519_MLKEM768(
+            new byte[] {0x11, (byte) 0xEC},
+            new HybridGroupParameters(
+                    NamedEllipticCurveParameters.CURVE_X25519, MLKEMParameterSpec.ml_kem_768)),
+    SECP384R1_MLKEM1024(
+            new byte[] {0x11, (byte) 0xED},
+            new HybridGroupParameters(
+                    NamedEllipticCurveParameters.SECP384R1, MLKEMParameterSpec.ml_kem_1024)),
     X25519_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x99}, null),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
@@ -472,6 +490,14 @@ public enum NamedGroup {
         return this.name().contains("GREASE");
     }
 
+    public boolean isPQGroup() {
+        return this == MLKEM512 || this == MLKEM768 || this == MLKEM1024;
+    }
+
+    public boolean isHybridPQGroup() {
+        return this == SECP256R1_MLKEM768 || this == X25519_MLKEM768 || this == SECP384R1_MLKEM1024;
+    }
+
     public static List<NamedGroup> getImplemented() {
         List<NamedGroup> list = new LinkedList<>();
         list.add(SECP160K1);
@@ -513,6 +539,12 @@ public enum NamedGroup {
         list.add(FFDHE4096);
         list.add(FFDHE6144);
         list.add(FFDHE8192);
+        list.add(MLKEM512);
+        list.add(MLKEM768);
+        list.add(MLKEM1024);
+        list.add(SECP256R1_MLKEM768);
+        list.add(X25519_MLKEM768);
+        list.add(SECP384R1_MLKEM1024);
         return list;
     }
 
