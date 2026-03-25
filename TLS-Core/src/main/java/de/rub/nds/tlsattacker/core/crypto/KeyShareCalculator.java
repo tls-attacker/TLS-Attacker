@@ -120,8 +120,9 @@ public class KeyShareCalculator {
      * Computes the encapsulation for the ML-KEM algorithms. The server uses this to generate the
      * ciphertext sent to the client and the shared secret.
      *
-     * @param namedGroup
-     * @param clientPublicKeyBytes
+     * @param namedGroup The named group that should be used.
+     * @param clientPublicKeyBytes The public key that should be used.
+     * @param random The secure random that should be used
      * @return The encapsulation result containing both the ciphertext and the shared secret.
      */
     public static SecretWithEncapsulation mlkemEncaps(
