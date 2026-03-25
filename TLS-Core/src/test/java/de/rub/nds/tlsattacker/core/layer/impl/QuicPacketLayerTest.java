@@ -15,11 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.hints.QuicPacketLayerHint;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.*;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -56,6 +55,27 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
     private final byte[] initialPacketWithClientRandomDcidPn2 =
             DataConverter.hexStringToByteArray(
                     "cd00000001088b19ddf6481a37180825e411b65c38d66000449689b2fa3b625b14f4fe9383b1822c0ef307d89abaed03e3b24d0855a371838f1f7f9a003482387996a1cd95a2afb03249ae2f9c3220bf404b6edc84b26106b547e7055e96ccd13f8ef89a10895735818965b8399d2907afae8a0d8b0e93d9e890c8dcc80b8f88c1aa64678a181b77834f60f9943cfc9c53cc714e2dfe12133ee5b3ae598b56cb51899c87f1592f354896b845a09f41813214a8450a8c9aa563c44989d1cb1d0fdb37244aaf59351d62e21d288b24987ef74f1c2eb2e5a41a0bdb67f52c7bc3cb5a0ec117954643cfb5737c871d452c5fa72025a12f5578e657c08acdc88c9077b84fa29565f4417aa930731abb629736e42803b94d987f1f7b07d15509d4630b4a0dcd7f8c4a5679000f9a6f343115ca3f3eb052a76bcf4e11fb43986e7a5d48f9f1e52be131012f809c0693de0864e4d8ce2d07f400fac2831ef608333cdb71854c02c5ea9a604309d19488273b41de8173362fed62462f84bb801068ab1cf655344037aa942b3d8b4505d3e8b56db039c2325d7a98abff83fe6dec252bc5c9d29ede94aaf02435be1dd63aa315a6028e0da768bfbeac572a5af462364fc0a6bcf97e879c7ee54084fbac4e59a7e43b17db78e5313a2ceb9765e33d5d1d5697db7cd9f7db11aac002f97ee54dd75f70b704a341adcf23c5cb2319d715c5c7cd66532ab27d930233ccce15637d23f279a550134671c19c1b90ecb53844a9f2cb3d5fe65654a9c9dd033406f593c0a946114def324175d52436de3f283ece6cc67e5af6096c888b7e969f78e2bd3fc5d27610a7c65ba8cf9a7dfee0dcaa56523ed064ced6baf457ccc9b4b6610a4a5b9d94a580fb7e783fbbb36a347462262ad2bf63538db5640e6d76bf9cd68483e1c2812321157736dc17b7d3f7f10bcd987e69defb9249f17cddb74a91e0592f3b29b3cb4fad5e5e60ad66dbadafbd5159c060eaa7ad5e6124943c19076d61144c10b39dfe928c33b4218a68be6bafd9b422f025bacc12662db2ff2d31027ad769dffe68daec2c496f28ca2200cbc988aab7b490e09d605f44d8bba1cf1cbcbae4817569cc341d02b4e9e914f303f3c5dbc61f76b627a5204d3fbd4d14ff0e33d1ad2886d6f4bdd25b1718336ae3af26bf507800db9c6fb9140fb249bc14d4924ac775bd81a5129bb30b9d03a19b8a0b3c820ec5631df022fb6cabd6c9f342038e0ffc889d05c5e88014cc391d74a241042b6108666a9f2ef1b2c8dd3b65f32c40e4d9a244b3c0da871cc66c3cb39862bff69ad621d14a954d65048be7952e6595b741cd102e14e6b328d5ab3ffb6810b35c1f4edd811898a90f8507487b1d5b70d9d751fcabd5364f3505ad3068410a5cccda6af6cd97806b4eca5c656ee69259eb1875a5be4182fcdb3a179c38f5650f3d03cfd67a1c95ddee5e3efb2931ecdbd277ffb6b9f807836b543bf838b59fa24bbb5ca2011892cffc52ecdbb67f5203f877e3caf8baaca95d6eb6df13fb3cdc7207462abda21ac8813791cfc3f2e3f14732c359c3db97d43e18356f02785284d53c13b477949a846766558d5c41d66e0027f87898c842188c419c24b01969d43c4c8624a72625dd2949fb7d01cb536f0f0ec40b81f9b3419483069b442f0efff0af711b73ff3133d3a64027e445319d4f");
+
+    // Three Initial packets for the connection ID filter test.
+    // DCID: 3550eeb339d281b3 (client's random), SCID: 744ce95e375def3e
+    // Packet 1 uses the client's randomly chosen DCID. Contains Crypto + Padding frames.
+    private final byte[] filterTestInitialClientDcid =
+            DataConverter.hexStringToByteArray(
+                    "c700000001083550eeb339d281b308744ce95e375def3e0044960314e2449fd5e0d36a2d542e5dd75d370f294679b69c2989b796a3e23e5b96f59bc638a73f2044775a879b3f17cc81348f9113511bd11e2ea6ebc5496c63756281dfade34311611234c6c55d77c8b3dd3ac50d30027a395cace9e54080834c951758c34978a45d2836ea09f2d12d02f93d8a7a0fbbffc9f0c653a257b5e906a976709fb3bbc409ad5c7266d2311ec689c478ad4f1d964d3d9b1c1a647a50006a62d190cd3728bcddf3321d9137a12248ba41dadc8527b05ceb6ba7428e8c5866e0c307e47b7fd7f833ee2a1950d1b914de500e4527b231049d7ef3476097134f114d1ba7b072e67f9018c07e0385307126cfed27ac23fa817535a9a4fc3c58ef19409a0f2e218b1066dc89120780fac413c04ada2fce827a8eff524e11aa7f19e2f815efc6cc7ceb8e12f93c4be8cbd59cecf3465452c1df4b5f5f98b241bed8d4a31ec29b389d757a15756cf4fb7c64ce2a1cb05ec717ef7036b1361784d749aba427c8f0ebbbc304fa10fe7c71da20f4913cf1a2916d6bfe3154f016b0564bf893849c41013072e4185bd83dbc57ff3a73be8b2299edc7b8aeefe0f2084e28531338e03f313e321efb3ac927523475ef87aae820caf1fe38f53e29d864e65ed8c4fa8fbd91a90ade31cae929be6ff8d5229bc5f66dc756e63f95d4f6f00eedbf1fc090c07930854dd0b69b479e16b661caeffa73547cfa24bc7cd1c57a2357b4b62e2cd6f2b061ce5a05af78b46b183ccdc7eb3be6b0f0ea6d36a491af954ce910f241c548dea8268d0f803ac80087eba9f6842b78d5f3506d499830c3e6839ae2de792763a9958bec538efda5b94f316fb59f08fc11baa6424aecd46e6307d3672d00b17d1f6d5a2aa5a1cb8f33e4a9085388435d1a785cbd38621a712029c9d8ef0727817fc03110323597b1ef89e98b622dcd8d96a7f8590c46ce0184440be54848998224c23f6a360122a1e58376a90910f9c55f4f44fe4f21bf3b00a31114be36dec8cd387c115d7f64aa48482d8baf0f72683a55007092fcaa3a5580e4d1c820b80aa1b142081bc9888ff63bb83cc73ab4d7121ff41a8e6ed1dba5f7b764c2778e61165a6ea10498e461a58b2b1b07d583ab095ad21c27cfe1ce4f9d52da00fb371db4ff4f8021133e20c9e29bb321a683b0e58ba1cbdab89a4ff324f4a3578a42b6f57d730f15431c335be818b07e242d5eda81f04a2b197b7f95fce927470f4dc949ebce1f6976ae2764aec64de0a1d9280236badad35f5d36a67ea4991a9c753e6aaa98cb4e917e886a6a3709adf6d702be8523d559d9ce0ba5b77dfb58e2f9eef00def775158e61413b71a758a2760d5715191e6350f2ed33a0b8c5fcbfdc45825e77ac10eec8324d0260b4f4b68f1aa319f733b8d75ec9147d6db75027d1f0dd184fd9337ae607f7a43a1822c19a8899576391328d9f18d6ed4ed1de59b44d591fbf043adafe969e0dfa83077faca424b4ba11dc71cb72f226215b3e7eba657db1f48148b28c8a32c53632c515fa2253d9032f1b588e4194f98b345494d8fd32afc8ae381933a7d619e8b4937aa87db71dee9156393cc59ab53b4310368f48587d45086f71fd9c00e64b1b5ef9a2efc54d25ca0fae6f4084530d2d8e77fbcc8c69525f32cf7f77bba72000a2ef79a64");
+    // Packet 2 uses the server's negotiated sourceConnectionId as DCID (60b420bb...).
+    // DCID: 60b420bb3851d9d47acb933dbe70399b, SCID: 744ce95e375def3e
+    // Contains Crypto + Padding frames.
+    private final byte[] filterTestInitialServerDcid =
+            DataConverter.hexStringToByteArray(
+                    "ca000000011060b420bb3851d9d47acb933dbe70399b08744ce95e375def3e00448ea0e02b137ac359b58727c5a8c1b3411d0e47675d28f99d203d98b59f638ea77871a00dfb68a4f740d65e91bcbcb7691e946b24ba4b1d2721d9526615a504e885b3be75aaa04de1ecc232e9f345d90ffecd86b7c721c8b9659e08d43ca82cdd392f6cd6fac15e39ff438380b0f22029778ca597e0b8ff1ace1e54e9a52d7b5b422d618e804e4d5ac5ab7dc83bd64526eb7220b1b469384bbfb2262ea2cb2d09764baec930ec878e5ea8966e3efb6132a9799f08c8c7acf46dd3009299f9903025a77ed2ce531870c4585c768081c1e19a18d03df34aeae0735fa05fc4e6e42461062f9dd016ec5e62437c8b283d7468c63b613b5492acba79909990c9227aa16af9408d78d091f61ce42c765f5746ba846f212f9a907bb80c3138986f5ddeca0fbf8579a72f7867e34974c097a18f1f4fa2d37c499e3840a551444da8fff6b07b136f05cb4dbf6c74a7598b206f25c412421f4bccf9568bc6fbc00000194c903baa365aeecc1afdbba2dfc0b0d52d5352f592ec048f585ca4030f61c9304a3007622b0e5f12c63ebd6309d1f86c0bd5447d86c36b779b804dac0a956cb663ea2ce07f6840c70cae1bd620a2445aefcd07795ba568a63b699765b30c9a792d422e8c6e6722b50efd44702a4bf33bef52a6a124e91312a3987f1309de7d711b5baff2e5c81d11541ba24e4bf4e7d46009919a7e557d32374545022cbbddd3ac24562f6c0250131134b1814cd6fb4e0ebd205c87c9acbc7b2f74150429d04ff7c5e227571daf7f20a10bf73d7b433248404e680314a1f8045cf39cad1c2e65c9190d7614d6812a1d3c47e534b99fe41a542214946d9dd8ecf1c3662bb66b22f27470d16631ccb730d5345fd1bc8ac36f654d1148a9255ecee39c7940a7c182ad28b25680035403085c463c458fc315195cd5387e4b307e373687c83fdce9b81781f1b849bf453abc93f9f9079ff3571e19ea8071716f921bb175942fa267c6842b51528909b8a2bf6e271f3a1213da7d61fe3d5305d37d2f7ff4aa163584aed406d1f8c8839bd3006c9c190593b9e794e1f51c7a269ade0ae0c2c4541274282493042fff3b446f4b3aa5fa74f1aef8f4a269a14fff6294badf1cc60c7dc151512485d04f1af50c39e8d299cf621b13cb11c5e5ac0cfadce09eb087cb6b81533a5059dcb7d85cf23ac22675aa4e6dcf1056609bf238062d36d05626c8c24cb8bff2d8e9b8499d9576eb017cc8df012c5068eac5bb60dccee5446edc94fc171c4726866fb178576873d22a89d10dd8ea82fb65dd1f671c6f5146dc9b3535a41e73f4792b97bd567536ba2c93b227264af075b432cd8d518a7a2245eef3cfacc739159bf8193e9f57c324f90e08929184e9096bf35bf6e45504d5db2f96d9c0691ef3b3dfc197c58dab5757bd48f0649da33530ba35178d0b8722d275663db97aa8b29eb0bf1d357d532ba6fd886bf431ac3750e6f6b10d6033aa402dc3092bbffd1447633bb01a7c1ccbd57326c9e4341237f7db791dde34384cec91af59e2f81ca7384d2fe9708c3bf8206cfbadbe8d57ed61afaaf2d3847b16f56b72173d60f0b5bff709ffcdc533ee260387b3f85443d65594d07676adae08e8a793070ff26941e435448a5a2d552fee84bcef57128a");
+    // Packet 3 also uses DCID 60b420bb... but will be used to test rejection when
+    // sourceConnectionId
+    // is changed to a mismatching value between receiving packets 2 and 3.
+    // DCID: 60b420bb3851d9d47acb933dbe70399b, SCID: 744ce95e375def3e
+    // Contains Crypto + Padding frames.
+    private final byte[] filterTestInitialServerDcidRetransmit =
+            DataConverter.hexStringToByteArray(
+                    "c0000000011060b420bb3851d9d47acb933dbe70399b08744ce95e375def3e00448e83cf77d0688af114c1dc2ee7580a7db1dadebfa5cd28898a1ae9b24c995d689ddb7ee92320aeb32985dbff8941595b65221f38824c8e12c09aad64ab05def341ba8d6fd5a3fc722f1e1e429023aa046ae07520c2feb8234f9bab1b6260dac4e494efc50877d66a17f266a0972b846457e5ee74f00b36d1c30a4ba90bc66c2d74e2320323bd25a499656add9fc104824f9958c71c125850fca616893aac371eb1fbc4ad8d5d821a7bbcf5d2f94f9f638131d7ac7d7972f4a46c2f847bae30618c0acabf2b92f95951e347989fd6f96e76bba34207bac85627cb3bcf015be46203491cbb815f3d24f58bc76e048981f84ed8a6f66ddcc29f73c7b6a2a0ea61cacaddf6e86aa67b327f13b0fd5357dc1f661aac0298664f209735c7f928315e6d21b34c19c08630128946e93d05e3a14016b7bf870fbb0d47bebc6f18cc7ed3e486e776495cd01f801501600de6536d6d18cb02a83673430882b117d6190195d19551d21192bf3c652f545e6f46fe1b32dd755ac1832507bff479faedf71a8bc739dc541e52a4ec15852778150c3faf40ad12ea34989d60b2b286362dcede7046eca5fb0a229077ad20631a17644b22749d2d72247047e4e969f4167a614a30c8d0f5fa8a8ef8fcda3de90e6d749d81cd42d50e801ff908061a037b70e91aca8d2e4193078fc2fed918061e653667c7a8a7b8afebe4def712be4ded6292e40d8423795db84bd191690b845038f26f78240ce17e32d9756201bc2d4f1468b3576caf2d093901fb3954fda1ba0bd1445b25f26b23efade3203db20237526d84f38cfecbecae1aa2f6134914993a1b850fa29abf4608e2fffd1b9f360fb6ad471b59599ba26915df7ef0a5e7bfe7c10fe83cd9648698159071e873bce409c925acd24ad5345fa07603c1cece0175e113d421368ea16191a08f53631f8ead73e00b8bec3e477b95d0366bc08d174ac0be63d3bc1df7b723540048697ea24b4c9932fa9d14d2554f91597d5e9c1e311f7cda7e7cf48e935e7eaae9d9c276c1e0e46ae751beb2af06b80b7e6eed5ce770400f796b6923140fe3ae15a1697ead1cb331e1c35b50ac0fae57f1571b4a6fefbfa4a16249f2ef923d61bb5ebbc1705e3b8e340087b56dc91f50c88c1f3aa2369311b42a2cc3ed2d83f14d840aeafc2831031630ef60ed2140c0b2b75cf2da9fc15d5329d649e7f939c6725c6aee20b35ddc8f4e34949f34a9b2a4904d9ba0281a118bb2434c3abce438bb36e388ce5db63570e6d103e7453e5963b045833c7ad860370cfd8851db0dcbe8aa4d939f3bbcc9ebafe58485c5067c9f7d261671b4a73c75d6d1238090b8f1bcdf046bdc347aed111a6f0ccd9051c9d34214a3bd04edbb9af067b5e3785f14403eff4750e59fad706b671f6a4cdd4ada4b8f84500b28658053cdcc035308db964e662b03d449fff28c907ea483bcac360f0a14b9e07906509f868b494e4685caa16dd929c59a1b8034bb435589af804ee51aff1cd837a0ce80547c67837085b2fbb6c36ee25f1e043cfefc5737e5afb87645742cac867dbf87479c9f895f72bcd556db09ff79bd6716647697482d9ab1367ab3ffa1760035cd695f7c93bdd9c9f4ce1ca1ed19c4311c7c1929bb83256b68e994602b35ca");
 
     private final byte[] retryPacket =
             DataConverter.hexStringToByteArray(
@@ -269,7 +289,8 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
                 (QuicPacketLayer) tlsContext.getLayerStack().getLayer(QuicPacketLayer.class);
 
         // Receive first Initial packet (PN=1) — firstDestinationConnectionId is null (server
-        // mode), so the packet passes the filter unconditionally. InitialPacketHandler.adjustContext
+        // mode), so the packet passes the filter unconditionally.
+        // InitialPacketHandler.adjustContext
         // then sets firstDestinationConnectionId from the packet's DCID.
         transportHandler.setFetchableByte(initialPacketWithClientRandomDcidPn1);
         quicPacketLayer.receiveData();
@@ -284,5 +305,58 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
         assertEquals(2, usedContainers.size());
         assertTrue(usedContainers.get(0) instanceof InitialPacket);
         assertTrue(usedContainers.get(1) instanceof InitialPacket);
+    }
+
+    /**
+     * Tests the connection ID filter across the full lifecycle: acceptance via
+     * firstDestinationConnectionId, acceptance via sourceConnectionId, and rejection when DCID
+     * matches neither.
+     */
+    @Test
+    public void testConnectionIdFilter() throws IOException {
+        prepareServerSideTest();
+        tlsContext.getConfig().setDiscardQuicPacketsWithMismatchedSCID(true);
+
+        byte[] serverSourceConnectionId =
+                DataConverter.hexStringToByteArray("60b420bb3851d9d47acb933dbe70399b");
+
+        QuicPacketLayer quicPacketLayer =
+                (QuicPacketLayer) tlsContext.getLayerStack().getLayer(QuicPacketLayer.class);
+
+        // Packet 1 using a client-chosen (random) destination connection ID
+        transportHandler.setFetchableByte(filterTestInitialClientDcid);
+        quicPacketLayer.receiveData();
+
+        // Simulate the server having negotiated its sourceConnectionId
+        quicContext.setSourceConnectionId(serverSourceConnectionId);
+
+        // Packet 2 using the servers real connection ID
+        transportHandler.setFetchableByte(filterTestInitialServerDcid);
+        quicPacketLayer.receiveData();
+
+        List<QuicPacket> usedContainers = quicPacketLayer.getLayerResult().getUsedContainers();
+        assertEquals(2, usedContainers.size());
+        assertTrue(usedContainers.get(0) instanceof InitialPacket);
+        assertTrue(usedContainers.get(1) instanceof InitialPacket);
+
+        // Change sourceConnectionId to a wrong value to simulate a mismatch
+        quicContext.setSourceConnectionId(
+                DataConverter.hexStringToByteArray("deadbeefdeadbeefdeadbeefdeadbeef"));
+
+        // Packet 3 using server's source connection ID - should now be filtered
+        transportHandler.setFetchableByte(filterTestInitialServerDcidRetransmit);
+        quicPacketLayer.receiveData();
+
+        usedContainers = quicPacketLayer.getLayerResult().getUsedContainers();
+        assertEquals(2, usedContainers.size());
+        byte[] clientRandomDcid = DataConverter.hexStringToByteArray("3550eeb339d281b3");
+        QuicPacket retained0 = usedContainers.get(0);
+        assertArrayEquals(clientRandomDcid, retained0.getDestinationConnectionId().getValue());
+        assertEquals(0, retained0.getPlainPacketNumber());
+
+        QuicPacket retained1 = usedContainers.get(1);
+        assertArrayEquals(
+                serverSourceConnectionId, retained1.getDestinationConnectionId().getValue());
+        assertEquals(1, retained1.getPlainPacketNumber());
     }
 }

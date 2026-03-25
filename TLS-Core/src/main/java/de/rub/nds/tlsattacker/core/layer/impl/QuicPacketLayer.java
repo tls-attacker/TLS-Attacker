@@ -382,7 +382,7 @@ public class QuicPacketLayer
                             context.getQuicContext().getSourceConnectionId());
             // if we only allow the properly negotiated destination ID, there may be a race
             // condition where we set the ID in the context but the client has not
-            // received/processed it yet and is sending another initial packet that must retaining
+            // received/processed it yet and is sending another initial packet that must retain
             // its randomly chosen destination ID
             boolean matchesFirstId =
                     Arrays.equals(
