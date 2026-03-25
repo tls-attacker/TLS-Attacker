@@ -1049,6 +1049,12 @@
         <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE6144</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE8192</defaultClientNamedGroup>
+        <defaultClientNamedGroup>MLKEM512</defaultClientNamedGroup>
+        <defaultClientNamedGroup>MLKEM768</defaultClientNamedGroup>
+        <defaultClientNamedGroup>MLKEM1024</defaultClientNamedGroup>
+        <defaultClientNamedGroup>SECP256R1_MLKEM768</defaultClientNamedGroup>
+        <defaultClientNamedGroup>X25519_MLKEM768</defaultClientNamedGroup>
+        <defaultClientNamedGroup>SECP384R1_MLKEM1024</defaultClientNamedGroup>
     </defaultClientNamedGroups>
     <defaultServerNamedGroups>
         <defaultServerNamedGroup>SECP160K1</defaultServerNamedGroup>
@@ -1090,6 +1096,12 @@
         <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE6144</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE8192</defaultServerNamedGroup>
+        <defaultServerNamedGroup>MLKEM512</defaultServerNamedGroup>
+        <defaultServerNamedGroup>MLKEM768</defaultServerNamedGroup>
+        <defaultServerNamedGroup>MLKEM1024</defaultServerNamedGroup>
+        <defaultServerNamedGroup>SECP256R1_MLKEM768</defaultServerNamedGroup>
+        <defaultServerNamedGroup>X25519_MLKEM768</defaultServerNamedGroup>
+        <defaultServerNamedGroup>SECP384R1_MLKEM1024</defaultServerNamedGroup>
     </defaultServerNamedGroups>
     <supportedVersions>
         <supportedVersion>TLS13</supportedVersion>
@@ -1912,6 +1924,12 @@
         <clientSupportedEsniNamedGroup>FFDHE4096</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE6144</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE8192</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>MLKEM512</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>MLKEM768</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>MLKEM1024</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>SECP256R1_MLKEM768</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>X25519_MLKEM768</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>SECP384R1_MLKEM1024</clientSupportedEsniNamedGroup>
     </clientSupportedEsniNamedGroups>
     <esniServerKeyPairs/>
     <defaultEsniClientNonce>A7 28 4C 9A 52 F1 5C 13 64 4B 94 72 61 77 46 57</defaultEsniClientNonce>

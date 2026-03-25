@@ -278,27 +278,50 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             new byte[0],
                             tlsContext.getChooser().getSelectedProtocolVersion());
             byte[] sharedSecret = new byte[0];
-            // if PSK_only mode is selected, the keyShare will be null, and there is no sharedSecret
-            if (keyShareStoreEntry != null) {
+            if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
+                sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
+                // Shared Secret is derived differently for PQ Groups
+            } else if (keyShareStoreEntry.getGroup().isPQGroup()) {
+                if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    sharedSecret =
+                            KeyShareCalculator.mlkemDecaps(
+                                    keyShareStoreEntry.getGroup(),
+                                    tlsContext.getClientMLKEMPrivateKey(),
+                                    keyShareStoreEntry.getPublicKey());
+                    String hexSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
+                    LOGGER.info("Computed ML-KEM Shared Secret: {}", hexSecret);
+                } else {
+                    // The server already computed the shared secret during encapsulation
+                    sharedSecret = tlsContext.getPQSharedSecret();
+
+                    if (sharedSecret == null) {
+                        throw new CryptoException(
+                                "SERVER: PQ Shared Secret was not set in TlsContext during encapsulation!");
+                    }
+
+                    String hexSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
+                    LOGGER.info(
+                            "SERVER: Retrieved pre-encapsulated ML-KEM Shared Secret: "
+                                    + hexSecret);
+                }
+
+            } else {
                 BigInteger privateKey =
                         tlsContext
                                 .getConfig()
                                 .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
-                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
-                    sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
-                } else {
-                    sharedSecret =
-                            KeyShareCalculator.computeSharedSecret(
-                                    keyShareStoreEntry.getGroup(),
-                                    privateKey,
-                                    keyShareStoreEntry.getPublicKey());
-                    // This is a workaround for Tls1.3 InvalidCurve attacks
-                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
-                        LOGGER.debug("Using specified PMS instead of computed PMS");
-                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
-                    }
-                }
+                sharedSecret =
+                        KeyShareCalculator.computeSharedSecret(
+                                keyShareStoreEntry.getGroup(),
+                                privateKey,
+                                keyShareStoreEntry.getPublicKey());
             }
+            // This is a workaround for Tls1.3 InvalidCurve attacks
+            if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                LOGGER.debug("Using specified PMS instead of computed PMS");
+                sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+            }
+
             byte[] handshakeSecret =
                     HKDFunction.extract(hkdfAlgorithm, saltHandshakeSecret, sharedSecret);
             tlsContext.setHandshakeSecret(handshakeSecret);
@@ -614,11 +637,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                 selectedKeyShareStore.getPublicKey());
             }
             tlsContext.setServerEphemeralEcPublicKey(publicPoint);
-        } else {
+        } else if (selectedKeyShareStore.getGroup().isDhGroup()) {
             tlsContext.setServerEphemeralDhPublicKey(
                     new BigInteger(selectedKeyShareStore.getPublicKey()));
+        } else if (selectedKeyShareStore.getGroup().isPQGroup()) {
+            LOGGER.debug(
+                    "Server KeyShare for PQ KEM is a ciphertext, not a public key. Skipping key object instantiation.");
         }
-
         return selectedKeyShareStore;
     }
 
