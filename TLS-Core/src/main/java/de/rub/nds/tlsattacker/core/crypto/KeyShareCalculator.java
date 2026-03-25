@@ -22,14 +22,12 @@ import de.rub.nds.protocol.crypto.ffdh.FfdhGroup;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
 import org.bouncycastle.pqc.crypto.mlkem.*;
 
@@ -83,24 +81,6 @@ public class KeyShareCalculator {
         }
     }
 
-    /**
-     * Computes a keypair used for the ML-KEM algorithms.
-     *
-     * @param namedGroup The group that should be used.
-     * @param entry The keyshare entry that should be used.
-     */
-    public static void createMLKEMKeypair(NamedGroup namedGroup, KeyShareEntry entry) {
-        MLKEMParameters params = PQUtils.getMLKEMParameters(namedGroup);
-        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
-        generator.init(new MLKEMKeyGenerationParameters(new SecureRandom(), params));
-        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
-        MLKEMPublicKeyParameters pub = (MLKEMPublicKeyParameters) pair.getPublic();
-        MLKEMPrivateKeyParameters priv = (MLKEMPrivateKeyParameters) pair.getPrivate();
-        entry.setMLKEMPrivateKey(priv);
-        entry.setMLKEMPublicKey(pub);
-        entry.setPublicKey(pub.getEncoded());
-    }
-
     public static byte[] computeSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
         if (group.isGrease()) {
@@ -137,23 +117,20 @@ public class KeyShareCalculator {
     }
 
     /**
-     * #
+     * Computes the encapsulation for the ML-KEM algorithms. The server uses this to generate the
+     * ciphertext sent to the client and the shared secret.
      *
      * @param namedGroup
-     * @param entry
      * @param clientPublicKeyBytes
-     * @return The computed shared secret for the server side.
+     * @return The encapsulation result containing both the ciphertext and the shared secret.
      */
-    public static byte[] mlkemEncaps(
-            NamedGroup namedGroup, KeyShareEntry entry, byte[] clientPublicKeyBytes) {
+    public static SecretWithEncapsulation mlkemEncaps(
+            NamedGroup namedGroup, byte[] clientPublicKeyBytes, SecureRandom random) {
         MLKEMParameters mlkemParameters = PQUtils.getMLKEMParameters(namedGroup);
         MLKEMPublicKeyParameters publicKey =
                 new MLKEMPublicKeyParameters(mlkemParameters, clientPublicKeyBytes);
-        MLKEMGenerator generator = new MLKEMGenerator(new SecureRandom());
-        SecretWithEncapsulation result = generator.generateEncapsulated(publicKey);
-        entry.setPublicKey(
-                result.getEncapsulation()); // This is the ciphertext that the client receives
-        return result.getSecret();
+        MLKEMGenerator generator = new MLKEMGenerator(random);
+        return generator.generateEncapsulated(publicKey);
     }
 
     /**
