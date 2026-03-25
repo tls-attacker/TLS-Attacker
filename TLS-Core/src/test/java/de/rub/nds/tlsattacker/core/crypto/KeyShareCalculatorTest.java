@@ -8,15 +8,26 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
+
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.SecretWithEncapsulation;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMKeyGenerationParameters;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMKeyPairGenerator;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -55,5 +66,31 @@ public class KeyShareCalculatorTest {
                 KeyShareCalculator.createPublicKey(greaseGroup, bigInt, ECPointFormat.UNCOMPRESSED);
             }
         }
+    }
+
+    @Test
+    public void testMLKEMEncapsDecaps() {
+        NamedGroup group = NamedGroup.MLKEM512;
+        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
+        generator.init(
+                new MLKEMKeyGenerationParameters(new SecureRandom(), MLKEMParameters.ml_kem_512));
+        AsymmetricCipherKeyPair keyPair = generator.generateKeyPair();
+
+        MLKEMPublicKeyParameters publicKey = (MLKEMPublicKeyParameters) keyPair.getPublic();
+        MLKEMPrivateKeyParameters privateKey = (MLKEMPrivateKeyParameters) keyPair.getPrivate();
+
+        byte[] clientPublicKeyBytes = publicKey.getEncoded();
+
+        SecretWithEncapsulation encapsulationResult =
+                KeyShareCalculator.mlkemEncaps(group, clientPublicKeyBytes, new SecureRandom());
+
+        assertNotNull(encapsulationResult.getSecret());
+        assertNotNull(encapsulationResult.getEncapsulation());
+
+        byte[] decapsulatedSecret =
+                KeyShareCalculator.mlkemDecaps(
+                        group, privateKey, encapsulationResult.getEncapsulation());
+
+        assertArrayEquals(encapsulationResult.getSecret(), decapsulatedSecret);
     }
 }
