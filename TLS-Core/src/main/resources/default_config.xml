@@ -58,6 +58,7 @@
             <includeValidity>true</includeValidity>
             <includeIssuer>true</includeIssuer>
             <includeSubject>true</includeSubject>
+            <includeVersion>true</includeVersion>
             <shuffleIssuer>false</shuffleIssuer>
             <removeFirstRdnIssuer>false</removeFirstRdnIssuer>
             <duplicateFirstRdnIssuer>false</duplicateFirstRdnIssuer>
@@ -179,6 +180,7 @@
             <includeValidity>true</includeValidity>
             <includeIssuer>true</includeIssuer>
             <includeSubject>true</includeSubject>
+            <includeVersion>true</includeVersion>
             <shuffleIssuer>false</shuffleIssuer>
             <removeFirstRdnIssuer>false</removeFirstRdnIssuer>
             <duplicateFirstRdnIssuer>false</duplicateFirstRdnIssuer>
@@ -1322,6 +1324,11 @@
     <quicVersion>VERSION_1</quicVersion>
     <defaultQuicNewToken></defaultQuicNewToken>
     <defaultQuicPathChallange>qrvM3Q==</defaultQuicPathChallange>
+    <defaultQuicEncryptionKey>AAAAAAAAAAAAAAAAAAAAAA==</defaultQuicEncryptionKey>
+    <defaultQuicEncryptionIv>AAAAAAAAAAAAAAAA</defaultQuicEncryptionIv>
+    <defaultQuicHeaderProtectionKey>AAAAAAAAAAAAAAAAAAAAAA==</defaultQuicHeaderProtectionKey>
+    <defaultQuicAeadCipherAlgorithm>AES/GCM/NoPadding</defaultQuicAeadCipherAlgorithm>
+    <defaultQuicHeaderProtectionCipherAlgorithm>AES/ECB/NoPadding</defaultQuicHeaderProtectionCipherAlgorithm>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
