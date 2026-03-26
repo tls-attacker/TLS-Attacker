@@ -24,4 +24,32 @@ public class PQUtils {
                 throw new IllegalArgumentException("Unsupported PQ group: " + namedGroup);
         }
     }
+
+    // This method is only for the use with hybrid pq groups
+    public static NamedGroup getClassicalGroup(NamedGroup namedGroup) {
+        switch (namedGroup) {
+            case X25519_MLKEM768:
+                return NamedGroup.ECDH_X25519;
+            case SECP256R1_MLKEM768:
+                return NamedGroup.SECP256R1;
+            case SECP384R1_MLKEM1024:
+                return NamedGroup.SECP384R1;
+            default:
+                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+        }
+    }
+
+    // This method is only for the use with hybrid pq groups
+    public static NamedGroup getPQGroup(NamedGroup namedGroup) {
+        switch (namedGroup) {
+            case X25519_MLKEM768:
+                return NamedGroup.MLKEM768;
+            case SECP256R1_MLKEM768:
+                return NamedGroup.MLKEM768;
+            case SECP384R1_MLKEM1024:
+                return NamedGroup.MLKEM1024;
+            default:
+                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+        }
+    }
 }
