@@ -164,7 +164,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 } else {
                     entry.setPublicKey(DataConverter.concatenate(classicalPubKey, pqPubKey));
                 }
-                LOGGER.debug("Generated Client Hybrid PQ KeyShare: {}", entry.getPublicKey().getValue());
+                LOGGER.debug(
+                        "Generated Client Hybrid PQ KeyShare: {}", entry.getPublicKey().getValue());
             } else {
 
             }
