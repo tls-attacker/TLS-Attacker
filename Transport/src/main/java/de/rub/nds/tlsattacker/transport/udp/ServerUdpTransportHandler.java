@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.SocketManagement;
 import java.io.IOException;
 import java.net.DatagramSocket;
 
 public class ServerUdpTransportHandler extends UdpTransportHandler {
+
+    private SocketManagement socketManagement = SocketManagement.DEFAULT;
 
     public ServerUdpTransportHandler(Connection con) {
         super(con);
@@ -23,6 +26,13 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     public ServerUdpTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
         this.port = port;
+    }
+
+    public ServerUdpTransportHandler(Connection con, DatagramSocket socket) {
+        super(con);
+        this.port = socket.getLocalPort();
+        this.socket = socket;
+        socketManagement = SocketManagement.EXTERNAL_SOCKET;
     }
 
     @Override
@@ -39,7 +49,9 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
 
     @Override
     public void preInitialize() throws IOException {
-        socket = new DatagramSocket(port);
+        if (socketManagement != SocketManagement.EXTERNAL_SOCKET) {
+            socket = new DatagramSocket(port);
+        }
         cachedSocketState = null;
     }
 
