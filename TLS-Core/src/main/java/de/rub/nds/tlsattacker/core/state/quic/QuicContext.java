@@ -158,9 +158,10 @@ public class QuicContext extends LayerContext {
         this.initialAeadCipher = "AES/GCM/NoPadding";
         this.initalHeaderProtectionCipher = "AES/ECB/NoPadding";
         this.sourceConnectionId = this.generateRandomConnectionId(16);
-        this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
         this.destinationConnectionId = this.firstDestinationConnectionId;
         if (getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            // we control the first destination ID as the client
+            this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
             try {
                 QuicPacketCryptoComputations.calculateInitialSecrets(this);
             } catch (NoSuchAlgorithmException | CryptoException e) {
