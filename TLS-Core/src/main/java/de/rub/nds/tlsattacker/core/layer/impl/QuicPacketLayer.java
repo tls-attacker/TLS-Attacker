@@ -306,8 +306,6 @@ public class QuicPacketLayer
                                 quicContext.getQuicVersion(), firstByte);
             }
 
-            LOGGER.error("Got a packet with type {} and version {}", packetType, versionBytes);
-
             QuicPacket readPacket =
                     switch (packetType) {
                         case INITIAL_PACKET ->
