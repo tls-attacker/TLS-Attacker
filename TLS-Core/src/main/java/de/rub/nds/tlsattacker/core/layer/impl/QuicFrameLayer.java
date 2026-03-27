@@ -358,7 +358,7 @@ public class QuicFrameLayer
         }
 
         if (!quicContext.isTemporarilyDisabledAcks() && isAckEliciting) {
-            sendAck(null);
+            sendAck(null, null);
         } else {
             if (!quicContext.getReceivedPackets().isEmpty()) {
                 quicContext.getReceivedPackets().removeLast();
@@ -436,7 +436,7 @@ public class QuicFrameLayer
     }
 
     @Override
-    public void sendAck(byte[] data) {
+    public void sendAck(byte[] data, QuicFrameLayerHint hint) {
         long packetNumberToAck = 0;
         QuicPacketType packetTypeToAck = null;
         if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
@@ -446,7 +446,6 @@ public class QuicFrameLayer
             packetNumberToAck = quicContext.getReceivedHandshakePacketNumbers().getLast();
             packetTypeToAck = QuicPacketType.HANDSHAKE_PACKET;
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-            // use new method
             packetNumberToAck = quicContext.getReceivedOneRTTPacketNumbers().getLast();
             packetTypeToAck = QuicPacketType.ONE_RTT_PACKET;
         }
@@ -460,7 +459,8 @@ public class QuicFrameLayer
         frame.setAckRangeCountConfig(0);
         frame.setFirstACKRangeConfig(0);
         LOGGER.debug("Send Ack for {} Packet #{}", packetType, packetNumber);
-        ((AcknowledgingProtocolLayer) getLowerLayer()).sendAck(writeFrame(frame));
+        ((QuicPacketLayer) getLowerLayer())
+                .sendAck(writeFrame(frame), new QuicPacketLayerHint(packetType));
     }
 
     /**

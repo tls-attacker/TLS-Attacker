@@ -639,8 +639,14 @@ public class QuicPacketLayer
     }
 
     @Override
-    public void sendAck(byte[] data) {
-        sendAckWithPacketType(quicContext.getReceivedPackets().getLast(), data);
+    public void sendAck(byte[] data, QuicPacketLayerHint hint) {
+        QuicPacketType packetTypeToAck;
+        if (hint != null) {
+            packetTypeToAck = hint.getQuicPacketType();
+        } else {
+            packetTypeToAck = quicContext.getReceivedPackets().getLast();
+        }
+        sendAckWithPacketType(packetTypeToAck, data);
     }
 
     public void sendAckWithPacketType(QuicPacketType packetType, byte[] ackFrame) {
