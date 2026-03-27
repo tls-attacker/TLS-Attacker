@@ -42,9 +42,9 @@ public abstract class ProtocolLayer<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<ContextType, Hint, Container> higherLayer = null;
+    private ProtocolLayer<?, ?, ?> higherLayer = null;
 
-    private ProtocolLayer<ContextType, Hint, Container> lowerLayer = null;
+    private ProtocolLayer<?, ?, ?> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -66,19 +66,19 @@ public abstract class ProtocolLayer<
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer<ContextType, Hint, Container> getHigherLayer() {
+    public ProtocolLayer<?, ?, ?> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer<ContextType, Hint, Container> getLowerLayer() {
+    public ProtocolLayer<?, ?, ?> getLowerLayer() {
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer<ContextType, Hint, Container> higherLayer) {
+    public void setHigherLayer(ProtocolLayer<?, ?, ?> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer<ContextType, Hint, Container> lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<?, ?, ?> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
