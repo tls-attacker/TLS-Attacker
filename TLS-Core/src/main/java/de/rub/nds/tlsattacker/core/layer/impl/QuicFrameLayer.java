@@ -448,6 +448,10 @@ public class QuicFrameLayer
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
             packetNumberToAck = quicContext.getReceivedOneRTTPacketNumbers().getLast();
             packetTypeToAck = QuicPacketType.ONE_RTT_PACKET;
+        } else {
+            LOGGER.warn(
+                    "Received request to send automatic ACK, but no packet to ACK has been received - ignoring.");
+            return;
         }
         sendAckForPacket(packetTypeToAck, packetNumberToAck);
     }
