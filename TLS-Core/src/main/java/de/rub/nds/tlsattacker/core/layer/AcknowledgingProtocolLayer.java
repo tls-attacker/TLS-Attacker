@@ -23,5 +23,5 @@ public abstract class AcknowledgingProtocolLayer<
         super(layerType);
     }
 
-    public abstract void sendAck(byte[] data);
+    public abstract void sendAck(byte[] data, Hint layerProcessingHint);
 }

@@ -639,17 +639,25 @@ public class QuicPacketLayer
     }
 
     @Override
-    public void sendAck(byte[] data) {
+    public void sendAck(byte[] data, QuicPacketLayerHint hint) {
+        QuicPacketType packetTypeToAck;
+        if (hint != null) {
+            packetTypeToAck = hint.getQuicPacketType();
+        } else {
+            packetTypeToAck = quicContext.getReceivedPackets().getLast();
+        }
+        sendAckWithPacketType(packetTypeToAck, data);
+    }
+
+    public void sendAckWithPacketType(QuicPacketType packetType, byte[] ackFrame) {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         try {
-            if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-                getLowerLayer().sendData(null, writePacket(data, new InitialPacket()));
-            } else if (quicContext.getReceivedPackets().getLast()
-                    == QuicPacketType.HANDSHAKE_PACKET) {
-                getLowerLayer().sendData(null, writePacket(data, new HandshakePacket()));
-            } else if (quicContext.getReceivedPackets().getLast()
-                    == QuicPacketType.ONE_RTT_PACKET) {
-                getLowerLayer().sendData(null, writePacket(data, new OneRTTPacket()));
+            if (packetType == QuicPacketType.INITIAL_PACKET) {
+                getLowerLayer().sendData(null, writePacket(ackFrame, new InitialPacket()));
+            } else if (packetType == QuicPacketType.HANDSHAKE_PACKET) {
+                getLowerLayer().sendData(null, writePacket(ackFrame, new HandshakePacket()));
+            } else if (packetType == QuicPacketType.ONE_RTT_PACKET) {
+                getLowerLayer().sendData(null, writePacket(ackFrame, new OneRTTPacket()));
             }
         } catch (IOException | CryptoException e) {
             LOGGER.error("Could not send ACK", e);

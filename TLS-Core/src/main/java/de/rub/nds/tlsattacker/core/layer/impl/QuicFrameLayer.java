@@ -358,7 +358,7 @@ public class QuicFrameLayer
         }
 
         if (!quicContext.isTemporarilyDisabledAcks() && isAckEliciting) {
-            sendAck(null);
+            sendAck(null, null);
         } else {
             if (!quicContext.getReceivedPackets().isEmpty()) {
                 quicContext.getReceivedPackets().removeLast();
@@ -436,26 +436,35 @@ public class QuicFrameLayer
     }
 
     @Override
-    public void sendAck(byte[] data) {
-        AckFrame frame = new AckFrame(false);
+    public void sendAck(byte[] data, QuicFrameLayerHint hint) {
+        long packetNumberToAck = 0;
+        QuicPacketType packetTypeToAck = null;
         if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-            frame.setLargestAcknowledgedConfig(
-                    quicContext.getReceivedInitialPacketNumbers().getLast());
-            LOGGER.debug("Send Ack for Initial Packet #{}", frame.getLargestAcknowledgedConfig());
+            packetNumberToAck = quicContext.getReceivedInitialPacketNumbers().getLast();
+            packetTypeToAck = QuicPacketType.INITIAL_PACKET;
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
-            frame.setLargestAcknowledgedConfig(
-                    quicContext.getReceivedHandshakePacketNumbers().getLast());
-            LOGGER.debug("Send Ack for Handshake Packet #{}", frame.getLargestAcknowledgedConfig());
+            packetNumberToAck = quicContext.getReceivedHandshakePacketNumbers().getLast();
+            packetTypeToAck = QuicPacketType.HANDSHAKE_PACKET;
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-            frame.setLargestAcknowledgedConfig(
-                    quicContext.getReceivedOneRTTPacketNumbers().getLast());
-            LOGGER.debug("Send Ack for 1RTT Packet #{}", frame.getLargestAcknowledgedConfig());
+            packetNumberToAck = quicContext.getReceivedOneRTTPacketNumbers().getLast();
+            packetTypeToAck = QuicPacketType.ONE_RTT_PACKET;
+        } else {
+            LOGGER.warn(
+                    "Received request to send automatic ACK, but no packet to ACK has been received - ignoring.");
+            return;
         }
+        sendAckForPacket(packetTypeToAck, packetNumberToAck);
+    }
 
+    public void sendAckForPacket(QuicPacketType packetType, long packetNumber) {
+        AckFrame frame = new AckFrame(false);
+        frame.setLargestAcknowledgedConfig(packetNumber);
         frame.setAckDelayConfig(1);
         frame.setAckRangeCountConfig(0);
         frame.setFirstACKRangeConfig(0);
-        ((AcknowledgingProtocolLayer) getLowerLayer()).sendAck(writeFrame(frame));
+        LOGGER.debug("Send Ack for {} Packet #{}", packetType, packetNumber);
+        ((QuicPacketLayer) getLowerLayer())
+                .sendAck(writeFrame(frame), new QuicPacketLayerHint(packetType));
     }
 
     /**
