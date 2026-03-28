@@ -24,12 +24,14 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
+import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -280,31 +282,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] sharedSecret = new byte[0];
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
-                // Shared Secret is derived differently for PQ Groups
             } else if (keyShareStoreEntry.getGroup().isPQGroup()) {
-                if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    sharedSecret =
-                            KeyShareCalculator.mlkemDecaps(
-                                    keyShareStoreEntry.getGroup(),
-                                    tlsContext.getClientMLKEMPrivateKey(),
-                                    keyShareStoreEntry.getPublicKey());
-                    String hexSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
-                    LOGGER.info("Computed ML-KEM Shared Secret: {}", hexSecret);
-                } else {
-                    // The server already computed the shared secret during encapsulation
-                    sharedSecret = tlsContext.getPQSharedSecret();
-
-                    if (sharedSecret == null) {
-                        throw new CryptoException(
-                                "SERVER: PQ Shared Secret was not set in TlsContext during encapsulation!");
-                    }
-
-                    String hexSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
-                    LOGGER.info(
-                            "SERVER: Retrieved pre-encapsulated ML-KEM Shared Secret: "
-                                    + hexSecret);
-                }
-
+                sharedSecret = computePQSharedSecret(keyShareStoreEntry);
+            } else if (keyShareStoreEntry.getGroup().isHybridPQGroup()) {
+                sharedSecret = computeHybridPQSharedSecret(keyShareStoreEntry);
             } else {
                 BigInteger privateKey =
                         tlsContext
@@ -352,6 +333,74 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     serverHandshakeTrafficSecret);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             throw new AdjustmentException(ex);
+        }
+    }
+
+    private byte[] computePQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return KeyShareCalculator.mlkemDecaps(
+                    keyShareStoreEntry.getGroup(),
+                    tlsContext.getClientMLKEMPrivateKey(),
+                    keyShareStoreEntry.getPublicKey());
+        } else {
+
+            if (tlsContext.getPQSharedSecret() == null) {
+                throw new CryptoException(
+                        "SERVER: PQ Shared Secret was not set in TlsContext during encapsulation!");
+            } else {
+                return tlsContext.getPQSharedSecret();
+            }
+        }
+    }
+
+    private byte[] computeHybridPQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            LOGGER.info(
+                    "Computing Hybrid Shared Secret for group: {}", keyShareStoreEntry.getGroup());
+            byte[] classicalPubKey;
+            byte[] pqKeyShare;
+            byte[][] splitKeyShare =
+                    PQUtils.splitKeyShare(
+                            keyShareStoreEntry.getGroup(), keyShareStoreEntry.getPublicKey());
+
+            if (keyShareStoreEntry.getGroup().equals(NamedGroup.X25519_MLKEM768)) {
+                classicalPubKey = splitKeyShare[1];
+                pqKeyShare = splitKeyShare[0];
+            } else {
+                classicalPubKey = splitKeyShare[0];
+                pqKeyShare = splitKeyShare[1];
+            }
+            NamedGroup pqGroup = PQUtils.getPQGroup(keyShareStoreEntry.getGroup());
+            byte[] pqSharedSecret =
+                    KeyShareCalculator.mlkemDecaps(
+                            pqGroup, tlsContext.getClientMLKEMPrivateKey(), pqKeyShare);
+            String hexPQSecret = org.bouncycastle.util.encoders.Hex.toHexString(pqSharedSecret);
+            LOGGER.info("Computed ML-KEM Shared Secret: {}", hexPQSecret);
+
+            NamedGroup classicalGroup = PQUtils.getClassicalGroup(keyShareStoreEntry.getGroup());
+            BigInteger classicalPrivKey =
+                    tlsContext
+                            .getConfig()
+                            .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
+            if (classicalPrivKey == null) {
+                classicalPrivKey =
+                        tlsContext.getConfig().getDefaultKeySharePrivateKey(classicalGroup);
+            }
+
+            byte[] classicalSharedSecret =
+                    KeyShareCalculator.computeSharedSecret(
+                            classicalGroup, classicalPrivKey, classicalPubKey);
+            String hexClassicalSecret =
+                    org.bouncycastle.util.encoders.Hex.toHexString(classicalSharedSecret);
+            LOGGER.info("Computed Classical Shared Secret: {}", hexClassicalSecret);
+
+            if (keyShareStoreEntry.getGroup().equals(NamedGroup.X25519_MLKEM768)) {
+                return DataConverter.concatenate(pqSharedSecret, classicalSharedSecret);
+            } else {
+                return DataConverter.concatenate(classicalSharedSecret, pqSharedSecret);
+            }
+        } else {
+            return new byte[0];
         }
     }
 
