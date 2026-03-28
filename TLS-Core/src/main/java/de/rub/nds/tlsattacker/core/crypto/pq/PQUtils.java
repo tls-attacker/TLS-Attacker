@@ -9,9 +9,11 @@
 package de.rub.nds.tlsattacker.core.crypto.pq;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import java.util.Arrays;
 import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
 
 public class PQUtils {
+
     public static MLKEMParameters getMLKEMParameters(NamedGroup namedGroup) {
         switch (namedGroup) {
             case MLKEM512:
@@ -51,5 +53,29 @@ public class PQUtils {
             default:
                 throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
         }
+    }
+
+    /**
+     * Splits the keyShare for the respective hybrid pq group and stores the individual shares in
+     * classicalKeyShare and pqKeyShare.
+     *
+     * @param namedGroup The namedGroup that should be used.
+     * @param keyShare The key share to be split.
+     */
+    public static byte[][] splitKeyShare(NamedGroup namedGroup, byte[] keyShare) {
+        int splitAtIndex;
+        switch (namedGroup) {
+            case X25519_MLKEM768 -> splitAtIndex = 1088;
+            case SECP256R1_MLKEM768 -> splitAtIndex = 65;
+            case SECP384R1_MLKEM1024 -> splitAtIndex = 97;
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unsupported Hybrid PQ group: " + namedGroup);
+        }
+
+        return new byte[][] {
+            Arrays.copyOfRange(keyShare, 0, splitAtIndex),
+            Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
+        };
     }
 }
