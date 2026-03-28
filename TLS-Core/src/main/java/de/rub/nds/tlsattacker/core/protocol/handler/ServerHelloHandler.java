@@ -375,7 +375,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     KeyShareCalculator.mlkemDecaps(
                             pqGroup, tlsContext.getClientMLKEMPrivateKey(), pqKeyShare);
             String hexPQSecret = org.bouncycastle.util.encoders.Hex.toHexString(pqSharedSecret);
-            LOGGER.info("Computed ML-KEM Shared Secret: {}", hexPQSecret);
+            LOGGER.debug("Computed ML-KEM Shared Secret: {}", hexPQSecret);
 
             NamedGroup classicalGroup = PQUtils.getClassicalGroup(keyShareStoreEntry.getGroup());
             BigInteger classicalPrivKey =
@@ -392,13 +392,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             classicalGroup, classicalPrivKey, classicalPubKey);
             String hexClassicalSecret =
                     org.bouncycastle.util.encoders.Hex.toHexString(classicalSharedSecret);
-            LOGGER.info("Computed Classical Shared Secret: {}", hexClassicalSecret);
+            LOGGER.debug("Computed Classical Shared Secret: {}", hexClassicalSecret);
 
+            byte[] sharedSecret = new byte[0];
             if (keyShareStoreEntry.getGroup().equals(NamedGroup.X25519_MLKEM768)) {
-                return DataConverter.concatenate(pqSharedSecret, classicalSharedSecret);
+                sharedSecret = DataConverter.concatenate(pqSharedSecret, classicalSharedSecret);
             } else {
-                return DataConverter.concatenate(classicalSharedSecret, pqSharedSecret);
+                sharedSecret = DataConverter.concatenate(classicalSharedSecret, pqSharedSecret);
             }
+            String hexSharedSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
+            LOGGER.debug("Computed Hybrid PQ Shared Secret: {}", hexSharedSecret);
+            return sharedSecret;
         } else {
             return new byte[0];
         }
