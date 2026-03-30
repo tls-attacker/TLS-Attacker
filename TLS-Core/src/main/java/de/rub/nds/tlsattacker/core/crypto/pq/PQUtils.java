@@ -16,13 +16,19 @@ import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
 public class PQUtils {
 
     public static MLKEMParameters getMLKEMParameters(NamedGroup namedGroup) {
-        switch (namedGroup) {
+        NamedGroup pqComponent = namedGroup;
+        if (namedGroup.isHybridPQGroup()) {
+            pqComponent = getPQGroup(namedGroup);
+        }
+
+        switch (pqComponent) {
             case MLKEM512:
                 return MLKEMParameters.ml_kem_512;
             case MLKEM768:
                 return MLKEMParameters.ml_kem_768;
             case MLKEM1024:
                 return MLKEMParameters.ml_kem_1024;
+
             default:
                 throw new IllegalArgumentException("Unsupported PQ group: " + namedGroup);
         }
@@ -66,8 +72,8 @@ public class PQUtils {
     public static byte[][] splitKeyShare(NamedGroup namedGroup, byte[] keyShare) {
         int splitAtIndex;
         switch (namedGroup) {
-            case X25519_MLKEM768: 
-                splitAtIndex = 1088;
+            case X25519_MLKEM768:
+                splitAtIndex = 1184;
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length),
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex)
@@ -85,24 +91,24 @@ public class PQUtils {
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
                 };
             default:
-                    throw new IllegalArgumentException(
-                            "Unsupported Hybrid PQ group: " + namedGroup);
+                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
         }
     }
 
     /**
-     * Concatenates the two key shares as specified in draft-ietf-tls-ecdhe-mlkem-04 
-     * 
+     * Concatenates the two key shares as specified in draft-ietf-tls-ecdhe-mlkem-04
+     *
      * @param namedGroup The namedGroup that should be used
      * @param classicalKeyShare The classical key share to be used
      * @param pqKeyShare The post-quantum key share to be used
      * @return The concatenated key share
      */
-    public static byte[] concatenateHybridKeyShare(NamedGroup namedGroup, byte[] classicalKeyShare, byte[] pqKeyShare) {
+    public static byte[] concatenateHybridKeyShare(
+            NamedGroup namedGroup, byte[] classicalKeyShare, byte[] pqKeyShare) {
         if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
             return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
         } else {
-           return DataConverter.concatenate(classicalKeyShare, pqKeyShare); 
+            return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
         }
     }
 }
