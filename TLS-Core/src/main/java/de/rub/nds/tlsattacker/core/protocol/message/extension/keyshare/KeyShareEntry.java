@@ -29,6 +29,7 @@ public class KeyShareEntry extends ModifiableVariableHolder {
     private ModifiableInteger publicKeyLength;
 
     private ModifiableByteArray publicKey;
+    private ModifiableByteArray mlkemPublicKey;
 
     public KeyShareEntry() {}
 
@@ -90,7 +91,11 @@ public class KeyShareEntry extends ModifiableVariableHolder {
         this.privateKey = privateKey;
     }
 
-    public MLKEMPrivateKeyParameters getMLKEMPrivateKey() {
+    public byte[] getMLKEMPrivateKey() {
+        return mlkemPrivateKeyParameters.getEncoded();
+    }
+
+    public MLKEMPrivateKeyParameters getMLKEMPrivateKeyParameters() {
         return mlkemPrivateKeyParameters;
     }
 
@@ -98,11 +103,18 @@ public class KeyShareEntry extends ModifiableVariableHolder {
         this.mlkemPrivateKeyParameters = mlkemPrivateKeyParameters;
     }
 
-    public MLKEMPublicKeyParameters getMLKEMPublicKey() {
-        return mlkemPublicKeyParameters;
+    public ModifiableByteArray getMLKEMPublicKey() {
+        return mlkemPublicKey;
     }
 
     public void setMLKEMPublicKey(MLKEMPublicKeyParameters mlkemPublicKeyParameters) {
-        this.mlkemPublicKeyParameters = mlkemPublicKeyParameters;
+        this.mlkemPublicKeyParameters = mlkemPublicKeyParameters; // Store the object
+        this.mlkemPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.mlkemPublicKey, mlkemPublicKeyParameters.getEncoded());
+    }
+
+    public MLKEMPublicKeyParameters getMLKEMPublicKeyParameters() {
+        return mlkemPublicKeyParameters;
     }
 }

@@ -91,20 +91,20 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         MLKEMPrivateKeyParameters priv = (MLKEMPrivateKeyParameters) pair.getPrivate();
         entry.setMLKEMPublicKey(pub);
         entry.setMLKEMPrivateKey(priv);
-        LOGGER.debug("KeyShare: {}", entry.getMLKEMPublicKey().getEncoded());
+        LOGGER.debug("KeyShare: {}", entry.getMLKEMPublicKey().getValue());
     }
 
     private void prepareKeyShare() {
         if (entry.getGroupConfig().isPQGroup()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 prepareMLKEMKeyShare(entry.getGroupConfig());
-                entry.setPublicKey(entry.getMLKEMPublicKey().getEncoded());
+                entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
                 chooser.getContext()
                         .getTlsContext()
-                        .setClientMLKEMPublicKey(entry.getMLKEMPublicKey());
+                        .setClientMLKEMPublicKey(entry.getMLKEMPublicKeyParameters());
                 chooser.getContext()
                         .getTlsContext()
-                        .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKey());
+                        .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKeyParameters());
                 LOGGER.info("Generated Client PQ KeyPair for group: {}", entry.getGroupConfig());
             } else {
                 // The Server does not generate an own keypair for post-quantum groups,
@@ -147,14 +147,14 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 chooser.getConfig().getDefaultSelectedPointFormat());
 
                 prepareMLKEMKeyShare(pqGroup);
-                byte[] pqPubKey = entry.getMLKEMPublicKey().getEncoded();
+                byte[] pqPubKey = entry.getMLKEMPublicKey().getValue();
 
                 chooser.getContext()
                         .getTlsContext()
-                        .setClientMLKEMPublicKey(entry.getMLKEMPublicKey());
+                        .setClientMLKEMPublicKey(entry.getMLKEMPublicKeyParameters());
                 chooser.getContext()
                         .getTlsContext()
-                        .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKey());
+                        .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKeyParameters());
 
                 // For the group X25519_MLKEM768 draft-ietf-tls-ecdhe-mlkem-04 specifies the
                 // order pqPubKey || classicalPubKey. For the other two groups
@@ -167,8 +167,37 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 LOGGER.debug(
                         "Generated Client Hybrid PQ KeyShare: {}", entry.getPublicKey().getValue());
             } else {
+                if (entry.getPrivateKey() == null) {
+                    entry.setPrivateKey(chooser.getServerEphemeralEcPrivateKey());
+                }
+                byte[] classicalPubKey =
+                        KeyShareCalculator.createPublicKey(
+                                classicalGroup,
+                                entry.getPrivateKey(),
+                                chooser.getConfig().getDefaultSelectedPointFormat());
+                byte[][] splitClientKeyShare =
+                        PQUtils.splitKeyShare(
+                                entry.getGroupConfig(),
+                                chooser.getClientKeySharePublicKey(entry.getGroupConfig()));
 
+                // Use Client public key share to compute encapsulation algorithm
+                byte[] clientMLKEMPubKey = splitClientKeyShare[1];
+                SecretWithEncapsulation result =
+                        KeyShareCalculator.mlkemEncaps(
+                                entry.getGroupConfig(),
+                                clientMLKEMPubKey,
+                                chooser.getContext().getTlsContext().getBadSecureRandom());
+
+                byte[] pqCiphertext = result.getEncapsulation();
+
+                chooser.getContext().getTlsContext().setPQSharedSecret(result.getSecret());
+
+                entry.setPublicKey(
+                        PQUtils.concatenateHybridKeyShare(
+                                entry.getGroupConfig(), classicalPubKey, pqCiphertext));
+                LOGGER.info("Generated Server Hybrid PQ KeyShare for {}", entry.getGroupConfig());
             }
+
         } else {
             // STANDARD ECC LOGIC
             if (entry.getPrivateKey() == null) {
