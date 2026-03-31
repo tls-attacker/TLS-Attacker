@@ -283,9 +283,16 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
             } else if (keyShareStoreEntry.getGroup().isPQGroup()) {
+                LOGGER.info(
+                        "Computing PQ Shared Secret for group: {}", keyShareStoreEntry.getGroup());
                 sharedSecret = computePQSharedSecret(keyShareStoreEntry);
+                LOGGER.debug("Computed PQ Shared Secret: {}", sharedSecret);
             } else if (keyShareStoreEntry.getGroup().isHybridPQGroup()) {
+                LOGGER.info(
+                        "Computing Hybrid Shared Secret for group: {}",
+                        keyShareStoreEntry.getGroup());
                 sharedSecret = computeHybridPQSharedSecret(keyShareStoreEntry);
+                LOGGER.debug("Computed Hybrid PQ Shared Secret: {}", sharedSecret);
             } else {
                 BigInteger privateKey =
                         tlsContext
@@ -343,8 +350,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
      * iteration. The client computes the shared secret with the decapsulation algorithm from the
      * server's ciphertext and the client's secret key.
      *
-     * @param keyShareStoreEntry
-     * @return The computed pq shared secret
+     * @param keyShareStoreEntry The keyShareStoreEntry that should be used.
+     * @return The computed pq shared secret.
      */
     private byte[] computePQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -370,30 +377,23 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
      * resulting shared secret is the concatenation of the individual shared secrets in the same
      * order as the keyshare.
      *
-     * @param keyShareStoreEntry
-     * @return
+     * @param keyShareStoreEntry The keyShareStoreEntry that should be used.
+     * @return The computed hybrid post-quantum shared secret.
      */
     private byte[] computeHybridPQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
+        NamedGroup classicalGroup = PQUtils.getClassicalGroup(keyShareStoreEntry.getGroup());
+        NamedGroup pqGroup = PQUtils.getPQGroup(keyShareStoreEntry.getGroup());
+
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            LOGGER.info(
-                    "Computing Hybrid Shared Secret for group: {}", keyShareStoreEntry.getGroup());
             byte[] classicalPubKey;
-            byte[] pqKeyShare;
+            byte[] pqPubKey;
             byte[][] splitKeyShare =
                     PQUtils.splitKeyShare(
                             keyShareStoreEntry.getGroup(), keyShareStoreEntry.getPublicKey());
 
             classicalPubKey = splitKeyShare[0];
-            pqKeyShare = splitKeyShare[1];
+            pqPubKey = splitKeyShare[1];
 
-            NamedGroup pqGroup = PQUtils.getPQGroup(keyShareStoreEntry.getGroup());
-            byte[] pqSharedSecret =
-                    KeyShareCalculator.mlkemDecaps(
-                            pqGroup, tlsContext.getClientMLKEMPrivateKey(), pqKeyShare);
-            String hexPQSecret = org.bouncycastle.util.encoders.Hex.toHexString(pqSharedSecret);
-            LOGGER.debug("Computed ML-KEM Shared Secret: {}", hexPQSecret);
-
-            NamedGroup classicalGroup = PQUtils.getClassicalGroup(keyShareStoreEntry.getGroup());
             BigInteger classicalPrivKey =
                     tlsContext
                             .getConfig()
@@ -406,16 +406,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] classicalSharedSecret =
                     KeyShareCalculator.computeSharedSecret(
                             classicalGroup, classicalPrivKey, classicalPubKey);
-            String hexClassicalSecret =
-                    org.bouncycastle.util.encoders.Hex.toHexString(classicalSharedSecret);
-            LOGGER.debug("Computed Classical Shared Secret: {}", hexClassicalSecret);
+            LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
+
+            byte[] pqSharedSecret =
+                    KeyShareCalculator.mlkemDecaps(
+                            pqGroup, tlsContext.getClientMLKEMPrivateKey(), pqPubKey);
+            LOGGER.debug("Computed ML-KEM Shared Secret: {}", pqSharedSecret);
 
             byte[] sharedSecret =
                     PQUtils.concatenateHybridKeyShare(
                             keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
 
-            String hexSharedSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
-            LOGGER.debug("Computed Hybrid PQ Shared Secret: {}", hexSharedSecret);
             return sharedSecret;
         } else {
             BigInteger classicalPrivateKey =
@@ -431,17 +432,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
             byte[] classicalSharedSecret =
                     KeyShareCalculator.computeSharedSecret(
-                            PQUtils.getClassicalGroup(keyShareStoreEntry.getGroup()),
-                            classicalPrivateKey,
-                            clientClassicalPubKey);
+                            classicalGroup, classicalPrivateKey, clientClassicalPubKey);
+            LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
 
             byte[] pqSharedSecret = tlsContext.getPQSharedSecret();
+            LOGGER.debug("Retreived ML-KEM Shared Secret: {}", pqSharedSecret);
 
             byte[] sharedSecret =
                     PQUtils.concatenateHybridKeyShare(
                             keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
-            String hexSharedSecret = org.bouncycastle.util.encoders.Hex.toHexString(sharedSecret);
-            LOGGER.debug("Computed Hybrid PQ Shared Secret: {}", hexSharedSecret);
             return sharedSecret;
         }
     }
