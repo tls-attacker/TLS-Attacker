@@ -178,6 +178,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 byte[][] splitClientKeyShare =
                         PQUtils.splitKeyShare(
                                 entry.getGroupConfig(),
+                                ConnectionEndType.CLIENT,
                                 chooser.getClientKeySharePublicKey(entry.getGroupConfig()));
 
                 // Use Client public key share to compute encapsulation algorithm

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto.pq;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
 
@@ -67,13 +68,17 @@ public class PQUtils {
      * classicalKeyShare and pqKeyShare.
      *
      * @param namedGroup The namedGroup that should be used.
+     * @param connectionEndType The connectionEndType whose keyShare should be split.
      * @param keyShare The key share to be split.
      */
-    public static byte[][] splitKeyShare(NamedGroup namedGroup, byte[] keyShare) {
+    public static byte[][] splitKeyShare(
+            NamedGroup namedGroup, ConnectionEndType connectionEndType, byte[] keyShare) {
         int splitAtIndex;
         switch (namedGroup) {
             case X25519_MLKEM768:
-                splitAtIndex = 1184;
+                /* The server sends a ciphertext of length 1088 bytes instead of the 1184 bytes public
+                key share send by the client */
+                splitAtIndex = (connectionEndType.equals(ConnectionEndType.CLIENT)) ? 1184 : 1088;
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length),
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex)

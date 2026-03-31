@@ -389,23 +389,25 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] pqPubKey;
             byte[][] splitKeyShare =
                     PQUtils.splitKeyShare(
-                            keyShareStoreEntry.getGroup(), keyShareStoreEntry.getPublicKey());
+                            keyShareStoreEntry.getGroup(),
+                            ConnectionEndType.SERVER,
+                            keyShareStoreEntry.getPublicKey());
 
             classicalPubKey = splitKeyShare[0];
             pqPubKey = splitKeyShare[1];
 
-            BigInteger classicalPrivKey =
+            BigInteger classicalPrivateKey =
                     tlsContext
                             .getConfig()
                             .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
-            if (classicalPrivKey == null) {
-                classicalPrivKey =
+            if (classicalPrivateKey == null) {
+                classicalPrivateKey =
                         tlsContext.getConfig().getDefaultKeySharePrivateKey(classicalGroup);
             }
 
             byte[] classicalSharedSecret =
                     KeyShareCalculator.computeSharedSecret(
-                            classicalGroup, classicalPrivKey, classicalPubKey);
+                            classicalGroup, classicalPrivateKey, classicalPubKey);
             LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
 
             byte[] pqSharedSecret =
@@ -426,7 +428,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
             byte[][] splitClientKeyShare =
                     PQUtils.splitKeyShare(
-                            keyShareStoreEntry.getGroup(), keyShareStoreEntry.getPublicKey());
+                            keyShareStoreEntry.getGroup(),
+                            ConnectionEndType.CLIENT,
+                            keyShareStoreEntry.getPublicKey());
 
             byte[] clientClassicalPubKey = splitClientKeyShare[0];
 
