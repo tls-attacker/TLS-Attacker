@@ -155,14 +155,13 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                         .getTlsContext()
                         .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKeyParameters());
 
-                // For the group X25519_MLKEM768 draft-ietf-tls-ecdhe-mlkem-04 specifies the
-                // order pqPubKey || classicalPubKey. For the other two groups
-                // SECP256R1_MLKEM768 and SECP384R1_MLKEM1024 this is done in reverse order.
-                if (entry.getGroupConfig().equals(NamedGroup.X25519_MLKEM768)) {
-                    entry.setPublicKey(DataConverter.concatenate(pqPublicKey, classicalPublicKey));
-                } else {
-                    entry.setPublicKey(DataConverter.concatenate(classicalPublicKey, pqPublicKey));
-                }
+                entry.setPublicKey(
+                        PQUtils.concatenateHybridKeyShare(
+                                entry.getGroupConfig(),
+                                classicalPublicKey,
+                                pqPublicKey,
+                                chooser.getConfig().isDefaultHybridConcatenation()));
+
                 LOGGER.debug(
                         "Generated Client Hybrid PQ KeyShare: {}", entry.getPublicKey().getValue());
             } else {
@@ -197,7 +196,10 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
                 entry.setPublicKey(
                         PQUtils.concatenateHybridKeyShare(
-                                entry.getGroupConfig(), classicalPublicKey, pqCiphertext));
+                                entry.getGroupConfig(),
+                                classicalPublicKey,
+                                pqCiphertext,
+                                chooser.getConfig().isDefaultHybridConcatenation()));
                 LOGGER.info("Generated Server Hybrid PQ KeyShare for {}", entry.getGroupConfig());
             }
         } else {

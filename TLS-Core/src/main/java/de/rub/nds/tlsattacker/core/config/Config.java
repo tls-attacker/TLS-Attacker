@@ -256,6 +256,9 @@ public class Config implements Serializable {
     /** Padding length for TLS 1.3 messages */
     private Integer defaultAdditionalPadding = 0;
 
+    /** If true, standard concatenation logic is used. If false, order is reversed */
+    private Boolean defaultHybridConcatenation = true;
+
     @XmlElement(name = "defaultSniHostname")
     @XmlElementWrapper
     private List<ServerNamePair> defaultSniHostnames =
@@ -2962,6 +2965,14 @@ public class Config implements Serializable {
 
     public void setDefaultAdditionalPadding(Integer defaultAdditionalPadding) {
         this.defaultAdditionalPadding = defaultAdditionalPadding;
+    }
+
+    public Boolean isDefaultHybridConcatenation() {
+        return defaultHybridConcatenation;
+    }
+
+    public void setDefaultHybridConcatenation(Boolean defaultHybridConcatenation) {
+        this.defaultHybridConcatenation = defaultHybridConcatenation;
     }
 
     public byte[] getTlsSessionTicket() {

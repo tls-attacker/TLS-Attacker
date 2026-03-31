@@ -107,13 +107,27 @@ public class PQUtils {
      * @param classicalKeyShare The classical key share to be used
      * @param pqKeyShare The post-quantum key share to be used
      * @return The concatenated key share
+     * @param useStandardConcatenation The order in which to concatenate the shares. If true or
+     *     standard logic is used.
      */
     public static byte[] concatenateHybridKeyShare(
-            NamedGroup namedGroup, byte[] classicalKeyShare, byte[] pqKeyShare) {
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
-            return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
+            NamedGroup namedGroup,
+            byte[] classicalKeyShare,
+            byte[] pqKeyShare,
+            Boolean useStandardConcatenation) {
+        boolean standard = (useStandardConcatenation == null) ? true : useStandardConcatenation;
+        if (standard) {
+            if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+                return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
+            } else {
+                return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
+            }
         } else {
-            return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
+            if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+                return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
+            } else {
+                return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
+            }
         }
     }
 }

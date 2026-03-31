@@ -417,7 +417,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
             byte[] sharedSecret =
                     PQUtils.concatenateHybridKeyShare(
-                            keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
+                            keyShareStoreEntry.getGroup(),
+                            classicalSharedSecret,
+                            pqSharedSecret,
+                            tlsContext.getChooser().getConfig().isDefaultHybridConcatenation());
 
             return sharedSecret;
         } else {
@@ -444,7 +447,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
             byte[] sharedSecret =
                     PQUtils.concatenateHybridKeyShare(
-                            keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
+                            keyShareStoreEntry.getGroup(),
+                            classicalSharedSecret,
+                            pqSharedSecret,
+                            tlsContext.getChooser().getConfig().isDefaultHybridConcatenation());
             return sharedSecret;
         }
     }
