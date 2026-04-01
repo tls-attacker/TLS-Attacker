@@ -63,6 +63,33 @@ public class PQUtils {
         }
     }
 
+    public static int getClassicalKeyShareLength(NamedGroup namedGroup) {
+        switch (namedGroup) {
+            case X25519_MLKEM768:
+                return 32;
+            case SECP256R1_MLKEM768:
+                return 65;
+            case SECP384R1_MLKEM1024:
+                return 97;
+            default:
+                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+        }
+    }
+
+    public static int getPQKeyShareLength(
+            NamedGroup namedGroup, ConnectionEndType connectionEndType) {
+        switch (namedGroup) {
+            case X25519_MLKEM768:
+                return (connectionEndType.equals(ConnectionEndType.CLIENT)) ? 1184 : 1088;
+            case SECP256R1_MLKEM768:
+                return (connectionEndType.equals(ConnectionEndType.CLIENT)) ? 1184 : 1088;
+            case SECP384R1_MLKEM1024:
+                return 1568;
+            default:
+                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+        }
+    }
+
     /**
      * Splits the keyShare for the respective hybrid pq group and stores the individual shares in
      * classicalKeyShare and pqKeyShare.
@@ -76,21 +103,21 @@ public class PQUtils {
         int splitAtIndex;
         switch (namedGroup) {
             case X25519_MLKEM768:
+                splitAtIndex = getPQKeyShareLength(namedGroup, connectionEndType);
                 /* The server sends a ciphertext of length 1088 bytes instead of the 1184 bytes public
                 key share send by the client */
-                splitAtIndex = (connectionEndType.equals(ConnectionEndType.CLIENT)) ? 1184 : 1088;
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length),
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex)
                 };
             case SECP256R1_MLKEM768:
-                splitAtIndex = 65;
+                splitAtIndex = getClassicalKeyShareLength(namedGroup);
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex),
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
                 };
             case SECP384R1_MLKEM1024:
-                splitAtIndex = 97;
+                splitAtIndex = getClassicalKeyShareLength(namedGroup);
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex),
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
@@ -106,9 +133,9 @@ public class PQUtils {
      * @param namedGroup The namedGroup that should be used
      * @param classicalKeyShare The classical key share to be used
      * @param pqKeyShare The post-quantum key share to be used
-     * @return The concatenated key share
-     * @param useStandardConcatenation The order in which to concatenate the shares. If true or
+     * @param useStandardConcatenation The order in which to concatenate the shares. If true or null
      *     standard logic is used.
+     * @return The concatenated key share
      */
     public static byte[] concatenateHybridKeyShare(
             NamedGroup namedGroup,

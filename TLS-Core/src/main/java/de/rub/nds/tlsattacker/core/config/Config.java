@@ -256,8 +256,8 @@ public class Config implements Serializable {
     /** Padding length for TLS 1.3 messages */
     private Integer defaultAdditionalPadding = 0;
 
-    /** If true, standard concatenation logic is used. If false, order is reversed */
-    private Boolean defaultHybridConcatenation = true;
+    /** If null or true, standard concatenation logic is used. If false, order is reversed */
+    private Boolean defaultHybridConcatenation = null;
 
     @XmlElement(name = "defaultSniHostname")
     @XmlElementWrapper
