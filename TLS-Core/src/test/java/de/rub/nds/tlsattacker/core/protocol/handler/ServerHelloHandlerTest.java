@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
+import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -148,6 +149,56 @@ public class ServerHelloHandlerTest
 
         tlsContext.setServerKeyShareStoreEntry(
                 new KeyShareStoreEntry(NamedGroup.MLKEM768, encapsResult.getEncapsulation()));
+        tlsContext.addNegotiatedExtension(ExtensionType.KEY_SHARE);
+        handler.adjustContext(message);
+
+        assertNotNull(tlsContext.getHandshakeSecret());
+        assertNotNull(tlsContext.getClientHandshakeTrafficSecret());
+        assertNotNull(tlsContext.getServerHandshakeTrafficSecret());
+    }
+
+    @Test
+    public void testadjustContextTls13HybridPQ() {
+        ServerHelloMessage message = new ServerHelloMessage();
+        tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        message.setUnixTime(new byte[] {0, 1, 2});
+        message.setRandom(new byte[] {0, 1, 2, 3, 4, 5});
+        message.setSelectedCompressionMethod(CompressionMethod.DEFLATE.getValue());
+        message.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256.getByteValue());
+        message.setSessionId(new byte[] {6, 6, 6});
+        message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        tlsContext.getConfig().setDefaultHybridConcatenation(true);
+
+        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
+        generator.init(
+                new MLKEMKeyGenerationParameters(new SecureRandom(), MLKEMParameters.ml_kem_768));
+        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
+
+        tlsContext.setClientMLKEMPrivateKey((MLKEMPrivateKeyParameters) pair.getPrivate());
+
+        SecretWithEncapsulation encapsResult =
+                KeyShareCalculator.mlkemEncaps(
+                        NamedGroup.MLKEM768,
+                        ((MLKEMPublicKeyParameters) pair.getPublic()).getEncoded(),
+                        new SecureRandom());
+
+        tlsContext
+                .getConfig()
+                .setDefaultKeySharePrivateKey(
+                        NamedGroup.ECDH_X25519,
+                        new BigInteger(
+                                DataConverter.hexStringToByteArray(
+                                        "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
+
+        tlsContext.setServerKeyShareStoreEntry(
+                new KeyShareStoreEntry(
+                        NamedGroup.X25519_MLKEM768,
+                        PQUtils.concatenateHybridKeyShare(
+                                NamedGroup.X25519_MLKEM768,
+                                DataConverter.hexStringToByteArray(
+                                        "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
+                                encapsResult.getEncapsulation(),
+                                true)));
         tlsContext.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         handler.adjustContext(message);
 
