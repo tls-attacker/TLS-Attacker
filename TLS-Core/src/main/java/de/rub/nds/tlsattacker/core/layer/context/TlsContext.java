@@ -507,6 +507,8 @@ public class TlsContext extends LayerContext {
 
     private MLKEMPublicKeyParameters clientMLKEMPublicKey;
 
+    private byte[] serverMLKEMCiphertext;
+
     /**
      * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension)
      * and RFC 8449 (RecordSizeLimit extension)
@@ -2377,6 +2379,14 @@ public class TlsContext extends LayerContext {
 
     public void setClientMLKEMPublicKey(MLKEMPublicKeyParameters clientMLKEMPublicKey) {
         this.clientMLKEMPublicKey = clientMLKEMPublicKey;
+    }
+
+    public byte[] getServerMLKEMCiphertext() {
+        return serverMLKEMCiphertext;
+    }
+
+    public void setServerMLKEMCiphertext(byte[] serverMLKEMCiphertext) {
+        this.serverMLKEMCiphertext = serverMLKEMCiphertext;
     }
 
     public byte[] getPQSharedSecret() {
