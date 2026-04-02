@@ -22,12 +22,14 @@ import de.rub.nds.protocol.crypto.ffdh.FfdhGroup;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
 import org.bouncycastle.pqc.crypto.mlkem.*;
 
@@ -98,6 +100,20 @@ public class KeyShareCalculator {
                     group.name());
             return new byte[0];
         }
+    }
+
+    public static void createMLKEMKeyShare(
+            NamedGroup namedGroup, KeyShareEntry keyShareEntry, SecureRandom random) {
+        LOGGER.debug("Using group: {}", namedGroup);
+        MLKEMParameters params = PQUtils.getMLKEMParameters(namedGroup);
+        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
+        generator.init(new MLKEMKeyGenerationParameters(random, params));
+        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
+        MLKEMPublicKeyParameters pub = (MLKEMPublicKeyParameters) pair.getPublic();
+        MLKEMPrivateKeyParameters priv = (MLKEMPrivateKeyParameters) pair.getPrivate();
+        keyShareEntry.setMLKEMPublicKey(pub);
+        keyShareEntry.setMLKEMPrivateKey(priv);
+        LOGGER.debug("KeyShare: {}", keyShareEntry.getMLKEMPublicKey().getValue());
     }
 
     /**

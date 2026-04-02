@@ -22,16 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.SecureRandom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMKeyGenerationParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMKeyPairGenerator;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 
 public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
@@ -80,24 +73,13 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 DataConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
-    private void prepareMLKEMKeyShare(NamedGroup namedGroup) {
-        LOGGER.debug("Using group: {}", namedGroup);
-        MLKEMParameters params = PQUtils.getMLKEMParameters(namedGroup);
-        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
-        SecureRandom random = chooser.getContext().getTlsContext().getBadSecureRandom();
-        generator.init(new MLKEMKeyGenerationParameters(random, params));
-        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
-        MLKEMPublicKeyParameters pub = (MLKEMPublicKeyParameters) pair.getPublic();
-        MLKEMPrivateKeyParameters priv = (MLKEMPrivateKeyParameters) pair.getPrivate();
-        entry.setMLKEMPublicKey(pub);
-        entry.setMLKEMPrivateKey(priv);
-        LOGGER.debug("KeyShare: {}", entry.getMLKEMPublicKey().getValue());
-    }
-
     private void prepareKeyShare() {
         if (entry.getGroupConfig().isPQGroup()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                prepareMLKEMKeyShare(entry.getGroupConfig());
+                KeyShareCalculator.createMLKEMKeyShare(
+                        entry.getGroupConfig(),
+                        entry,
+                        chooser.getContext().getTlsContext().getBadSecureRandom());
                 entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
                 chooser.getContext()
                         .getTlsContext()
@@ -145,7 +127,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 entry.getPrivateKey(),
                                 chooser.getConfig().getDefaultSelectedPointFormat());
 
-                prepareMLKEMKeyShare(pqGroup);
+                KeyShareCalculator.createMLKEMKeyShare(
+                        pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
                 byte[] pqPublicKey = entry.getMLKEMPublicKey().getValue();
 
                 chooser.getContext()
