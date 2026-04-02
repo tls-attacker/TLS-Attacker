@@ -80,7 +80,13 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                         entry.getGroupConfig(),
                         entry,
                         chooser.getContext().getTlsContext().getBadSecureRandom());
-                entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
+                byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
+                if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
+                    LOGGER.debug("Using defaultClientMLKEMPublicKey from config");
+                    entry.setPublicKey(defaultMLKEMPublicKey);
+                } else {
+                    entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
+                }
                 chooser.getContext()
                         .getTlsContext()
                         .setClientMLKEMPublicKey(entry.getMLKEMPublicKeyParameters());
@@ -105,8 +111,16 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 entry.getGroupConfig(),
                                 clientPublicKey,
                                 chooser.getContext().getTlsContext().getBadSecureRandom());
-                entry.setPublicKey(result.getEncapsulation());
+                byte[] defaultMLKEMCiphertext =
+                        chooser.getConfig().getDefaultServerMLKEMCiphertext();
+                if (defaultMLKEMCiphertext != null && defaultMLKEMCiphertext.length > 0) {
+                    LOGGER.debug("Using defaultServerMLKEMCiphertext from config");
+                    entry.setPublicKey(defaultMLKEMCiphertext);
+                } else {
+                    entry.setPublicKey(result.getEncapsulation());
+                }
                 chooser.getContext().getTlsContext().setPQSharedSecret(result.getSecret());
+                chooser.getContext().getTlsContext().setServerMLKEMCiphertext(entry.getPublicKey());
 
                 LOGGER.info("Encapsulated PQ secret for group: {}", entry.getGroupConfig());
             }
@@ -130,6 +144,11 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 KeyShareCalculator.createMLKEMKeyShare(
                         pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
                 byte[] pqPublicKey = entry.getMLKEMPublicKey().getValue();
+                byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
+                if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
+                    LOGGER.debug("Using defaultClientMLKEMPublicKey from config for hybrid KEX");
+                    pqPublicKey = defaultMLKEMPublicKey;
+                }
 
                 chooser.getContext()
                         .getTlsContext()
@@ -172,10 +191,17 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 chooser.getContext().getTlsContext().getBadSecureRandom());
 
                 byte[] pqCiphertext = encapsulationResult.getEncapsulation();
+                byte[] defaultMLKEMCiphertext =
+                        chooser.getConfig().getDefaultServerMLKEMCiphertext();
+                if (defaultMLKEMCiphertext != null && defaultMLKEMCiphertext.length > 0) {
+                    LOGGER.debug("Using defaultServerMLKEMCiphertext from config for hybrid KEX");
+                    pqCiphertext = defaultMLKEMCiphertext;
+                }
 
                 chooser.getContext()
                         .getTlsContext()
                         .setPQSharedSecret(encapsulationResult.getSecret());
+                chooser.getContext().getTlsContext().setServerMLKEMCiphertext(pqCiphertext);
 
                 entry.setPublicKey(
                         PQUtils.concatenateHybridKeyShare(

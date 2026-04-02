@@ -1203,6 +1203,9 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientMLKEMPublicKey = new byte[0];
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultServerMLKEMCiphertext = new byte[0];
+
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDSalt =
@@ -4548,5 +4551,13 @@ public class Config implements Serializable {
 
     public void setDefaultClientMLKEMPublicKey(byte[] defaultClientMLKEMPublicKey) {
         this.defaultClientMLKEMPublicKey = defaultClientMLKEMPublicKey;
+    }
+
+    public byte[] getDefaultServerMLKEMCiphertext() {
+        return Arrays.copyOf(defaultServerMLKEMCiphertext, defaultServerMLKEMCiphertext.length);
+    }
+
+    public void setDefaultServerMLKEMCiphertext(byte[] defaultServerMLKEMCiphertext) {
+        this.defaultServerMLKEMCiphertext = defaultServerMLKEMCiphertext;
     }
 }
