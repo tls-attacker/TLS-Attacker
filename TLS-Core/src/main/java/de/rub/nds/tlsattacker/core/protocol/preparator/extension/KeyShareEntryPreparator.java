@@ -120,7 +120,9 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                     entry.setPublicKey(result.getEncapsulation());
                 }
                 chooser.getContext().getTlsContext().setPQSharedSecret(result.getSecret());
-                chooser.getContext().getTlsContext().setServerMLKEMCiphertext(entry.getPublicKey());
+                chooser.getContext()
+                        .getTlsContext()
+                        .setServerMLKEMCiphertext(entry.getPublicKey().getValue());
 
                 LOGGER.info("Encapsulated PQ secret for group: {}", entry.getGroupConfig());
             }
