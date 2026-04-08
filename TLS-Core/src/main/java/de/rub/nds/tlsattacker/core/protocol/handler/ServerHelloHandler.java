@@ -283,14 +283,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
             } else if (keyShareStoreEntry.getGroup().isPQGroup()) {
-                LOGGER.info(
-                        "Computing PQ Shared Secret for group: {}", keyShareStoreEntry.getGroup());
                 sharedSecret = computePQSharedSecret(keyShareStoreEntry);
                 LOGGER.debug("Computed PQ Shared Secret: {}", sharedSecret);
             } else if (keyShareStoreEntry.getGroup().isHybridPQGroup()) {
-                LOGGER.info(
-                        "Computing Hybrid Shared Secret for group: {}",
-                        keyShareStoreEntry.getGroup());
                 sharedSecret = computeHybridPQSharedSecret(keyShareStoreEntry);
                 LOGGER.debug("Computed Hybrid PQ Shared Secret: {}", sharedSecret);
             } else {
@@ -443,7 +438,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
 
             byte[] pqSharedSecret = tlsContext.getPQSharedSecret();
-            LOGGER.debug("Retreived ML-KEM Shared Secret: {}", pqSharedSecret);
+            LOGGER.debug("Retreived ML-KEM Shared Secret from TLS-Context: {}", pqSharedSecret);
 
             byte[] sharedSecret =
                     PQUtils.concatenateHybridKeyShare(
