@@ -49,7 +49,7 @@ public class QuicTransportParametersExtensionsHandlerTest
                 new QuicTransportParameterEntry(
                         QuicTransportParameterEntryTypes.PREFERRED_ADDRESS,
                         DataConverter.hexStringToByteArray(
-                                "1234567812345678123456781234567812345678123456781234567812345678123456781234567812"))); //41 byte long -> minimum length
+                                "1234567812345678123456781234567812345678123456781234567812345678123456781234567812"))); // 41 byte long -> minimum length
         msg.setTransportParameterEntries(paramentries);
 
         handler.adjustTLSExtensionContext(msg);
