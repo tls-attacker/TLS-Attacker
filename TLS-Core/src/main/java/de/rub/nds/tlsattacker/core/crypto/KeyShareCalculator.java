@@ -103,8 +103,9 @@ public class KeyShareCalculator {
     }
 
     /**
-     * Creates a post-quantum mlkem key share for the client and sets both values in the keyShareEntry
-     * 
+     * Creates a post-quantum mlkem key share for the client and sets both values in the
+     * keyShareEntry
+     *
      * @param namedGroup The namedGroup that should be used.
      * @param keyShareEntry The keyShareEntry that should be used.
      * @param random The secure random that should be used.
