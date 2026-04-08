@@ -102,6 +102,13 @@ public class KeyShareCalculator {
         }
     }
 
+    /**
+     * Creates a post-quantum mlkem key share for the client and sets both values in the keyShareEntry
+     * 
+     * @param namedGroup The namedGroup that should be used.
+     * @param keyShareEntry The keyShareEntry that should be used.
+     * @param random The secure random that should be used.
+     */
     public static void createMLKEMKeyShare(
             NamedGroup namedGroup, KeyShareEntry keyShareEntry, SecureRandom random) {
         LOGGER.debug("Using group: {}", namedGroup);
@@ -111,6 +118,7 @@ public class KeyShareCalculator {
         AsymmetricCipherKeyPair pair = generator.generateKeyPair();
         MLKEMPublicKeyParameters pub = (MLKEMPublicKeyParameters) pair.getPublic();
         MLKEMPrivateKeyParameters priv = (MLKEMPrivateKeyParameters) pair.getPrivate();
+
         keyShareEntry.setMLKEMPublicKey(pub);
         keyShareEntry.setMLKEMPrivateKey(priv);
         LOGGER.debug("KeyShare: {}", keyShareEntry.getMLKEMPublicKey().getValue());
