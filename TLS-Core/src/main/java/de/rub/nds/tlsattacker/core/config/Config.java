@@ -259,6 +259,9 @@ public class Config implements Serializable {
     /** If null or true, standard concatenation logic is used. If false, order is reversed */
     private Boolean defaultHybridConcatenation = null;
 
+    /** If true, hybrid ML-KEM keyshares will reuse the standalone ML-KEM keyshare if present */
+    private Boolean defaultKeyShareReuseHybridMLKEM = false;
+
     @XmlElement(name = "defaultSniHostname")
     @XmlElementWrapper
     private List<ServerNamePair> defaultSniHostnames =
@@ -2976,6 +2979,14 @@ public class Config implements Serializable {
 
     public void setDefaultHybridConcatenation(Boolean defaultHybridConcatenation) {
         this.defaultHybridConcatenation = defaultHybridConcatenation;
+    }
+
+    public Boolean isDefaultKeyShareReuseHybridMLKEM() {
+        return defaultKeyShareReuseHybridMLKEM;
+    }
+
+    public void setDefaultKeyShareReuseHybridMLKEM(Boolean defaultKeyShareReuseHybridMLKEM) {
+        this.defaultKeyShareReuseHybridMLKEM = defaultKeyShareReuseHybridMLKEM;
     }
 
     public byte[] getTlsSessionTicket() {

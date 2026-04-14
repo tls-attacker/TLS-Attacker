@@ -25,6 +25,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 
 public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
@@ -101,10 +103,26 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void preparePQKeyShare() {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            KeyShareCalculator.createMLKEMKeyShare(
-                    entry.getGroupConfig(),
-                    entry,
-                    chooser.getContext().getTlsContext().getBadSecureRandom());
+            MLKEMPublicKeyParameters cachedPublicKey =
+                    chooser.getContext().getTlsContext().getClientMLKEMPublicKey();
+            MLKEMPrivateKeyParameters cachedPrivateKey =
+                    chooser.getContext().getTlsContext().getClientMLKEMPrivateKey();
+
+            if (chooser.getConfig().isDefaultKeyShareReuseHybridMLKEM()
+                    && cachedPublicKey != null
+                    && cachedPrivateKey != null
+                    && cachedPublicKey
+                            .getParameters()
+                            .equals(PQUtils.getMLKEMParameters(entry.getGroupConfig()))) {
+                LOGGER.debug("Reusing cached ML-KEM keyshare for standalone group");
+                entry.setMLKEMPublicKey(cachedPublicKey);
+                entry.setMLKEMPrivateKey(cachedPrivateKey);
+            } else {
+                KeyShareCalculator.createMLKEMKeyShare(
+                        entry.getGroupConfig(),
+                        entry,
+                        chooser.getContext().getTlsContext().getBadSecureRandom());
+            }
             byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
             if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
                 LOGGER.debug("Using defaultClientMLKEMPublicKey from config");
@@ -169,8 +187,24 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                             entry.getPrivateKey(),
                             chooser.getConfig().getDefaultSelectedPointFormat());
 
-            KeyShareCalculator.createMLKEMKeyShare(
-                    pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
+            MLKEMPublicKeyParameters cachedPublicKey =
+                    chooser.getContext().getTlsContext().getClientMLKEMPublicKey();
+            MLKEMPrivateKeyParameters cachedPrivateKey =
+                    chooser.getContext().getTlsContext().getClientMLKEMPrivateKey();
+
+            if (chooser.getConfig().isDefaultKeyShareReuseHybridMLKEM()
+                    && cachedPublicKey != null
+                    && cachedPrivateKey != null
+                    && cachedPublicKey
+                            .getParameters()
+                            .equals(PQUtils.getMLKEMParameters(pqGroup))) {
+                LOGGER.debug("Reusing cached ML-KEM keyshare for hybrid group");
+                entry.setMLKEMPublicKey(cachedPublicKey);
+                entry.setMLKEMPrivateKey(cachedPrivateKey);
+            } else {
+                KeyShareCalculator.createMLKEMKeyShare(
+                        pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
+            }
             byte[] pqPublicKey = entry.getMLKEMPublicKey().getValue();
             byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
             if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
