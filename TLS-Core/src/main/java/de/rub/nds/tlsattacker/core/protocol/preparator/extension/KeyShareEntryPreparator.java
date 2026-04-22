@@ -104,9 +104,15 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     private void preparePQKeyShare() {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             MLKEMPublicKeyParameters cachedPublicKey =
-                    chooser.getContext().getTlsContext().getClientMLKEMPublicKey();
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getClientMLKEMPublicKeys()
+                            .get(entry.getGroupConfig());
             MLKEMPrivateKeyParameters cachedPrivateKey =
-                    chooser.getContext().getTlsContext().getClientMLKEMPrivateKey();
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getClientMLKEMPrivateKeys()
+                            .get(entry.getGroupConfig());
 
             if (chooser.getConfig().isDefaultKeyShareReuseHybridMLKEM()
                     && cachedPublicKey != null
@@ -132,10 +138,12 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             }
             chooser.getContext()
                     .getTlsContext()
-                    .setClientMLKEMPublicKey(entry.getMLKEMPublicKeyParameters());
+                    .getClientMLKEMPublicKeys()
+                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyParameters());
             chooser.getContext()
                     .getTlsContext()
-                    .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKeyParameters());
+                    .getClientMLKEMPrivateKeys()
+                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyParameters());
             LOGGER.debug("Generated Client PQ KeyPair for group: {}", entry.getGroupConfig());
         } else {
             // The Server does not generate an own keypair for post-quantum groups,
@@ -188,9 +196,16 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                             chooser.getConfig().getDefaultSelectedPointFormat());
 
             MLKEMPublicKeyParameters cachedPublicKey =
-                    chooser.getContext().getTlsContext().getClientMLKEMPublicKey();
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getClientMLKEMPublicKeys()
+                            .get(entry.getGroupConfig());
+
             MLKEMPrivateKeyParameters cachedPrivateKey =
-                    chooser.getContext().getTlsContext().getClientMLKEMPrivateKey();
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getClientMLKEMPrivateKeys()
+                            .get(entry.getGroupConfig());
 
             if (chooser.getConfig().isDefaultKeyShareReuseHybridMLKEM()
                     && cachedPublicKey != null
@@ -205,6 +220,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 KeyShareCalculator.createMLKEMKeyShare(
                         pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
             }
+
             byte[] pqPublicKey = entry.getMLKEMPublicKey().getValue();
             byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
             if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
@@ -217,13 +233,17 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                     entry.getMLKEMPublicKeyParameters().getEncoded());
             chooser.getContext()
                     .getTlsContext()
-                    .setClientMLKEMPublicKey(entry.getMLKEMPublicKeyParameters());
+                    .getClientMLKEMPublicKeys()
+                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyParameters());
+
             LOGGER.debug(
                     "Setting Client MLKEM private key to {}",
                     entry.getMLKEMPrivateKeyParameters().getEncoded());
+
             chooser.getContext()
                     .getTlsContext()
-                    .setClientMLKEMPrivateKey(entry.getMLKEMPrivateKeyParameters());
+                    .getClientMLKEMPrivateKeys()
+                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyParameters());
 
             entry.setPublicKey(
                     PQUtils.concatenateHybridKeyShare(

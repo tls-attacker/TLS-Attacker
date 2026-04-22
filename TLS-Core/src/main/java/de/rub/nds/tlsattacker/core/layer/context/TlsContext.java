@@ -503,9 +503,11 @@ public class TlsContext extends LayerContext {
 
     private Long esniNotAfter;
 
-    private MLKEMPrivateKeyParameters clientMLKEMPrivateKey;
+    private java.util.Map<NamedGroup, MLKEMPrivateKeyParameters> clientMLKEMPrivateKeys =
+            new java.util.HashMap<>();
 
-    private MLKEMPublicKeyParameters clientMLKEMPublicKey;
+    private java.util.Map<NamedGroup, MLKEMPublicKeyParameters> clientMLKEMPublicKeys =
+            new java.util.HashMap<>();
 
     private byte[] serverMLKEMCiphertext;
 
@@ -2365,20 +2367,12 @@ public class TlsContext extends LayerContext {
         this.peerReceiveLimit = peerReceiveLimit;
     }
 
-    public MLKEMPrivateKeyParameters getClientMLKEMPrivateKey() {
-        return clientMLKEMPrivateKey;
+    public java.util.Map<NamedGroup, MLKEMPrivateKeyParameters> getClientMLKEMPrivateKeys() {
+        return clientMLKEMPrivateKeys;
     }
 
-    public void setClientMLKEMPrivateKey(MLKEMPrivateKeyParameters clientMLKEMPrivateKey) {
-        this.clientMLKEMPrivateKey = clientMLKEMPrivateKey;
-    }
-
-    public MLKEMPublicKeyParameters getClientMLKEMPublicKey() {
-        return clientMLKEMPublicKey;
-    }
-
-    public void setClientMLKEMPublicKey(MLKEMPublicKeyParameters clientMLKEMPublicKey) {
-        this.clientMLKEMPublicKey = clientMLKEMPublicKey;
+    public java.util.Map<NamedGroup, MLKEMPublicKeyParameters> getClientMLKEMPublicKeys() {
+        return clientMLKEMPublicKeys;
     }
 
     public byte[] getServerMLKEMCiphertext() {

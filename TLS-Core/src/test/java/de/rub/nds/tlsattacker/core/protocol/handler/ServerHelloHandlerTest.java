@@ -139,7 +139,9 @@ public class ServerHelloHandlerTest
                 new MLKEMKeyGenerationParameters(new SecureRandom(), MLKEMParameters.ml_kem_768));
         AsymmetricCipherKeyPair pair = generator.generateKeyPair();
 
-        tlsContext.setClientMLKEMPrivateKey((MLKEMPrivateKeyParameters) pair.getPrivate());
+        tlsContext
+                .getClientMLKEMPrivateKeys()
+                .put(NamedGroup.MLKEM768, (MLKEMPrivateKeyParameters) pair.getPrivate());
 
         SecretWithEncapsulation encapsResult =
                 KeyShareCalculator.mlkemEncaps(
@@ -174,7 +176,9 @@ public class ServerHelloHandlerTest
                 new MLKEMKeyGenerationParameters(new SecureRandom(), MLKEMParameters.ml_kem_768));
         AsymmetricCipherKeyPair pair = generator.generateKeyPair();
 
-        tlsContext.setClientMLKEMPrivateKey((MLKEMPrivateKeyParameters) pair.getPrivate());
+        tlsContext
+                .getClientMLKEMPrivateKeys()
+                .put(NamedGroup.X25519_MLKEM768, (MLKEMPrivateKeyParameters) pair.getPrivate());
 
         SecretWithEncapsulation encapsResult =
                 KeyShareCalculator.mlkemEncaps(
