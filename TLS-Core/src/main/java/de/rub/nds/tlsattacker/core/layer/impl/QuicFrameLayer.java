@@ -60,6 +60,9 @@ public class QuicFrameLayer
     private long handshakePhaseExpectedCryptoFrameOffset = 0;
     private long applicationPhaseExpectedCryptoFrameOffset = 0;
 
+    private long initialPhaseSendCryptoOffset = 0;
+    private long handshakePhaseSendCryptoOffset = 0;
+
     private List<CryptoFrame> cryptoFrameBuffer = new ArrayList<>();
 
     private boolean hasExperiencedTimeout = false;
@@ -143,7 +146,11 @@ public class QuicFrameLayer
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.HANDSHAKE_PACKET);
                     }
                     List<QuicFrame> givenFrames = getUnprocessedConfiguredContainers();
-                    int offset = 0;
+                    int localOffset = 0;
+                    long streamOffset =
+                            hintedFirstMessage
+                                    ? initialPhaseSendCryptoOffset
+                                    : handshakePhaseSendCryptoOffset;
 
                     // Send crypto frames from the configuration (if present)
                     List<CryptoFrame> givenCryptoFrames =
@@ -156,31 +163,40 @@ public class QuicFrameLayer
                                 frame.getMaxFrameLengthConfig() != 0
                                         ? frame.getMaxFrameLengthConfig()
                                         : MAX_FRAME_SIZE;
-                        byte[] payload = Arrays.copyOfRange(data, offset, offset + toCopy);
+                        byte[] payload =
+                                Arrays.copyOfRange(data, localOffset, localOffset + toCopy);
                         frame.setCryptoDataConfig(payload);
-                        frame.setOffsetConfig(offset);
+                        frame.setOffsetConfig(streamOffset + localOffset);
                         frame.setLengthConfig(payload.length);
                         addProducedContainer(frame);
                         // TODO: Add option to pass everything together to the next layer
                         getLowerLayer().sendData(packetLayerHint, writeFrame(frame));
 
-                        offset += toCopy;
-                        if (offset >= data.length) {
+                        localOffset += toCopy;
+                        if (localOffset >= data.length) {
                             break;
                         }
                     }
 
                     // Send fresh crypto frames if not enough frames were specified explicitly
-                    for (; offset < data.length; offset += MAX_FRAME_SIZE) {
+                    for (; localOffset < data.length; localOffset += MAX_FRAME_SIZE) {
                         byte[] payload =
                                 Arrays.copyOfRange(
                                         data,
-                                        offset,
-                                        Math.min(offset + MAX_FRAME_SIZE, data.length));
-                        CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
+                                        localOffset,
+                                        Math.min(localOffset + MAX_FRAME_SIZE, data.length));
+                        CryptoFrame frame =
+                                new CryptoFrame(
+                                        payload, streamOffset + localOffset, payload.length);
                         addProducedContainer(frame);
                         // TODO: Add option to pass everything together to the next layer
                         getLowerLayer().sendData(packetLayerHint, writeFrame(frame));
+                    }
+
+                    if (hintedFirstMessage) {
+                        initialPhaseSendCryptoOffset += data.length;
+                    } else {
+                        handshakePhaseSendCryptoOffset += data.length;
                     }
                     break;
                 case APPLICATION_DATA:
@@ -473,6 +489,8 @@ public class QuicFrameLayer
         initialPhaseExpectedCryptoFrameOffset = 0;
         handshakePhaseExpectedCryptoFrameOffset = 0;
         applicationPhaseExpectedCryptoFrameOffset = 0;
+        initialPhaseSendCryptoOffset = 0;
+        handshakePhaseSendCryptoOffset = 0;
     }
 
     public boolean hasExperiencedTimeout() {
