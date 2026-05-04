@@ -52,6 +52,8 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
+        identities = new LinkedList<>();
+        binders = new LinkedList<>();
         if (config.getDefaultPskSets().size() > 0) {
             copyPskSets(config.getDefaultPskSets(), config.isLimitPsksToOne());
         }
@@ -169,6 +171,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
         for (int x = 0; x < pskLimit; x++) {
             PSKIdentity pskIdentity = new PSKIdentity();
             pskIdentity.setIdentityConfig(pskSets.get(x).getPreSharedKeyIdentity());
+            pskIdentity.setIdentity(pskSets.get(x).getPreSharedKeyIdentity());
             pskIdentity.setTicketAgeAddConfig(pskSets.get(x).getTicketAgeAdd());
             pskIdentity.setTicketAgeConfig(pskSets.get(x).getTicketAge());
 
