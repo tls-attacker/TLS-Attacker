@@ -17,6 +17,12 @@ import java.util.Map;
 public enum QuicVersion {
     VERSION_1(0x00000001, "38762cf7f55934b34d179ae6a4c80cadccbb7f0a"),
     VERSION_2(0x6b3343cf, "0dede3def700a6db819381be6e269dcbf9bd2ed9"),
+    DRAFT_29(0xff00001d, "afbfec289993d24c9e9786f19c6111e04390a899"),
+    DRAFT_30(0xff00001e, "afbfec289993d24c9e9786f19c6111e04390a899"),
+    DRAFT_31(0xff00001f, "afbfec289993d24c9e9786f19c6111e04390a899"),
+    DRAFT_32(0xff000020, "afbfec289993d24c9e9786f19c6111e04390a899"),
+    DRAFT_33(0xff000021, "38762cf7f55934b34d179ae6a4c80cadccbb7f0a"),
+    DRAFT_34(0xff000022, "38762cf7f55934b34d179ae6a4c80cadccbb7f0a"),
     NEGOTIATION_VERSION(0x0a0a0a0a, "38762cf7f55934b34d179ae6a4c80cadccbb7f0a"),
     NULL_VERSION(0x00000000, ""),
     UNKNOWN(0xffffffff, "");
@@ -95,35 +101,51 @@ public enum QuicVersion {
         return initialSalt;
     }
 
+    public boolean isSupported() {
+        return switch (this) {
+            case VERSION_1, VERSION_2, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    true;
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION -> false;
+        };
+    }
+
     public String getKeyLabel() {
         return switch (this) {
-            case VERSION_1 -> QuicHKDFConstants.QUIC1_KEY;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    QuicHKDFConstants.QUIC1_KEY;
             case VERSION_2 -> QuicHKDFConstants.QUIC2_KEY;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 
     public String getIvLabel() {
         return switch (this) {
-            case VERSION_1 -> QuicHKDFConstants.QUIC1_IV;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    QuicHKDFConstants.QUIC1_IV;
             case VERSION_2 -> QuicHKDFConstants.QUIC2_IV;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 
     public String getHeaderProtectionLabel() {
         return switch (this) {
-            case VERSION_1 -> QuicHKDFConstants.QUIC1_HP;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    QuicHKDFConstants.QUIC1_HP;
             case VERSION_2 -> QuicHKDFConstants.QUIC2_HP;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 
     public String getKeyUpdateLabel() {
         return switch (this) {
-            case VERSION_1 -> QuicHKDFConstants.QUIC1_KU;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    QuicHKDFConstants.QUIC1_KU;
             case VERSION_2 -> QuicHKDFConstants.QUIC2_KU;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 
