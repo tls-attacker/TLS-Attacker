@@ -27,10 +27,12 @@ import de.rub.nds.tlsattacker.core.quic.crypto.QuicEncryptor;
 import de.rub.nds.tlsattacker.core.quic.packet.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -271,6 +273,26 @@ public class QuicPacketLayer
                 LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
             } else {
                 receivedPacketBuffer.get(packetType).add(readPacket);
+            }
+        }
+
+        // Server mode: when first Initial arrives, adopt the client's DCID
+        // and derive Initial secrets from it. Until this point QuicContext has no Initial keys.
+        if (context.getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER
+                && !quicContext.isInitialSecretsInitialized()
+                && !receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()) {
+            byte[] clientDcid =
+                    receivedPacketBuffer
+                            .get(QuicPacketType.INITIAL_PACKET)
+                            .getFirst()
+                            .getDestinationConnectionId()
+                            .getValue();
+            quicContext.setFirstDestinationConnectionId(clientDcid);
+            quicContext.setDestinationConnectionId(clientDcid);
+            try {
+                QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
+            } catch (NoSuchAlgorithmException | CryptoException ex) {
+                LOGGER.error("Could not derive server-mode Initial secrets", ex);
             }
         }
 

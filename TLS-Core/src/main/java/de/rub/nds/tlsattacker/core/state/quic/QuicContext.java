@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import javax.crypto.Cipher;
@@ -150,13 +151,23 @@ public class QuicContext extends LayerContext {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
+        this.initialSecretsInitialized = false;
         this.sourceConnectionId = this.generateRandomConnectionId(16);
-        this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
-        this.destinationConnectionId = this.firstDestinationConnectionId;
-        try {
-            QuicPacketCryptoComputations.calculateInitialSecrets(this);
-        } catch (NoSuchAlgorithmException | CryptoException e) {
-            LOGGER.error("Could not initialize initial secrets: ", e);
+        // Initial secrets are derived from client's first DCID, which in server mode we don't know
+        // until the first Initial packet.
+        // Defer derivation to QuicPacketLayer.readPackets. Client mode picks its own DCID and
+        // derives immediately.
+        if (context.getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+            this.firstDestinationConnectionId = null;
+            this.destinationConnectionId = new byte[0];
+        } else {
+            this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
+            this.destinationConnectionId = this.firstDestinationConnectionId;
+            try {
+                QuicPacketCryptoComputations.calculateInitialSecrets(this);
+            } catch (NoSuchAlgorithmException | CryptoException e) {
+                LOGGER.error("Could not initialize initial secrets: ", e);
+            }
         }
     }
 
