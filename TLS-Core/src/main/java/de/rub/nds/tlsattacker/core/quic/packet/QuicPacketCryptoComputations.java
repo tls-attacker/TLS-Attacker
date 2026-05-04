@@ -478,9 +478,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                                         + 1 /* Flags Byte */
                                         + 4 /* Version Field */
                                         + 1 /* DCID length field */
-                                        + packet.getDestinationConnectionIdLength().getValue()
+                                        + packet.getDestinationConnectionId().getValue().length
                                         + 1 /* SCID length field */
-                                        + packet.getSourceConnectionIdLength().getValue()
+                                        + packet.getSourceConnectionId().getValue().length
                                         + packet.retryToken.getValue().length)
                         .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
                         .put(context.getFirstDestinationConnectionId())
