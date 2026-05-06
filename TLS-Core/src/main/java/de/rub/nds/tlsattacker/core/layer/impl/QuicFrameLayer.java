@@ -353,23 +353,60 @@ public class QuicFrameLayer
         // passed to the upper layer without gaps
         SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (!cryptoFrameBuffer.isEmpty()) {
+            long nextOffset;
+            if (!quicContext.isHandshakeSecretsInitialized()) {
+                nextOffset = initialPhaseExpectedCryptoFrameOffset;
+            } else if (!quicContext.isApplicationSecretsInitialized()) {
+                nextOffset = handshakePhaseExpectedCryptoFrameOffset;
+            } else {
+                nextOffset = applicationPhaseExpectedCryptoFrameOffset;
+            }
             cryptoFrameBuffer.sort(Comparator.comparingLong(frame -> frame.getOffset().getValue()));
-            cryptoFrameBuffer = cryptoFrameBuffer.stream().distinct().collect(Collectors.toList());
-            if (isCryptoBufferConsecutive()) {
-                for (CryptoFrame frame : cryptoFrameBuffer) {
+
+            List<CryptoFrame> processedFrames = new ArrayList<>();
+            for (CryptoFrame frame : cryptoFrameBuffer) {
+                long frameOffset = frame.getOffset().getValue();
+                long frameLength = frame.getLength().getValue();
+
+                if (frameOffset + frameLength <= nextOffset) {
+                    // All data from this crypto frame has already been passed to the upper layer
+                    processedFrames.add(frame);
+                    continue;
+                }
+
+                // Consecutive frames
+                if (frameOffset == nextOffset) {
                     outputStream.write(frame.getCryptoData().getValue());
+                    processedFrames.add(frame);
+                    nextOffset = frameOffset + frameLength;
+                } else if (frameOffset <= nextOffset) {
+                    byte[] remainingData =
+                            Arrays.copyOfRange(
+                                    frame.getCryptoData().getValue(),
+                                    Math.toIntExact(nextOffset - frameOffset),
+                                    Math.toIntExact(frameLength));
+                    outputStream.write(remainingData);
+                    processedFrames.add(frame);
+                    nextOffset = frameOffset + frameLength;
                 }
-                CryptoFrame lastFrame = cryptoFrameBuffer.getLast();
-                long nextExpectedCryptoOffset =
-                        lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
-                if (!quicContext.isHandshakeSecretsInitialized()) {
-                    initialPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                } else if (!quicContext.isApplicationSecretsInitialized()) {
-                    handshakePhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                } else {
-                    applicationPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                }
-                cryptoFrameBuffer.clear();
+
+                // Frame is not usable right now
+            }
+
+            cryptoFrameBuffer.removeAll(processedFrames);
+            if (!cryptoFrameBuffer.isEmpty()) {
+                LOGGER.warn(
+                        "Missing CryptoFrames in buffer: {}, nextOffset={}",
+                        cryptoBufferToString(),
+                        nextOffset);
+            }
+
+            if (!quicContext.isHandshakeSecretsInitialized()) {
+                initialPhaseExpectedCryptoFrameOffset = nextOffset;
+            } else if (!quicContext.isApplicationSecretsInitialized()) {
+                handshakePhaseExpectedCryptoFrameOffset = nextOffset;
+            } else {
+                applicationPhaseExpectedCryptoFrameOffset = nextOffset;
             }
         }
 
@@ -391,44 +428,14 @@ public class QuicFrameLayer
         outputStream.flush();
     }
 
-    private boolean isCryptoBufferConsecutive() {
-        long lastSeenCryptoOffset;
-        if (!quicContext.isHandshakeSecretsInitialized()) {
-            lastSeenCryptoOffset = initialPhaseExpectedCryptoFrameOffset;
-        } else if (!quicContext.isApplicationSecretsInitialized()) {
-            lastSeenCryptoOffset = handshakePhaseExpectedCryptoFrameOffset;
-        } else {
-            lastSeenCryptoOffset = applicationPhaseExpectedCryptoFrameOffset;
-        }
-        if (cryptoFrameBuffer.getFirst().getOffset().getValue() != lastSeenCryptoOffset) {
-            LOGGER.warn(
-                    "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
-                    cryptoBufferToString(),
-                    lastSeenCryptoOffset);
-            return false;
-        }
-        for (int i = 1; i < cryptoFrameBuffer.size(); i++) {
-            if (cryptoFrameBuffer.get(i).getOffset().getValue()
-                    != cryptoFrameBuffer.get(i - 1).getOffset().getValue()
-                            + cryptoFrameBuffer.get(i - 1).getLength().getValue()) {
-                LOGGER.warn(
-                        "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
-                        cryptoBufferToString(),
-                        lastSeenCryptoOffset);
-                return false;
-            }
-        }
-        return true;
-    }
-
     private String cryptoBufferToString() {
         return cryptoFrameBuffer.stream()
                 .map(
                         cryptoFrame ->
-                                "o: "
-                                        + cryptoFrame.getOffset().getValue()
-                                        + ", l: "
-                                        + cryptoFrame.getLength().getValue())
+                                "o: %d, l: %d"
+                                        .formatted(
+                                                cryptoFrame.getOffset().getValue(),
+                                                cryptoFrame.getLength().getValue()))
                 .collect(Collectors.joining(" | "));
     }
 
