@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 
 public class FakeUdpTransportHandler extends UdpTransportHandler implements FakeTransportHandler {
 
@@ -45,6 +46,9 @@ public class FakeUdpTransportHandler extends UdpTransportHandler implements Fake
 
     @Override
     public byte[] fetchData() throws IOException {
+        if (inputStream.available() == 0) {
+            throw new SocketTimeoutException();
+        }
         byte[] data = new byte[inputStream.available()];
         inputStream.read(data);
         return data;

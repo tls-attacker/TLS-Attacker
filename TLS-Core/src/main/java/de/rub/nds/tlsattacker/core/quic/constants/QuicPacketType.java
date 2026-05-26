@@ -49,17 +49,16 @@ public enum QuicPacketType {
         if (version == QuicVersion.NULL_VERSION) {
             return VERSION_NEGOTIATION;
         }
-        if (version != QuicVersion.VERSION_1 && version != QuicVersion.VERSION_2) {
+        if (!version.isSupported()) {
             return UNKNOWN;
         }
         if (isShortHeaderPacket(firstByte)) {
-            // 1-RTT packets are the only short header packets
+            // 1-RTT packets are the only short header packets in all supported versions
             return ONE_RTT_PACKET;
-        } else {
-            QuicPacketType type =
-                    getHeaderMap(version).get((byte) (firstByte & 0b1111_0000 | 0b0100_0000));
-            return Objects.requireNonNullElse(type, UNKNOWN);
         }
+        QuicPacketType type =
+                getHeaderMap(version).get((byte) (firstByte & 0b1111_0000 | 0b0100_0000));
+        return Objects.requireNonNullElse(type, UNKNOWN);
     }
 
     public static boolean isLongHeaderPacket(int firstByte) {
@@ -79,17 +78,20 @@ public enum QuicPacketType {
 
     public byte getHeader(QuicVersion version) {
         return switch (version) {
-            case VERSION_1 -> headerQuic1;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 ->
+                    headerQuic1;
             case VERSION_2 -> headerQuic2;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 
     private static Map<Byte, QuicPacketType> getHeaderMap(QuicVersion version) {
         return switch (version) {
-            case VERSION_1 -> QUIC1_MAP;
+            case VERSION_1, DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32, DRAFT_33, DRAFT_34 -> QUIC1_MAP;
             case VERSION_2 -> QUIC2_MAP;
-            default -> throw new UnsupportedOperationException();
+            case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                    throw new UnsupportedOperationException();
         };
     }
 

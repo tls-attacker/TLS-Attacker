@@ -31,12 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -164,11 +159,11 @@ public class QuicPacketLayer
     @Override
     protected LayerProcessingResult<QuicPacket> receiveDataInternal() {
         try {
-            InputStream dataStream;
             do {
-                dataStream = getLowerLayer().getDataStream();
-                readPackets(dataStream);
-
+                InputStream dataStream = getLowerLayer().getDataStream();
+                while (dataStream.available() > 0) {
+                    readPacket(dataStream);
+                }
             } while (shouldContinueProcessing());
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
@@ -196,7 +191,9 @@ public class QuicPacketLayer
         try {
             InputStream dataStream = getLowerLayer().getDataStream();
             // For now, we ignore the hint.
-            readPackets(dataStream);
+            while (dataStream.available() > 0) {
+                readPacket(dataStream);
+            }
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
@@ -209,8 +206,11 @@ public class QuicPacketLayer
         }
     }
 
-    /** Reads all packets in one UDP datagram and add to packet buffer. */
-    private void readPackets(InputStream dataStream) throws IOException {
+    /**
+     * Reads one packets in one UDP datagram and add to packet buffer, then attempts decryption in
+     * packet buffer.
+     */
+    private void readPacket(InputStream dataStream) throws IOException {
         SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
 
         if (dataStream.available() == 0) {
@@ -264,13 +264,22 @@ public class QuicPacketLayer
                         case ONE_RTT_PACKET -> readOneRTTPacket(firstByte, dataStream);
                         case RETRY_PACKET -> readRetryPacket(firstByte, dataStream);
                         case VERSION_NEGOTIATION -> readVersionNegotiationPacket(dataStream);
-                        case ZERO_RTT_PACKET, UNKNOWN ->
+                        case ZERO_RTT_PACKET ->
+                                readZeroRTTPacket(firstByte, versionBytes, dataStream);
+                        case UNKNOWN ->
                                 throw new UnsupportedOperationException(
                                         "Unknown Packet - Not supported yet.");
                         default ->
                                 throw new IllegalStateException(
                                         "Received a Packet of Unknown Type");
                     };
+
+            byte[] expectedDCID;
+            if (!context.getConfig().isEchoQuic()) {
+                expectedDCID = context.getQuicContext().getSourceConnectionId();
+            } else {
+                expectedDCID = context.getQuicContext().getDestinationConnectionId();
+            }
 
             // Store the packet in the buffer for further processing.
             if (isStatelessResetPacket(readPacket)) {
@@ -279,8 +288,7 @@ public class QuicPacketLayer
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
             } else if (context.getConfig().isDiscardPacketsWithMismatchedSCID()
                     && !Arrays.equals(
-                            readPacket.getDestinationConnectionId().getValue(),
-                            context.getQuicContext().getSourceConnectionId())) {
+                            readPacket.getDestinationConnectionId().getValue(), expectedDCID)) {
                 LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
             } else {
                 receivedPacketBuffer.get(packetType).add(readPacket);
@@ -440,6 +448,23 @@ public class QuicPacketLayer
     private VersionNegotiationPacket readVersionNegotiationPacket(InputStream dataStream) {
         VersionNegotiationPacket packet = new VersionNegotiationPacket();
         packet.getParser(context, dataStream).parse(packet);
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private ZeroRTTPacket readZeroRTTPacket(
+            int flags, byte[] versionBytes, InputStream dataStream) {
+        ZeroRTTPacket packet = new ZeroRTTPacket((byte) flags, versionBytes);
+        packet.getParser(context, dataStream).parse(packet);
+        return packet;
+    }
+
+    private ZeroRTTPacket decryptZeroRTTPacket(ZeroRTTPacket packet) throws CryptoException {
+        decryptor.removeHeaderProtectionZeroRTT(packet);
+        packet.convertCompleteProtectedHeader();
+        decryptor.decryptZeroRTTPacket(packet);
+        quicContext.addReceivedZeroRTTPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
@@ -605,5 +630,9 @@ public class QuicPacketLayer
 
     public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
         this.temporarilyDisabledAcks = temporarilyDisabledAcks;
+    }
+
+    public boolean hasBufferedPackets(QuicPacketType packetType) {
+        return !receivedPacketBuffer.get(packetType).isEmpty();
     }
 }

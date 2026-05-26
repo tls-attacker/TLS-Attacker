@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.quic;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
@@ -23,29 +23,22 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
     private QuicTransportParameterEntryTypes entryType;
     private ModifiableByteArray entryValue;
 
-    private ModifiableByte entryLength;
+    private ModifiableInteger entryLength;
 
     public QuicTransportParameterEntry() {}
-
-    public QuicTransportParameterEntry(
-            QuicTransportParameterEntryTypes entryType, String entryValue) {
-        this.entryType = entryType;
-        this.setEntryValue(DataConverter.hexStringToByteArray(entryValue));
-        this.setEntryLength((byte) this.entryValue.getValue().length);
-    }
 
     public QuicTransportParameterEntry(
             QuicTransportParameterEntryTypes entryType, byte[] entryValue) {
         this.entryType = entryType;
         this.setEntryValue(entryValue);
-        this.setEntryLength((byte) this.entryValue.getValue().length);
+        this.setEntryLength(this.entryValue.getValue().length);
     }
 
     public QuicTransportParameterEntry(
             QuicTransportParameterEntryTypes entryType, long entryValue) {
         this.entryType = entryType;
         this.setEntryValue(VariableLengthIntegerEncoding.encodeVariableLengthInteger(entryValue));
-        this.setEntryLength((byte) this.entryValue.getValue().length);
+        this.setEntryLength(this.entryValue.getValue().length);
     }
 
     public QuicTransportParameterEntryTypes getEntryType() {
@@ -64,15 +57,15 @@ public class QuicTransportParameterEntry extends ModifiableVariableHolder {
         this.entryValue = ModifiableVariableFactory.safelySetValue(this.entryValue, entryValue);
     }
 
-    public ModifiableByte getEntryLength() {
+    public ModifiableInteger getEntryLength() {
         return entryLength;
     }
 
-    public void setEntryLength(ModifiableByte entryLength) {
+    public void setEntryLength(ModifiableInteger entryLength) {
         this.entryLength = entryLength;
     }
 
-    public void setEntryLength(byte entryLength) {
+    public void setEntryLength(int entryLength) {
         this.entryLength = ModifiableVariableFactory.safelySetValue(this.entryLength, entryLength);
     }
 

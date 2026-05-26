@@ -27,6 +27,19 @@ public class ZeroRTTPacket extends LongHeaderPacket {
         this.packetSecret = QuicCryptoSecrets.APPLICATION_SECRET;
     }
 
+    public ZeroRTTPacket(byte[] unprotectedPayload) {
+        this();
+        setUnprotectedPayload(unprotectedPayload);
+    }
+
+    public ZeroRTTPacket(byte flags, byte[] versionBytes) {
+        this();
+        this.setProtectedFlags(flags);
+        protectedHeaderHelper.write(flags);
+        setQuicVersion(versionBytes);
+        protectedHeaderHelper.write(versionBytes);
+    }
+
     @Override
     public ZeroRTTPacketHandler getHandler(Context context) {
         return new ZeroRTTPacketHandler(context.getQuicContext());

@@ -206,6 +206,16 @@ public class QuicDecryptor {
                 context.getAeadCipher());
     }
 
+    public void decryptZeroRTTPacket(QuicPacket packet) throws CryptoException {
+        this.decrypt(
+                packet,
+                context.getZeroRTTServerIv(),
+                context.getZeroRTTServerKey(),
+                context.getZeroRTTClientIv(),
+                context.getZeroRTTClientKey(),
+                context.getZeroRTTAeadCipher());
+    }
+
     private void decrypt(
             QuicPacket packet,
             byte[] serverIv,

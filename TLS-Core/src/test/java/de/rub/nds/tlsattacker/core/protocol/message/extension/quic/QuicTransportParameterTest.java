@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.quic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -49,27 +50,30 @@ public class QuicTransportParameterTest {
                         new QuicTransportParameterEntry(
                                 QuicTransportParameterEntryTypes.MAX_UDP_PAYLOAD_SIZE, 65527),
                         new QuicTransportParameterEntry(
-                                QuicTransportParameterEntryTypes.INITIAL_MAX_DATA, "802625a0"),
+                                QuicTransportParameterEntryTypes.INITIAL_MAX_DATA,
+                                DataConverter.hexStringToByteArray("802625a0")),
                         new QuicTransportParameterEntry(
                                 QuicTransportParameterEntryTypes.INITIAL_MAX_STREAM_DATA_BIDI_LOCAL,
-                                "802625a0"),
+                                DataConverter.hexStringToByteArray("802625a0")),
                         new QuicTransportParameterEntry(
                                 QuicTransportParameterEntryTypes
                                         .INITIAL_MAX_STREAM_DATA_BIDI_REMOTE,
-                                "802625a0"),
+                                DataConverter.hexStringToByteArray("802625a0")),
                         new QuicTransportParameterEntry(
                                 QuicTransportParameterEntryTypes.INITIAL_MAX_STREAM_DATA_UNI,
-                                "802625a0"),
+                                DataConverter.hexStringToByteArray("802625a0")),
                         new QuicTransportParameterEntry(
                                 QuicTransportParameterEntryTypes.INITIAL_MAX_STREAMS_BIDI,
-                                "80040000"),
+                                DataConverter.hexStringToByteArray("80040000")),
                         new QuicTransportParameterEntry(
                                 QuicTransportParameterEntryTypes.INITIAL_MAX_STREAMS_UNI,
-                                "80040000"),
+                                DataConverter.hexStringToByteArray("80040000")),
                         new QuicTransportParameterEntry(
-                                QuicTransportParameterEntryTypes.ACK_DELAY_EXPONENT, "00"),
+                                QuicTransportParameterEntryTypes.ACK_DELAY_EXPONENT,
+                                DataConverter.hexStringToByteArray("00")),
                         new QuicTransportParameterEntry(
-                                QuicTransportParameterEntryTypes.MAX_ACK_DELAY, "19"));
+                                QuicTransportParameterEntryTypes.MAX_ACK_DELAY,
+                                DataConverter.hexStringToByteArray("19")));
 
         QuicTransportParameters quicTransportParameters =
                 new QuicTransportParameters(quicTransportParameterList);

@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameterEntry;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 
 public class QuicTransportParametersEntrySerializer
         extends Serializer<QuicTransportParameterEntry> {
@@ -23,9 +23,12 @@ public class QuicTransportParametersEntrySerializer
 
     @Override
     protected byte[] serializeBytes() {
-        appendByte(entry.getEntryType().getValue());
-        appendInt(
-                entry.getEntryLength().getValue(), ExtensionByteLength.QUIC_PARAMETER_ENTRY_LENGTH);
+        appendBytes(
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                        entry.getEntryType().getValue()));
+        appendBytes(
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                        entry.getEntryLength().getValue()));
         appendBytes(entry.getEntryValue().getValue());
         return getAlreadySerialized();
     }

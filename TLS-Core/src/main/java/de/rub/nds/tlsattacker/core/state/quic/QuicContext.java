@@ -121,6 +121,7 @@ public class QuicContext extends LayerContext {
 
     private LinkedList<QuicPacketType> receivedPackets = new LinkedList<>();
 
+    private final LinkedList<Integer> receivedZeroRTTPacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedInitialPacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedHandshakePacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedOneRTTPacketNumbers = new LinkedList<>();
@@ -209,6 +210,7 @@ public class QuicContext extends LayerContext {
         this.oneRTTPacketPacketNumber = DEFAULT_INITIAL_PACKET_NUMBER;
 
         this.receivedPackets.clear();
+        this.receivedZeroRTTPacketNumbers.clear();
         this.receivedInitialPacketNumbers.clear();
         this.receivedHandshakePacketNumbers.clear();
         this.receivedOneRTTPacketNumbers.clear();
@@ -267,6 +269,15 @@ public class QuicContext extends LayerContext {
 
     public void setInitialPacketToken(byte[] initialPacketToken) {
         this.initialPacketToken = initialPacketToken;
+    }
+
+    public void addReceivedZeroRTTPacketNumber(int packetNumber) {
+        this.receivedZeroRTTPacketNumbers.add(packetNumber);
+        this.receivedZeroRTTPacketNumbers.sort(Comparator.comparingInt(Integer::intValue));
+    }
+
+    public LinkedList<Integer> getReceivedZeroRTTPacketNumbers() {
+        return receivedZeroRTTPacketNumbers;
     }
 
     public void addReceivedInitialPacketNumber(int packetNumber) {
