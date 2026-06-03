@@ -52,6 +52,8 @@ public class MessageFactory {
             case SERVER_KEY_EXCHANGE -> getServerKeyExchangeMessage(tlsContext);
             case UNKNOWN -> new UnknownHandshakeMessage();
             case SUPPLEMENTAL_DATA -> new SupplementalDataMessage();
+            case NEW_CONNECTION_ID -> new NewConnectionIdMessage();
+            case REQUEST_CONNECTION_ID -> new RequestConnectionIdMessage();
             default -> throw new RuntimeException("Unexpected HandshakeMessage Type " + type);
         };
     }
