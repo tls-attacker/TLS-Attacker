@@ -35,11 +35,15 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
             if (message.getSelectedIdentity() != null) {
                 adjustPsk(message);
             } else {
-                if (tlsContext.getChooser().getPskSets().size() > 0) {
+                if (!tlsContext.getChooser().getPskSets().isEmpty()) {
                     tlsContext.setEarlyDataPSKIdentity(
-                            tlsContext.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
+                            tlsContext
+                                    .getChooser()
+                                    .getPskSets()
+                                    .getFirst()
+                                    .getPreSharedKeyIdentity());
                     tlsContext.setEarlyDataCipherSuite(
-                            tlsContext.getChooser().getPskSets().get(0).getCipherSuite());
+                            tlsContext.getChooser().getPskSets().getFirst().getCipherSuite());
                 } else {
                     LOGGER.warn("Could not adjust EarlyData Identity and Cipher suite");
                 }
@@ -47,7 +51,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         }
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
                 && message.getIdentities() != null
-                && message.getIdentities().size() > 0) {
+                && !message.getIdentities().isEmpty()) {
             selectPsk(message);
             if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 selectEarlyDataPsk(message);
@@ -78,15 +82,13 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         List<PskSet> pskSets = tlsContext.getChooser().getPskSets();
         if (message.getIdentities() != null) {
             for (PSKIdentity pskIdentity : message.getIdentities()) {
-                for (int x = 0; x < pskSets.size(); x++) {
+                for (PskSet pskSet : pskSets) {
                     if (Arrays.equals(
-                            pskSets.get(x).getPreSharedKeyIdentity(),
+                            pskSet.getPreSharedKeyIdentity(),
                             pskIdentity.getIdentity().getValue())) {
-                        LOGGER.debug(
-                                "Selected PSK identity: {}",
-                                pskSets.get(x).getPreSharedKeyIdentity());
-                        tlsContext.setPsk(pskSets.get(x).getPreSharedKey());
-                        tlsContext.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
+                        LOGGER.debug("Selected PSK identity: {}", pskSet.getPreSharedKeyIdentity());
+                        tlsContext.setPsk(pskSet.getPreSharedKey());
+                        tlsContext.setEarlyDataCipherSuite(pskSet.getCipherSuite());
                         tlsContext.setSelectedIdentityIndex(pskIdentityIndex);
                         return;
                     }
@@ -104,13 +106,13 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 tlsContext.getDigest().getRawBytes());
 
         List<PskSet> pskSets = tlsContext.getChooser().getPskSets();
-        for (int x = 0; x < pskSets.size(); x++) {
+        for (PskSet pskSet : pskSets) {
             if (Arrays.equals(
-                    pskSets.get(x).getPreSharedKeyIdentity(),
-                    message.getIdentities().get(0).getIdentity().getValue())) {
-                tlsContext.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
-                tlsContext.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                LOGGER.debug("EarlyData PSK: {}", pskSets.get(x).getPreSharedKey());
+                    pskSet.getPreSharedKeyIdentity(),
+                    message.getIdentities().getFirst().getIdentity().getValue())) {
+                tlsContext.setEarlyDataPsk(pskSet.getPreSharedKey());
+                tlsContext.setEarlyDataCipherSuite(pskSet.getCipherSuite());
+                LOGGER.debug("EarlyData PSK: {}", pskSet.getPreSharedKey());
                 break;
             }
         }
