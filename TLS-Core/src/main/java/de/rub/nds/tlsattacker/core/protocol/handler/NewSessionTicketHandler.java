@@ -73,7 +73,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         }
         // only derive PSK if client finished was already sent, because full handshake transcript is
         // required
-        if (tlsContext.getActiveClientKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+        if (tlsContext.getActiveClientKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS
+                || tlsContext.getContext().getQuicContext().isApplicationSecretsInitialized()) {
             pskSet.setPreSharedKey(derivePsk(pskSet));
         }
 
