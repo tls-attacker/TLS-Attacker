@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.crypto.NoSuchPaddingException;
@@ -164,11 +163,11 @@ public class QuicPacketLayer
     @Override
     protected LayerProcessingResult<QuicPacket> receiveDataInternal() {
         try {
-            InputStream dataStream;
             do {
-                dataStream = getLowerLayer().getDataStream();
-                readPackets(dataStream);
-
+                InputStream dataStream = getLowerLayer().getDataStream();
+                while (dataStream.available() > 0) {
+                    readPacket(dataStream);
+                }
             } while (shouldContinueProcessing());
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
@@ -196,7 +195,9 @@ public class QuicPacketLayer
         try {
             InputStream dataStream = getLowerLayer().getDataStream();
             // For now, we ignore the hint.
-            readPackets(dataStream);
+            while (dataStream.available() > 0) {
+                readPacket(dataStream);
+            }
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
@@ -209,8 +210,11 @@ public class QuicPacketLayer
         }
     }
 
-    /** Reads all packets in one UDP datagram and add to packet buffer. */
-    private void readPackets(InputStream dataStream) throws IOException {
+    /**
+     * Reads one packets in one UDP datagram and add to packet buffer, then attempts decryption in
+     * packet buffer.
+     */
+    private void readPacket(InputStream dataStream) throws IOException {
         SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
 
         if (dataStream.available() == 0) {
@@ -274,6 +278,13 @@ public class QuicPacketLayer
                                         "Received a Packet of Unknown Type");
                     };
 
+            byte[] expectedDCID;
+            if (!context.getConfig().isEchoQuic()) {
+                expectedDCID = context.getQuicContext().getSourceConnectionId();
+            } else {
+                expectedDCID = context.getQuicContext().getDestinationConnectionId();
+            }
+
             // Store the packet in the buffer for further processing.
             if (isStatelessResetPacket(readPacket)) {
                 quicContext.setReceivedStatelessResetToken(true);
@@ -281,8 +292,7 @@ public class QuicPacketLayer
                 quicContext.getReceivedPackets().add(QuicPacketType.STATELESS_RESET);
             } else if (context.getConfig().isDiscardPacketsWithMismatchedSCID()
                     && !Arrays.equals(
-                            readPacket.getDestinationConnectionId().getValue(),
-                            context.getQuicContext().getSourceConnectionId())) {
+                            readPacket.getDestinationConnectionId().getValue(), expectedDCID)) {
                 LOGGER.debug("Discarding QUIC Packet with mismatching SCID.");
             } else {
                 receivedPacketBuffer.get(packetType).add(readPacket);
@@ -601,7 +611,7 @@ public class QuicPacketLayer
                 getLowerLayer().sendData(null, writePacket(data, new HandshakePacket()));
             } else if (quicContext.getReceivedPackets().getLast()
                     == QuicPacketType.ONE_RTT_PACKET) {
-                // getLowerLayer().sendData(null, qket()));
+                getLowerLayer().sendData(null, writePacket(data, new OneRTTPacket()));
             }
         } catch (IOException | CryptoException e) {
             LOGGER.error("Could not send ACK", e);
@@ -638,5 +648,9 @@ public class QuicPacketLayer
 
     public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
         this.temporarilyDisabledAcks = temporarilyDisabledAcks;
+    }
+
+    public boolean hasBufferedPackets(QuicPacketType packetType) {
+        return !receivedPacketBuffer.get(packetType).isEmpty();
     }
 }

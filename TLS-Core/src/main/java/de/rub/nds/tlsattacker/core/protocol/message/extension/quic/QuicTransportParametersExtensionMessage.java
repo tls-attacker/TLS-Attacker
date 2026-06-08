@@ -51,8 +51,13 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
         transportParameterEntries = new ArrayList<>();
     }
 
+    public QuicTransportParametersExtensionMessage(boolean isDraftVersion) {
+        super(getExtensionType(isDraftVersion));
+        transportParameterEntries = new ArrayList<>();
+    }
+
     public QuicTransportParametersExtensionMessage(Config config) {
-        super(ExtensionType.QUIC_TRANSPORT_PARAMETERS);
+        super(getExtensionType(config));
         transportParameterEntries = new ArrayList<>();
     }
 
@@ -132,6 +137,23 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
                         .map(QuicTransportParameterEntry::toString)
                         .collect(Collectors.joining(",\n"))
                 + "\n}";
+    }
+
+    private static ExtensionType getExtensionType(Config config) {
+        boolean isDraftVersion =
+                switch (config.getQuicVersion()) {
+                    case DRAFT_29, DRAFT_30, DRAFT_31, DRAFT_32 -> true;
+                    case DRAFT_33, DRAFT_34, VERSION_1, VERSION_2 -> false;
+                    case UNKNOWN, NEGOTIATION_VERSION, NULL_VERSION ->
+                            throw new UnsupportedOperationException();
+                };
+        return getExtensionType(isDraftVersion);
+    }
+
+    private static ExtensionType getExtensionType(boolean isDraftVersion) {
+        return isDraftVersion
+                ? ExtensionType.QUIC_TRANSPORT_PARAMETERS_DRAFT_13_32
+                : ExtensionType.QUIC_TRANSPORT_PARAMETERS;
     }
 
     /**
