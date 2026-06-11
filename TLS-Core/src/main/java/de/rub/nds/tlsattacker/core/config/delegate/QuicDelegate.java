@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuicDelegate extends Delegate {
-    @Parameter(names = "-quic", description = "Scan QUIC")
+    @Parameter(names = "-quic", description = "Scan the QUIC protocol.")
     private boolean quic = false;
 
     public QuicDelegate() {}
