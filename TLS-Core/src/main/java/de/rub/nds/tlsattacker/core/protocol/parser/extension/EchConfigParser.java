@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.protocol.exception.ParserException;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.EchConfigVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
@@ -45,20 +42,27 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
         // parse length of all following ech configs
         int configsLength = this.parseIntField(ExtensionByteLength.ECH_CONFIG_LIST_LENGTH);
 
+        parse(echConfigs, configsLength);
+    }
+
+    public void parse(List<EchConfig> echConfigs, int configsLength) {
         // ignore two length bytes
-        int configBytesStart = ExtensionByteLength.ECH_CONFIG_LIST_LENGTH;
+        int configBytesStart = getAlreadyParsed().length;
 
         while (getAlreadyParsed().length < configsLength) {
             EchConfig echConfig = new EchConfig();
             try {
                 parseVersion(echConfig);
-                parseLength(echConfig);
+                int length = parseLength(echConfig);
                 parseEchContents(echConfig);
                 echConfig.setEchConfigBytes(
                         Arrays.copyOfRange(
                                 getAlreadyParsed(), configBytesStart, getAlreadyParsed().length));
                 echConfigs.add(echConfig);
-                configBytesStart += getAlreadyParsed().length;
+                configBytesStart +=
+                        length
+                                + ExtensionByteLength.ESNI_RECORD_VERSION
+                                + ExtensionByteLength.ECH_CONFIG_LENGTH;
             } catch (ParserException e) {
                 LOGGER.warn("Error during EchConfig parsing: ", e);
             }
@@ -71,10 +75,11 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
         LOGGER.debug("Version: {}", echConfig.getConfigVersion());
     }
 
-    private void parseLength(EchConfig echConfig) {
+    private int parseLength(EchConfig echConfig) {
         int length = this.parseIntField(ExtensionByteLength.ECH_CONFIG_LENGTH);
         echConfig.setLength(length);
         LOGGER.debug("Length: {}", echConfig.getLength());
+        return length;
     }
 
     private void parseEchContents(EchConfig echConfig) {
@@ -136,7 +141,9 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
         byte[] extensionBytes = parseByteArrayField(extensionsLength);
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
-        ExtensionListParser parser = new ExtensionListParser(innerStream, tlsContext, false);
+        ExtensionListParser parser =
+                new ExtensionListParser(
+                        innerStream, tlsContext, false, HandshakeMessageType.CLIENT_HELLO);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         parser.parse(extensionMessages);
         echConfig.getExtensions().addAll(extensionMessages);

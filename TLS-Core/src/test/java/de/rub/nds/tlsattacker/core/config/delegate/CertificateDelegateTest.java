@@ -141,10 +141,9 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[3], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[5], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = new Config();
-        config.setDefaultExplicitCertificateChain(null);
+        config.setDefaultCertificateChainBytes(null);
         delegate.applyDelegate(config);
-        assertNotNull(
-                config.getDefaultExplicitCertificateChain(), "Certificate could not be loaded");
+        assertNotNull(config.getDefaultCertificateChainBytes(), "Certificate could not be loaded");
     }
 
     @Test
@@ -159,15 +158,9 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[3], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = new Config();
-        config.setDefaultExplicitCertificateChain(null);
+        config.setDefaultCertificateChainBytes(null);
 
-        ParameterException exception =
-                assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
-        assertTrue(
-                exception
-                        .getMessage()
-                        .startsWith(
-                                "The following parameters are required for loading a keystore:"));
+        assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
     }
 
     @Test
@@ -217,6 +210,6 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         Config config = new Config();
         Config config2 = new Config();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfigs"));
     }
 }

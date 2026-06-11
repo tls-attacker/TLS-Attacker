@@ -17,6 +17,7 @@ import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.protocol.xml.Pair;
+import de.rub.nds.tlsattacker.core.config.adapter.CertificateChainConfigAdapter;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -37,6 +38,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.config.extension.BasicConstraintsConfig;
+import de.rub.nds.x509attacker.constants.DefaultEncodingRule;
 import de.rub.nds.x509attacker.constants.X500AttributeType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -44,6 +47,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.ByteArrayInputStream;
@@ -130,13 +134,18 @@ public class Config implements Serializable {
     private Boolean autoAdjustSignatureAndHashAlgorithm = true;
 
     /**
-     * A list of X509CertificateConfigurations that are used to automatically create the certificate
-     * chain that is used in the CertificateMessage. The first config should be the leaf
-     * certificate.
+     * A list of certificate chain configurations. Each inner list represents a certificate chain
+     * (leaf certificate first). Index 0 is the default chain. Additional indices hold chains loaded
+     * via comma-separated -cert/-key CLI parameters for multi-certificate support.
      */
-    @XmlElement(name = "certificateConfig")
-    @XmlElementWrapper
-    private List<X509CertificateConfig> certificateChainConfig;
+    @XmlJavaTypeAdapter(CertificateChainConfigAdapter.class)
+    private List<List<X509CertificateConfig>> certificateChainConfigs;
+
+    /**
+     * Certificate chain bytes to use for certificateChainConfigs we parsed from a given certificate
+     * file.
+     */
+    @XmlTransient private List<List<CertificateBytes>> defaultCertificateChainBytes = null;
 
     /** List of filters to apply on workflow traces before serialization. */
     @XmlElement(name = "outputFilter")
@@ -809,7 +818,8 @@ public class Config implements Serializable {
             DataConverter.hexStringToByteArray(
                     "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
 
-    private byte[] defaultQuicPathChallange = DataConverter.hexStringToByteArray("AABBCCDD");
+    private byte[] defaultQuicPathChallange =
+            DataConverter.hexStringToByteArray("AABBCCDD00112233");
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1272,6 +1282,106 @@ public class Config implements Serializable {
     /** Padding for the list of alpn values */
     private Integer defaultMaxEchAlpnPadding = 25;
 
+    // region smtp
+    private String defaultSmtpReversePath = "seal@upb.de";
+    private List<String> defaultSmtpMessage =
+            new ArrayList<>(List.of("Hello!", "This is seal.", "Bye!"));
+
+    public String getDefaultSmtpAuth() {
+        return defaultSmtpAuth;
+    }
+
+    public String getDefaultSmtpAuthCredentials() {
+        return defaultSmtpAuthCredentials;
+    }
+
+    public void setDefaultSmtpAuth(String defaultSmtpAuth) {
+        this.defaultSmtpAuth = defaultSmtpAuth;
+    }
+
+    private String defaultSmtpAuth = "PLAIN";
+    private String defaultSmtpAuthCredentials = "AHNlYWxAdXBiLmRlAHBhc3N3b3Jk";
+    private String defaultSmtpMailingList = "members@seal.upb.de";
+
+    public String getDefaultSmtpClientIdentity() {
+        return defaultSmtpClientIdentity;
+    }
+
+    public void setDefaultSmtpClientIdentity(String defaultSmtpClientIdentity) {
+        this.defaultSmtpClientIdentity = defaultSmtpClientIdentity;
+    }
+
+    private String defaultSmtpClientIdentity = "seal.upb.de";
+
+    public String getDefaultSmtpForwardPath() {
+        return defaultSmtpForwardPath;
+    }
+
+    public void setDefaultSmtpForwardPath(String defaultSmtpForwardPath) {
+        this.defaultSmtpForwardPath = defaultSmtpForwardPath;
+    }
+
+    public String getDefaultSmtpReversePath() {
+        return defaultSmtpReversePath;
+    }
+
+    public void setDefaultSmtpReversePath(String defaultSmtpReversePath) {
+        this.defaultSmtpReversePath = defaultSmtpReversePath;
+    }
+
+    private String defaultSmtpForwardPath = "test@example.com";
+
+    public List<String> getDefaultSmtpMessage() {
+        return defaultSmtpMessage;
+    }
+
+    public void setDefaultSmtpMessage(List<String> defaultSmtpMessage) {
+        this.defaultSmtpMessage = defaultSmtpMessage;
+    }
+
+    public String getDefaultSmtpMailingList() {
+        return defaultSmtpMailingList;
+    }
+
+    public void setDefaultSmtpMailingList(String defaultSmtpMailingList) {
+        this.defaultSmtpMailingList = defaultSmtpMailingList;
+    }
+
+    // endregion
+
+    // region pop3
+    private Integer defaultPop3MessageNumber = 1;
+
+    public Integer getDefaultPop3MessageNumber() {
+        return defaultPop3MessageNumber;
+    }
+
+    public void setDefaultPop3MessageNumber(int messageNumber) {
+        this.defaultPop3MessageNumber = messageNumber;
+    }
+
+    private String defaultPop3Username = "seal@upb.de";
+
+    public String getDefaultPop3Username() {
+        return this.defaultPop3Username;
+    }
+
+    public void setDefaultPop3Username(String username) {
+        this.defaultPop3Username = username;
+    }
+
+    private String defaultPop3Password = "s34l-p4ssw0rd!!";
+
+    public String getDefaultPop3Password() {
+        return this.defaultPop3Password;
+    }
+
+    public void setDefaultPop3Password(String password) {
+        this.defaultPop3Password = password;
+    }
+
+    // endregion
+
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
     /** DTLS 1.3 */
@@ -1298,18 +1408,25 @@ public class Config implements Serializable {
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     public Config() {
-        this.certificateChainConfig = new LinkedList<>();
+        this.certificateChainConfigs = new LinkedList<>();
+        List<X509CertificateConfig> defaultChain = new LinkedList<>();
         List<Pair<X500AttributeType, String>> rdn = new LinkedList<>();
         rdn.add(
                 new Pair<>(
                         X500AttributeType.COMMON_NAME, "Attacker CA - Global Insecurity Provider"));
-        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "Global"));
+        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "DE"));
         rdn.add(new Pair<>(X500AttributeType.ORGANISATION_NAME, "TLS-Attacker"));
         X509CertificateConfig caConfig = new X509CertificateConfig();
         caConfig.setIssuer(rdn);
         caConfig.setSubject(rdn);
+        BasicConstraintsConfig bcConfig = new BasicConstraintsConfig();
+        bcConfig.setCa(true);
+        bcConfig.setPresent(true);
+        bcConfig.setCritical(true);
+        bcConfig.setIncludePathLenConstraint(DefaultEncodingRule.OMIT);
+        caConfig.addExtensions(bcConfig);
         byte[] serialNumber =
-                DataConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
+                DataConverter.hexStringToByteArray("0FCACACA0FCACACA0FCACACA0FCACACA0FCACACA");
         caConfig.setSerialNumber(new BigInteger(serialNumber));
 
         X509CertificateConfig leafConfig = new X509CertificateConfig();
@@ -1323,8 +1440,9 @@ public class Config implements Serializable {
                 DataConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
         leafConfig.setSerialNumber(new BigInteger(serialNumber));
 
-        certificateChainConfig.add(leafConfig);
-        certificateChainConfig.add(caConfig);
+        defaultChain.add(leafConfig);
+        defaultChain.add(caConfig);
+        certificateChainConfigs.add(defaultChain);
         defaultLayerConfiguration = StackConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
@@ -1521,12 +1639,22 @@ public class Config implements Serializable {
         this.defaultDsaNonce = defaultDsaNonce;
     }
 
-    public List<X509CertificateConfig> getCertificateChainConfig() {
-        return certificateChainConfig;
+    public List<List<X509CertificateConfig>> getCertificateChainConfigs() {
+        return certificateChainConfigs;
     }
 
-    public void setCertificateChainConfig(List<X509CertificateConfig> certificateChainConfig) {
-        this.certificateChainConfig = certificateChainConfig;
+    public void setCertificateChainConfigs(
+            List<List<X509CertificateConfig>> certificateChainConfigs) {
+        this.certificateChainConfigs = certificateChainConfigs;
+    }
+
+    public List<List<CertificateBytes>> getDefaultCertificateChainBytes() {
+        return defaultCertificateChainBytes;
+    }
+
+    public void setDefaultCertificateChainBytes(
+            List<List<CertificateBytes>> defaultCertificateChainBytes) {
+        this.defaultCertificateChainBytes = defaultCertificateChainBytes;
     }
 
     public List<CertificateBytes> getDefaultExplicitCertificateChain() {

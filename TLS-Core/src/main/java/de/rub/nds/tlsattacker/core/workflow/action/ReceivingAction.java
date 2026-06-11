@@ -10,17 +10,21 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import java.util.List;
 import java.util.Set;
 
 public interface ReceivingAction {
+
+    //    List<? extends Message<? extends LayerContext>> getALLReceivedMessages();
 
     List<ProtocolMessage> getReceivedMessages();
 
@@ -31,6 +35,10 @@ public interface ReceivingAction {
     List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
     List<HttpMessage> getReceivedHttpMessages();
+
+    List<SmtpMessage> getReceivedSmtpMessages();
+
+    List<Pop3Message> getReceivedPop3Messages();
 
     List<QuicFrame> getReceivedQuicFrames();
 

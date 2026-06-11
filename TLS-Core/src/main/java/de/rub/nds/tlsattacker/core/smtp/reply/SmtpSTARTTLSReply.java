@@ -1,0 +1,25 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.reply;
+
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Models the reply to the STARTTLS command.
+ *
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpSTARTTLSCommand
+ * @see SmtpReply
+ */
+@XmlRootElement
+public class SmtpSTARTTLSReply extends SmtpReply {
+    public SmtpSTARTTLSReply() {
+        super(SmtpCommandType.STARTTLS);
+    }
+}

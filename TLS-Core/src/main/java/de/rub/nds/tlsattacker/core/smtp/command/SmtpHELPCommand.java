@@ -1,0 +1,63 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.command;
+
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpHELPCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpHELPCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+
+/**
+ * This command causes the server to send helpful information to the client. The command MAY take an
+ * argument (e.g., any command name) and return more specific information as a response. Example:
+ *
+ * <pre>
+ * C: HELP
+ * S: 214-Commands supported:
+ * S: 214 HELO EHLO MAIL RCPT DATA RSET VRFY EXPN HELP QUIT AUTH
+ * </pre>
+ */
+@XmlRootElement
+public class SmtpHELPCommand extends SmtpCommand {
+    private String subject;
+
+    public SmtpHELPCommand() {
+        super(SmtpCommandType.HELP);
+    }
+
+    public SmtpHELPCommand(String subject) {
+        this();
+        this.subject = subject;
+    }
+
+    @Override
+    public String toCompactString() {
+        return super.toCompactString();
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    @Override
+    public SmtpHELPCommandParser getParser(Context context, InputStream stream) {
+        return new SmtpHELPCommandParser(stream);
+    }
+
+    @Override
+    public SmtpHELPCommandPreparator getPreparator(Context context) {
+        return new SmtpHELPCommandPreparator(context.getSmtpContext(), this);
+    }
+}

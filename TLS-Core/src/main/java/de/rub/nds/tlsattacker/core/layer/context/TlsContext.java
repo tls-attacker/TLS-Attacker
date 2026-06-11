@@ -536,7 +536,8 @@ public class TlsContext extends LayerContext {
         super(context);
         X509CertificateConfig certConfig =
                 context.getConfig()
-                        .getCertificateChainConfig()
+                        .getCertificateChainConfigs()
+                        .get(0)
                         .get(CertificateDelegate.PREDEFINED_LEAF_CERT_INDEX);
         clientX509Context = new X509Context(certConfig);
         serverX509Context = new X509Context(certConfig);

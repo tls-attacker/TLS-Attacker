@@ -77,7 +77,8 @@ import java.io.InputStream;
     CachedInfoExtensionMessage.class,
     ConnectionIdExtensionMessage.class,
     QuicTransportParametersExtensionMessage.class,
-    EncryptedClientHelloExtensionMessage.class
+    EncryptedClientHelloExtensionMessage.class,
+    EncryptedClientHelloEncryptedExtensionMessage.class
 })
 public abstract class ExtensionMessage extends ModifiableVariableHolder implements DataContainer {
 

@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -27,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
@@ -60,6 +62,28 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> configuredHttpMessages;
+
+    public List<SmtpMessage> getConfiguredSmtpMessages() {
+        return configuredSmtpMessages;
+    }
+
+    public void setConfiguredSmtpMessages(List<SmtpMessage> configuredSmtpMessages) {
+        this.configuredSmtpMessages = configuredSmtpMessages;
+    }
+
+    public List<Pop3Message> getConfiguredPop3Messages() {
+        return configuredPop3Messages;
+    }
+
+    public void setConfiguredPop3Messages(List<Pop3Message> configuredPop3Messages) {
+        this.configuredPop3Messages = configuredPop3Messages;
+    }
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SmtpMessage> configuredSmtpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Pop3Message> configuredPop3Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> configuredQuicFrames;
@@ -114,6 +138,14 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(HttpMessage... httpMessage) {
         this.configuredHttpMessages = new ArrayList<>(Arrays.asList(httpMessage));
+    }
+
+    public SendAction(SmtpMessage... smtpMessage) {
+        this.configuredSmtpMessages = new ArrayList<>(Arrays.asList(smtpMessage));
+    }
+
+    public SendAction(Pop3Message... pop3Message) {
+        this.configuredPop3Messages = new ArrayList<>(Arrays.asList(pop3Message));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -258,6 +290,18 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
+        if (configuredSmtpMessages != null) {
+            for (SmtpMessage msg : configuredSmtpMessages) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
+            }
+        }
+
+        if (configuredPop3Messages != null) {
+            for (Pop3Message msg : configuredPop3Messages) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
+            }
+        }
+
         if (configuredQuicFrames != null) {
             for (QuicFrame frames : configuredQuicFrames) {
                 holders.addAll(frames.getAllModifiableVariableHolders());
@@ -335,6 +379,16 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
         }
+        if (getConfiguredSmtpMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SMTP, getConfiguredSmtpMessages()));
+        }
+        if (getConfiguredPop3Messages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.POP3, getConfiguredPop3Messages()));
+        }
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
@@ -363,6 +417,12 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (configuredSSL2Messages != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) configuredSSL2Messages);
+        }
+        if (configuredSmtpMessages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredSmtpMessages);
+        }
+        if (configuredPop3Messages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredPop3Messages);
         }
         return dataContainerLists;
     }

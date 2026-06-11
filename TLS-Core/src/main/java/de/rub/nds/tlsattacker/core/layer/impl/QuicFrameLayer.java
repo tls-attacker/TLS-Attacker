@@ -23,18 +23,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.CryptoFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PaddingFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.*;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -89,7 +78,7 @@ public class QuicFrameLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicFrame> sendConfiguration() throws IOException {
+    protected LayerProcessingResult<QuicFrame> sendConfigurationInternal() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
 
         SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
@@ -133,8 +122,8 @@ public class QuicFrameLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicFrame> sendData(LayerProcessingHint hint, byte[] data)
-            throws IOException {
+    protected LayerProcessingResult<QuicFrame> sendDataInternal(
+            LayerProcessingHint hint, byte[] data) throws IOException {
         ProtocolMessageType hintedType;
         boolean hintedFirstMessage;
         if (hint instanceof QuicFrameLayerHint) {
@@ -231,10 +220,19 @@ public class QuicFrameLayer
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult<QuicFrame> receiveData() {
+    protected LayerProcessingResult<QuicFrame> receiveDataInternal() {
         try {
             InputStream dataStream;
             do {
+                // Do not take actions that may delay after receiving connection close frames.
+                if (quicContext.getConfig().getQuicImmediateCloseOnTlsError()) {
+                    ConnectionCloseFrame frame = quicContext.getReceivedConnectionCloseFrame();
+                    if (frame != null
+                            && frame.getErrorCode().getValue() >= 0x0100
+                            && frame.getErrorCode().getValue() <= 0x01ff) {
+                        return getLayerResult();
+                    }
+                }
                 dataStream = getLowerLayer().getDataStream();
                 readFrames(dataStream);
             } while (shouldContinueProcessing());
@@ -263,11 +261,14 @@ public class QuicFrameLayer
      * @throws IOException When no data can be read
      */
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         try {
-            InputStream dataStream = getLowerLayer().getDataStream();
-            // For now, we ignore the hint
-            readFrames(dataStream);
+            while (currentInputStream == null || currentInputStream.available() == 0) {
+                InputStream dataStream = getLowerLayer().getDataStream();
+
+                // For now, we ignore the hint
+                readFrames(dataStream);
+            }
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
@@ -296,67 +297,55 @@ public class QuicFrameLayer
             long frameTypeNumber =
                     VariableLengthIntegerEncoding.readVariableLengthInteger(inputStream);
             QuicFrameType frameType = QuicFrameType.getFrameType(frameTypeNumber);
-            switch (frameType) {
-                case ACK_FRAME:
-                    readDataContainer(new AckFrame(false), context, inputStream);
-                    break;
-                case ACK_FRAME_WITH_ECN:
-                    readDataContainer(new AckFrame(true), context, inputStream);
-                    break;
-                case CONNECTION_CLOSE_QUIC_FRAME:
-                    readDataContainer(new ConnectionCloseFrame(true), context, inputStream);
-                    break;
-                case CONNECTION_CLOSE_APPLICATION_FRAME:
-                    readDataContainer(new ConnectionCloseFrame(false), context, inputStream);
-                    break;
-                case CRYPTO_FRAME:
-                    recordLayerHint = new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
-                    CryptoFrame frame = new CryptoFrame();
-                    readDataContainer(frame, context, inputStream);
-                    cryptoFrameBuffer.add(frame);
-                    isAckEliciting = true;
-                    break;
-                case HANDSHAKE_DONE_FRAME:
-                    readDataContainer(new HandshakeDoneFrame(), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                case NEW_CONNECTION_ID_FRAME:
-                    readDataContainer(new NewConnectionIdFrame(), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                case NEW_TOKEN_FRAME:
-                    readDataContainer(new NewTokenFrame(), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                case PADDING_FRAME:
-                    readDataContainer(new PaddingFrame(), context, inputStream);
-                    break;
-                case PATH_CHALLENGE_FRAME:
-                    readDataContainer(new PathChallengeFrame(), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                case PATH_RESPONSE_FRAME:
-                    readDataContainer(new PathResponseFrame(), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                case PING_FRAME:
-                    readDataContainer(new PingFrame(), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                case STREAM_FRAME:
-                case STREAM_FRAME_OFF_LEN_FIN:
-                case STREAM_FRAME_OFF_LEN:
-                case STREAM_FRAME_LEN_FIN:
-                case STREAM_FRAME_OFF_FIN:
-                case STREAM_FRAME_FIN:
-                case STREAM_FRAME_LEN:
-                case STREAM_FRAME_OFF:
-                    readDataContainer(new StreamFrame(frameType), context, inputStream);
-                    isAckEliciting = true;
-                    break;
-                default:
-                    LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
-                    break;
+            QuicFrame frame =
+                    switch (frameType) {
+                        case ACK_FRAME -> new AckFrame(false);
+                        case ACK_FRAME_WITH_ECN -> new AckFrame(true);
+                        case CONNECTION_CLOSE_QUIC_FRAME -> new ConnectionCloseFrame(true);
+                        case CONNECTION_CLOSE_APPLICATION_FRAME -> new ConnectionCloseFrame(false);
+                        case CRYPTO_FRAME -> {
+                            recordLayerHint = new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
+                            CryptoFrame cryptoFrame = new CryptoFrame();
+                            cryptoFrameBuffer.add(cryptoFrame);
+                            yield cryptoFrame;
+                        }
+                        case HANDSHAKE_DONE_FRAME -> new HandshakeDoneFrame();
+                        case NEW_CONNECTION_ID_FRAME -> new NewConnectionIdFrame();
+                        case RETIRE_CONNECTION_ID -> new RetireConnectionIdFrame();
+                        case NEW_TOKEN_FRAME -> new NewTokenFrame();
+                        case PADDING_FRAME -> new PaddingFrame();
+                        case PATH_CHALLENGE_FRAME -> new PathChallengeFrame();
+                        case PATH_RESPONSE_FRAME -> new PathResponseFrame();
+                        case PING_FRAME -> new PingFrame();
+                        case STREAM_FRAME,
+                                STREAM_FRAME_OFF_LEN_FIN,
+                                STREAM_FRAME_OFF_LEN,
+                                STREAM_FRAME_LEN_FIN,
+                                STREAM_FRAME_OFF_FIN,
+                                STREAM_FRAME_FIN,
+                                STREAM_FRAME_LEN,
+                                STREAM_FRAME_OFF ->
+                                new StreamFrame(frameType);
+                        case RESET_STREAM_FRAME -> new ResetStreamFrame();
+                        case STOP_SENDING_FRAME -> new StopSendingFrame();
+                        case MAX_DATA_FRAME -> new MaxDataFrame();
+                        case MAX_STREAM_DATA_FRAME -> new MaxStreamDataFrame();
+                        case MAX_STREAMS_UNI_FRAME -> new MaxStreamsFrame(false);
+                        case MAX_STREAMS_BIDI_FRAME -> new MaxStreamsFrame(true);
+                        case DATA_BLOCKED_FRAME -> new DataBlockedFrame();
+                        case STREAM_DATA_BLOCKED_FRAME -> new StreamDataBlockedFrame();
+                        case STREAMS_BLOCKED_UNI_FRAME -> new StreamsBlockedFrame(false);
+                        case STREAMS_BLOCKED_BIDI_FRAME -> new StreamsBlockedFrame(true);
+                        case DATAGRAM_FRAME -> new DatagramFrame(false);
+                        case DATAGRAM_FRAME_LEN -> new DatagramFrame(true);
+                        default -> null;
+                    };
+            if (frame != null) {
+                isAckEliciting |= frame.isAckEliciting();
+                frame.setFrameType(frameTypeNumber);
+                readDataContainer(frame, context, inputStream);
+            } else {
+                LOGGER.error("Undefined QUIC frame type: {}", frameTypeNumber);
             }
         }
 
@@ -364,23 +353,60 @@ public class QuicFrameLayer
         // passed to the upper layer without gaps
         SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         if (!cryptoFrameBuffer.isEmpty()) {
+            long nextOffset;
+            if (!quicContext.isHandshakeSecretsInitialized()) {
+                nextOffset = initialPhaseExpectedCryptoFrameOffset;
+            } else if (!quicContext.isApplicationSecretsInitialized()) {
+                nextOffset = handshakePhaseExpectedCryptoFrameOffset;
+            } else {
+                nextOffset = applicationPhaseExpectedCryptoFrameOffset;
+            }
             cryptoFrameBuffer.sort(Comparator.comparingLong(frame -> frame.getOffset().getValue()));
-            cryptoFrameBuffer = cryptoFrameBuffer.stream().distinct().collect(Collectors.toList());
-            if (isCryptoBufferConsecutive()) {
-                for (CryptoFrame frame : cryptoFrameBuffer) {
+
+            List<CryptoFrame> processedFrames = new ArrayList<>();
+            for (CryptoFrame frame : cryptoFrameBuffer) {
+                long frameOffset = frame.getOffset().getValue();
+                long frameLength = frame.getLength().getValue();
+
+                if (frameOffset + frameLength <= nextOffset) {
+                    // All data from this crypto frame has already been passed to the upper layer
+                    processedFrames.add(frame);
+                    continue;
+                }
+
+                // Consecutive frames
+                if (frameOffset == nextOffset) {
                     outputStream.write(frame.getCryptoData().getValue());
+                    processedFrames.add(frame);
+                    nextOffset = frameOffset + frameLength;
+                } else if (frameOffset <= nextOffset) {
+                    byte[] remainingData =
+                            Arrays.copyOfRange(
+                                    frame.getCryptoData().getValue(),
+                                    Math.toIntExact(nextOffset - frameOffset),
+                                    Math.toIntExact(frameLength));
+                    outputStream.write(remainingData);
+                    processedFrames.add(frame);
+                    nextOffset = frameOffset + frameLength;
                 }
-                CryptoFrame lastFrame = cryptoFrameBuffer.get(cryptoFrameBuffer.size() - 1);
-                long nextExpectedCryptoOffset =
-                        lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
-                if (!quicContext.isHandshakeSecretsInitialized()) {
-                    initialPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                } else if (!quicContext.isApplicationSecretsInitialized()) {
-                    handshakePhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                } else {
-                    applicationPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
-                }
-                cryptoFrameBuffer.clear();
+
+                // Frame is not usable right now
+            }
+
+            cryptoFrameBuffer.removeAll(processedFrames);
+            if (!cryptoFrameBuffer.isEmpty()) {
+                LOGGER.warn(
+                        "Missing CryptoFrames in buffer: {}, nextOffset={}",
+                        cryptoBufferToString(),
+                        nextOffset);
+            }
+
+            if (!quicContext.isHandshakeSecretsInitialized()) {
+                initialPhaseExpectedCryptoFrameOffset = nextOffset;
+            } else if (!quicContext.isApplicationSecretsInitialized()) {
+                handshakePhaseExpectedCryptoFrameOffset = nextOffset;
+            } else {
+                applicationPhaseExpectedCryptoFrameOffset = nextOffset;
             }
         }
 
@@ -394,53 +420,22 @@ public class QuicFrameLayer
 
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(recordLayerHint, this);
-            currentInputStream.extendStream(outputStream.toByteArray());
         } else {
             currentInputStream.setHint(recordLayerHint);
-            currentInputStream.extendStream(outputStream.toByteArray());
         }
+        currentInputStream.extendStream(outputStream.toByteArray());
 
         outputStream.flush();
-    }
-
-    private boolean isCryptoBufferConsecutive() {
-        long lastSeenCryptoOffset;
-        if (!quicContext.isHandshakeSecretsInitialized()) {
-            lastSeenCryptoOffset = initialPhaseExpectedCryptoFrameOffset;
-        } else if (!quicContext.isApplicationSecretsInitialized()) {
-            lastSeenCryptoOffset = handshakePhaseExpectedCryptoFrameOffset;
-        } else {
-            lastSeenCryptoOffset = applicationPhaseExpectedCryptoFrameOffset;
-        }
-        if (cryptoFrameBuffer.get(0).getOffset().getValue() != lastSeenCryptoOffset) {
-            LOGGER.warn(
-                    "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
-                    cryptoBufferToString(),
-                    lastSeenCryptoOffset);
-            return false;
-        }
-        for (int i = 1; i < cryptoFrameBuffer.size(); i++) {
-            if (cryptoFrameBuffer.get(i).getOffset().getValue()
-                    != cryptoFrameBuffer.get(i - 1).getOffset().getValue()
-                            + cryptoFrameBuffer.get(i - 1).getLength().getValue()) {
-                LOGGER.warn(
-                        "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
-                        cryptoBufferToString(),
-                        lastSeenCryptoOffset);
-                return false;
-            }
-        }
-        return true;
     }
 
     private String cryptoBufferToString() {
         return cryptoFrameBuffer.stream()
                 .map(
                         cryptoFrame ->
-                                "o: "
-                                        + cryptoFrame.getOffset().getValue()
-                                        + ", l: "
-                                        + cryptoFrame.getLength().getValue())
+                                "o: %d, l: %d"
+                                        .formatted(
+                                                cryptoFrame.getOffset().getValue(),
+                                                cryptoFrame.getLength().getValue()))
                 .collect(Collectors.joining(" | "));
     }
 

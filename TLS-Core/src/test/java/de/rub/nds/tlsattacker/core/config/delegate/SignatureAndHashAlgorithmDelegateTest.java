@@ -90,7 +90,7 @@ public class SignatureAndHashAlgorithmDelegateTest
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(
-                        config, config2, "certificateChainConfig")); // little
+                        config, config2, "certificateChainConfigs")); // little
         // ugly
     }
 }

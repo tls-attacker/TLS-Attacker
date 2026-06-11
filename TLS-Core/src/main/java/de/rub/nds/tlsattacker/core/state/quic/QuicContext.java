@@ -121,6 +121,7 @@ public class QuicContext extends LayerContext {
 
     private LinkedList<QuicPacketType> receivedPackets = new LinkedList<>();
 
+    private final LinkedList<Integer> receivedZeroRTTPacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedInitialPacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedHandshakePacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedOneRTTPacketNumbers = new LinkedList<>();
@@ -133,6 +134,7 @@ public class QuicContext extends LayerContext {
     private boolean receivedStatelessResetToken = false;
 
     private byte[] pathChallengeData;
+    private int amountOfUdpPaddingBytesReceived;
 
     public QuicContext(Context context) {
         super(context);
@@ -158,6 +160,7 @@ public class QuicContext extends LayerContext {
         } catch (NoSuchAlgorithmException | CryptoException e) {
             LOGGER.error("Could not initialize initial secrets: ", e);
         }
+        this.amountOfUdpPaddingBytesReceived = 0;
     }
 
     private byte[] generateRandomConnectionId(int length) {
@@ -207,6 +210,7 @@ public class QuicContext extends LayerContext {
         this.oneRTTPacketPacketNumber = DEFAULT_INITIAL_PACKET_NUMBER;
 
         this.receivedPackets.clear();
+        this.receivedZeroRTTPacketNumbers.clear();
         this.receivedInitialPacketNumbers.clear();
         this.receivedHandshakePacketNumbers.clear();
         this.receivedOneRTTPacketNumbers.clear();
@@ -215,6 +219,8 @@ public class QuicContext extends LayerContext {
         this.receivedConnectionCloseFrame = null;
         this.receivedStatelessResetToken = false;
         this.receivedStatelessResetTokens.clear();
+
+        this.amountOfUdpPaddingBytesReceived = 0;
     }
 
     public int getOneRTTPacketPacketNumber() {
@@ -263,6 +269,15 @@ public class QuicContext extends LayerContext {
 
     public void setInitialPacketToken(byte[] initialPacketToken) {
         this.initialPacketToken = initialPacketToken;
+    }
+
+    public void addReceivedZeroRTTPacketNumber(int packetNumber) {
+        this.receivedZeroRTTPacketNumbers.add(packetNumber);
+        this.receivedZeroRTTPacketNumbers.sort(Comparator.comparingInt(Integer::intValue));
+    }
+
+    public LinkedList<Integer> getReceivedZeroRTTPacketNumbers() {
+        return receivedZeroRTTPacketNumbers;
     }
 
     public void addReceivedInitialPacketNumber(int packetNumber) {
@@ -751,5 +766,13 @@ public class QuicContext extends LayerContext {
 
     public boolean hasReceivedStatelessResetToken() {
         return receivedStatelessResetToken;
+    }
+
+    public int getAmountOfUdpPaddingBytesReceived() {
+        return amountOfUdpPaddingBytesReceived;
+    }
+
+    public void addAmountOfUdpPaddingBytesReceived(int amountOfUdpPaddingBytesReceived) {
+        this.amountOfUdpPaddingBytesReceived += amountOfUdpPaddingBytesReceived;
     }
 }

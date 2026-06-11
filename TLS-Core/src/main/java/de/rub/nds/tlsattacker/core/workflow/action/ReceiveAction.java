@@ -16,12 +16,14 @@ import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
@@ -55,6 +57,12 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> expectedHttpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SmtpMessage> expectedSmtpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Pop3Message> expectedPop3Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
@@ -140,6 +148,24 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     public ReceiveAction(HttpMessage... expectedHttpMessages) {
         this.expectedHttpMessages = new ArrayList<>(Arrays.asList(expectedHttpMessages));
+    }
+
+    public ReceiveAction(SmtpMessage... expectedSmtpMessages) {
+        this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
+    }
+
+    public ReceiveAction(String connectionAlias, SmtpMessage... expectedSmtpMessages) {
+        super(connectionAlias);
+        this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
+    }
+
+    public ReceiveAction(Pop3Message... expectedPop3Messages) {
+        this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
+    }
+
+    public ReceiveAction(String connectionAlias, Pop3Message... expectedPop3Messages) {
+        super(connectionAlias);
+        this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
@@ -238,6 +264,22 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedHttpMessages = expectedHttpMessages;
     }
 
+    public List<SmtpMessage> getExpectedSmtpMessages() {
+        return expectedSmtpMessages;
+    }
+
+    public void setExpectedSmtpMessages(List<SmtpMessage> expectedSmtpMessages) {
+        this.expectedSmtpMessages = expectedSmtpMessages;
+    }
+
+    public List<Pop3Message> getExpectedPop3Messages() {
+        return expectedPop3Messages;
+    }
+
+    public void setExpectedPop3Messages(List<Pop3Message> expectedPop3Messages) {
+        this.expectedPop3Messages = expectedPop3Messages;
+    }
+
     public List<QuicFrame> getExpectedQuicFrames() {
         return expectedQuicFrames;
     }
@@ -302,6 +344,16 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.HTTP, getExpectedHttpMessages()));
         }
+        if (getExpectedSmtpMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SMTP, getExpectedSmtpMessages()));
+        }
+        if (getExpectedPop3Messages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.POP3, getExpectedPop3Messages()));
+        }
         if (getExpectedQuicFrames() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
@@ -321,6 +373,12 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         List<List<DataContainer>> dataContainerLists = new LinkedList<>();
         if (expectedHttpMessages != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) expectedHttpMessages);
+        }
+        if (expectedSmtpMessages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedSmtpMessages);
+        }
+        if (expectedPop3Messages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedPop3Messages);
         }
         if (expectedMessages != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) expectedMessages);

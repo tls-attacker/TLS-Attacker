@@ -41,7 +41,7 @@ public class PathResponseFrame extends QuicFrame {
 
     public PathResponseFrame(ModifiableByteArray defaultData, boolean overwritePathChallengeData) {
         super(QuicFrameType.PATH_RESPONSE_FRAME);
-        this.data = data;
+        this.data = defaultData;
         this.overwritePathChallengeData = overwritePathChallengeData;
     }
 

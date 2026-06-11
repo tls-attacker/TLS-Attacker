@@ -154,7 +154,10 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
         byte[] extensionListBytes = parseByteArrayField(extensionsLength);
         ExtensionListParser extensionListParser =
                 new ExtensionListParser(
-                        new ByteArrayInputStream(extensionListBytes), tlsContext, false);
+                        new ByteArrayInputStream(extensionListBytes),
+                        tlsContext,
+                        false,
+                        HandshakeMessageType.CLIENT_HELLO);
         List<ExtensionMessage> extensionList = new LinkedList<>();
         extensionListParser.parse(extensionList);
         record.setExtensions(extensionList);

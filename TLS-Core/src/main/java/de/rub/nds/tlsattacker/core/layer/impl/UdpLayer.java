@@ -34,7 +34,7 @@ public class UdpLayer extends ProtocolLayer<Context, LayerProcessingHint, UdpDat
     }
 
     @Override
-    public LayerProcessingResult<UdpDataPacket> sendConfiguration() throws IOException {
+    protected LayerProcessingResult<UdpDataPacket> sendConfigurationInternal() throws IOException {
         LayerConfiguration<UdpDataPacket> configuration = getLayerConfiguration();
         if (configuration != null) {
             for (UdpDataPacket udpDataPacket : getUnprocessedConfiguredContainers()) {
@@ -49,8 +49,8 @@ public class UdpLayer extends ProtocolLayer<Context, LayerProcessingHint, UdpDat
 
     /** Sends data over the UDP socket. */
     @Override
-    public LayerProcessingResult<UdpDataPacket> sendData(LayerProcessingHint hint, byte[] data)
-            throws IOException {
+    protected LayerProcessingResult<UdpDataPacket> sendDataInternal(
+            LayerProcessingHint hint, byte[] data) throws IOException {
         UdpDataPacket udpDataPacket;
         if (getUnprocessedConfiguredContainers().isEmpty()) {
             udpDataPacket = new UdpDataPacket();
@@ -66,7 +66,7 @@ public class UdpLayer extends ProtocolLayer<Context, LayerProcessingHint, UdpDat
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         byte[] receivedPacket = getTransportHandler().fetchData();
         UdpDataPacket udpDataPacket = new UdpDataPacket();
         udpDataPacket
@@ -84,7 +84,7 @@ public class UdpLayer extends ProtocolLayer<Context, LayerProcessingHint, UdpDat
     }
 
     @Override
-    public LayerProcessingResult<UdpDataPacket> receiveData() {
+    protected LayerProcessingResult<UdpDataPacket> receiveDataInternal() {
         return new LayerProcessingResult<>(null, getLayerType(), true);
     }
 
