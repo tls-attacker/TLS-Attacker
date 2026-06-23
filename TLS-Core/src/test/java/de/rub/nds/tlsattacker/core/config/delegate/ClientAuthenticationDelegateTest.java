@@ -59,6 +59,6 @@ public class ClientAuthenticationDelegateTest
         Config config = new Config();
         Config config2 = new Config();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfigs"));
     }
 }

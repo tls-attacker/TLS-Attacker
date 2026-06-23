@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 
 public class StarttlsDelegate extends Delegate {
 
@@ -31,5 +32,16 @@ public class StarttlsDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) throws ConfigurationException {
         config.setStarttlsType(starttlsType);
+        switch (starttlsType) {
+            case POP3:
+                config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+                break;
+            case SMTP:
+                config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
+                break;
+            default:
+                // Leave the default TLS layer configuration in place for other StartTLS types
+                break;
+        }
     }
 }

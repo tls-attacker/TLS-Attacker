@@ -41,11 +41,13 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         // TODO this executor does not use all implemented callbacks
-        try {
-            initAllLayer();
-        } catch (IOException ex) {
-            throw new WorkflowExecutionException(
-                    "Workflow not executed, could not initialize transport handler: ", ex);
+        if (Boolean.TRUE.equals(config.isWorkflowExecutorShouldOpen())) {
+            try {
+                initAllLayer();
+            } catch (IOException ex) {
+                throw new WorkflowExecutionException(
+                        "Workflow not executed, could not initialize transport handler: ", ex);
+            }
         }
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
@@ -90,7 +92,9 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
 
             setTemporarilyDisabledAcks(false);
 
-            if (!action.executedAsPlanned()) {
+            if (!action.executedAsPlanned()
+                    && (action.getActionOptions() == null
+                            || !action.getActionOptions().contains(ActionOption.MAY_FAIL))) {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
@@ -175,7 +179,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
      * Check if we have any error conditions like IOException, Alert or Connection Close to abort
      */
     private boolean shouldStopDueToErrorCondition() {
-        if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseframe())) {
+        if ((config.isStopActionAfterQuicConnCloseFrame() && hasReceivedConnectionCloseFrame())) {
             LOGGER.debug(
                     "Skipping all Actions, received ConnectionCloseFrame, StopActionsAfterQuicConnectionClose active");
             return true;
@@ -196,9 +200,9 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
     }
 
     /** Check if a at least one QUIC context received a connection close frame. */
-    public boolean hasReceivedConnectionCloseframe() {
+    public boolean hasReceivedConnectionCloseFrame() {
         for (Context ctx : state.getAllContexts()) {
-            if (ctx.getQuicContext().hasReceivedConnectionCloseFrame() != null) {
+            if (ctx.getQuicContext().getReceivedConnectionCloseFrame() != null) {
                 return true;
             }
         }

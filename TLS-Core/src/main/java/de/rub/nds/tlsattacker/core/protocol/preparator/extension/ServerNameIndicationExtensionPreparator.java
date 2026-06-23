@@ -14,9 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,14 +49,14 @@ public class ServerNameIndicationExtensionPreparator
     }
 
     public void prepareEntryList() {
-        if (chooser.getConfig().getDefaultSniHostnames() == null) {
-            if (chooser.getConnection().getHostname() == null) {
+        if (msg.getServerNameList() == null || msg.getServerNameList().isEmpty()) {
+            if (chooser.getConfig().getDefaultSniHostnames() != null) {
+                prepareFromDefault();
+            } else if (chooser.getConnection().getHostname() == null) {
                 prepareEmptyEntry();
             } else {
                 prepareFromConnection();
             }
-        } else {
-            msg.setServerNameList(chooser.getConfig().getDefaultSniHostnames());
         }
 
         for (ServerNamePair pair : msg.getServerNameList()) {
@@ -71,21 +71,29 @@ public class ServerNameIndicationExtensionPreparator
     }
 
     public void prepareEmptyEntry() {
-        LOGGER.warn("Using emtpy list for SNI extension since no entries have been specified");
+        LOGGER.warn("Using empty list for SNI extension since no entries have been specified");
         byte[] emptyName = new byte[0];
         ServerNamePair emptyPair =
                 new ServerNamePair(chooser.getConfig().getSniType().getValue(), emptyName);
-        msg.setServerNameList(new LinkedList<>(Arrays.asList(emptyPair)));
-        prepareEntry(chooser, emptyPair);
+        msg.setServerNameList(new LinkedList<>(List.of(emptyPair)));
     }
 
     private void prepareFromConnection() {
         byte[] serverName =
-                chooser.getConnection().getHostname().getBytes(Charset.forName("ASCII"));
+                chooser.getConnection().getHostname().getBytes(StandardCharsets.US_ASCII);
         ServerNamePair namePair =
                 new ServerNamePair(chooser.getConfig().getSniType().getValue(), serverName);
-        msg.setServerNameList(new LinkedList<>(Arrays.asList(namePair)));
-        prepareEntry(chooser, namePair);
+        msg.setServerNameList(new LinkedList<>(List.of(namePair)));
+    }
+
+    private void prepareFromDefault() {
+        List<ServerNamePair> namePairs = new LinkedList<>();
+        for (ServerNamePair namePair : chooser.getConfig().getDefaultSniHostnames()) {
+            namePairs.add(
+                    new ServerNamePair(
+                            namePair.getServerNameTypeConfig(), namePair.getServerNameConfig()));
+        }
+        msg.setServerNameList(namePairs);
     }
 
     private void prepareEntry(Chooser chooser, ServerNamePair namePair) {

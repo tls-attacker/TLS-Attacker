@@ -13,21 +13,29 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.DiscardExceptFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.*;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This class provides methods that create the LayerConfigurations for the different layers of the
+ * LayerStack. They are used by the {@link SendAction} and {@link ReceiveAction} classes to actually
+ * send and receive data.
+ *
+ * @see SendAction
+ * @see ReceiveAction
+ * @see LayerStack
+ */
 public class ActionHelperUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -84,6 +92,14 @@ public class ActionHelperUtil {
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
                 containerFilters.add(new WarningAlertFilter());
             }
+            if (actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)
+                    && messageLayerConfiguration.getContainerList() != null) {
+                List<? extends Class<? extends DataContainer>> containerClasses =
+                        messageLayerConfiguration.getContainerList().stream()
+                                .map(DataContainer::getClass)
+                                .toList();
+                containerFilters.add(new DiscardExceptFilter(containerClasses));
+            }
             if (!actionOptions.contains(ActionOption.QUIC_FRAMES_STRICT_PADDING)) {
                 containerFilters.add(new GenericDataContainerFilter(PaddingFrame.class));
                 containerFilters.add(new GenericDataContainerFilter(PingFrame.class));
@@ -97,8 +113,7 @@ public class ActionHelperUtil {
                 containerFilters.add(new GenericDataContainerFilter(AckFrame.class));
             }
             if (messageLayerConfiguration instanceof SpecificReceiveLayerConfiguration) {
-                ((SpecificReceiveLayerConfiguration<?>) messageLayerConfiguration)
-                        .setContainerFilterList(containerFilters);
+                messageLayerConfiguration.setContainerFilterList(containerFilters);
             }
         }
         return messageLayerConfiguration;
@@ -111,8 +126,7 @@ public class ActionHelperUtil {
         LayerConfiguration httpConfiguration =
                 new ReceiveTillHttpContentConfiguration(null, httpContent);
 
-        return ActionHelperUtil.sortLayerConfigurations(
-                layerStack, false, List.of(httpConfiguration));
+        return sortLayerConfigurations(layerStack, false, List.of(httpConfiguration));
     }
 
     private static List<LayerConfiguration<?>> sortLayerConfigurations(

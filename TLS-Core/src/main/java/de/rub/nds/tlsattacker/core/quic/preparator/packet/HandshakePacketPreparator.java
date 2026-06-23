@@ -25,8 +25,9 @@ public class HandshakePacketPreparator extends LongHeaderPacketPreparator<Handsh
     @Override
     public void prepare() {
         LOGGER.debug("Preparing Handshake Packet");
-        prepareUnprotectedFlags();
         prepareUnprotectedPacketNumber();
+        preparePacketNumberLength();
+        prepareUnprotectedFlags();
         prepareLongHeaderPacket();
     }
 
@@ -41,8 +42,9 @@ public class HandshakePacketPreparator extends LongHeaderPacketPreparator<Handsh
     }
 
     private void prepareUnprotectedFlags() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.HANDSHAKE_PACKET.getHeader(context.getQuicVersion()));
+        byte packetType = QuicPacketType.HANDSHAKE_PACKET.getHeader(context.getQuicVersion());
+        int packetNumber = packet.getPacketNumberLength().getValue();
+        packet.setUnprotectedFlags((byte) (packetType ^ (packetNumber - 1)));
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

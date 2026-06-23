@@ -1,0 +1,82 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.command;
+
+import de.rub.nds.tlsattacker.core.smtp.SmtpCommandType;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpAUTHCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpAUTHCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+
+/**
+ * This class represents the AUTH command of the SMTP protocol. The AUTH command is used to
+ * authenticate the client to the server. So far only the PLAIN mechanism is supported. Multistep
+ * authentication is not currently supported. Example for PLAIN authentication with username
+ * 'seal@upb.de' and password 'password':
+ *
+ * <pre>
+ * C: AUTH PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk
+ * S: 235 2.7.0 Authentication successful
+ * </pre>
+ *
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc4954">RFC 4954</a>
+ */
+@XmlRootElement
+public class SmtpAUTHCommand extends SmtpCommand {
+
+    private static final String COMMAND_NAME = "AUTH";
+
+    // depending on the mechanism, there CAN (but don't have to) be multiple base64 strings
+    private String saslMechanism; // mandatory
+    private String initialResponse;
+
+    public SmtpAUTHCommand() {
+        super(SmtpCommandType.AUTH);
+    }
+
+    // E.g. "AUTH PLAIN"
+    public SmtpAUTHCommand(String saslMechanism) {
+        this();
+        this.saslMechanism = saslMechanism;
+    }
+
+    // E.g. "AUTH PLAIN Qts12w=="
+    public SmtpAUTHCommand(String saslMechanism, String initialResponse) {
+        this();
+        this.saslMechanism = saslMechanism;
+        this.initialResponse = initialResponse;
+    }
+
+    public String getSaslMechanism() {
+        return saslMechanism;
+    }
+
+    public String getInitialResponse() {
+        return initialResponse;
+    }
+
+    public void setSaslMechanism(String saslMechanism) {
+        this.saslMechanism = saslMechanism;
+    }
+
+    public void setInitialResponse(String initialResponse) {
+        this.initialResponse = initialResponse;
+    }
+
+    @Override
+    public SmtpAUTHCommandParser getParser(Context context, InputStream stream) {
+        return new SmtpAUTHCommandParser(stream);
+    }
+
+    @Override
+    public SmtpAUTHCommandPreparator getPreparator(Context context) {
+        return new SmtpAUTHCommandPreparator(context.getSmtpContext(), this);
+    }
+}

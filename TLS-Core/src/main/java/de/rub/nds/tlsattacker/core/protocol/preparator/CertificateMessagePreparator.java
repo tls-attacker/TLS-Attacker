@@ -13,6 +13,7 @@ import de.rub.nds.protocol.constants.PointFormat;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -114,47 +115,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
             case X509:
                 List<CertificateEntry> entryList = msg.getCertificateEntryList();
-                if (chooser.getConfig().getDefaultExplicitCertificateChain() == null) {
-                    if (entryList == null) {
-                        if (chooser.getConfig().getAutoAdjustCertificate()) {
-                            X509PublicKeyType[] certificateKeyTypes =
-                                    AlgorithmResolver.getSuitableLeafCertificateKeyType(
-                                            chooser.getSelectedCipherSuite());
-                            if (certificateKeyTypes.length > 0) {
-                                autoSelectCertificateKeyType(certificateKeyTypes);
-                            } else {
-                                LOGGER.warn(
-                                        "Could not adjust public key in certificate to fit cipher suite");
-                            }
-                        }
-                        // There is no certificate list in the message, this means we need to auto
-                        // create one
-                        LOGGER.debug("Building new certificate chain");
-                        X509CertificateChainBuilder builder = new X509CertificateChainBuilder();
-                        X509ChainCreationResult chainResult =
-                                builder.buildChain(chooser.getConfig().getCertificateChainConfig());
-                        chooser.getContext()
-                                .getTlsContext()
-                                .setTalkingX509Context(chainResult.getContext());
-                        entryList = new LinkedList<>();
-                        for (X509Certificate certificate :
-                                chainResult.getCertificateChain().getCertificateList()) {
-                            entryList.add(new CertificateEntry(certificate));
-                        }
-                        msg.setCertificateEntryList(entryList);
-                    } else {
-                        preparePredefinedCerts(entryList);
-                    }
-                    prepareFromEntryList(msg);
+                if (mustCreateCertificatesDynamically()) {
+                    prepareCertificateListBytesDynamically(msg, entryList);
                 } else {
-                    entryList = new LinkedList<>();
-                    for (CertificateBytes certificateBytes :
-                            chooser.getConfig().getDefaultExplicitCertificateChain()) {
-                        CertificateEntry entry = new CertificateEntry(certificateBytes.getBytes());
-                        entryList.add(entry);
-                    }
-                    msg.setCertificateEntryList(entryList);
-                    prepareFromEntryList(msg);
+                    prepareExplicitCertificateListBytes(msg);
                 }
                 LOGGER.debug(
                         "CertificatesListBytes: {}", msg.getCertificatesListBytes().getValue());
@@ -165,61 +129,148 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         }
     }
 
+    private void prepareExplicitCertificateListBytes(CertificateMessage msg) {
+        List<CertificateBytes> explicitChain = selectBestGivenCertificateBytes();
+        List<CertificateEntry> entryList = new LinkedList<>();
+        for (CertificateBytes certificateBytes : explicitChain) {
+            CertificateEntry entry = new CertificateEntry(certificateBytes.getBytes());
+            entryList.add(entry);
+        }
+        msg.setCertificateEntryList(entryList);
+        prepareFromEntryList(msg);
+    }
+
+    private void prepareCertificateListBytesDynamically(
+            CertificateMessage msg, List<CertificateEntry> entryList) {
+        List<X509CertificateConfig> activeChainConfig =
+                chooser.getConfig().getCertificateChainConfigs().get(0);
+        if (entryList == null) {
+            if (chooser.getConfig().getAutoAdjustCertificate()) {
+                X509PublicKeyType[] certificateKeyTypes =
+                        AlgorithmResolver.getSuitableLeafCertificateKeyType(
+                                chooser.getSelectedCipherSuite());
+                if (certificateKeyTypes.length > 0) {
+                    autoSelectCertificateKeyType(certificateKeyTypes);
+                } else {
+                    LOGGER.warn("Could not adjust public key in certificate to fit cipher suite");
+                }
+            }
+            // There is no certificate list in the message, this means we need to auto
+            // create one
+            LOGGER.debug("Building new certificate chain");
+            X509CertificateChainBuilder builder = new X509CertificateChainBuilder();
+            X509ChainCreationResult chainResult = builder.buildChain(activeChainConfig);
+            chooser.getContext().getTlsContext().setTalkingX509Context(chainResult.getContext());
+            entryList = new LinkedList<>();
+            for (X509Certificate certificate :
+                    chainResult.getCertificateChain().getCertificateList()) {
+                entryList.add(new CertificateEntry(certificate));
+            }
+            msg.setCertificateEntryList(entryList);
+        } else {
+            preparePredefinedCerts(entryList, activeChainConfig);
+        }
+        prepareFromEntryList(msg);
+    }
+
+    private boolean mustCreateCertificatesDynamically() {
+        return chooser.getConfig().getDefaultExplicitCertificateChain() == null
+                && (chooser.getConfig().getDefaultCertificateChainBytes() == null
+                        || chooser.getConfig().getDefaultCertificateChainBytes().isEmpty());
+    }
+
+    /**
+     * Resolves which explicit certificate bytes chain to use. Priority 1: the single explicit chain
+     * configured by the user. Priority 2: multi-cert chains — selects the chain whose leaf key type
+     * matches the already-negotiated cipher suite. Returns null if no explicit chain is available.
+     */
+    private List<CertificateBytes> selectBestGivenCertificateBytes() {
+        List<List<CertificateBytes>> certChainByteCandidates =
+                chooser.getConfig().getDefaultCertificateChainBytes();
+        if (chooser.getConfig().getDefaultExplicitCertificateChain() != null) {
+            if (certChainByteCandidates != null && !certChainByteCandidates.isEmpty()) {
+                LOGGER.warn(
+                        "Both explicit certificate bytes and a pre-defined certificate byte list have been set. Will use explicit certificate bytes.");
+            } else {
+                LOGGER.debug("Using explicit certificate chain set in Config");
+            }
+            return chooser.getConfig().getDefaultExplicitCertificateChain();
+        }
+        LOGGER.debug("Selecting suitable certificate from pre-defined options set in Config");
+
+        List<List<X509CertificateConfig>> certChainConfigCandidates =
+                chooser.getConfig().getCertificateChainConfigs();
+        X509PublicKeyType[] requiredKeyTypes =
+                AlgorithmResolver.getSuitableLeafCertificateKeyType(
+                        chooser.getSelectedCipherSuite());
+
+        for (int i = 0;
+                i < certChainByteCandidates.size() && i < certChainConfigCandidates.size();
+                i++) {
+            List<X509CertificateConfig> chainConfig = certChainConfigCandidates.get(i);
+            if (chainConfig.isEmpty()) {
+                continue;
+            }
+            X509CertificateConfig leafConfig =
+                    chainConfig.get(CertificateDelegate.PREDEFINED_LEAF_CERT_INDEX);
+            X509PublicKeyType leafKeyType = leafConfig.getPublicKeyType();
+            for (X509PublicKeyType required : requiredKeyTypes) {
+                if (required == leafKeyType) {
+                    LOGGER.debug(
+                            "Selected certificate chain index {} for cipher suite {}",
+                            i,
+                            chooser.getSelectedCipherSuite());
+                    X509Context selectedContext = new X509Context(leafConfig);
+                    chooser.getContext().getTlsContext().setTalkingX509Context(selectedContext);
+                    return certChainByteCandidates.get(i);
+                }
+            }
+        }
+        LOGGER.warn(
+                "No explicit certificate chain matches the selected cipher suite {}, using first chain given",
+                chooser.getSelectedCipherSuite());
+        return certChainByteCandidates.get(0);
+    }
+
     private void autoSelectCertificateKeyType(X509PublicKeyType[] certificateKeyTypes) {
+        List<X509CertificateConfig> defaultChain =
+                chooser.getConfig().getCertificateChainConfigs().get(0);
         if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            chooser.getConfig()
-                    .getCertificateChainConfig()
-                    .get(0)
-                    .setPublicKeyType(certificateKeyTypes[0]);
+            defaultChain.get(0).setPublicKeyType(certificateKeyTypes[0]);
         } else {
             for (X509PublicKeyType certKeyType : certificateKeyTypes) {
                 if (chooser.getConfig()
                         .getDefaultSelectedSignatureAndHashAlgorithm()
                         .suitableForSignatureKeyType(certKeyType)) {
-                    chooser.getConfig()
-                            .getCertificateChainConfig()
-                            .get(0)
-                            .setPublicKeyType(certKeyType);
+                    defaultChain.get(0).setPublicKeyType(certKeyType);
                     return;
                 }
             }
             LOGGER.warn(
                     "Could not find certificate public key type matching both cipher suite and default SignatureAndHashAlgorithm. Using first key type.");
-            chooser.getConfig()
-                    .getCertificateChainConfig()
-                    .get(0)
-                    .setPublicKeyType(certificateKeyTypes[0]);
+            defaultChain.get(0).setPublicKeyType(certificateKeyTypes[0]);
         }
     }
 
-    private void preparePredefinedCerts(List<CertificateEntry> entryList) {
+    private void preparePredefinedCerts(
+            List<CertificateEntry> entryList, List<X509CertificateConfig> chainConfig) {
         X509Context x509Context = new X509Context();
-        for (int i = chooser.getConfig().getCertificateChainConfig().size() - 1; i >= 0; i--) {
+        for (int i = chainConfig.size() - 1; i >= 0; i--) {
             if (i >= entryList.size()) {
                 LOGGER.warn(
                         "Not enough certificates provided for certificate chain config. Ignoring trailing config.");
                 continue;
             }
-            X509CertificateConfig certConfig =
-                    chooser.getConfig().getCertificateChainConfig().get(i);
+            X509CertificateConfig certConfig = chainConfig.get(i);
             prepareCert(entryList, x509Context, certConfig, i);
         }
-        int certsBeyondConfigs =
-                entryList.size() - chooser.getConfig().getCertificateChainConfig().size();
+        int certsBeyondConfigs = entryList.size() - chainConfig.size();
         if (certsBeyondConfigs > 0) {
             LOGGER.warn(
                     "Found {} more certificates than provided certificate configs. Using first config to prepare remaining entries.",
                     certsBeyondConfigs);
-            X509CertificateConfig certConfig =
-                    chooser.getConfig().getCertificateChainConfig().get(0);
-            for (int i =
-                            (entryList.size()
-                                            - chooser.getConfig()
-                                                    .getCertificateChainConfig()
-                                                    .size())
-                                    - 1;
-                    i >= 0;
-                    i--) {
+            X509CertificateConfig certConfig = chainConfig.get(0);
+            for (int i = (entryList.size() - chainConfig.size()) - 1; i >= 0; i--) {
                 prepareCert(entryList, x509Context, certConfig, i);
             }
         }

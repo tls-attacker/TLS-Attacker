@@ -41,15 +41,11 @@ public class RetryPacket extends LongHeaderPacket {
 
     public RetryPacket() {
         super(QuicPacketType.RETRY_PACKET);
-        // TODO: Constant fixed, but not sure whether we should set this here
-        this.setUnprotectedFlags((byte) 0xf0);
     }
 
     public RetryPacket(byte flags) {
         super(QuicPacketType.RETRY_PACKET);
-        this.setProtectedFlags(flags);
-        // We do not have any header protection in Retry packets
-        this.setUnprotectedFlags(flags);
+        setUnprotectedFlags(flags);
         protectedHeaderHelper.write(flags);
     }
 

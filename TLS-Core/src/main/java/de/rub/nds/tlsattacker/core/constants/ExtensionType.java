@@ -60,6 +60,7 @@ public enum ExtensionType {
     KEY_SHARE(new byte[] {(byte) 0, (byte) 51}),
     RENEGOTIATION_INFO(new byte[] {(byte) 0xFF, (byte) 0x01}),
     ENCRYPTED_SERVER_NAME_INDICATION(new byte[] {(byte) 0xFF, (byte) 0xCE}),
+    QUIC_TRANSPORT_PARAMETERS_DRAFT_13_32(new byte[] {(byte) 0xFF, (byte) 0xA5}),
     QUIC_TRANSPORT_PARAMETERS(new byte[] {(byte) 0x00, (byte) 0x39}),
     CONNECTION_ID(new byte[] {(byte) 0, (byte) 54}),
     ENCRYPTED_CLIENT_HELLO_DRAFT_07(new byte[] {(byte) 0xFF, (byte) 0x02}),
@@ -69,6 +70,7 @@ public enum ExtensionType {
     ENCRYPTED_CLIENT_HELLO_DRAFT_11(new byte[] {(byte) 0xFF, (byte) 0x0b}),
     ENCRYPTED_CLIENT_HELLO_DRAFT_12(new byte[] {(byte) 0xFF, (byte) 0x0c}),
     ENCRYPTED_CLIENT_HELLO(new byte[] {(byte) 0xFE, (byte) 0x0D}),
+    ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS(new byte[] {(byte) 0xFE, (byte) 0x0D}),
 
     // Debug extension
     DEBUG(new byte[] {(byte) 0xFB, (byte) 0xFB}),
@@ -179,6 +181,7 @@ public enum ExtensionType {
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
+        list.add(QUIC_TRANSPORT_PARAMETERS_DRAFT_13_32);
         list.add(QUIC_TRANSPORT_PARAMETERS);
         list.add(ENCRYPTED_CLIENT_HELLO);
 
@@ -224,8 +227,10 @@ public enum ExtensionType {
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
+        list.add(QUIC_TRANSPORT_PARAMETERS_DRAFT_13_32);
         list.add(QUIC_TRANSPORT_PARAMETERS);
         list.add(ENCRYPTED_CLIENT_HELLO);
+        list.add(ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS);
 
         return list;
     }
@@ -253,6 +258,7 @@ public enum ExtensionType {
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
         list.add(ENCRYPTED_CLIENT_HELLO);
+        list.add(ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS);
 
         return list;
     }
@@ -268,7 +274,9 @@ public enum ExtensionType {
             case CLIENT_CERTIFICATE_TYPE:
             case SERVER_CERTIFICATE_TYPE:
             case EARLY_DATA:
+            case QUIC_TRANSPORT_PARAMETERS_DRAFT_13_32:
             case QUIC_TRANSPORT_PARAMETERS:
+            case ENCRYPTED_CLIENT_HELLO_ENCRYPTED_EXTENSIONS:
             case RECORD_SIZE_LIMIT:
                 return true;
             default:

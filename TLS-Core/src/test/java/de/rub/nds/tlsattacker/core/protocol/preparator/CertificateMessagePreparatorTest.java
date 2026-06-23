@@ -44,7 +44,7 @@ public class CertificateMessagePreparatorTest
     @Test
     @Override
     public void testPrepare() throws IOException {
-        tlsContext.getConfig().setDefaultExplicitCertificateChain(certificateChain);
+        tlsContext.getConfig().setDefaultCertificateChainBytes(List.of(certificateChain));
         preparator.prepare();
         assertArrayEquals(
                 DataConverter.hexStringToByteArray(

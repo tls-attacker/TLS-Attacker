@@ -227,6 +227,16 @@ public class QuicDecryptor {
                 chooser.getQuicAeadCipher());
     }
 
+    public void decryptZeroRTTPacket(QuicPacket packet) throws CryptoException {
+        this.decrypt(
+                packet,
+                chooser.getQuicZeroRTTServerIv(),
+                chooser.getQuicZeroRTTServerKey(),
+                chooser.getQuicZeroRTTClientIv(),
+                chooser.getQuicZeroRTTClientKey(),
+                chooser.getQuicZeroRTTAeadCipher());
+    }
+
     private void decrypt(
             QuicPacket packet,
             byte[] serverIv,

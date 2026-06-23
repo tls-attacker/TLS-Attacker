@@ -71,6 +71,10 @@ public class SessionTicketTLSExtensionHandler
     }
 
     private StatePlaintext getStateFromTicket(SessionTicketTLSExtensionMessage message) {
+        if (message.getSessionTicket() == null
+                || message.getSessionTicket().getEncryptedState() == null) {
+            return null;
+        }
         try {
             byte[] decryptedState =
                     decryptState(

@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.quic.util;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class VariableLengthIntegerEncoding {
 
@@ -20,8 +22,9 @@ public class VariableLengthIntegerEncoding {
      * @return byte array with the encoded value
      */
     public static byte[] encodeVariableLengthInteger(long value) {
-        if (value > EncodingLength.SIXTY_BITS.maxValue) {
-            return null;
+        if (value > EncodingLength.SIXTY_TWO_BITS.maxValue) {
+            throw new IllegalArgumentException(
+                    "Value is too long to encode in variable length integer: " + value);
         }
         byte[] result;
         if (value <= EncodingLength.SIX_BITS.maxValue) {
@@ -58,11 +61,31 @@ public class VariableLengthIntegerEncoding {
         return v;
     }
 
+    /**
+     * Decode variable length integer from an input stream. Used in cases where the length of the
+     * field is only encoded in the variable length integer.
+     *
+     * @param inputStream the input stream to read from
+     * @return decoded integer as java long
+     */
+    public static long readVariableLengthInteger(InputStream inputStream) throws IOException {
+        byte b = (byte) inputStream.read();
+        long v = b;
+        byte prefix = (byte) ((v & 0xff) >> 6);
+        byte length = (byte) ((1 & 0xff) << prefix);
+        v = (byte) v & 0x3f;
+        for (int i = 0; i < length - 1; i++) {
+            b = (byte) inputStream.read();
+            v = (v << 8) + (b & 0xff);
+        }
+        return v;
+    }
+
     public enum EncodingLength {
         SIX_BITS(63),
         FOURTEEN_BITS(16383),
         THIRTY_BITS(1073741823),
-        SIXTY_BITS(4611686018427387903L);
+        SIXTY_TWO_BITS(4611686018427387903L);
 
         private final long maxValue;
 

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +26,8 @@ public class OneRTTPacketPreparator extends QuicPacketPreparator<OneRTTPacket> {
     public void prepare() {
         LOGGER.debug("Preparing 1-RTT Packet");
         prepareUnprotectedPacketNumber();
+        preparePacketNumberLength();
+        prepareUnprotectedFlags();
         prepareQuicPacket();
     }
 
@@ -36,5 +39,12 @@ public class OneRTTPacketPreparator extends QuicPacketPreparator<OneRTTPacket> {
                     "Unprotected Packet Number: {}",
                     packet.getUnprotectedPacketNumber().getValue());
         }
+    }
+
+    private void prepareUnprotectedFlags() {
+        byte packetType = QuicPacketType.ONE_RTT_PACKET.getHeader(context.getQuicVersion());
+        int packetNumber = packet.getPacketNumberLength().getValue();
+        packet.setUnprotectedFlags((byte) (packetType ^ (packetNumber - 1)));
+        LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

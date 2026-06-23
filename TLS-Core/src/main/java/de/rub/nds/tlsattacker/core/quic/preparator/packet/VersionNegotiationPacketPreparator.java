@@ -48,8 +48,10 @@ public class VersionNegotiationPacketPreparator
     }
 
     private void prepareUnprotectedFlags() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.VERSION_NEGOTIATION.getHeader(context.getQuicVersion()));
+        byte unprotectedFlags =
+                QuicPacketType.VERSION_NEGOTIATION.getHeader(context.getQuicVersion());
+        packet.setUnprotectedFlags(unprotectedFlags);
+        packet.setProtectedFlags(unprotectedFlags);
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,11 +37,11 @@ public class LayerStack {
 
     private final Context context;
 
-    public LayerStack(Context context, ProtocolLayer... layers) {
+    public LayerStack(Context context, ProtocolLayer<?, ?, ?>... layers) {
         this.context = context;
-        layerList = Arrays.asList(layers);
+        layerList = new ArrayList<>(Arrays.asList(layers));
         for (int i = 0; i < layers.length; i++) {
-            ProtocolLayer layer = layerList.get(i);
+            ProtocolLayer<?, ?, ?> layer = layerList.get(i);
             if (i != 0) {
                 layer.setHigherLayer(layerList.get(i - 1));
             }
@@ -55,9 +51,20 @@ public class LayerStack {
         }
     }
 
-    public final ProtocolLayer getLayer(Class<? extends ProtocolLayer> layerClass) {
-        for (ProtocolLayer layer : getLayerList()) {
+    public final <T extends ProtocolLayer<?, ?, ?>> T getLayer(Class<T> layerClass) {
+        for (ProtocolLayer<?, ?, ?> layer : getLayerList()) {
             if (layer.getClass().equals(layerClass)) {
+                // unchecked cast, but type can technically be inferred from the layerClass
+                // parameter
+                return (T) layer;
+            }
+        }
+        return null;
+    }
+
+    public final ProtocolLayer<?, ?, ?> getLayer(LayerType type) {
+        for (ProtocolLayer<?, ?, ?> layer : getLayerList()) {
+            if (layer.getLayerType().equals(type)) {
                 return layer;
             }
         }

@@ -66,7 +66,7 @@ public class DtlsFragmentLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<DtlsHandshakeMessageFragment> sendConfiguration()
+    protected LayerProcessingResult<DtlsHandshakeMessageFragment> sendConfigurationInternal()
             throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
@@ -105,7 +105,7 @@ public class DtlsFragmentLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(
+    protected LayerProcessingResult<DtlsHandshakeMessageFragment> sendDataInternal(
             LayerProcessingHint hint, byte[] data) throws IOException {
         ProtocolMessageType hintedType;
         if (hint instanceof RecordLayerHint) {
@@ -166,7 +166,7 @@ public class DtlsFragmentLayer
     }
 
     @Override
-    public LayerProcessingResult<DtlsHandshakeMessageFragment> receiveData() {
+    protected LayerProcessingResult<DtlsHandshakeMessageFragment> receiveDataInternal() {
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
@@ -179,7 +179,8 @@ public class DtlsFragmentLayer
      * @throws IOException When the layer cannot read more data.
      */
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
+    protected void receiveMoreDataForHintInternal(LayerProcessingHint desiredHint)
+            throws IOException {
         try {
             HintedInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();

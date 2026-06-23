@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.quic.crypto;
 
 import de.rub.nds.protocol.exception.CryptoException;
-import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -119,7 +119,7 @@ public class QuicEncryptor {
         byte flags = packet.getUnprotectedFlags().getValue();
         byte hpMask = headerProtectionMask[0];
 
-        if (QuicPacketType.isShortHeaderPacket(flags)) {
+        if (packet instanceof OneRTTPacket) {
             encryptedFlags = (byte) (flags ^ hpMask & (byte) 0x1f);
         } else {
             encryptedFlags = (byte) (flags ^ hpMask & (byte) 0x0f);
@@ -216,7 +216,7 @@ public class QuicEncryptor {
             nonce[i] = (byte) (encryptionIv[i] ^ paddedPacketNumber[i]);
         }
 
-        byte[] associatedData = packet.unprotectedHeaderHelper.toByteArray();
+        byte[] associatedData = packet.completeUnprotectedHeader.getValue();
 
         try {
             byte[] encryptedPayload =

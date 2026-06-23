@@ -78,8 +78,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         return keyShareListBytes;
     }
 
-    public void setKeyShareListBytes(ModifiableByteArray serverNameListBytes) {
-        this.keyShareListBytes = serverNameListBytes;
+    public void setKeyShareListBytes(ModifiableByteArray keyShareListBytes) {
+        this.keyShareListBytes = keyShareListBytes;
     }
 
     public void setKeyShareListBytes(byte[] bytes) {

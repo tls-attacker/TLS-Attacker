@@ -13,13 +13,19 @@ import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
+@XmlRootElement(name = "ReceiveTillHttpContent")
 public class ReceiveTillHttpContentAction extends CommonReceiveAction {
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     protected String httpContent;
+
+    public ReceiveTillHttpContentAction() {
+        super();
+    }
 
     public ReceiveTillHttpContentAction(String httpContent) {
         super();

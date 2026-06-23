@@ -23,6 +23,7 @@ public class SessionTicketTLSExtensionParser
     private final byte[] configTicketKeyName;
     private final CipherAlgorithm configCipherAlgorithm;
     private final MacAlgorithm configMacAlgorithm;
+    private final boolean configShouldParse;
 
     /**
      * Constructor
@@ -36,6 +37,7 @@ public class SessionTicketTLSExtensionParser
         configTicketKeyName = config.getSessionTicketKeyName();
         configCipherAlgorithm = config.getSessionTicketCipherAlgorithm();
         configMacAlgorithm = config.getSessionTicketMacAlgorithm();
+        configShouldParse = config.isSessionTicketShouldParse();
     }
 
     /**
@@ -48,7 +50,7 @@ public class SessionTicketTLSExtensionParser
         SessionTicket ticket = new SessionTicket();
         msg.setSessionTicket(ticket);
         // only parse if the extension indicates data
-        if (getBytesLeft() > 0) {
+        if (configShouldParse && getBytesLeft() > 0) {
             SessionTicketParser ticketParser =
                     new SessionTicketParser(
                             0,

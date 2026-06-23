@@ -22,7 +22,7 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /** Default sleep time between retries in milliseconds */
-    private static final long DEFAULT_ADDITIONAL_SLEEP_TIME_MS = 1000;
+    private static final long DEFAULT_ADDITIONAL_SLEEP_TIME_MS = 10;
 
     /** Default additional TCP connection timeout in milliseconds */
     private static final long DEFAULT_ADDITIONAL_TCP_TIMEOUT_MS = 5000;

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
+import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 
@@ -26,6 +27,7 @@ public class LayerStackFactory {
             case OPEN_VPN:
             case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
+
             case DTLS:
                 return new LayerStack(
                         context,
@@ -54,6 +56,42 @@ public class LayerStackFactory {
                         new LayerStack(
                                 context,
                                 new HttpLayer(context),
+                                new MessageLayer(context),
+                                new RecordLayer(context),
+                                new TcpLayer(context));
+                return layerStack;
+            case POP3:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new Pop3Layer(context),
+                                new MessageLayer(context, false),
+                                new RecordLayer(context, false),
+                                new TcpLayer(context));
+                return layerStack;
+            case POP3S:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new Pop3Layer(context),
+                                new MessageLayer(context),
+                                new RecordLayer(context),
+                                new TcpLayer(context));
+                return layerStack;
+            case SMTP:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new SmtpLayer(context),
+                                new MessageLayer(context, false),
+                                new RecordLayer(context, false),
+                                new TcpLayer(context));
+                return layerStack;
+            case SMTPS:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new SmtpLayer(context),
                                 new MessageLayer(context),
                                 new RecordLayer(context),
                                 new TcpLayer(context));

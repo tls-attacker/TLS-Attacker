@@ -36,14 +36,12 @@ public class HintedLayerInputStream extends HintedInputStream {
      */
     @Override
     public int read() throws IOException {
-        if (stream.available() > 0) {
-            return stream.read();
-        } else {
+        if (stream.available() == 0) {
             layer.receiveMoreDataForHint(getHint());
             // either the stream is now filled, or we ran into a timeout
             // or the next stream is available
-            return stream.read();
         }
+        return stream.read();
     }
 
     @Override

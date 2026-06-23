@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -124,6 +125,7 @@ public class QuicContext extends LayerContext {
 
     private LinkedList<QuicPacketType> receivedPackets = new LinkedList<>();
 
+    private final LinkedList<Integer> receivedZeroRTTPacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedInitialPacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedHandshakePacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedOneRTTPacketNumbers = new LinkedList<>();
@@ -144,6 +146,8 @@ public class QuicContext extends LayerContext {
     private boolean receivedStatelessResetToken;
 
     private List<Integer> receivedStreamsIds = new ArrayList<>();
+
+    private int amountOfUdpPaddingBytesReceived;
 
     public QuicContext(Context context) {
         super(context);
@@ -170,6 +174,7 @@ public class QuicContext extends LayerContext {
         }
         this.receivedStatelessResetToken = false;
         this.temporarilyDisabledAcks = false;
+        this.amountOfUdpPaddingBytesReceived = 0;
     }
 
     private byte[] generateRandomConnectionId(int length) {
@@ -219,6 +224,7 @@ public class QuicContext extends LayerContext {
         this.oneRTTPacketPacketNumber = DEFAULT_INITIAL_PACKET_NUMBER;
 
         this.receivedPackets.clear();
+        this.receivedZeroRTTPacketNumbers.clear();
         this.receivedInitialPacketNumbers.clear();
         this.receivedHandshakePacketNumbers.clear();
         this.receivedOneRTTPacketNumbers.clear();
@@ -229,6 +235,7 @@ public class QuicContext extends LayerContext {
 
         this.receivedStatelessResetToken = false;
         this.temporarilyDisabledAcks = false;
+        this.amountOfUdpPaddingBytesReceived = 0;
     }
 
     public QuicFrameLayer getQuicFrameLayer() {
@@ -285,6 +292,15 @@ public class QuicContext extends LayerContext {
 
     public void setInitialPacketToken(byte[] initialPacketToken) {
         this.initialPacketToken = initialPacketToken;
+    }
+
+    public void addReceivedZeroRTTPacketNumber(int packetNumber) {
+        this.receivedZeroRTTPacketNumbers.add(packetNumber);
+        this.receivedZeroRTTPacketNumbers.sort(Comparator.comparingInt(Integer::intValue));
+    }
+
+    public LinkedList<Integer> getReceivedZeroRTTPacketNumbers() {
+        return receivedZeroRTTPacketNumbers;
     }
 
     public void addReceivedInitialPacketNumber(int packetNumber) {
@@ -705,7 +721,7 @@ public class QuicContext extends LayerContext {
         this.supportedVersions.addAll(supportedVersions);
     }
 
-    public ConnectionCloseFrame hasReceivedConnectionCloseFrame() {
+    public ConnectionCloseFrame getReceivedConnectionCloseFrame() {
         return receivedConnectionCloseFrame;
     }
 
@@ -759,7 +775,7 @@ public class QuicContext extends LayerContext {
 
     public boolean isStatelessResetToken(byte[] token) {
         for (byte[] tokenToTest : receivedStatelessResetTokens) {
-            if (tokenToTest.equals(token)) {
+            if (Arrays.equals(tokenToTest, token)) {
                 return true;
             }
         }
@@ -793,5 +809,13 @@ public class QuicContext extends LayerContext {
             }
         }
         return false;
+    }
+
+    public int getAmountOfUdpPaddingBytesReceived() {
+        return amountOfUdpPaddingBytesReceived;
+    }
+
+    public void addAmountOfUdpPaddingBytesReceived(int amountOfUdpPaddingBytesReceived) {
+        this.amountOfUdpPaddingBytesReceived += amountOfUdpPaddingBytesReceived;
     }
 }

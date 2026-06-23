@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -90,7 +91,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
 
-            if (!action.executedAsPlanned() && action instanceof ReceivingAction) {
+            if (!action.executedAsPlanned()
+                    && action instanceof ReceivingAction
+                    && (action.getActionOptions() == null
+                            || !action.getActionOptions().contains(ActionOption.MAY_FAIL))) {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
