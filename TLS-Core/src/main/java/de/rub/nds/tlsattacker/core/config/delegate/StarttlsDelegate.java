@@ -39,6 +39,9 @@ public class StarttlsDelegate extends Delegate {
             case SMTP:
                 config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
                 break;
+            case FTP:
+                config.setDefaultLayerConfiguration(StackConfiguration.FTP);
+                break;
             default:
                 // Leave the default TLS layer configuration in place for other StartTLS types
                 break;
