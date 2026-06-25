@@ -13,5 +13,16 @@ public enum StarttlsType {
     FTP,
     IMAP,
     POP3,
-    SMTP;
+    SMTP,
+    HTTP,
+    IRC,
+    LDAP,
+    LMTP,
+    MANAGED_SIEVE,
+    NNTP,
+    POSTGRESQL,
+    RDP,
+    MYSQL,
+    NBD,
+    XMPP;
 }

@@ -1335,6 +1335,50 @@ public class WorkflowConfigurationFactory {
                             connection, workflowTrace, new SmtpSTARTTLSCommand());
                     return workflowTrace;
                 }
+            case HTTP:
+                {
+                    throw new NotImplementedException("HTTP STARTTLS not implemented yet");
+                }
+            case IRC:
+                {
+                    throw new NotImplementedException("IRC STARTTLS not implemented yet");
+                }
+            case LDAP:
+                {
+                    throw new NotImplementedException("LDAP STARTTLS not implemented yet");
+                }
+            case LMTP:
+                {
+                    throw new NotImplementedException("LMTP STARTTLS not implemented yet");
+                }
+            case MANAGED_SIEVE:
+                {
+                    throw new NotImplementedException("Managed Sieve STARTTLS not implemented yet");
+                }
+            case NNTP:
+                {
+                    throw new NotImplementedException("NNTP STARTTLS not implemented yet");
+                }
+            case POSTGRESQL:
+                {
+                    throw new NotImplementedException("PostgreSQL STARTTLS not implemented yet");
+                }
+            case RDP:
+                {
+                    throw new NotImplementedException("RDP STARTTLS not implemented yet");
+                }
+            case MYSQL:
+                {
+                    throw new NotImplementedException("MySQL STARTTLS not implemented yet");
+                }
+            case NBD:
+                {
+                    throw new NotImplementedException("NBD STARTTLS not implemented yet");
+                }
+            case XMPP:
+                {
+                    throw new NotImplementedException("XMPP STARTTLS not implemented yet");
+                }
             default:
                 throw new NotImplementedException("Unknown starttls type: " + type);
         }
