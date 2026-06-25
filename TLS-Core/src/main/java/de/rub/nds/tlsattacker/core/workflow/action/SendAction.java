@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.ftp.FtpMessage;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
@@ -79,11 +80,22 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         this.configuredPop3Messages = configuredPop3Messages;
     }
 
+    public List<FtpMessage> getConfiguredFtpMessages() {
+        return configuredFtpMessages;
+    }
+
+    public void setConfiguredFtpMessages(List<FtpMessage> configuredFtpMessages) {
+        this.configuredFtpMessages = configuredFtpMessages;
+    }
+
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<SmtpMessage> configuredSmtpMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Pop3Message> configuredPop3Messages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<FtpMessage> configuredFtpMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> configuredQuicFrames;
@@ -146,6 +158,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(Pop3Message... pop3Message) {
         this.configuredPop3Messages = new ArrayList<>(Arrays.asList(pop3Message));
+    }
+
+    public SendAction(FtpMessage... ftpMessage) {
+        this.configuredFtpMessages = new ArrayList<>(Arrays.asList(ftpMessage));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -302,6 +318,12 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
             }
         }
 
+        if (configuredFtpMessages != null) {
+            for (FtpMessage msg : configuredFtpMessages) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
+            }
+        }
+
         if (configuredQuicFrames != null) {
             for (QuicFrame frames : configuredQuicFrames) {
                 holders.addAll(frames.getAllModifiableVariableHolders());
@@ -389,6 +411,11 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.POP3, getConfiguredPop3Messages()));
         }
+        if (getConfiguredFtpMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.FTP, getConfiguredFtpMessages()));
+        }
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
@@ -423,6 +450,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (configuredPop3Messages != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) configuredPop3Messages);
+        }
+        if (configuredFtpMessages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredFtpMessages);
         }
         return dataContainerLists;
     }

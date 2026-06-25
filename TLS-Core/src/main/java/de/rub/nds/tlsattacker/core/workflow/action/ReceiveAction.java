@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.ftp.FtpMessage;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
@@ -63,6 +64,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Pop3Message> expectedPop3Messages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<FtpMessage> expectedFtpMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
@@ -166,6 +170,15 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     public ReceiveAction(String connectionAlias, Pop3Message... expectedPop3Messages) {
         super(connectionAlias);
         this.expectedPop3Messages = new ArrayList<>(Arrays.asList(expectedPop3Messages));
+    }
+
+    public ReceiveAction(FtpMessage... expectedFtpMessages) {
+        this.expectedFtpMessages = new ArrayList<>(Arrays.asList(expectedFtpMessages));
+    }
+
+    public ReceiveAction(String connectionAlias, FtpMessage... expectedFtpMessages) {
+        super(connectionAlias);
+        this.expectedFtpMessages = new ArrayList<>(Arrays.asList(expectedFtpMessages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
@@ -280,6 +293,14 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedPop3Messages = expectedPop3Messages;
     }
 
+    public List<FtpMessage> getExpectedFtpMessages() {
+        return expectedFtpMessages;
+    }
+
+    public void setExpectedFtpMessages(List<FtpMessage> expectedFtpMessages) {
+        this.expectedFtpMessages = expectedFtpMessages;
+    }
+
     public List<QuicFrame> getExpectedQuicFrames() {
         return expectedQuicFrames;
     }
@@ -354,6 +375,11 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.POP3, getExpectedPop3Messages()));
         }
+        if (getExpectedFtpMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.FTP, getExpectedFtpMessages()));
+        }
         if (getExpectedQuicFrames() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
@@ -379,6 +405,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         }
         if (expectedPop3Messages != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) expectedPop3Messages);
+        }
+        if (expectedFtpMessages != null) {
+            dataContainerLists.add((List<DataContainer>) (List<?>) expectedFtpMessages);
         }
         if (expectedMessages != null) {
             dataContainerLists.add((List<DataContainer>) (List<?>) expectedMessages);

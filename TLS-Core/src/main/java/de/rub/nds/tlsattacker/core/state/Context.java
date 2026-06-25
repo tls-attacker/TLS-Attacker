@@ -47,6 +47,8 @@ public class Context {
 
     private Pop3Context pop3Context;
 
+    private FtpContext ftpContext;
+
     private TlsContext tlsContext;
 
     private QuicContext quicContext;
@@ -103,6 +105,14 @@ public class Context {
 
     public void setPop3Context(Pop3Context pop3Context) {
         this.pop3Context = pop3Context;
+    }
+
+    public FtpContext getFtpContext() {
+        return ftpContext;
+    }
+
+    public void setFtpContext(FtpContext ftpContext) {
+        this.ftpContext = ftpContext;
     }
 
     public TlsContext getTlsContext() {
@@ -190,6 +200,7 @@ public class Context {
         httpContext = new HttpContext(this);
         smtpContext = new SmtpContext(this);
         pop3Context = new Pop3Context(this);
+        ftpContext = new FtpContext(this);
         tcpContext = new TcpContext(this);
         quicContext = new QuicContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);

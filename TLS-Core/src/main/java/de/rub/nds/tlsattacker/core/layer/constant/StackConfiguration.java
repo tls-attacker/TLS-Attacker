@@ -24,5 +24,7 @@ public enum StackConfiguration {
     POP3S,
     SMTP,
     SMTPS,
+    FTP,
+    FTPS,
     SSL2;
 }
