@@ -101,29 +101,6 @@ pipeline {
                         args: "-DskipTests=true")
             }
         }
-        stage('Check SNAPSHOT Dependencies') {
-            when {
-                expression { isReleaseBuild() }
-            }
-            steps { ciSnapshotCheck() }
-        }
-        stage('Public Build Verify') {
-            when {
-                expression { isReleaseBuild() }
-            }
-            steps { ciPublicBuildVerify() }
-        }
-        stage('Maven Prepare and Perform Release') {
-            when {
-                expression { isReleaseBuild() }
-            }
-            steps {
-                ciRelease(
-                        version: params.RELEASE_VERSION ?: env.TAG_NAME?.replace('v', ''),
-                        dryRun: params.DRY_RUN
-                )
-            }
-        }
     }
     post {
         always {
