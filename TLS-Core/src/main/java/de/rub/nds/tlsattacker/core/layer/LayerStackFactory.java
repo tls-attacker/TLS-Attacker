@@ -25,8 +25,21 @@ public class LayerStackFactory {
         LayerStack layerStack;
         switch (type) {
             case OPEN_VPN:
-            case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
+
+            case STARTTLS:
+                // Generic STARTTLS stack: the RECORD and MESSAGE layers start disabled so
+                // the plaintext upgrade exchange (e.g. FTP "AUTH TLS") can be driven with the
+                // ASCII actions straight over TCP. An EnableLayerAction enables RECORD and
+                // MESSAGE once the server agrees, after which the TLS handshake proceeds on
+                // the same connection.
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new MessageLayer(context, false),
+                                new RecordLayer(context, false),
+                                new TcpLayer(context));
+                return layerStack;
 
             case DTLS:
                 return new LayerStack(

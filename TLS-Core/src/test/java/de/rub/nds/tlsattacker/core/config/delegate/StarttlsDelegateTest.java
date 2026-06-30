@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,5 +56,18 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
         delegate.applyDelegate(config);
 
         assertSame(StarttlsType.POP3, config.getStarttlsType());
+    }
+
+    /** -starttls FTP must select the generic STARTTLS layer stack. */
+    @Test
+    public void testApplyDelegateFtp() {
+        Config config = new Config();
+        args = new String[] {"-starttls", "FTP"};
+
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        assertSame(StarttlsType.FTP, config.getStarttlsType());
+        assertSame(StackConfiguration.STARTTLS, config.getDefaultLayerConfiguration());
     }
 }

@@ -1245,10 +1245,19 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    throw new NotImplementedException("FTP STARTTLS not implemented yet");
-                    // server: "211-Extensions supported\r\nAUTH TLS\r\n211 END\r\n"
-                    // client: "AUTH TLS\r\n"
-                    // server: "234 AUTH command ok. Initializing TLS Connection.\r\n"
+                    // RFC 4217 (Securing FTP with TLS), client side of the control-port
+                    // upgrade. The exchange is plaintext ASCII straight over TCP; afterwards
+                    // the caller appends an EnableLayerAction(RECORD, MESSAGE) so the TLS
+                    // handshake proceeds on the same connection.
+                    //   server: "220 <banner>\r\n"  (greeting, implementation-specific)
+                    //   client: "AUTH TLS\r\n"
+                    //   server: "234 <text>\r\n"     (AUTH accepted, text varies)
+                    // Both server lines are read with GenericReceiveAsciiAction because their
+                    // text is not fixed; only that bytes arrive is asserted.
+                    workflowTrace.addTlsAction(new GenericReceiveAsciiAction("US-ASCII"));
+                    workflowTrace.addTlsAction(new SendAsciiAction("AUTH TLS\r\n", "US-ASCII"));
+                    workflowTrace.addTlsAction(new GenericReceiveAsciiAction("US-ASCII"));
+                    return workflowTrace;
                 }
             case IMAP:
                 {

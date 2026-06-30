@@ -33,6 +33,9 @@ public class StarttlsDelegate extends Delegate {
     public void applyDelegate(Config config) throws ConfigurationException {
         config.setStarttlsType(starttlsType);
         switch (starttlsType) {
+            case FTP:
+                config.setDefaultLayerConfiguration(StackConfiguration.STARTTLS);
+                break;
             case POP3:
                 config.setDefaultLayerConfiguration(StackConfiguration.POP3);
                 break;

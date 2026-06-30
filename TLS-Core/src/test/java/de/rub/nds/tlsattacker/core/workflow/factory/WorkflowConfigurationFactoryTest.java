@@ -363,6 +363,27 @@ public class WorkflowConfigurationFactoryTest {
                 GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
     }
 
+    /**
+     * FTP STARTTLS (RFC 4217) client upgrade: the trace must begin with the plaintext ASCII
+     * exchange (receive greeting, send "AUTH TLS\r\n", receive reply), then an
+     * EnableLayerAction(RECORD, MESSAGE) before any TLS messages.
+     */
+    @Test
+    public void testAddStartTlsActionFtp() {
+        config.setStarttlsType(StarttlsType.FTP);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
+
+        List<TlsAction> actions = workflowTrace.getTlsActions();
+        assertEquals(GenericReceiveAsciiAction.class, actions.get(0).getClass());
+        assertEquals(SendAsciiAction.class, actions.get(1).getClass());
+        assertEquals("AUTH TLS\r\n", ((SendAsciiAction) actions.get(1)).getAsciiText());
+        assertEquals(GenericReceiveAsciiAction.class, actions.get(2).getClass());
+        assertEquals(EnableLayerAction.class, actions.get(3).getClass());
+    }
+
     private static void assertMessage(
             MessageActionDirection expectedDirection,
             TlsAction action,
