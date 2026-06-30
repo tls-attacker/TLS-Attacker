@@ -131,3 +131,36 @@ pipeline {
         }
     }
 }
+// ====================== HELPER METHODS ======================
+
+/**
+ * Returns true if this is a Main branch or Tag V or one PullRequest
+ */
+def isMainTagOrChangeRequest() {
+    boolean isMainOrTag = (env.BRANCH_NAME == 'main' || env.TAG_NAME?.startsWith('v'))
+    return isMainOrTag && changeRequest()
+}
+
+/**
+ * Returns true if this is a Release Build (Tag or RELEASE parameter)
+ */
+def isReleaseBuild() {
+    boolean isTag = env.TAG_NAME?.startsWith('v') ?: false
+    boolean isParamRelease = params.RELEASE == true
+    echo "🔍 Release Check → Tag: ${isTag}, RELEASE Param: ${isParamRelease}"
+    return isTag || isParamRelease
+}
+
+/**
+ * Returns true if SNAPSHOT deployment should run
+ */
+def shouldDeploy() {
+    boolean isMainOrTag = (env.BRANCH_NAME == 'main' || env.TAG_NAME?.startsWith('v'))
+    boolean deployParam = params.DEPLOY == true
+    boolean isRelease = isReleaseBuild()
+
+    echo "🚀 Deploy Check → On main or Tag: ${isMainOrTag}, DEPLOY: " +
+            "${deployParam}, Is Release: ${isRelease}"
+
+    return isMainOrTag && deployParam && !isRelease
+}
