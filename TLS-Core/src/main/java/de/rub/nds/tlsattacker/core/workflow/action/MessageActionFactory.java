@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.ftp.FtpMessage;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -98,22 +97,6 @@ public class MessageActionFactory {
             action = new SendAction(pop3Messages);
         } else {
             action = new ReceiveAction(pop3Messages);
-            action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
-        }
-        action.setConnectionAlias(connection.getAlias());
-        return action;
-    }
-
-    public static MessageAction createFtpAction(
-            Config tlsConfig,
-            AliasedConnection connection,
-            ConnectionEndType sendingConnectionEndType,
-            FtpMessage... ftpMessages) {
-        MessageAction action;
-        if (connection.getLocalConnectionEndType() == sendingConnectionEndType) {
-            action = new SendAction(ftpMessages);
-        } else {
-            action = new ReceiveAction(ftpMessages);
             action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
         }
         action.setConnectionAlias(connection.getAlias());

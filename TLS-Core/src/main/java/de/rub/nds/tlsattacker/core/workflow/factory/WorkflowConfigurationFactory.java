@@ -12,9 +12,6 @@ import de.rub.nds.protocol.exception.ConfigurationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.ftp.command.FtpAUTHCommand;
-import de.rub.nds.tlsattacker.core.ftp.command.FtpCommand;
-import de.rub.nds.tlsattacker.core.ftp.reply.FtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -129,8 +126,6 @@ public class WorkflowConfigurationFactory {
                 return createPop3sWorkflow();
             case SMTPS:
                 return createSmtpsWorkflow();
-            case FTPS:
-                return createFtpsWorkflow();
             case RESUMPTION:
                 return createResumptionWorkflow();
             case FULL_RESUMPTION:
@@ -678,22 +673,6 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private WorkflowTrace createFtpsWorkflow() {
-        AliasedConnection connection = getConnection();
-
-        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
-        if (config.getStarttlsType() == StarttlsType.NONE) {
-            trace.addTlsAction(
-                    MessageActionFactory.createFtpAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new FtpInitialGreeting()));
-        }
-
-        return trace;
-    }
-
     private void appendPop3CommandAndReplyActions(
             AliasedConnection connection, WorkflowTrace trace, Pop3Command command) {
         MessageAction clientAction =
@@ -717,21 +696,6 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(clientAction);
         MessageAction serverAction =
                 MessageActionFactory.createSmtpAction(
-                        config,
-                        connection,
-                        ConnectionEndType.SERVER,
-                        command.getCommandType().createReply());
-        trace.addTlsAction(serverAction);
-    }
-
-    private void appendFtpCommandAndReplyActions(
-            AliasedConnection connection, WorkflowTrace trace, FtpCommand command) {
-        MessageAction clientAction =
-                MessageActionFactory.createFtpAction(
-                        config, connection, ConnectionEndType.CLIENT, command);
-        trace.addTlsAction(clientAction);
-        MessageAction serverAction =
-                MessageActionFactory.createFtpAction(
                         config,
                         connection,
                         ConnectionEndType.SERVER,
@@ -1281,18 +1245,10 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    // server: "220 Service ready for new user.\r\n"
+                    throw new NotImplementedException("FTP STARTTLS not implemented yet");
+                    // server: "211-Extensions supported\r\nAUTH TLS\r\n211 END\r\n"
                     // client: "AUTH TLS\r\n"
                     // server: "234 AUTH command ok. Initializing TLS Connection.\r\n"
-                    workflowTrace.addTlsAction(
-                            MessageActionFactory.createFtpAction(
-                                    config,
-                                    connection,
-                                    ConnectionEndType.SERVER,
-                                    new FtpInitialGreeting()));
-                    appendFtpCommandAndReplyActions(
-                            connection, workflowTrace, new FtpAUTHCommand());
-                    return workflowTrace;
                 }
             case IMAP:
                 {
@@ -1334,50 +1290,6 @@ public class WorkflowConfigurationFactory {
                     appendSmtpCommandAndReplyActions(
                             connection, workflowTrace, new SmtpSTARTTLSCommand());
                     return workflowTrace;
-                }
-            case HTTP:
-                {
-                    throw new NotImplementedException("HTTP STARTTLS not implemented yet");
-                }
-            case IRC:
-                {
-                    throw new NotImplementedException("IRC STARTTLS not implemented yet");
-                }
-            case LDAP:
-                {
-                    throw new NotImplementedException("LDAP STARTTLS not implemented yet");
-                }
-            case LMTP:
-                {
-                    throw new NotImplementedException("LMTP STARTTLS not implemented yet");
-                }
-            case MANAGED_SIEVE:
-                {
-                    throw new NotImplementedException("Managed Sieve STARTTLS not implemented yet");
-                }
-            case NNTP:
-                {
-                    throw new NotImplementedException("NNTP STARTTLS not implemented yet");
-                }
-            case POSTGRESQL:
-                {
-                    throw new NotImplementedException("PostgreSQL STARTTLS not implemented yet");
-                }
-            case RDP:
-                {
-                    throw new NotImplementedException("RDP STARTTLS not implemented yet");
-                }
-            case MYSQL:
-                {
-                    throw new NotImplementedException("MySQL STARTTLS not implemented yet");
-                }
-            case NBD:
-                {
-                    throw new NotImplementedException("NBD STARTTLS not implemented yet");
-                }
-            case XMPP:
-                {
-                    throw new NotImplementedException("XMPP STARTTLS not implemented yet");
                 }
             default:
                 throw new NotImplementedException("Unknown starttls type: " + type);

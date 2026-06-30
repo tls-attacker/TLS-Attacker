@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.layer.constant;
 
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.ftp.FtpMessage;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.pop3.Pop3Message;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -36,8 +35,7 @@ public enum ImplementedLayers implements LayerType {
     QUICPACKET(QuicPacket.class),
     QUICFRAME(QuicFrame.class),
     SMTP(SmtpMessage.class),
-    POP3(Pop3Message.class),
-    FTP(FtpMessage.class);
+    POP3(Pop3Message.class);
 
     private Class<?> baseContainerClass;
 

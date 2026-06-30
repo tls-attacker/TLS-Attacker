@@ -24,7 +24,6 @@ public enum WorkflowTraceType {
     HTTPS,
     POP3S,
     SMTPS,
-    FTPS,
     DYNAMIC_HTTPS,
     SSL2_HELLO,
     SIMPLE_MITM_PROXY,

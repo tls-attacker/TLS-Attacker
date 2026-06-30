@@ -96,24 +96,6 @@ public class LayerStackFactory {
                                 new RecordLayer(context),
                                 new TcpLayer(context));
                 return layerStack;
-            case FTP:
-                layerStack =
-                        new LayerStack(
-                                context,
-                                new FtpLayer(context),
-                                new MessageLayer(context, false),
-                                new RecordLayer(context, false),
-                                new TcpLayer(context));
-                return layerStack;
-            case FTPS:
-                layerStack =
-                        new LayerStack(
-                                context,
-                                new FtpLayer(context),
-                                new MessageLayer(context),
-                                new RecordLayer(context),
-                                new TcpLayer(context));
-                return layerStack;
             case SSL2:
                 layerStack = new LayerStack(context, new SSL2Layer(context), new TcpLayer(context));
                 return layerStack;
