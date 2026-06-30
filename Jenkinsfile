@@ -1,3 +1,11 @@
+@Library('jenkins-ci-library') _
+
+/**
+ * Main CI/CD Pipeline for Maven-based projects.
+ *
+ * This pipeline handles the full build lifecycle: clean, build, tests, static analysis,
+ * deployment to Nexus, and optional Maven Release.
+ */
 pipeline {
     agent any
 
@@ -9,129 +17,111 @@ pipeline {
     options {
         skipStagesAfterUnstable()
         disableConcurrentBuilds abortPrevious: true
+        timeout(time: 45, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(
+                name: 'DEPLOY',
+                defaultValue: true,
+                description: 'Deploy SNAPSHOT artifacts to internal Nexus (only on main branch)'
+        )
+        booleanParam(
+                name: 'RELEASE',
+                defaultValue: true,
+                description: 'Perform a Maven Release'
+        )
+        booleanParam(
+                name: 'DRY_RUN',
+                defaultValue: true,
+                description: 'If true → Simulate release only (nothing is deployed to Nexus)'
+        )
+        string(
+                name: 'RELEASE_VERSION',
+                defaultValue: '7.7.1',
+                description: 'Release Version (z.B. 1.2.3). Leave empty to use tag name.'
+        )
     }
 
     stages {
         stage('Clean') {
-            steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn clean'
-                }
-            }
+            steps { ciMaven(
+                    goal: "clean") }
         }
         stage('Format Check') {
-            options {
-                timeout(activity: true, time: 60, unit: 'SECONDS')
-            }
-            steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn spotless:check'
-                }
-            }
+            steps { ciMaven(
+                    goal: "spotless:check",
+                    timeout: 60) }
         }
         stage('Build') {
-            options {
-                timeout(activity: true, time: 120, unit: 'SECONDS')
-            }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -DskipTests=true package'
-                }
+                ciMaven(
+                        goal: "package",
+                        args: "-DskipTests=true",
+                        timeout: 120)
             }
+        }
+        stage('Static Analysis & Unit Tests') {
+            when {
+                expression { isMainTagOrChangeRequest() }
+            }
+            parallel {
 
-            post {
-                success {
-                    archiveArtifacts artifacts: '**/target/*.jar'
+                stage('Code Analysis') {
+                    steps { ciStepStaticAnalysis() }
                 }
-            }
-        }
-        stage('Code Analysis') {
-            when {
-                anyOf {
-                    branch 'main'
-                    tag 'v*'
-                    changeRequest()
-                }
-            }
-            options {
-                timeout(activity: true, time: 240, unit: 'SECONDS')
-            }
-            steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    // `package` goal is required here to load modules in reactor and avoid dependency resolve conflicts
-                    sh 'mvn -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
-                }
-            }
-            post {
-                always {
-                    recordIssues enabledForFailure: true, tools: [spotBugs(), cpd(pattern: '**/target/cpd.xml'), pmdParser(pattern: '**/target/pmd.xml')]
-                }
-            }
-        }
-        stage('Unit Tests') {
-            when {
-                anyOf {
-                    branch 'main'
-                    tag 'v*'
-                    changeRequest()
-                }
-            }
-            options {
-                timeout(activity: true, time: 180, unit: 'SECONDS')
-            }
-            steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -P coverage -Dskip.failsafe.tests=true test'
-                }
-            }
-            post {
-                always {
-                    junit testResults: '**/target/surefire-reports/TEST-*.xml'
+
+                stage('Unit Tests') {
+                    steps { ciUnitTests(profile: "coverage") }
+                    post {
+                        always {
+                            junit testResults: '**/target/surefire-reports/TEST-*.xml',
+                                    allowEmptyResults: true
+                        }
+                    }
                 }
             }
         }
         stage('Integration Tests') {
             when {
-                anyOf {
-                    branch 'main'
-                    tag 'v*'
-                    changeRequest()
-                }
-            }
-            options {
-                timeout(activity: true, time: 1800, unit: 'SECONDS')
+                expression { isMainTagOrChangeRequest() }
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'Jenkins-User-Nexus-Repository', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                        sh 'mvn -P coverage -Dskip.surefire.tests=true verify'
-                    }
-                }
-            }
-            post {
-                always {
-                    junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
-                }
-                success {
-                    discoverReferenceBuild()
-                    recordCoverage(tools: [[ parser: 'JACOCO' ]],
-                            id: 'jacoco', name: 'JaCoCo Coverage',
-                            sourceCodeRetention: 'LAST_BUILD')
-                }
+                ciIntegrationTests(profile: "coverage", timeout: 1800)
             }
         }
         stage('Deploy to Internal Nexus Repository') {
             when {
-                anyOf {
-                    branch 'main'
-                    tag 'v*'
-                }
+                expression { shouldDeploy() }
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    // Tests were already executed separately, so disable tests within this step
-                    sh 'mvn -DskipTests=true deploy'
-                }
+                ciMaven(
+                        goal: "deploy",
+                        profile: "internal-releases",
+                        args: "-DskipTests=true")
+            }
+        }
+        stage('Check SNAPSHOT Dependencies') {
+            when {
+                expression { isReleaseBuild() }
+            }
+            steps { ciSnapshotCheck() }
+        }
+        stage('Public Build Verify') {
+            when {
+                expression { isReleaseBuild() }
+            }
+            steps { ciPublicBuildVerify() }
+        }
+        stage('Maven Prepare and Perform Release') {
+            when {
+                expression { isReleaseBuild() }
+            }
+            steps {
+                ciRelease(
+                        version: params.RELEASE_VERSION ?: env.TAG_NAME?.replace('v', ''),
+                        dryRun: params.DRY_RUN
+                )
             }
         }
     }
