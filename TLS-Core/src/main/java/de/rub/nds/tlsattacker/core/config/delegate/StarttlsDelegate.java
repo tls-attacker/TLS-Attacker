@@ -34,7 +34,7 @@ public class StarttlsDelegate extends Delegate {
         config.setStarttlsType(starttlsType);
         switch (starttlsType) {
             case FTP:
-                config.setDefaultLayerConfiguration(StackConfiguration.STARTTLS);
+                config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
                 break;
             case POP3:
                 config.setDefaultLayerConfiguration(StackConfiguration.POP3);

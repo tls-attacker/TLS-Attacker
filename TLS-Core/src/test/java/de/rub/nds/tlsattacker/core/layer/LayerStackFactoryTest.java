@@ -28,7 +28,7 @@ public class LayerStackFactoryTest {
     @Test
     public void testStarttlsStackHasDisabledTlsLayers() {
         Config config = new Config();
-        config.setDefaultLayerConfiguration(StackConfiguration.STARTTLS);
+        config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
         State state = new State(config);
 
         LayerStack layerStack = state.getContext().getLayerStack();

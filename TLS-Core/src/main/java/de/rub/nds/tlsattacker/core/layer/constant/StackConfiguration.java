@@ -18,7 +18,7 @@ public enum StackConfiguration {
     DTLS,
     QUIC,
     OPEN_VPN,
-    STARTTLS,
+    GENERIC_OPPORTUNISTIC_TLS,
     HTTPS,
     POP3,
     POP3S,

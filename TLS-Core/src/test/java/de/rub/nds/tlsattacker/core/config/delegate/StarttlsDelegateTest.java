@@ -68,6 +68,8 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
         delegate.applyDelegate(config);
 
         assertSame(StarttlsType.FTP, config.getStarttlsType());
-        assertSame(StackConfiguration.STARTTLS, config.getDefaultLayerConfiguration());
+        assertSame(
+                StackConfiguration.GENERIC_OPPORTUNISTIC_TLS,
+                config.getDefaultLayerConfiguration());
     }
 }
