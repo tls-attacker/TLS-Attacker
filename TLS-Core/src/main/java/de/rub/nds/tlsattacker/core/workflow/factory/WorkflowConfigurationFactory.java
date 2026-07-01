@@ -89,6 +89,9 @@ public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Encoding used for plaintext STARTTLS control-channel exchanges (ASCII protocols). */
+    private static final String STARTTLS_ENCODING = "US-ASCII";
+
     protected final Config config;
     private RunningModeType mode;
 
@@ -1245,18 +1248,10 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    // RFC 4217 (Securing FTP with TLS), client side of the control-port
-                    // upgrade. The exchange is plaintext ASCII straight over TCP; afterwards
-                    // the caller appends an EnableLayerAction(RECORD, MESSAGE) so the TLS
-                    // handshake proceeds on the same connection.
-                    //   server: "220 <banner>\r\n"  (greeting, implementation-specific)
-                    //   client: "AUTH TLS\r\n"
-                    //   server: "234 <text>\r\n"     (AUTH accepted, text varies)
-                    // Both server lines are read with GenericReceiveAsciiAction because their
-                    // text is not fixed; only that bytes arrive is asserted.
-                    workflowTrace.addTlsAction(new GenericReceiveAsciiAction("US-ASCII"));
-                    workflowTrace.addTlsAction(new SendAsciiAction("AUTH TLS\r\n", "US-ASCII"));
-                    workflowTrace.addTlsAction(new GenericReceiveAsciiAction("US-ASCII"));
+                    workflowTrace.addTlsAction(new GenericReceiveAsciiAction(STARTTLS_ENCODING));
+                    workflowTrace.addTlsAction(
+                            new SendAsciiAction("AUTH TLS\r\n", STARTTLS_ENCODING));
+                    workflowTrace.addTlsAction(new GenericReceiveAsciiAction(STARTTLS_ENCODING));
                     return workflowTrace;
                 }
             case IMAP:

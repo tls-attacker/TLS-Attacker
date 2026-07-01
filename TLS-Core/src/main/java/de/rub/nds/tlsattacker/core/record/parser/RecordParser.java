@@ -82,8 +82,6 @@ public class RecordParser extends Parser<Record> {
                         .getState()
                         .getConnectionId();
         if (connectionId == null) {
-            // No connection id is configured for this cipher state (e.g. the record was not
-            // actually a DTLS record with a connection id). Degrade gracefully instead of NPE.
             LOGGER.warn(
                     "No connection id available for record; assuming zero-length connection id");
             record.setConnectionId(parseByteArrayField(0));
@@ -95,10 +93,6 @@ public class RecordParser extends Parser<Record> {
 
     private boolean parseContentType(Record record) {
         byte firstByte = parseByteField(RecordByteLength.CONTENT_TYPE);
-        // The DTLS 1.3 unified header only exists on DTLS 1.3 transports. On TCP/TLS we must never
-        // interpret the first byte as a unified header, otherwise plaintext application-layer data
-        // (e.g. a STARTTLS greeting such as the FTP "220" reply) gets misparsed as a unified header
-        // and parseConnectionId() dereferences a null connection id (NPE).
         // If contentType starts with 001 it is a DTLS 1.3 unified header
         if (version.isDTLS13() && (firstByte & 0xE0) == Dtls13UnifiedHeaderBits.HEADER_BASE) {
             record.setUnifiedHeader(firstByte);
