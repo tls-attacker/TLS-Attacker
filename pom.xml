@@ -623,5 +623,45 @@
                 </pluginManagement>
             </build>
         </profile>
+        <!-- Profile for release on maven central with publish api -->
+        <profile>
+            <id>central-release</id>
+            <build>
+                <plugins>
+
+                    <!-- 1. Central Publishing Plugin -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <extensions>false</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>false</autoPublish>
+                        </configuration>
+                    </plugin>
+
+                    <!-- 2. GPG Signing (for Maven Central) -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.8</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>verify</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

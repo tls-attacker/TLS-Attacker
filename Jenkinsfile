@@ -101,6 +101,17 @@ pipeline {
                         args: "-DskipTests=true")
             }
         }
+        stage('Publish to Maven Central') {
+            steps {
+                ciCentralPublish(
+                        version: params.VERSION,
+                        autoPublish: false,
+                        skipTests: true,
+                        quiet: false,
+                        credentialsId: 'central-technical-user-token'
+                )
+            }
+        }
     }
     post {
         always {
