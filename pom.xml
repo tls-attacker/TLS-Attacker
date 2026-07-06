@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>7.7.0</version>
+    <version>${tls.attacker.version}</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -101,6 +101,7 @@
         <skipTests>false</skipTests>
         <skip.surefire.tests>${skipTests}</skip.surefire.tests>
         <skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
+        <tls.attacker.version>7.7.0</tls.attacker.version>
     </properties>
 
     <!-- Override dependency versions from BOM for all submodules to match parent version -->
@@ -399,6 +400,24 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>1.3.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>read-project-properties</goal>
+                            </goals>
+                            <phase>initialize</phase>
+                            <configuration>
+                                <files>
+                                    <file>${project.basedir}/version.properties</file>
+                                </files>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -652,11 +671,6 @@
                                 <phase>verify</phase>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>versions-maven-plugin</artifactId>
-                        <version>2.21.0</version>
                     </plugin>
                 </plugins>
             </build>
