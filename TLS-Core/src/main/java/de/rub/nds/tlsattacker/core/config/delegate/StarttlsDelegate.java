@@ -32,6 +32,9 @@ public class StarttlsDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) throws ConfigurationException {
         config.setStarttlsType(starttlsType);
+        if (starttlsType != StarttlsType.NONE) {
+            config.setStopTraceAfterUnexpected(true);
+        }
         switch (starttlsType) {
             case FTP:
                 config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
