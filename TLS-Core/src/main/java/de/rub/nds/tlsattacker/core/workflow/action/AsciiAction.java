@@ -16,6 +16,9 @@ import java.util.Objects;
 @XmlRootElement
 public abstract class AsciiAction extends TlsAction {
 
+    /** Default encoding for plaintext ASCII exchanges (e.g. STARTTLS control channels). */
+    public static final String DEFAULT_ENCODING = "US-ASCII";
+
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String asciiText;
 
@@ -23,7 +26,7 @@ public abstract class AsciiAction extends TlsAction {
 
     protected AsciiAction() {
         asciiText = null;
-        encoding = null;
+        encoding = DEFAULT_ENCODING;
     }
 
     public AsciiAction(String asciiText, String encoding) {
