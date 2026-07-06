@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
@@ -71,5 +73,32 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
         assertSame(
                 StackConfiguration.GENERIC_OPPORTUNISTIC_TLS,
                 config.getDefaultLayerConfiguration());
+    }
+
+    /**
+     * A STARTTLS upgrade must stop the trace on the first unexpected reply so a refused upgrade
+     * (e.g. FTP 4xx/5xx instead of 234) fails fast instead of blocking on the TLS receive timeout.
+     */
+    @Test
+    public void testApplyDelegateFtpStopsTraceAfterUnexpected() {
+        Config config = new Config();
+        args = new String[] {"-starttls", "FTP"};
+
+        jcommander.parse(args);
+        delegate.applyDelegate(config);
+
+        assertTrue(config.isStopTraceAfterUnexpected());
+    }
+
+    /** Without STARTTLS the stop-after-unexpected flag keeps its default (off). */
+    @Test
+    public void testApplyDelegateNoneLeavesStopTraceDefault() {
+        Config config = new Config();
+        delegate.setStarttlsType(StarttlsType.NONE);
+
+        delegate.applyDelegate(config);
+
+        assertSame(StarttlsType.NONE, config.getStarttlsType());
+        assertFalse(config.isStopTraceAfterUnexpected());
     }
 }

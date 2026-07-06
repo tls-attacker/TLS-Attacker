@@ -377,10 +377,12 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         List<TlsAction> actions = workflowTrace.getTlsActions();
-        assertEquals(GenericReceiveAsciiAction.class, actions.get(0).getClass());
+        assertEquals(ReceiveRegexAsciiAction.class, actions.get(0).getClass());
+        assertEquals("^220", ((ReceiveRegexAsciiAction) actions.get(0)).getRegex());
         assertEquals(SendAsciiAction.class, actions.get(1).getClass());
         assertEquals("AUTH TLS\r\n", ((SendAsciiAction) actions.get(1)).getAsciiText());
-        assertEquals(GenericReceiveAsciiAction.class, actions.get(2).getClass());
+        assertEquals(ReceiveRegexAsciiAction.class, actions.get(2).getClass());
+        assertEquals("^234", ((ReceiveRegexAsciiAction) actions.get(2)).getRegex());
         assertEquals(EnableLayerAction.class, actions.get(3).getClass());
     }
 
