@@ -104,7 +104,7 @@ pipeline {
         stage('Publish to Maven Central') {
             steps {
                 ciCentralPublish(
-                        version: params.VERSION,
+                        version: params.RELEASE_VERSION,
                         autoPublish: false,
                         skipTests: true,
                         quiet: false,

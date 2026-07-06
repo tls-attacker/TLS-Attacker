@@ -628,7 +628,6 @@
             <id>central-release</id>
             <build>
                 <plugins>
-
                     <!-- 1. Central Publishing Plugin -->
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
@@ -639,7 +638,6 @@
                             <autoPublish>false</autoPublish>
                         </configuration>
                     </plugin>
-
                     <!-- 2. GPG Signing (for Maven Central) -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -658,8 +656,8 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>versions-maven-plugin</artifactId>
+                        <version>2.21.0</version>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>
