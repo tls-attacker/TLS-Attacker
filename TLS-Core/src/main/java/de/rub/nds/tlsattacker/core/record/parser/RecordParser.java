@@ -94,7 +94,7 @@ public class RecordParser extends Parser<Record> {
     private boolean parseContentType(Record record) {
         byte firstByte = parseByteField(RecordByteLength.CONTENT_TYPE);
         // If contentType starts with 001 it is a DTLS 1.3 unified header
-        if (version.isDTLS13() && (firstByte & 0xE0) == Dtls13UnifiedHeaderBits.HEADER_BASE) {
+        if ((firstByte & 0xE0) == Dtls13UnifiedHeaderBits.HEADER_BASE) {
             record.setUnifiedHeader(firstByte);
             LOGGER.debug("UnifiedHeader: 00{}", Integer.toBinaryString(firstByte));
             return false;
