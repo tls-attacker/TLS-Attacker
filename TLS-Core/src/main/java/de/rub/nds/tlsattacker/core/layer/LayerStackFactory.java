@@ -28,11 +28,6 @@ public class LayerStackFactory {
                 throw new UnsupportedOperationException("Not implemented yet");
 
             case GENERIC_OPPORTUNISTIC_TLS:
-                // Generic STARTTLS stack: the RECORD and MESSAGE layers start disabled so
-                // the plaintext upgrade exchange (e.g. FTP "AUTH TLS") can be driven with the
-                // ASCII actions straight over TCP. An EnableLayerAction enables RECORD and
-                // MESSAGE once the server agrees, after which the TLS handshake proceeds on
-                // the same connection.
                 layerStack =
                         new LayerStack(
                                 context,
