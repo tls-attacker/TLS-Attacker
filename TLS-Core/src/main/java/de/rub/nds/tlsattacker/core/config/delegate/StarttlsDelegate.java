@@ -36,9 +36,6 @@ public class StarttlsDelegate extends Delegate {
             case FTP:
                 config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
                 break;
-            case IMAP:
-                config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
-                break;
             case POP3:
                 config.setDefaultLayerConfiguration(StackConfiguration.POP3);
                 break;
