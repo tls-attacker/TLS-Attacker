@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,6 +64,23 @@ public class ReceiveRegexAsciiActionTest {
     public void testDefaultEncoding() {
         ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^220");
         assertEquals(AsciiAction.DEFAULT_ENCODING, action.getEncoding());
+    }
+
+    /**
+     * The action carries STOP_TRACE_ON_FAILURE so a refused STARTTLS upgrade aborts the trace
+     * immediately, without needing the global stopTraceAfterUnexpected config flag (which would
+     * also abort the subsequent TLS handshake on any unexpected message).
+     */
+    @Test
+    public void testStopTraceOnFailureOptionIsSet() {
+        assertTrue(
+                new ReceiveRegexAsciiAction("^234")
+                        .getActionOptions()
+                        .contains(ActionOption.STOP_TRACE_ON_FAILURE));
+        assertTrue(
+                new ReceiveRegexAsciiAction("^234", "UTF-8")
+                        .getActionOptions()
+                        .contains(ActionOption.STOP_TRACE_ON_FAILURE));
     }
 
     /** reset() clears the received text and execution flag so the action can run again. */

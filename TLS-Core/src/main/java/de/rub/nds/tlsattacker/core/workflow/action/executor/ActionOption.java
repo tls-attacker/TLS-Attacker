@@ -82,6 +82,15 @@ public enum ActionOption {
      * less strict than the default behavior.
      */
     CHECK_ONLY_EXPECTED,
+
+    /**
+     * Stops the entire workflow trace when this action does not execute as planned.
+     *
+     * <p>This option scopes the abort to the individual action it is set on. This allows STARTTLS
+     * status checks to terminate the trace on a refused upgrade while leaving subsequent actions
+     * free to receive unexpected messages.
+     */
+    STOP_TRACE_ON_FAILURE,
     QUIC_FRAMES_STRICT_PADDING,
     QUIC_FRAMES_IGNORE_NT_NCID_RTCID,
     QUIC_FRAMES_IGNORE_ACK,

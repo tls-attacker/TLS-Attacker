@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
@@ -48,11 +49,13 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
     public ReceiveRegexAsciiAction(String regex) {
         super(AsciiAction.DEFAULT_ENCODING);
         this.regex = regex;
+        addActionOption(ActionOption.STOP_TRACE_ON_FAILURE);
     }
 
     public ReceiveRegexAsciiAction(String regex, String encoding) {
         super(encoding);
         this.regex = regex;
+        addActionOption(ActionOption.STOP_TRACE_ON_FAILURE);
     }
 
     @Override
