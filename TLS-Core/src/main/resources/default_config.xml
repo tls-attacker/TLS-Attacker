@@ -178,7 +178,7 @@
     </outputFilters>
     <applyFiltersInPlace>false</applyFiltersInPlace>
     <filtersKeepUserSettings>true</filtersKeepUserSettings>
-    <reorderReceivedDtlsRecords>true</reorderReceivedDtlsRecords>
+    <reorderReceivedDtlsRecords>false</reorderReceivedDtlsRecords>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <defaultClientConnection>
         <alias>client</alias>

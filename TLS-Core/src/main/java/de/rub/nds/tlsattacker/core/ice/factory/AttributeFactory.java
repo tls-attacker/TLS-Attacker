@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.ice.factory;
 
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
+import de.rub.nds.tlsattacker.core.ice.model.ChannelNumberAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.ErrorCodeAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
@@ -56,8 +57,9 @@ public class AttributeFactory {
                 return new SoftwareAttribute();
             case XOR_PEER_ADDRESS:
                 return new XorPeerAddressAttribute();
+            case CHANNEL_NUMBER:
+                return new ChannelNumberAttribute();
             case XOR_RELAYED_ADDRESS:
-
             case ADDERSS_ERROR_CODE:
             case ADDITIONAL_ADDRESS_FAMILY:
             case ALTERNATE_DOMAIN:
@@ -69,7 +71,6 @@ public class AttributeFactory {
             case NONCE:
             case ACCESS_TOKEN:
             case CHANGED_ADDRESS:
-            case CHANNEL_NUMBER:
             case DONT_FRAGMENT:
             case EVEN_PORT:
             case LIFETIME:

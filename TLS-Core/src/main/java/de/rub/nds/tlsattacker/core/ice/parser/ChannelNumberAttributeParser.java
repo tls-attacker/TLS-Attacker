@@ -1,0 +1,27 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.ice.parser;
+
+import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
+import de.rub.nds.tlsattacker.core.ice.model.ChannelNumberAttribute;
+import de.rub.nds.tlsattacker.core.state.Context;
+import java.io.InputStream;
+
+public class ChannelNumberAttributeParser extends StunAttributeParser<ChannelNumberAttribute> {
+
+    public ChannelNumberAttributeParser(Context context, InputStream stream) {
+        super(context, stream);
+    }
+
+    @Override
+    public void parse(ChannelNumberAttribute attribute) {
+        attribute.setChannelNumber(parseIntField(IceByteLengths.TURN_CHANNEL_NUMBER));
+        attribute.setRffu(parseIntField(IceByteLengths.TURN_CHANNEL_DATA_LENGTH));
+    }
+}
