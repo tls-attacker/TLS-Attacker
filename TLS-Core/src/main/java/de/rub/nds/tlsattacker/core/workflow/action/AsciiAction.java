@@ -22,11 +22,11 @@ public abstract class AsciiAction extends TlsAction {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String asciiText;
 
-    private final String encoding;
+    private String encoding;
 
     protected AsciiAction() {
         asciiText = null;
-        encoding = DEFAULT_ENCODING;
+        encoding = null;
     }
 
     public AsciiAction(String asciiText, String encoding) {
@@ -54,7 +54,11 @@ public abstract class AsciiAction extends TlsAction {
     }
 
     public String getEncoding() {
-        return encoding;
+        return encoding != null ? encoding : DEFAULT_ENCODING;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     @Override

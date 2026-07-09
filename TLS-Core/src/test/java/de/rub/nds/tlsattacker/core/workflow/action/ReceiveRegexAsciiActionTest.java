@@ -14,12 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
+import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 public class ReceiveRegexAsciiActionTest {
@@ -37,6 +41,41 @@ public class ReceiveRegexAsciiActionTest {
     private void feed(String reply) {
         ((FakeTcpTransportHandler) context.getTransportHandler())
                 .setFetchableByte(reply.getBytes(StandardCharsets.US_ASCII));
+    }
+
+    /**
+     * An action left at its default encoding marshals to a bare {@code <ReceiveRegexAscii/>}
+     * element, i.e. the default US-ASCII encoding is suppressed from the XML.
+     */
+    @Test
+    @Tag(TestCategories.SLOW_TEST)
+    public void testMarshalingEmptyActionYieldsMinimalOutput() {
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ReceiveRegexAsciiAction.class);
+    }
+
+    /**
+     * A hand-written bare {@code <ReceiveRegexAscii/>} element (no encoding) must round-trip back
+     * to XML without the default encoding leaking in: reading it and writing it out again must not
+     * introduce an {@code <encoding>US-ASCII</encoding>} element, while the effective encoding
+     * still resolves to the default at runtime.
+     */
+    @Test
+    @Tag(TestCategories.SLOW_TEST)
+    public void testEmptyElementRoundTripsWithoutEncoding() throws Exception {
+        String bareElement = "<ReceiveRegexAscii/>";
+
+        TlsAction read =
+                ActionIO.read(
+                        new ByteArrayInputStream(bareElement.getBytes(StandardCharsets.UTF_8)));
+        SilentByteArrayOutputStream out = new SilentByteArrayOutputStream();
+        ActionIO.write(out, read);
+        String written = out.toString(StandardCharsets.UTF_8);
+
+        assertFalse(
+                written.contains("<encoding>"),
+                "Round-tripped bare element must not gain an <encoding> element, but was:\n"
+                        + written);
+        assertEquals(AsciiAction.DEFAULT_ENCODING, ((ReceiveRegexAsciiAction) read).getEncoding());
     }
 
     /** A reply matching the status-code regex counts as executed-as-planned. */

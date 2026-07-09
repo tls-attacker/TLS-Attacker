@@ -1245,14 +1245,13 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    // RFC 4217: server greets with 220, client sends AUTH TLS, server accepts
-                    // with 234 before the TLS handshake begins. Validate the status codes so a
-                    // refused upgrade (4xx/5xx) fails the workflow instead of silently proceeding.
                     workflowTrace.addTlsAction(new ReceiveRegexAsciiAction("^220"));
-                    workflowTrace.addTlsAction(
-                            new SendAsciiAction("AUTH TLS\r\n", AsciiAction.DEFAULT_ENCODING));
+                    workflowTrace.addTlsAction(new SendAsciiAction("AUTH TLS\r\n", null));
                     workflowTrace.addTlsAction(new ReceiveRegexAsciiAction("^234"));
                     return workflowTrace;
+                    // server: "Welcome to FTP server"
+                    // client: "AUTH TLS\r\n"
+                    // server: "234 AUTH TLS"
                 }
             case IMAP:
                 {

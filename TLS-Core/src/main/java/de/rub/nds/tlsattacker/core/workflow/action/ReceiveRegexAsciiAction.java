@@ -42,12 +42,12 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
     private String receivedAsciiString;
 
     @SuppressWarnings("unused")
-    private ReceiveRegexAsciiAction() {
+    ReceiveRegexAsciiAction() {
         super();
     }
 
     public ReceiveRegexAsciiAction(String regex) {
-        super(AsciiAction.DEFAULT_ENCODING);
+        super((String) null);
         this.regex = regex;
     }
 
