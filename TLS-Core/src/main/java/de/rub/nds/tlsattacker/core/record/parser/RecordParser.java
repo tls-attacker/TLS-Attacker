@@ -74,20 +74,15 @@ public class RecordParser extends Parser<Record> {
     }
 
     private void parseConnectionId(Record record) {
-        byte[] connectionId =
+        int connectionIdLength =
                 tlsContext
                         .getRecordLayer()
                         .getDecryptor()
                         .getRecordCipher(record.getEpoch().getValue())
                         .getState()
-                        .getConnectionId();
-        if (connectionId == null) {
-            LOGGER.warn(
-                    "No connection id available for record; assuming zero-length connection id");
-            record.setConnectionId(parseByteArrayField(0));
-            return;
-        }
-        record.setConnectionId(parseByteArrayField(connectionId.length));
+                        .getConnectionId()
+                        .length;
+        record.setConnectionId(parseByteArrayField(connectionIdLength));
         LOGGER.debug("ConnectionID: {}", record.getConnectionId().getValue());
     }
 
