@@ -35,7 +35,6 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-  
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String regex;
 
