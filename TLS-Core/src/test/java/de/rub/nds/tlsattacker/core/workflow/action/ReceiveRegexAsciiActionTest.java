@@ -137,6 +137,26 @@ public class ReceiveRegexAsciiActionTest {
     }
 
     /**
+     * When the pattern already matches on the first fragment but the rest of the line arrives in a
+     * later packet, the action keeps reading until the full line is drained. Stopping at the first
+     * prefix match would leave the trailing bytes in the socket and corrupt the following TLS
+     * handshake.
+     */
+    @Test
+    public void testMatchingPrefixStillDrainsRestOfLine() {
+        DripTransportHandler drip = new DripTransportHandler("234", " AUTH TLS successful\r\n");
+        context.setTransportHandler(drip);
+
+        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedAsciiString());
+        // Both fragments must have been consumed so nothing leaks into the handshake.
+        assertEquals(2, drip.getFetchCount());
+    }
+
+    /**
      * A reply that diverges from the pattern aborts the whole trace as soon as it can no longer
      * match, without waiting for the remaining fragments.
      */
