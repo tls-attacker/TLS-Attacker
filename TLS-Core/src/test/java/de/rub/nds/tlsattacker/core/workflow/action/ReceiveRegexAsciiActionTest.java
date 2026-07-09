@@ -10,12 +10,13 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,13 +50,12 @@ public class ReceiveRegexAsciiActionTest {
         assertEquals("234 AUTH TLS successful\r\n", action.getReceivedAsciiString());
     }
 
-    /** A reply that read successfully but has the wrong status code is not executed-as-planned. */
+    /** A reply with a wrong status code that can never match aborts the trace. */
     @Test
-    public void testMismatchingReplyIsNotExecutedAsPlanned() {
+    public void testMismatchingReplyAbortsTrace() {
         feed("502 Command not implemented\r\n");
         ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
-        action.execute(state);
-        assertTrue(action.isExecuted());
+        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }
 
@@ -64,23 +64,6 @@ public class ReceiveRegexAsciiActionTest {
     public void testDefaultEncoding() {
         ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^220");
         assertEquals(AsciiAction.DEFAULT_ENCODING, action.getEncoding());
-    }
-
-    /**
-     * The action carries STOP_TRACE_ON_FAILURE so a refused STARTTLS upgrade aborts the trace
-     * immediately, without needing the global stopTraceAfterUnexpected config flag (which would
-     * also abort the subsequent TLS handshake on any unexpected message).
-     */
-    @Test
-    public void testStopTraceOnFailureOptionIsSet() {
-        assertTrue(
-                new ReceiveRegexAsciiAction("^234")
-                        .getActionOptions()
-                        .contains(ActionOption.STOP_TRACE_ON_FAILURE));
-        assertTrue(
-                new ReceiveRegexAsciiAction("^234", "UTF-8")
-                        .getActionOptions()
-                        .contains(ActionOption.STOP_TRACE_ON_FAILURE));
     }
 
     /** reset() clears the received text and execution flag so the action can run again. */
@@ -94,5 +77,67 @@ public class ReceiveRegexAsciiActionTest {
         action.reset();
         assertFalse(action.isExecuted());
         assertEquals(null, action.getReceivedAsciiString());
+    }
+
+    /**
+     * A status reply split across several TCP reads is reassembled: while the accumulated text is
+     * still a viable prefix of the pattern the action keeps reading, and matches once the rest
+     * arrives.
+     */
+    @Test
+    public void testFragmentedMatchingReplyIsReassembled() {
+        DripTransportHandler drip = new DripTransportHandler("23", "4 AUTH TLS successful\r\n");
+        context.setTransportHandler(drip);
+
+        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        action.execute(state);
+
+        assertTrue(action.isExecuted());
+        assertTrue(action.executedAsPlanned());
+        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedAsciiString());
+    }
+
+    /**
+     * A reply that diverges from the pattern aborts the whole trace as soon as it can no longer
+     * match, without waiting for the remaining fragments.
+     */
+    @Test
+    public void testFragmentedDivergingReplyFailsFast() {
+        DripTransportHandler drip = new DripTransportHandler("58", "0 error\r\n");
+        context.setTransportHandler(drip);
+
+        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+
+        // Once "58" can never match /^234/ the action aborts the trace instead of silently
+        // proceeding into the TLS handshake.
+        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        // The second fragment must not have been read.
+        assertEquals("58", action.getReceivedAsciiString());
+        assertEquals(1, drip.getFetchCount());
+    }
+
+    /** Returns each configured chunk on a separate fetchData() call, then empty arrays. */
+    private static final class DripTransportHandler extends FakeTcpTransportHandler {
+
+        private final java.util.Deque<byte[]> chunks = new java.util.ArrayDeque<>();
+        private int fetchCount = 0;
+
+        DripTransportHandler(String... asciiChunks) {
+            super(ConnectionEndType.CLIENT);
+            for (String chunk : asciiChunks) {
+                chunks.add(chunk.getBytes(StandardCharsets.US_ASCII));
+            }
+        }
+
+        int getFetchCount() {
+            return fetchCount;
+        }
+
+        @Override
+        public byte[] fetchData() {
+            fetchCount++;
+            byte[] next = chunks.poll();
+            return next != null ? next : new byte[0];
+        }
     }
 }

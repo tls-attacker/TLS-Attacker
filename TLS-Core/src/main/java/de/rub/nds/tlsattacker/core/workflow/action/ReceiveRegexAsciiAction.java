@@ -9,14 +9,15 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +35,7 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** Regular expression the received text must match (find, not full match). */
+  
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String regex;
 
@@ -49,13 +50,11 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
     public ReceiveRegexAsciiAction(String regex) {
         super(AsciiAction.DEFAULT_ENCODING);
         this.regex = regex;
-        addActionOption(ActionOption.STOP_TRACE_ON_FAILURE);
     }
 
     public ReceiveRegexAsciiAction(String regex, String encoding) {
         super(encoding);
         this.regex = regex;
-        addActionOption(ActionOption.STOP_TRACE_ON_FAILURE);
     }
 
     @Override
@@ -65,14 +64,41 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
+        LOGGER.debug("Receiving ASCII message (expecting /{}/)...", regex);
+        Pattern pattern = Pattern.compile(regex);
+        StringBuilder received = new StringBuilder();
         try {
-            LOGGER.debug("Receiving ASCII message (expecting /{}/)...", regex);
-            byte[] fetchData = tcpContext.getTransportHandler().fetchData();
-            receivedAsciiString = new String(fetchData, getEncoding());
+            while (true) {
+                byte[] fetchData = tcpContext.getTransportHandler().fetchData();
+                if (fetchData == null || fetchData.length == 0) {
+                    break;
+                }
+                received.append(new String(fetchData, getEncoding()));
+                receivedAsciiString = received.toString();
+                Matcher matcher = pattern.matcher(receivedAsciiString);
+                if (matcher.lookingAt()) {
+                    break;
+                }
+                if (!matcher.hitEnd()) {
+                    setExecuted(true);
+                    throw new WorkflowExecutionException(
+                            "Received text \""
+                                    + receivedAsciiString
+                                    + "\" can never match /"
+                                    + regex
+                                    + "/, aborting STARTTLS upgrade.");
+                }
+                LOGGER.debug(
+                        "Partial match so far (/{}/), waiting for more data...",
+                        receivedAsciiString);
+            }
             LOGGER.info("Received: {}", receivedAsciiString);
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
+            if (received.length() > 0) {
+                receivedAsciiString = received.toString();
+            }
             setExecuted(false);
         }
     }
@@ -96,7 +122,7 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
         return isExecuted()
                 && receivedAsciiString != null
                 && regex != null
-                && Pattern.compile(regex).matcher(receivedAsciiString).find();
+                && Pattern.compile(regex).matcher(receivedAsciiString).lookingAt();
     }
 
     @Override
