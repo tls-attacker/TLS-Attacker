@@ -86,10 +86,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 lastExecutedAction = action;
             }
 
-            if ((config.isStopTraceAfterUnexpected()
-                            || hasOption(action, ActionOption.STOP_TRACE_ON_FAILURE))
+            if (config.isStopTraceAfterUnexpected()
                     && !action.executedAsPlanned()
-                    && !hasOption(action, ActionOption.MAY_FAIL)) {
+                    && (action.getActionOptions() == null
+                            || !action.getActionOptions().contains(ActionOption.MAY_FAIL))) {
                 if (lastExecutedAction instanceof SendingAction) {
                     LOGGER.debug(
                             "SendingAction did not execute as planned, skipping to next receive action to process pending message bytes.");
@@ -158,9 +158,5 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
             }
         }
-    }
-
-    private static boolean hasOption(TlsAction action, ActionOption option) {
-        return action.getActionOptions() != null && action.getActionOptions().contains(option);
     }
 }
