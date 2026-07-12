@@ -650,10 +650,10 @@
                         <version>1.3.0</version>
                         <executions>
                             <execution>
-                                <phase>initialize</phase>
                                 <goals>
                                     <goal>read-project-properties</goal>
                                 </goals>
+                                <phase>initialize</phase>
                                 <configuration>
                                     <files>
                                         <file>version.properties</file>
