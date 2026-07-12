@@ -22,11 +22,6 @@ pipeline {
 
     parameters {
         booleanParam(
-                name: 'DEPLOY',
-                defaultValue: true,
-                description: 'Deploy SNAPSHOT artifacts to internal Nexus (only on main branch)'
-        )
-        booleanParam(
                 name: 'RELEASE',
                 defaultValue: true,
                 description: 'Perform a Maven Release'
@@ -90,17 +85,6 @@ pipeline {
                 ciIntegrationTests(profile: "coverage", timeout: 1800)
             }
         }
-        stage('Deploy to Internal Nexus Repository') {
-            when {
-                expression { pipelineUtils.shouldDeploy() }
-            }
-            steps {
-                ciMaven(
-                        goal: "deploy",
-                        profile: "internal-releases",
-                        args: "-DskipTests=true")
-            }
-        }
         stage('Set version') {
             steps {
                 script {
@@ -119,9 +103,10 @@ pipeline {
                         autoPublish: false,
                         skipTests: true,
                         quiet: false,
-                        useSettings: false,
+                        useSettings: true,
+                        settingsId: 'gmosch_test',
                         credentialsId: 'central-technical-user-token',
-                        profile: 'central-release'
+                        profile: '!protocol-attacker,central-release'
                 )
             }
         }
