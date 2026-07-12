@@ -656,7 +656,7 @@
                                 <phase>initialize</phase>
                                 <configuration>
                                     <files>
-                                        <file>version.properties</file>
+                                        <file>${maven.multiModuleProjectDirectory}/version.properties</file>
                                     </files>
                                 </configuration>
                             </execution>
