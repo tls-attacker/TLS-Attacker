@@ -101,14 +101,27 @@ pipeline {
                         args: "-DskipTests=true")
             }
         }
+        stage('Set version') {
+            steps {
+                script {
+                    def releaseVersion = sh(
+                            script: "grep '^tls.attacker.version=' version.properties | cut -d'=' -f2",
+                            returnStdout: true
+                    ).trim()
+                    echo "Release version: ${releaseVersion}"
+                    ciSetVersion(releaseVersion: releaseVersion)
+                }
+            }
+        }
         stage('Publish to Maven Central') {
             steps {
                 ciCentralPublish(
-                        version: params.RELEASE_VERSION,
                         autoPublish: false,
                         skipTests: true,
                         quiet: false,
-                        credentialsId: 'central-technical-user-token'
+                        useSettings: false,
+                        credentialsId: 'central-technical-user-token',
+                        profile: 'central-release'
                 )
             }
         }
