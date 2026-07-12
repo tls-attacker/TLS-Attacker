@@ -102,8 +102,10 @@ pipeline {
                 ciCentralPublish(
                         autoPublish: false,
                         skipTests: true,
+                        quiet: false,
                         useSettings: true,
-                        settingsId: 'central-settings'
+                        settingsId: 'central-settings',
+                        profile: '!protocol-attacker,central-release'
                 )
             }
         }
