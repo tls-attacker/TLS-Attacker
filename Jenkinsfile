@@ -102,11 +102,8 @@ pipeline {
                 ciCentralPublish(
                         autoPublish: false,
                         skipTests: true,
-                        quiet: false,
                         useSettings: true,
-                        settingsId: 'central-settings',
-                        credentialsId: 'central-technical-user-token',
-                        profile: '!protocol-attacker,central-release'
+                        settingsId: 'central-settings'
                 )
             }
         }
