@@ -75,9 +75,6 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
                 received.append(new String(fetchData, getEncoding()));
                 receivedAsciiString = received.toString();
                 Matcher matcher = pattern.matcher(receivedAsciiString);
-                // Fast-fail: once the accumulated text can no longer be a prefix of the
-                // pattern, the server's reply diverged and will never match. Abort the
-                // whole trace instead of proceeding into a TLS handshake we know is wrong.
                 if (!matcher.lookingAt() && !matcher.hitEnd()) {
                     setExecuted(true);
                     throw new WorkflowExecutionException(
@@ -87,10 +84,6 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
                                     + regex
                                     + "/, aborting STARTTLS upgrade.");
                 }
-                // STARTTLS control replies are line-terminated. Keep reading until the
-                // whole line is drained from the socket; stopping at the first prefix
-                // match would leave the rest of the reply in the TCP buffer and corrupt
-                // the following TLS handshake.
                 if (receivedAsciiString.indexOf('\n') < 0) {
                     LOGGER.debug(
                             "Reply not yet a full line (/{}/), waiting for more data...",
