@@ -19,51 +19,51 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class SendAsciiActionTest extends AbstractActionTest<SendAsciiAction> {
+public class SendTextActionTest extends AbstractActionTest<SendTextAction> {
 
-    public SendAsciiActionTest() {
-        super(new SendAsciiAction("STARTTLS", "US-ASCII"), SendAsciiAction.class);
+    public SendTextActionTest() {
+        super(new SendTextAction("STARTTLS", "US-ASCII"), SendTextAction.class);
         TlsContext context = state.getTlsContext();
         context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
-    /** Test of getAsciiString method, of class SendAsciiAction. */
+    /** Test of getText method, of class SendTextAction. */
     @Test
-    public void testGetAsciiString() {
-        assertEquals("STARTTLS", action.getAsciiText());
+    public void testGetText() {
+        assertEquals("STARTTLS", action.getText());
     }
 
     @Test
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testExecute() throws Exception {
         super.testExecute();
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testReset() {}
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testDoubleExecuteThrowsActionExecutionException() {}
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
             throws JAXBException, IOException, XMLStreamException {
         super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
             throws JAXBException, IOException, XMLStreamException {
         super.testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject();
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
         super.testMarshalingEmptyActionYieldsMinimalOutput();
     }

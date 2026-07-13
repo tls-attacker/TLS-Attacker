@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
@@ -19,32 +22,47 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-public class ReceiveAsciiActionTest extends AbstractActionTest<ReceiveAsciiAction> {
+public class GenericReceiveTextActionTest extends AbstractActionTest<GenericReceiveTextAction> {
 
     private final TlsContext context;
 
-    public ReceiveAsciiActionTest() {
-        super(new ReceiveAsciiAction("STARTTLS", "US-ASCII"), ReceiveAsciiAction.class);
+    private final byte[] asciiToCheck =
+            new byte[] {
+                0x15, 0x03, 0x02, 0x01, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x57, 0x6f, 0x72, 0x6c,
+                0x64, 0x21
+            };
+
+    public GenericReceiveTextActionTest() {
+        super(new GenericReceiveTextAction("US-ASCII"), GenericReceiveTextAction.class);
         context = state.getTlsContext();
         context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
-    /** Test of execute method, of class ReceiveAsciiAction. */
+    /** Test of execute method, of class GenericReceiveTextAction. */
     @Test
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testExecute() throws Exception {
-        ((FakeTcpTransportHandler) context.getTransportHandler())
-                .setFetchableByte("STARTTLS".getBytes(StandardCharsets.US_ASCII));
+        ((FakeTcpTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
         super.testExecute();
+        assertEquals(new String(asciiToCheck, StandardCharsets.US_ASCII), action.getText());
+    }
+
+    @Test
+    @Disabled("Text Actions are not fully implemented for layer system")
+    public void testExecuteOnUnknownEncoding() {
+        ((FakeTcpTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
+        GenericReceiveTextAction action = new GenericReceiveTextAction("DefinitelyNotAnEncoding");
+        action.execute(state);
+        assertFalse(action.isExecuted());
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testReset() {}
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testDoubleExecuteThrowsActionExecutionException() {}
 
     @Override
@@ -53,21 +71,21 @@ public class ReceiveAsciiActionTest extends AbstractActionTest<ReceiveAsciiActio
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
             throws JAXBException, IOException, XMLStreamException {
         super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
             throws JAXBException, IOException, XMLStreamException {
         super.testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject();
     }
 
     @Override
-    @Disabled("ASCII Actions are notfully implemented for layer system")
+    @Disabled("Text Actions are not fully implemented for layer system")
     public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
         super.testMarshalingEmptyActionYieldsMinimalOutput();
     }

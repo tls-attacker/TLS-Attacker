@@ -20,21 +20,21 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement(name = "ReceiveAscii")
-public class ReceiveAsciiAction extends AsciiAction {
+@XmlRootElement(name = "ReceiveText")
+public class ReceiveTextAction extends TextAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String receivedAsciiString;
+    private String receivedText;
 
-    public ReceiveAsciiAction() {
+    public ReceiveTextAction() {
         super();
     }
 
-    public ReceiveAsciiAction(String asciiText, String encoding) {
-        super(asciiText, encoding);
-        receivedAsciiString = null;
+    public ReceiveTextAction(String text, String encoding) {
+        super(text, encoding);
+        receivedText = null;
     }
 
     @Override
@@ -45,10 +45,10 @@ public class ReceiveAsciiAction extends AsciiAction {
             throw new ActionExecutionException("Action already executed!");
         }
         try {
-            LOGGER.debug("Receiving ASCII message...");
+            LOGGER.debug("Receiving text message...");
             byte[] fetchData = tcpContext.getTransportHandler().fetchData();
-            receivedAsciiString = new String(fetchData, getEncoding());
-            LOGGER.info("Received: {}", receivedAsciiString);
+            receivedText = new String(fetchData, getEncoding());
+            LOGGER.info("Received: {}", receivedText);
 
             setExecuted(true);
         } catch (IOException e) {
@@ -57,8 +57,8 @@ public class ReceiveAsciiAction extends AsciiAction {
         }
     }
 
-    public String getReceivedAsciiString() {
-        return receivedAsciiString;
+    public String getReceivedText() {
+        return receivedText;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ReceiveAsciiAction extends AsciiAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return Objects.equals(receivedAsciiString, getAsciiText());
+        return Objects.equals(receivedText, getText());
     }
 
     @Override
@@ -76,12 +76,12 @@ public class ReceiveAsciiAction extends AsciiAction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ReceiveAsciiAction that = (ReceiveAsciiAction) o;
-        return Objects.equals(receivedAsciiString, that.receivedAsciiString);
+        ReceiveTextAction that = (ReceiveTextAction) o;
+        return Objects.equals(receivedText, that.receivedText);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), receivedAsciiString);
+        return Objects.hash(super.hashCode(), receivedText);
     }
 }

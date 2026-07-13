@@ -14,43 +14,43 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Objects;
 
 @XmlRootElement
-public abstract class AsciiAction extends TlsAction {
+public abstract class TextAction extends TlsAction {
 
-    /** Default encoding for plaintext ASCII exchanges (e.g. STARTTLS control channels). */
+    /** Default encoding for plaintext exchanges (e.g. STARTTLS control channels). */
     public static final String DEFAULT_ENCODING = "US-ASCII";
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String asciiText;
+    private String text;
 
     private String encoding;
 
-    protected AsciiAction() {
-        asciiText = null;
+    protected TextAction() {
+        text = null;
         encoding = null;
     }
 
-    public AsciiAction(String asciiText, String encoding) {
-        this.asciiText = asciiText;
+    public TextAction(String text, String encoding) {
+        this.text = text;
         this.encoding = encoding;
     }
 
-    public AsciiAction(String encoding) {
-        this.asciiText = null;
+    public TextAction(String encoding) {
+        this.text = null;
         this.encoding = encoding;
     }
 
     /**
-     * @return the asciiText
+     * @return the text
      */
-    public String getAsciiText() {
-        return asciiText;
+    public String getText() {
+        return text;
     }
 
     /**
-     * @param asciiText the asciiText to set
+     * @param text the text to set
      */
-    public void setAsciiText(String asciiText) {
-        this.asciiText = asciiText;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getEncoding() {
@@ -65,12 +65,12 @@ public abstract class AsciiAction extends TlsAction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AsciiAction that = (AsciiAction) o;
-        return Objects.equals(asciiText, that.asciiText) && Objects.equals(encoding, that.encoding);
+        TextAction that = (TextAction) o;
+        return Objects.equals(text, that.text) && Objects.equals(encoding, that.encoding);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(asciiText, encoding);
+        return Objects.hash(text, encoding);
     }
 }

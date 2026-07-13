@@ -335,7 +335,7 @@
 
   <xs:element name="genericReceiveAction" type="genericReceiveAction"/>
 
-  <xs:element name="genericReceiveAsciiAction" type="genericReceiveAsciiAction"/>
+  <xs:element name="genericReceiveTextAction" type="genericReceiveTextAction"/>
 
   <xs:element name="handshakeDoneFrame" type="handshakeDoneFrame"/>
 
@@ -427,7 +427,7 @@
 
   <xs:element name="receiveAction" type="receiveAction"/>
 
-  <xs:element name="receiveAsciiAction" type="receiveAsciiAction"/>
+  <xs:element name="receiveTextAction" type="receiveTextAction"/>
 
   <xs:element name="receiveQuicAction" type="receiveQuicAction"/>
 
@@ -447,7 +447,7 @@
 
   <xs:element name="sendAction" type="sendAction"/>
 
-  <xs:element name="sendAsciiAction" type="sendAsciiAction"/>
+  <xs:element name="sendTextAction" type="sendTextAction"/>
 
   <xs:element name="sendDynamicClientKeyExchangeAction" type="sendDynamicClientKeyExchangeAction"/>
 
@@ -559,9 +559,9 @@
         <xs:element name="SetEncryptChangeCipherSpecConfig" type="setEncryptChangeCipherSpecConfigAction"/>
         <xs:element name="Wait" type="waitAction"/>
         <xs:element name="FlushSessionCache" type="flushSessionCacheAction"/>
-        <xs:element name="SendAscii" type="sendAsciiAction"/>
-        <xs:element name="ReceiveAscii" type="receiveAsciiAction"/>
-        <xs:element name="GenericReceiveAscii" type="genericReceiveAsciiAction"/>
+        <xs:element name="SendText" type="sendTextAction"/>
+        <xs:element name="ReceiveText" type="receiveTextAction"/>
+        <xs:element name="GenericReceiveText" type="genericReceiveTextAction"/>
         <xs:element name="QuicPathChallenge" type="quicPathChallengeAction"/>
       </xs:choice>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
@@ -5776,7 +5776,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendAsciiAction">
+  <xs:complexType name="sendTextAction">
     <xs:complexContent>
       <xs:extension base="asciiAction">
         <xs:sequence/>
@@ -5795,17 +5795,17 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="receiveAsciiAction">
+  <xs:complexType name="receiveTextAction">
     <xs:complexContent>
       <xs:extension base="asciiAction">
         <xs:sequence>
-          <xs:element name="receivedAsciiString" type="xs:string" minOccurs="0"/>
+          <xs:element name="receivedText" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="genericReceiveAsciiAction">
+  <xs:complexType name="genericReceiveTextAction">
     <xs:complexContent>
       <xs:extension base="asciiAction">
         <xs:sequence/>

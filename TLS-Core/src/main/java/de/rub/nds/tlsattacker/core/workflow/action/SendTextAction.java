@@ -11,19 +11,26 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement(name = "GenericReceiveAscii")
-public class GenericReceiveAsciiAction extends AsciiAction {
+@XmlRootElement(name = "SendText")
+public class SendTextAction extends TextAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    GenericReceiveAsciiAction() {}
+    SendTextAction() {
+        super();
+    }
 
-    public GenericReceiveAsciiAction(String encoding) {
+    public SendTextAction(String asciiString, String encoding) {
+        super(asciiString, encoding);
+    }
+
+    public SendTextAction(String encoding) {
         super(encoding);
     }
 
@@ -34,15 +41,14 @@ public class GenericReceiveAsciiAction extends AsciiAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
+
         try {
-            LOGGER.debug("Receiving ASCII message...");
-            byte[] fetchData = tcpContext.getTransportHandler().fetchData();
-            setAsciiText(new String(fetchData, getEncoding()));
-            LOGGER.info("Received: {}", getAsciiText());
+            LOGGER.info("Sending text message: {}", getText());
+            tcpContext.getTransportHandler().sendData(getText().getBytes(getEncoding()));
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
-            setExecuted(false);
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 

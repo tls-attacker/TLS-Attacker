@@ -76,7 +76,7 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
 
     /**
      * A STARTTLS upgrade must not toggle the global stop-after-unexpected flag. A refused upgrade
-     * (e.g. FTP 4xx/5xx instead of 234) is aborted by the ReceiveRegexAsciiAction itself when the
+     * (e.g. FTP 4xx/5xx instead of 234) is aborted by the ReceiveRegexTextAction itself when the
      * reply can no longer match, so the global flag stays at its default and the subsequent TLS
      * handshake keeps its normal, permissive receive behavior for scanning.
      */

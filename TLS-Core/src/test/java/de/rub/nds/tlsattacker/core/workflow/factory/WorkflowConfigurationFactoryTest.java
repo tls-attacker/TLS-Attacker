@@ -309,7 +309,7 @@ public class WorkflowConfigurationFactoryTest {
 
     /** Test of addStartTlsAction method, of class WorkflowConfigurationFactory. */
     @Test
-    @Disabled("ASCII Action WorkfloConfigurationFactory not implemented")
+    @Disabled("Text Action WorkflowConfigurationFactory not implemented")
     public void testAddStartTlsAction() {
         config.setStarttlsType(StarttlsType.FTP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -318,10 +318,10 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
 
         config.setStarttlsType(StarttlsType.IMAP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -330,10 +330,10 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
 
         config.setStarttlsType(StarttlsType.POP3);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -342,10 +342,10 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
 
         config.setStarttlsType(StarttlsType.SMTP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -354,19 +354,19 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(3).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(4).getClass());
     }
 
     /**
-     * FTP STARTTLS (RFC 4217) client upgrade: the trace must begin with the plaintext ASCII
-     * exchange (receive greeting, send "AUTH TLS\r\n", receive reply), then an
-     * EnableLayerAction(RECORD, MESSAGE) before any TLS messages.
+     * FTP STARTTLS (RFC 4217) client upgrade: the trace must begin with the plaintext exchange
+     * (receive greeting, send "AUTH TLS\r\n", receive reply), then an EnableLayerAction(RECORD,
+     * MESSAGE) before any TLS messages.
      */
     @Test
     public void testAddStartTlsActionFtp() {
@@ -377,12 +377,12 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         List<TlsAction> actions = workflowTrace.getTlsActions();
-        assertEquals(ReceiveRegexAsciiAction.class, actions.get(0).getClass());
-        assertEquals("^220", ((ReceiveRegexAsciiAction) actions.get(0)).getRegex());
-        assertEquals(SendAsciiAction.class, actions.get(1).getClass());
-        assertEquals("AUTH TLS\r\n", ((SendAsciiAction) actions.get(1)).getAsciiText());
-        assertEquals(ReceiveRegexAsciiAction.class, actions.get(2).getClass());
-        assertEquals("^234", ((ReceiveRegexAsciiAction) actions.get(2)).getRegex());
+        assertEquals(ReceiveRegexTextAction.class, actions.get(0).getClass());
+        assertEquals("^220", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals(SendTextAction.class, actions.get(1).getClass());
+        assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(1)).getText());
+        assertEquals(ReceiveRegexTextAction.class, actions.get(2).getClass());
+        assertEquals("^234", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
         assertEquals(EnableLayerAction.class, actions.get(3).getClass());
     }
 

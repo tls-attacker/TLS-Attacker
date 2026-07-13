@@ -594,7 +594,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new RenegotiationAction());
         WorkflowTrace renegotiationTrace = createResumptionWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }
@@ -608,7 +608,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }
@@ -625,7 +625,7 @@ public class WorkflowConfigurationFactory {
                         config, connection, ConnectionEndType.SERVER, new HelloRequestMessage());
         trace.addTlsAction(action);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }
@@ -1245,9 +1245,9 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    workflowTrace.addTlsAction(new ReceiveRegexAsciiAction("^220"));
-                    workflowTrace.addTlsAction(new SendAsciiAction("AUTH TLS\r\n", null));
-                    workflowTrace.addTlsAction(new ReceiveRegexAsciiAction("^234"));
+                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220"));
+                    workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
+                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^234"));
                     return workflowTrace;
                     // server: "Welcome to FTP server"
                     // client: "AUTH TLS\r\n"
@@ -1512,7 +1512,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createDynamicHandshakeWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }

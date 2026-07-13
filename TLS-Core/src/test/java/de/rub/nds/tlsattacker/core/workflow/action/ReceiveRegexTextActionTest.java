@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-public class ReceiveRegexAsciiActionTest {
+public class ReceiveRegexTextActionTest {
 
     private State state;
     private TlsContext context;
@@ -44,25 +44,25 @@ public class ReceiveRegexAsciiActionTest {
     }
 
     /**
-     * An action left at its default encoding marshals to a bare {@code <ReceiveRegexAscii/>}
+     * An action left at its default encoding marshals to a bare {@code <ReceiveRegexText/>}
      * element, i.e. the default US-ASCII encoding is suppressed from the XML.
      */
     @Test
     @Tag(TestCategories.SLOW_TEST)
     public void testMarshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ReceiveRegexAsciiAction.class);
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ReceiveRegexTextAction.class);
     }
 
     /**
-     * A hand-written bare {@code <ReceiveRegexAscii/>} element (no encoding) must round-trip back
-     * to XML without the default encoding leaking in: reading it and writing it out again must not
+     * A hand-written bare {@code <ReceiveRegexText/>} element (no encoding) must round-trip back to
+     * XML without the default encoding leaking in: reading it and writing it out again must not
      * introduce an {@code <encoding>US-ASCII</encoding>} element, while the effective encoding
      * still resolves to the default at runtime.
      */
     @Test
     @Tag(TestCategories.SLOW_TEST)
     public void testEmptyElementRoundTripsWithoutEncoding() throws Exception {
-        String bareElement = "<ReceiveRegexAscii/>";
+        String bareElement = "<ReceiveRegexText/>";
 
         TlsAction read =
                 ActionIO.read(
@@ -75,25 +75,25 @@ public class ReceiveRegexAsciiActionTest {
                 written.contains("<encoding>"),
                 "Round-tripped bare element must not gain an <encoding> element, but was:\n"
                         + written);
-        assertEquals(AsciiAction.DEFAULT_ENCODING, ((ReceiveRegexAsciiAction) read).getEncoding());
+        assertEquals(TextAction.DEFAULT_ENCODING, ((ReceiveRegexTextAction) read).getEncoding());
     }
 
     /** A reply matching the status-code regex counts as executed-as-planned. */
     @Test
     public void testMatchingReplyIsExecutedAsPlanned() {
         feed("234 AUTH TLS successful\r\n");
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
-        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedAsciiString());
+        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
     }
 
     /** A reply with a wrong status code that can never match aborts the trace. */
     @Test
     public void testMismatchingReplyAbortsTrace() {
         feed("502 Command not implemented\r\n");
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }
@@ -101,21 +101,21 @@ public class ReceiveRegexAsciiActionTest {
     /** The default constructor uses US-ASCII so callers need not pass an encoding. */
     @Test
     public void testDefaultEncoding() {
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^220");
-        assertEquals(AsciiAction.DEFAULT_ENCODING, action.getEncoding());
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220");
+        assertEquals(TextAction.DEFAULT_ENCODING, action.getEncoding());
     }
 
     /** reset() clears the received text and execution flag so the action can run again. */
     @Test
     public void testReset() {
         feed("220 Service ready\r\n");
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^220");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220");
         action.execute(state);
         assertTrue(action.isExecuted());
 
         action.reset();
         assertFalse(action.isExecuted());
-        assertEquals(null, action.getReceivedAsciiString());
+        assertEquals(null, action.getReceivedText());
     }
 
     /**
@@ -128,12 +128,12 @@ public class ReceiveRegexAsciiActionTest {
         DripTransportHandler drip = new DripTransportHandler("23", "4 AUTH TLS successful\r\n");
         context.setTransportHandler(drip);
 
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
         action.execute(state);
 
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
-        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedAsciiString());
+        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
     }
 
     /**
@@ -147,11 +147,11 @@ public class ReceiveRegexAsciiActionTest {
         DripTransportHandler drip = new DripTransportHandler("234", " AUTH TLS successful\r\n");
         context.setTransportHandler(drip);
 
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
         action.execute(state);
 
         assertTrue(action.executedAsPlanned());
-        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedAsciiString());
+        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
         // Both fragments must have been consumed so nothing leaks into the handshake.
         assertEquals(2, drip.getFetchCount());
     }
@@ -165,13 +165,13 @@ public class ReceiveRegexAsciiActionTest {
         DripTransportHandler drip = new DripTransportHandler("58", "0 error\r\n");
         context.setTransportHandler(drip);
 
-        ReceiveRegexAsciiAction action = new ReceiveRegexAsciiAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
 
         // Once "58" can never match /^234/ the action aborts the trace instead of silently
         // proceeding into the TLS handshake.
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         // The second fragment must not have been read.
-        assertEquals("58", action.getReceivedAsciiString());
+        assertEquals("58", action.getReceivedText());
         assertEquals(1, drip.getFetchCount());
     }
 

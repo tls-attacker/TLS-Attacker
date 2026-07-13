@@ -23,15 +23,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Receives a plaintext ASCII message and validates it against a regular expression. Unlike {@link
- * GenericReceiveAsciiAction}, which succeeds as soon as any bytes are read, this action only counts
+ * Receives a plaintext message and validates it against a regular expression. Unlike {@link
+ * GenericReceiveTextAction}, which succeeds as soon as any bytes are read, this action only counts
  * as executed-as-planned when the received text matches the configured pattern. This lets STARTTLS
  * control-channel exchanges assert on the protocol status code (e.g. FTP "234" for an accepted
  * "AUTH TLS") and fail the workflow when the server refuses the upgrade instead of silently
  * proceeding.
  */
-@XmlRootElement(name = "ReceiveRegexAscii")
-public class ReceiveRegexAsciiAction extends AsciiAction {
+@XmlRootElement(name = "ReceiveRegexText")
+public class ReceiveRegexTextAction extends TextAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,19 +39,19 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
     private String regex;
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String receivedAsciiString;
+    private String receivedText;
 
     @SuppressWarnings("unused")
-    ReceiveRegexAsciiAction() {
+    ReceiveRegexTextAction() {
         super();
     }
 
-    public ReceiveRegexAsciiAction(String regex) {
+    public ReceiveRegexTextAction(String regex) {
         super((String) null);
         this.regex = regex;
     }
 
-    public ReceiveRegexAsciiAction(String regex, String encoding) {
+    public ReceiveRegexTextAction(String regex, String encoding) {
         super(encoding);
         this.regex = regex;
     }
@@ -63,7 +63,7 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        LOGGER.debug("Receiving ASCII message (expecting /{}/)...", regex);
+        LOGGER.debug("Receiving text message (expecting /{}/)...", regex);
         Pattern pattern = Pattern.compile(regex);
         StringBuilder received = new StringBuilder();
         try {
@@ -75,11 +75,11 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
                 received.append(new String(fetchData, getEncoding()));
                 Matcher matcher = pattern.matcher(received);
                 if (!matcher.lookingAt() && !matcher.hitEnd()) {
-                    receivedAsciiString = received.toString();
+                    receivedText = received.toString();
                     setExecuted(true);
                     throw new WorkflowExecutionException(
                             "Received text \""
-                                    + receivedAsciiString
+                                    + receivedText
                                     + "\" can never match /"
                                     + regex
                                     + "/, aborting STARTTLS upgrade.");
@@ -91,13 +91,13 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
                 }
                 break;
             }
-            receivedAsciiString = received.toString();
-            LOGGER.info("Received: {}", receivedAsciiString);
+            receivedText = received.toString();
+            LOGGER.info("Received: {}", receivedText);
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
             if (!received.isEmpty()) {
-                receivedAsciiString = received.toString();
+                receivedText = received.toString();
             }
             setExecuted(false);
         }
@@ -107,22 +107,22 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
         return regex;
     }
 
-    public String getReceivedAsciiString() {
-        return receivedAsciiString;
+    public String getReceivedText() {
+        return receivedText;
     }
 
     @Override
     public void reset() {
-        receivedAsciiString = null;
+        receivedText = null;
         setExecuted(null);
     }
 
     @Override
     public boolean executedAsPlanned() {
         return isExecuted()
-                && receivedAsciiString != null
+                && receivedText != null
                 && regex != null
-                && Pattern.compile(regex).matcher(receivedAsciiString).lookingAt();
+                && Pattern.compile(regex).matcher(receivedText).lookingAt();
     }
 
     @Override
@@ -130,13 +130,12 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ReceiveRegexAsciiAction that = (ReceiveRegexAsciiAction) o;
-        return Objects.equals(regex, that.regex)
-                && Objects.equals(receivedAsciiString, that.receivedAsciiString);
+        ReceiveRegexTextAction that = (ReceiveRegexTextAction) o;
+        return Objects.equals(regex, that.regex) && Objects.equals(receivedText, that.receivedText);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), regex, receivedAsciiString);
+        return Objects.hash(super.hashCode(), regex, receivedText);
     }
 }
