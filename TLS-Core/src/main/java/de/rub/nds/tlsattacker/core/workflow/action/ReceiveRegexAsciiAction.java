@@ -73,9 +73,9 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
                     break;
                 }
                 received.append(new String(fetchData, getEncoding()));
-                receivedAsciiString = received.toString();
-                Matcher matcher = pattern.matcher(receivedAsciiString);
+                Matcher matcher = pattern.matcher(received);
                 if (!matcher.lookingAt() && !matcher.hitEnd()) {
+                    receivedAsciiString = received.toString();
                     setExecuted(true);
                     throw new WorkflowExecutionException(
                             "Received text \""
@@ -84,19 +84,19 @@ public class ReceiveRegexAsciiAction extends AsciiAction {
                                     + regex
                                     + "/, aborting STARTTLS upgrade.");
                 }
-                if (receivedAsciiString.indexOf('\n') < 0) {
+                if (received.indexOf("\n") < 0) {
                     LOGGER.debug(
-                            "Reply not yet a full line (/{}/), waiting for more data...",
-                            receivedAsciiString);
+                            "Reply not yet a full line (/{}/), waiting for more data...", received);
                     continue;
                 }
                 break;
             }
+            receivedAsciiString = received.toString();
             LOGGER.info("Received: {}", receivedAsciiString);
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
-            if (received.length() > 0) {
+            if (!received.isEmpty()) {
                 receivedAsciiString = received.toString();
             }
             setExecuted(false);
