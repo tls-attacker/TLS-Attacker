@@ -201,7 +201,7 @@
 
   <xs:element name="applyBufferedMessagesAction" type="applyBufferedMessagesAction"/>
 
-  <xs:element name="asciiAction" type="asciiAction"/>
+  <xs:element name="textAction" type="textAction"/>
 
   <xs:element name="bigIntegerAddModification" type="bigIntegerAddModification"/>
 
@@ -5778,17 +5778,17 @@
 
   <xs:complexType name="sendTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="asciiAction" abstract="true">
+  <xs:complexType name="textAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence>
-          <xs:element name="asciiText" type="xs:string" minOccurs="0"/>
+          <xs:element name="text" type="xs:string" minOccurs="0"/>
           <xs:element name="encoding" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -5797,7 +5797,7 @@
 
   <xs:complexType name="receiveTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence>
           <xs:element name="receivedText" type="xs:string" minOccurs="0"/>
         </xs:sequence>
@@ -5807,7 +5807,7 @@
 
   <xs:complexType name="genericReceiveTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
