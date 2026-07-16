@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.nio.charset.StandardCharsets;
@@ -49,10 +48,5 @@ public class GenericReceiveTextActionTest extends AbstractActionTest<GenericRece
         GenericReceiveTextAction action = new GenericReceiveTextAction("DefinitelyNotAnEncoding");
         action.execute(state);
         assertFalse(action.isExecuted());
-    }
-
-    @Override
-    protected void createWorkflowTraceAndState() {
-        state = new State();
     }
 }

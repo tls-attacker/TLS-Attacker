@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.nio.charset.StandardCharsets;
@@ -32,10 +31,5 @@ public class ReceiveTextActionTest extends AbstractActionTest<ReceiveTextAction>
         ((FakeTcpTransportHandler) context.getTransportHandler())
                 .setFetchableByte("STARTTLS".getBytes(StandardCharsets.US_ASCII));
         super.testExecute();
-    }
-
-    @Override
-    protected void createWorkflowTraceAndState() {
-        state = new State();
     }
 }
