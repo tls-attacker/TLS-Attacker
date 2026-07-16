@@ -245,8 +245,6 @@
 
   <xs:element name="Receive" type="receiveAction"/>
 
-  <xs:element name="ReceiveText" type="receiveTextAction"/>
-
   <xs:element name="ReceiveTill" type="receiveTillAction"/>
 
   <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
@@ -549,8 +547,6 @@
 
   <xs:element name="receiveAction" type="receiveAction"/>
 
-  <xs:element name="receiveTextAction" type="receiveTextAction"/>
-
   <xs:element name="receiveTillAction" type="receiveTillAction"/>
 
   <xs:element name="remBufferedChCiphersAction" type="remBufferedChCiphersAction"/>
@@ -681,7 +677,6 @@
         <xs:element name="Wait" type="waitAction"/>
         <xs:element name="FlushSessionCache" type="flushSessionCacheAction"/>
         <xs:element name="SendText" type="sendTextAction"/>
-        <xs:element name="ReceiveText" type="receiveTextAction"/>
         <xs:element name="GenericReceiveText" type="genericReceiveTextAction"/>
       </xs:choice>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
@@ -4674,15 +4669,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="receiveTextAction">
-    <xs:complexContent>
-      <xs:extension base="textAction">
-        <xs:sequence>
-          <xs:element name="receivedText" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
   <xs:complexType name="printSecretsAction">
     <xs:complexContent>
@@ -6892,15 +6878,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="receiveTextAction">
-    <xs:complexContent>
-      <xs:extension base="textAction">
-        <xs:sequence>
-          <xs:element name="receivedText" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
   <xs:complexType name="genericReceiveTextAction">
     <xs:complexContent>

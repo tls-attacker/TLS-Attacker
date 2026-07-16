@@ -427,7 +427,6 @@
 
   <xs:element name="receiveAction" type="receiveAction"/>
 
-  <xs:element name="receiveTextAction" type="receiveTextAction"/>
 
   <xs:element name="receiveQuicAction" type="receiveQuicAction"/>
 
@@ -560,7 +559,6 @@
         <xs:element name="Wait" type="waitAction"/>
         <xs:element name="FlushSessionCache" type="flushSessionCacheAction"/>
         <xs:element name="SendText" type="sendTextAction"/>
-        <xs:element name="ReceiveText" type="receiveTextAction"/>
         <xs:element name="GenericReceiveText" type="genericReceiveTextAction"/>
         <xs:element name="QuicPathChallenge" type="quicPathChallengeAction"/>
       </xs:choice>
@@ -5790,16 +5788,6 @@
         <xs:sequence>
           <xs:element name="text" type="xs:string" minOccurs="0"/>
           <xs:element name="encoding" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="receiveTextAction">
-    <xs:complexContent>
-      <xs:extension base="textAction">
-        <xs:sequence>
-          <xs:element name="receivedText" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
