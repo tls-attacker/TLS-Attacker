@@ -22,6 +22,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,6 +43,30 @@ public class ReceiveRegexTextActionTest {
     private void feed(String reply) {
         ((FakeTcpTransportHandler) context.getTransportHandler())
                 .setFetchableByte(reply.getBytes(StandardCharsets.US_ASCII));
+    }
+
+    /**
+     * Installs a transport handler that returns each fragment on a separate fetchData() call, then
+     * empty arrays, simulating a reply split across several TCP reads. Returns a single-element
+     * counter holding the number of fetchData() calls served, so tests can assert how much of the
+     * reply was drained.
+     */
+    private int[] feedChunks(String... asciiChunks) {
+        Deque<byte[]> chunks = new ArrayDeque<>();
+        for (String chunk : asciiChunks) {
+            chunks.add(chunk.getBytes(StandardCharsets.US_ASCII));
+        }
+        int[] fetchCount = {0};
+        context.setTransportHandler(
+                new FakeTcpTransportHandler(ConnectionEndType.CLIENT) {
+                    @Override
+                    public byte[] fetchData() {
+                        fetchCount[0]++;
+                        byte[] next = chunks.poll();
+                        return next != null ? next : new byte[0];
+                    }
+                });
+        return fetchCount;
     }
 
     /**
@@ -125,8 +151,7 @@ public class ReceiveRegexTextActionTest {
      */
     @Test
     public void testFragmentedMatchingReplyIsReassembled() {
-        DripTransportHandler drip = new DripTransportHandler("23", "4 AUTH TLS successful\r\n");
-        context.setTransportHandler(drip);
+        feedChunks("23", "4 AUTH TLS successful\r\n");
 
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
         action.execute(state);
@@ -144,8 +169,7 @@ public class ReceiveRegexTextActionTest {
      */
     @Test
     public void testMatchingPrefixStillDrainsRestOfLine() {
-        DripTransportHandler drip = new DripTransportHandler("234", " AUTH TLS successful\r\n");
-        context.setTransportHandler(drip);
+        int[] fetchCount = feedChunks("234", " AUTH TLS successful\r\n");
 
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
         action.execute(state);
@@ -153,7 +177,7 @@ public class ReceiveRegexTextActionTest {
         assertTrue(action.executedAsPlanned());
         assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
         // Both fragments must have been consumed so nothing leaks into the handshake.
-        assertEquals(2, drip.getFetchCount());
+        assertEquals(2, fetchCount[0]);
     }
 
     /**
@@ -162,8 +186,7 @@ public class ReceiveRegexTextActionTest {
      */
     @Test
     public void testFragmentedDivergingReplyFailsFast() {
-        DripTransportHandler drip = new DripTransportHandler("58", "0 error\r\n");
-        context.setTransportHandler(drip);
+        int[] fetchCount = feedChunks("58", "0 error\r\n");
 
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
 
@@ -172,31 +195,6 @@ public class ReceiveRegexTextActionTest {
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         // The second fragment must not have been read.
         assertEquals("58", action.getReceivedText());
-        assertEquals(1, drip.getFetchCount());
-    }
-
-    /** Returns each configured chunk on a separate fetchData() call, then empty arrays. */
-    private static final class DripTransportHandler extends FakeTcpTransportHandler {
-
-        private final java.util.Deque<byte[]> chunks = new java.util.ArrayDeque<>();
-        private int fetchCount = 0;
-
-        DripTransportHandler(String... asciiChunks) {
-            super(ConnectionEndType.CLIENT);
-            for (String chunk : asciiChunks) {
-                chunks.add(chunk.getBytes(StandardCharsets.US_ASCII));
-            }
-        }
-
-        int getFetchCount() {
-            return fetchCount;
-        }
-
-        @Override
-        public byte[] fetchData() {
-            fetchCount++;
-            byte[] next = chunks.poll();
-            return next != null ? next : new byte[0];
-        }
+        assertEquals(1, fetchCount[0]);
     }
 }
