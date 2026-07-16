@@ -13,10 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class SendTextActionTest extends AbstractActionTest<SendTextAction> {
@@ -31,40 +27,5 @@ public class SendTextActionTest extends AbstractActionTest<SendTextAction> {
     @Test
     public void testGetText() {
         assertEquals("STARTTLS", action.getText());
-    }
-
-    @Test
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testExecute() throws Exception {
-        super.testExecute();
-    }
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testReset() {}
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testDoubleExecuteThrowsActionExecutionException() {}
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
-            throws JAXBException, IOException, XMLStreamException {
-        super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
-    }
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
-            throws JAXBException, IOException, XMLStreamException {
-        super.testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject();
-    }
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
-        super.testMarshalingEmptyActionYieldsMinimalOutput();
     }
 }

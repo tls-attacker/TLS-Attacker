@@ -12,11 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import javax.xml.stream.XMLStreamException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class ReceiveTextActionTest extends AbstractActionTest<ReceiveTextAction> {
@@ -32,7 +28,6 @@ public class ReceiveTextActionTest extends AbstractActionTest<ReceiveTextAction>
     /** Test of execute method, of class ReceiveTextAction. */
     @Test
     @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
     public void testExecute() throws Exception {
         ((FakeTcpTransportHandler) context.getTransportHandler())
                 .setFetchableByte("STARTTLS".getBytes(StandardCharsets.US_ASCII));
@@ -40,35 +35,7 @@ public class ReceiveTextActionTest extends AbstractActionTest<ReceiveTextAction>
     }
 
     @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testReset() {}
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testDoubleExecuteThrowsActionExecutionException() {}
-
-    @Override
     protected void createWorkflowTraceAndState() {
         state = new State();
-    }
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
-            throws JAXBException, IOException, XMLStreamException {
-        super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
-    }
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
-            throws JAXBException, IOException, XMLStreamException {
-        super.testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject();
-    }
-
-    @Override
-    @Disabled("Text Actions are not fully implemented for layer system")
-    public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
-        super.testMarshalingEmptyActionYieldsMinimalOutput();
     }
 }
