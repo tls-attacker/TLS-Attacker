@@ -1501,7 +1501,7 @@
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
     <quicDoNotPadPackets>false</quicDoNotPadPackets>
-    <discardQuicPacketsWithMismatchedSCID>false</discardQuicPacketsWithMismatchedSCID>
+    <discardQuicPacketsWithMismatchedSCID>true</discardQuicPacketsWithMismatchedSCID>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>

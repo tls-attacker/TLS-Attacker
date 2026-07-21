@@ -1091,7 +1091,7 @@ public class Config implements Serializable {
      * QUIC Packets with mismatching SCID are most likely stray packets from previous connection
      * etc. The default use case should be to discard them
      */
-    private Boolean discardQuicPacketsWithMismatchedSCID = false;
+    private Boolean discardQuicPacketsWithMismatchedSCID = true;
 
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
