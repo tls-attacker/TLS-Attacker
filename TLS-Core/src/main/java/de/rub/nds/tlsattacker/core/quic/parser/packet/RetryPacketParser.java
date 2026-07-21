@@ -31,7 +31,6 @@ public class RetryPacketParser extends LongHeaderPacketParser<RetryPacket> {
         parseSourceConnectionIdLength(packet);
         parseSourceConnectionId(packet);
         parseRetryToken(packet);
-        // TODO: Why?
         determinePacketLength(packet);
     }
 
