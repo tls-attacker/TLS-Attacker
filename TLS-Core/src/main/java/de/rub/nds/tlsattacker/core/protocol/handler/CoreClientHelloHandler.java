@@ -154,7 +154,8 @@ public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMess
     @Override
     public void adjustContextAfterSerialize(Message message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
-                && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+                && (tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)
+                        || tlsContext.getContext().getConfig().getQuic())) {
             try {
                 adjustEarlyTrafficSecret();
                 setClientRecordCipherEarly();

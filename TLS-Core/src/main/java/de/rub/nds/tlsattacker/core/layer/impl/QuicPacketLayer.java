@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.StatelessResetPseudoPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.PortUnreachableException;
 import java.net.SocketTimeoutException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -87,6 +89,10 @@ public class QuicPacketLayer
                 SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
                 for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
                     if (packet.getPacketType().isFrameContainer() && isEmptyPacket(packet)) {
+                        // TODO We should allow sending it anyways if this is intentional.
+                        LOGGER.warn(
+                                "Packet of type {} is empty, not sending it.",
+                                packet.getPacketType());
                         continue;
                     }
                     stream.writeBytes(writePacket(packet));
@@ -439,6 +445,20 @@ public class QuicPacketLayer
     }
 
     private byte[] writeZeroRTTPacket(ZeroRTTPacket packet) throws CryptoException {
+        if (!context.getQuicContext().isZeroRTTSecretsInitialized()) {
+            if (context.getTlsContext().getClientEarlyTrafficSecret() != null) {
+                try {
+                    QuicPacketCryptoComputations.calculateZeroRTTSecrets(context);
+                } catch (NoSuchAlgorithmException | CryptoException e) {
+                    LOGGER.error(
+                            "Could not initialize ZeroRTT secrets despite TLS early traffic secret being present: ",
+                            e);
+                }
+            } else {
+                LOGGER.warn(
+                        "Cannot send Zero-RTT packet before the TLS client early traffic secret has been generated. This is triggered when sending a ClientHello with PreSharedKey extension preset. If you do not wish to send a ClientHello message, please derive those secrets manually.");
+            }
+        }
         packet.getPreparator(context).prepare();
         encryptor.encryptZeroRTTPacket(packet);
         encryptor.addHeaderProtectionZeroRTT(packet);
