@@ -18,5 +18,7 @@ public class NewTokenFrameHandler extends QuicFrameHandler<NewTokenFrame> {
     }
 
     @Override
-    public void adjustContext(NewTokenFrame object) {}
+    public void adjustContext(NewTokenFrame object) {
+        quicContext.setInitialPacketToken(object.getToken().getValue());
+    }
 }
