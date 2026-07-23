@@ -28,6 +28,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Protocol-independent behaviour of {@link ReceiveRegexTextAction}: marshaling, encoding defaults,
+ * reset, and the reassemble/fail-fast semantics for replies split across several TCP reads.
+ *
+ * <p>The replies here are deliberately not valid in any application protocol, so that these tests
+ * describe the matching mechanism alone. Real status codes and their meaning belong in the
+ * per-protocol tests, e.g. {@link ReceiveRegexTextActionFtpTest}.
+ */
 public class ReceiveRegexTextActionTest {
 
     private State state;
@@ -104,22 +112,22 @@ public class ReceiveRegexTextActionTest {
         assertEquals(TextAction.DEFAULT_ENCODING, ((ReceiveRegexTextAction) read).getEncoding());
     }
 
-    /** A reply matching the status-code regex counts as executed-as-planned. */
+    /** A reply matching the regex counts as executed-as-planned. */
     @Test
     public void testMatchingReplyIsExecutedAsPlanned() {
-        feed("234 AUTH TLS successful\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        feed("MATCH rest of line\r\n");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
-        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
+        assertEquals("MATCH rest of line\r\n", action.getReceivedText());
     }
 
-    /** A reply with a wrong status code that can never match aborts the trace. */
+    /** A reply that can never match the regex aborts the trace. */
     @Test
     public void testMismatchingReplyAbortsTrace() {
-        feed("502 Command not implemented\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        feed("NOMATCH rest of line\r\n");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }
@@ -127,15 +135,15 @@ public class ReceiveRegexTextActionTest {
     /** The default constructor uses US-ASCII so callers need not pass an encoding. */
     @Test
     public void testDefaultEncoding() {
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
         assertEquals(TextAction.DEFAULT_ENCODING, action.getEncoding());
     }
 
     /** reset() clears the received text and execution flag so the action can run again. */
     @Test
     public void testReset() {
-        feed("220 Service ready\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220");
+        feed("MATCH rest of line\r\n");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
         action.execute(state);
         assertTrue(action.isExecuted());
 
@@ -145,20 +153,19 @@ public class ReceiveRegexTextActionTest {
     }
 
     /**
-     * A status reply split across several TCP reads is reassembled: while the accumulated text is
-     * still a viable prefix of the pattern the action keeps reading, and matches once the rest
-     * arrives.
+     * A reply split across several TCP reads is reassembled: while the accumulated text is still a
+     * viable prefix of the pattern the action keeps reading, and matches once the rest arrives.
      */
     @Test
     public void testFragmentedMatchingReplyIsReassembled() {
-        feedChunks("23", "4 AUTH TLS successful\r\n");
+        feedChunks("MAT", "CH rest of line\r\n");
 
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
         action.execute(state);
 
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
-        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
+        assertEquals("MATCH rest of line\r\n", action.getReceivedText());
     }
 
     /**
@@ -169,13 +176,13 @@ public class ReceiveRegexTextActionTest {
      */
     @Test
     public void testMatchingPrefixStillDrainsRestOfLine() {
-        int[] fetchCount = feedChunks("234", " AUTH TLS successful\r\n");
+        int[] fetchCount = feedChunks("MATCH", " rest of line\r\n");
 
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
         action.execute(state);
 
         assertTrue(action.executedAsPlanned());
-        assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
+        assertEquals("MATCH rest of line\r\n", action.getReceivedText());
         // Both fragments must have been consumed so nothing leaks into the handshake.
         assertEquals(2, fetchCount[0]);
     }
@@ -186,15 +193,15 @@ public class ReceiveRegexTextActionTest {
      */
     @Test
     public void testFragmentedDivergingReplyFailsFast() {
-        int[] fetchCount = feedChunks("58", "0 error\r\n");
+        int[] fetchCount = feedChunks("NO", "MATCH rest of line\r\n");
 
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
 
-        // Once "58" can never match /^234/ the action aborts the trace instead of silently
+        // Once "NO" can never match /^MATCH/ the action aborts the trace instead of silently
         // proceeding into the TLS handshake.
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         // The second fragment must not have been read.
-        assertEquals("58", action.getReceivedText());
+        assertEquals("NO", action.getReceivedText());
         assertEquals(1, fetchCount[0]);
     }
 }
