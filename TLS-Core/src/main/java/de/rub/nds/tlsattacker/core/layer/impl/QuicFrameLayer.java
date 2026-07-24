@@ -475,6 +475,9 @@ public class QuicFrameLayer
         initialPhaseExpectedCryptoFrameOffset = 0;
         handshakePhaseExpectedCryptoFrameOffset = 0;
         applicationPhaseExpectedCryptoFrameOffset = 0;
+        initialPhaseWriteCryptoFrameOffset = 0;
+        handshakePhaseWriteCryptoFrameOffset = 0;
+        applicationPhaseWriteCryptoFrameOffset = 0;
     }
 
     private void sendFrames(List<? extends QuicFrame> frames, QuicPacketLayerHint hint)

@@ -161,8 +161,10 @@ public class QuicContext extends LayerContext {
         this.initialHKDFAlgorithm = AlgorithmResolver.getHKDFAlgorithm(getInitialCipherSuite());
         this.initialAeadCipher = "AES/GCM/NoPadding";
         this.initalHeaderProtectionCipher = "AES/ECB/NoPadding";
+        this.initialSecretsInitialized = false;
         this.sourceConnectionId = this.generateRandomConnectionId(16);
-        this.destinationConnectionId = this.firstDestinationConnectionId;
+        this.firstDestinationConnectionId = null;
+        this.destinationConnectionId = null;
         if (getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             // we control the first destination ID as the client
             this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
