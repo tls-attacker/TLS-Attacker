@@ -19,7 +19,7 @@ public class NewConnectionIdFrameHandler extends QuicFrameHandler<NewConnectionI
 
     @Override
     public void adjustContext(NewConnectionIdFrame frame) {
-        this.quicContext.setDestinationConnectionId(frame.getConnectionId().getValue());
+        quicContext.setDestinationConnectionId(frame.getConnectionId().getValue());
         quicContext.addStatelessResetToken(frame.getStatelessResetToken().getValue());
     }
 }

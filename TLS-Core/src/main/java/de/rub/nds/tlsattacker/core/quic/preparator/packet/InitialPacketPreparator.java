@@ -35,13 +35,8 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
     }
 
     private void prepareToken() {
-        if (context.getInitialPacketToken() != null) {
-            packet.setToken(context.getInitialPacketToken());
-            packet.setTokenLength(context.getInitialPacketToken().length);
-        } else {
-            packet.setToken(new byte[] {});
-            packet.setTokenLength(0);
-        }
+        packet.setToken(chooser.getQuicInitialPacketToken());
+        packet.setTokenLength(chooser.getQuicInitialPacketToken().length);
         LOGGER.debug("Token: {}", packet.getToken().getValue());
         LOGGER.debug("Token Length: {}", packet.getTokenLength());
     }
@@ -65,12 +60,6 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     @Override
     protected int calculatePadding() {
-        if (context.getConfig().isQuicDoNotPad()) {
-            return 0;
-        }
-        if (packet.getConfiguredPadding() > -1) {
-            return packet.getConfiguredPadding();
-        }
         return Math.max(
                 0,
                 MiscRfcConstants.SMALLEST_MAX_DATAGRAM_SIZE

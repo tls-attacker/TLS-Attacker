@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.SocketManagement;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
@@ -156,17 +157,5 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void setDstPort(int port) {
         throw new RuntimeException("A ServerTransportHandler cannot set the client port");
-    }
-
-    /**
-     * Defines to which extent the TransportHandler manages the socket(s) DEFAULT - manage
-     * connection sockets and the ServerSocket EXTERNAL_SERVER_SOCKET - create connection sockets
-     * individually but do not manage ServerSocket EXTERNAL_SOCKET - only manage a specific given
-     * connection socket
-     */
-    private enum SocketManagement {
-        DEFAULT,
-        EXTERNAL_SERVER_SOCKET,
-        EXTERNAL_SOCKET;
     }
 }

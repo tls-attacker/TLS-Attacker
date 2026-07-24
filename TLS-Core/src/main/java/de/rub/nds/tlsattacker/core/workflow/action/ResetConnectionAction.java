@@ -122,6 +122,12 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                         .clearReceivedPacketBuffer();
                 ((QuicFrameLayer) context.getLayerStack().getLayer(QuicFrameLayer.class))
                         .clearCryptoFrameBuffer();
+                ((QuicFrameLayer) context.getLayerStack().getLayer(QuicFrameLayer.class))
+                        .setInitialPhaseWriteCryptoFrameOffset(0);
+                ((QuicFrameLayer) context.getLayerStack().getLayer(QuicFrameLayer.class))
+                        .setHandshakePhaseWriteCryptoFrameOffset(0);
+                ((QuicFrameLayer) context.getLayerStack().getLayer(QuicFrameLayer.class))
+                        .setApplicationPhaseWriteCryptoFrameOffset(0);
             }
         }
 

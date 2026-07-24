@@ -37,7 +37,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
     @Override
     public void adjustContext(KeyUpdateMessage message) {
         if (tlsContext.getChooser().getTalkingConnectionEnd()
-                != tlsContext.getChooser().getConnectionEndType()) {
+                        != tlsContext.getChooser().getConnectionEndType()
+                && tlsContext.getRecordLayer() != null) {
             adjustApplicationTrafficSecrets();
             setRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
         }
@@ -45,8 +46,10 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
     @Override
     public void adjustContextAfterSerialize(KeyUpdateMessage message) {
-        adjustApplicationTrafficSecrets();
-        setRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+        if (tlsContext.getRecordLayer() != null) {
+            adjustApplicationTrafficSecrets();
+            setRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+        }
     }
 
     private void adjustApplicationTrafficSecrets() {

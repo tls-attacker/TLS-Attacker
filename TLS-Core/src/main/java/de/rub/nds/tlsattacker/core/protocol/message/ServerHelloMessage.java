@@ -200,7 +200,7 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddCertificateStatusRequestExtension()) {
                 configuredExtensions.add(new CertificateStatusRequestExtensionMessage());
             }
-            if (tlsConfig.isAddAlpnExtension()) {
+            if (tlsConfig.isAddAlpnExtension() && !tlsConfig.getHighestProtocolVersion().is13()) {
                 configuredExtensions.add(new AlpnExtensionMessage());
             }
             if (tlsConfig.isAddSRPExtension()) {

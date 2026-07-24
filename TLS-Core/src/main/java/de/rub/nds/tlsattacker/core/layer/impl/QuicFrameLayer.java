@@ -23,7 +23,28 @@ import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.frame.*;
+import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.CryptoFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.DataBlockedFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.DatagramFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.MaxDataFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.MaxStreamDataFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.MaxStreamsFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.PaddingFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.ResetStreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.RetireConnectionIdFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.StopSendingFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.StreamDataBlockedFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.StreamsBlockedFrame;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -53,16 +74,18 @@ public class QuicFrameLayer
     private final QuicContext quicContext;
 
     private final int MAX_FRAME_SIZE;
-    private static final int DEFAULT_STREAM_ID = 2;
+    private static final int DEFAULT_STREAM_ID = 0;
     private static final int MIN_FRAME_SIZE = 32;
 
     private long initialPhaseExpectedCryptoFrameOffset = 0;
     private long handshakePhaseExpectedCryptoFrameOffset = 0;
     private long applicationPhaseExpectedCryptoFrameOffset = 0;
 
-    private List<CryptoFrame> cryptoFrameBuffer = new ArrayList<>();
+    private long initialPhaseWriteCryptoFrameOffset = 0;
+    private long handshakePhaseWriteCryptoFrameOffset = 0;
+    private long applicationPhaseWriteCryptoFrameOffset = 0;
 
-    private boolean hasExperiencedTimeout = false;
+    private List<CryptoFrame> cryptoFrameBuffer = new ArrayList<>();
 
     public QuicFrameLayer(Context context) {
         super(ImplementedLayers.QUICFRAME);
@@ -77,37 +100,10 @@ public class QuicFrameLayer
      * @return LayerProcessingResult A result object storing information about sending the data
      * @throws IOException When the data cannot be sent
      */
-    @Override
     protected LayerProcessingResult<QuicFrame> sendConfigurationInternal() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
-
-        SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
-        QuicPacketLayerHint prevHint = null;
-
-        if (configuration != null
-                && configuration.getContainerList() != null
-                && !configuration.getContainerList().isEmpty()) {
-            for (QuicFrame frame : configuration.getContainerList()) {
-                byte[] bytes = writeFrame(frame);
-                QuicPacketLayerHint hint = getHintForFrame();
-                if (hint != null) {
-                    hint = hint.asNewPacket(false);
-                }
-                addProducedContainer(frame);
-
-                if (prevHint != null
-                        && hint != null
-                        && !hint.isNewPacket()
-                        && prevHint.getQuicPacketType() == hint.getQuicPacketType()
-                        && stream.size() != 0) {
-                    // Flush packets before the current packet
-                    getLowerLayer().sendData(hint, stream.toByteArray());
-                    stream.reset();
-                }
-                stream.writeBytes(bytes);
-                prevHint = hint;
-            }
-            getLowerLayer().sendData(prevHint, stream.toByteArray());
+        if (configuration != null && configuration.getContainerList() != null) {
+            sendFrames(getUnprocessedConfiguredContainers(), getHintForFrame());
         }
         return getLayerResult();
     }
@@ -121,7 +117,6 @@ public class QuicFrameLayer
      * @return LayerProcessingResult A result object containing information about the sent packets
      * @throws IOException When the data cannot be sent
      */
-    @Override
     protected LayerProcessingResult<QuicFrame> sendDataInternal(
             LayerProcessingHint hint, byte[] data) throws IOException {
         ProtocolMessageType hintedType;
@@ -143,44 +138,28 @@ public class QuicFrameLayer
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.HANDSHAKE_PACKET);
                     }
                     List<QuicFrame> givenFrames = getUnprocessedConfiguredContainers();
-                    int offset = 0;
-
-                    // Send crypto frames from the configuration (if present)
-                    List<CryptoFrame> givenCryptoFrames =
-                            givenFrames.stream()
-                                    .filter(frame -> frame instanceof CryptoFrame)
-                                    .map(frame -> (CryptoFrame) frame)
-                                    .toList();
-                    for (CryptoFrame frame : givenCryptoFrames) {
-                        int toCopy =
-                                frame.getMaxFrameLengthConfig() != 0
-                                        ? frame.getMaxFrameLengthConfig()
-                                        : MAX_FRAME_SIZE;
-                        byte[] payload = Arrays.copyOfRange(data, offset, offset + toCopy);
-                        frame.setCryptoDataConfig(payload);
-                        frame.setOffsetConfig(offset);
-                        frame.setLengthConfig(payload.length);
-                        addProducedContainer(frame);
-                        // TODO: Add option to pass everything together to the next layer
-                        getLowerLayer().sendData(packetLayerHint, writeFrame(frame));
-
-                        offset += toCopy;
-                        if (offset >= data.length) {
-                            break;
-                        }
-                    }
-
-                    // Send fresh crypto frames if not enough frames were specified explicitly
-                    for (; offset < data.length; offset += MAX_FRAME_SIZE) {
-                        byte[] payload =
-                                Arrays.copyOfRange(
+                    if (getLayerConfiguration().getContainerList() != null
+                            && givenFrames.size() > 0) {
+                        List<CryptoFrame> givenCryptoFrames =
+                                givenFrames.stream()
+                                        .filter(
+                                                frame ->
+                                                        QuicFrameType.getFrameType(
+                                                                        frame.getFrameType()
+                                                                                .getValue())
+                                                                == QuicFrameType.CRYPTO_FRAME)
+                                        .map(frame -> (CryptoFrame) frame)
+                                        .collect(Collectors.toList());
+                        List<CryptoFrame> frames =
+                                getEnoughCryptoFrames(
+                                        packetLayerHint.getQuicPacketType(),
                                         data,
-                                        offset,
-                                        Math.min(offset + MAX_FRAME_SIZE, data.length));
-                        CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
-                        addProducedContainer(frame);
-                        // TODO: Add option to pass everything together to the next layer
-                        getLowerLayer().sendData(packetLayerHint, writeFrame(frame));
+                                        givenCryptoFrames);
+                        sendFrames(frames, packetLayerHint);
+                    } else {
+                        List<CryptoFrame> frames =
+                                getEnoughCryptoFrames(packetLayerHint.getQuicPacketType(), data);
+                        sendFrames(frames, packetLayerHint);
                     }
                     break;
                 case APPLICATION_DATA:
@@ -219,7 +198,6 @@ public class QuicFrameLayer
      *
      * @return LayerProcessingResult A result object containing information about the received data.
      */
-    @Override
     protected LayerProcessingResult<QuicFrame> receiveDataInternal() {
         try {
             InputStream dataStream;
@@ -239,15 +217,15 @@ public class QuicFrameLayer
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
-            hasExperiencedTimeout = true;
+            setReachedTimeout(true);
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Desitination port unreachable");
             LOGGER.trace(ex);
-            hasExperiencedTimeout = true;
+            setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
-            hasExperiencedTimeout = true;
+            setReachedTimeout(true);
         } catch (IOException ex) {
             LOGGER.warn("The lower layer did not produce a data stream: ", ex);
         }
@@ -260,7 +238,6 @@ public class QuicFrameLayer
      * @param hint This hint from the calling layer specifies which data its wants to read.
      * @throws IOException When no data can be read
      */
-    @Override
     protected void receiveMoreDataForHintInternal(LayerProcessingHint hint) throws IOException {
         try {
             while (currentInputStream == null || currentInputStream.available() == 0) {
@@ -272,15 +249,15 @@ public class QuicFrameLayer
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
-            hasExperiencedTimeout = true;
+            setReachedTimeout(true);
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
-            hasExperiencedTimeout = true;
+            setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
-            hasExperiencedTimeout = true;
+            setReachedTimeout(true);
         }
     }
 
@@ -410,8 +387,8 @@ public class QuicFrameLayer
             }
         }
 
-        if (isAckEliciting) {
-            sendAck(null);
+        if (!quicContext.isTemporarilyDisabledAcks() && isAckEliciting) {
+            sendAck(null, null);
         } else {
             if (!quicContext.getReceivedPackets().isEmpty()) {
                 quicContext.getReceivedPackets().removeLast();
@@ -458,26 +435,35 @@ public class QuicFrameLayer
     }
 
     @Override
-    public void sendAck(byte[] data) {
-        AckFrame frame = new AckFrame(false);
+    public void sendAck(byte[] data, QuicFrameLayerHint hint) {
+        long packetNumberToAck = 0;
+        QuicPacketType packetTypeToAck = null;
         if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-            frame.setLargestAcknowledgedConfig(
-                    quicContext.getReceivedInitialPacketNumbers().getLast());
-            LOGGER.debug("Send Ack for Initial Packet #{}", frame.getLargestAcknowledgedConfig());
+            packetNumberToAck = quicContext.getReceivedInitialPacketNumbers().getLast();
+            packetTypeToAck = QuicPacketType.INITIAL_PACKET;
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
-            frame.setLargestAcknowledgedConfig(
-                    quicContext.getReceivedHandshakePacketNumbers().getLast());
-            LOGGER.debug("Send Ack for Handshake Packet #{}", frame.getLargestAcknowledgedConfig());
+            packetNumberToAck = quicContext.getReceivedHandshakePacketNumbers().getLast();
+            packetTypeToAck = QuicPacketType.HANDSHAKE_PACKET;
         } else if (quicContext.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-            frame.setLargestAcknowledgedConfig(
-                    quicContext.getReceivedOneRTTPacketNumbers().getLast());
-            LOGGER.debug("Send Ack for 1RTT Packet #{}", frame.getLargestAcknowledgedConfig());
+            packetNumberToAck = quicContext.getReceivedOneRTTPacketNumbers().getLast();
+            packetTypeToAck = QuicPacketType.ONE_RTT_PACKET;
+        } else {
+            LOGGER.warn(
+                    "Received request to send automatic ACK, but no packet to ACK has been received - ignoring.");
+            return;
         }
+        sendAckForPacket(packetTypeToAck, packetNumberToAck);
+    }
 
+    public void sendAckForPacket(QuicPacketType packetType, long packetNumber) {
+        AckFrame frame = new AckFrame(false);
+        frame.setLargestAcknowledgedConfig(packetNumber);
         frame.setAckDelayConfig(1);
         frame.setAckRangeCountConfig(0);
         frame.setFirstACKRangeConfig(0);
-        ((AcknowledgingProtocolLayer) getLowerLayer()).sendAck(writeFrame(frame));
+        LOGGER.debug("Send Ack for {} Packet #{}", packetType, packetNumber);
+        ((QuicPacketLayer) getLowerLayer())
+                .sendAck(writeFrame(frame), new QuicPacketLayerHint(packetType));
     }
 
     /**
@@ -491,7 +477,120 @@ public class QuicFrameLayer
         applicationPhaseExpectedCryptoFrameOffset = 0;
     }
 
-    public boolean hasExperiencedTimeout() {
-        return hasExperiencedTimeout;
+    private void sendFrames(List<? extends QuicFrame> frames, QuicPacketLayerHint hint)
+            throws IOException {
+        if (context.getConfig().isQuicFrameLayerAllConfigurationsOnePacket()) {
+            SilentByteArrayOutputStream stream = new SilentByteArrayOutputStream();
+            for (QuicFrame frame : frames) {
+                byte[] bytes = writeFrame(frame);
+                stream.writeBytes(bytes);
+                addProducedContainer(frame);
+                hint.addFrameBoundary(bytes.length);
+            }
+            getLowerLayer().sendData(hint, stream.toByteArray());
+        } else {
+            for (QuicFrame frame : frames) {
+                byte[] bytes = writeFrame(frame);
+                addProducedContainer(frame);
+                getLowerLayer().sendData(hint, bytes);
+            }
+        }
+    }
+
+    private List<CryptoFrame> getEnoughCryptoFrames(QuicPacketType type, byte[] data) {
+        List<CryptoFrame> frames = new ArrayList<>();
+        for (int offset = 0; offset < data.length; offset += MAX_FRAME_SIZE) {
+            byte[] payload =
+                    Arrays.copyOfRange(
+                            data, offset, Math.min(offset + MAX_FRAME_SIZE, data.length));
+            CryptoFrame frame =
+                    new CryptoFrame(payload, getWriteCryptoFrameOffset(type), payload.length);
+            increaseWriteCryptoFrameOffset(type, payload.length);
+            frames.add(frame);
+        }
+        return frames;
+    }
+
+    private List<CryptoFrame> getEnoughCryptoFrames(
+            QuicPacketType type, byte[] data, List<CryptoFrame> frames) {
+        int offset = 0;
+        for (CryptoFrame frame : frames) {
+            int maxSize =
+                    frame.getMaxFrameLengthConfig() != 0
+                            ? frame.getMaxFrameLengthConfig()
+                            : MAX_FRAME_SIZE;
+            byte[] payload =
+                    Arrays.copyOfRange(data, offset, Math.min(offset + maxSize, data.length));
+            frame.setCryptoDataConfig(payload);
+            frame.setOffsetConfig(getWriteCryptoFrameOffset(type));
+            frame.setLengthConfig(payload.length);
+            offset += payload.length;
+            increaseWriteCryptoFrameOffset(type, payload.length);
+            if (offset >= data.length) {
+                return frames;
+            }
+        }
+        // Not enough crypto frames
+        byte[] remainingPayload = Arrays.copyOfRange(data, offset, data.length);
+        frames.addAll(getEnoughCryptoFrames(type, remainingPayload));
+        return frames;
+    }
+
+    private long getWriteCryptoFrameOffset(QuicPacketType type) {
+        switch (type) {
+            case INITIAL_PACKET:
+                return initialPhaseWriteCryptoFrameOffset;
+            case HANDSHAKE_PACKET:
+                return handshakePhaseWriteCryptoFrameOffset;
+            case ONE_RTT_PACKET:
+            case ZERO_RTT_PACKET:
+                return applicationPhaseWriteCryptoFrameOffset;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported packet type for WriteCryptoFrameOffset");
+        }
+    }
+
+    private void increaseWriteCryptoFrameOffset(QuicPacketType type, int value) {
+        switch (type) {
+            case INITIAL_PACKET:
+                initialPhaseWriteCryptoFrameOffset += value;
+                break;
+            case HANDSHAKE_PACKET:
+                handshakePhaseWriteCryptoFrameOffset += value;
+                break;
+            case ONE_RTT_PACKET:
+            case ZERO_RTT_PACKET:
+                applicationPhaseWriteCryptoFrameOffset += value;
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported packet type for WriteCryptoFrameOffset");
+        }
+    }
+
+    public long getInitialPhaseWriteCryptoFrameOffset() {
+        return initialPhaseWriteCryptoFrameOffset;
+    }
+
+    public void setInitialPhaseWriteCryptoFrameOffset(long initialPhaseWriteCryptoFrameOffset) {
+        this.initialPhaseWriteCryptoFrameOffset = initialPhaseWriteCryptoFrameOffset;
+    }
+
+    public long getHandshakePhaseWriteCryptoFrameOffset() {
+        return handshakePhaseWriteCryptoFrameOffset;
+    }
+
+    public void setHandshakePhaseWriteCryptoFrameOffset(long handshakePhaseWriteCryptoFrameOffset) {
+        this.handshakePhaseWriteCryptoFrameOffset = handshakePhaseWriteCryptoFrameOffset;
+    }
+
+    public long getApplicationPhaseWriteCryptoFrameOffset() {
+        return applicationPhaseWriteCryptoFrameOffset;
+    }
+
+    public void setApplicationPhaseWriteCryptoFrameOffset(
+            long applicationPhaseWriteCryptoFrameOffset) {
+        this.applicationPhaseWriteCryptoFrameOffset = applicationPhaseWriteCryptoFrameOffset;
     }
 }

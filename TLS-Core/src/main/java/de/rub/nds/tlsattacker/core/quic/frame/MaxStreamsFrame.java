@@ -83,4 +83,9 @@ public class MaxStreamsFrame extends QuicFrame {
     public void setMaximumStreamsConfig(int maximumStreamsConfig) {
         this.maximumStreamsConfig = maximumStreamsConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "MS";
+    }
 }

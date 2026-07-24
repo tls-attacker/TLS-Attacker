@@ -62,4 +62,9 @@ public class PathChallengeFrame extends QuicFrame {
     public void setData(byte[] data) {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
+
+    @Override
+    public String toShortString() {
+        return "PC";
+    }
 }

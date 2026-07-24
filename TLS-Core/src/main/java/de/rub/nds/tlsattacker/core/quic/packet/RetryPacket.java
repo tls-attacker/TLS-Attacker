@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import javax.crypto.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
@@ -59,7 +58,6 @@ public class RetryPacket extends LongHeaderPacket {
      */
     public boolean verifyRetryIntegrityTag(QuicContext context) {
         byte[] computedTag = QuicPacketCryptoComputations.calculateRetryIntegrityTag(context, this);
-
         boolean tagsEqual = Arrays.areEqual(getRetryIntegrityTag().getValue(), computedTag);
         LOGGER.debug("Retry Integrity Tag is valid? {}", tagsEqual);
         return tagsEqual;
@@ -83,6 +81,11 @@ public class RetryPacket extends LongHeaderPacket {
     @Override
     public RetryPacketParser getParser(Context context, InputStream stream) {
         return new RetryPacketParser(stream, context.getQuicContext());
+    }
+
+    @Override
+    public String toShortString() {
+        return "RT";
     }
 
     public ModifiableByteArray getRetryToken() {

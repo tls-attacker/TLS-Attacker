@@ -76,4 +76,9 @@ public class RetireConnectionIdFrame extends QuicFrame {
     public void setSequenceNumberConfig(int sequenceNumberConfig) {
         this.sequenceNumberConfig = sequenceNumberConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "RCID";
+    }
 }

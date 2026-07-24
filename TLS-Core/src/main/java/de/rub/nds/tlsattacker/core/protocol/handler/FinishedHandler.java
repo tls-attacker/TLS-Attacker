@@ -31,7 +31,6 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,9 +55,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                         try {
                             QuicPacketCryptoComputations.calculateApplicationSecrets(
                                     tlsContext.getContext());
-                        } catch (NoSuchAlgorithmException
-                                | NoSuchPaddingException
-                                | CryptoException e) {
+                        } catch (NoSuchAlgorithmException | CryptoException e) {
                             LOGGER.error("Could not initialize application secrets: ", e);
                         }
                     }

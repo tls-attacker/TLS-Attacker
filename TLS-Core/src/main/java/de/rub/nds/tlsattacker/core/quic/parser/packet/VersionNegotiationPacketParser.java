@@ -30,11 +30,9 @@ public class VersionNegotiationPacketParser
         parseSourceConnectionIdLength(packet);
         parseSourceConnectionId(packet);
         parseSupportedVersion(packet);
-
-        packet.setUnprotectedPayload(new byte[0]);
     }
 
-    protected void parseSupportedVersion(VersionNegotiationPacket packet) {
+    private void parseSupportedVersion(VersionNegotiationPacket packet) {
         packet.setSupportedVersions(parseTillEnd());
         LOGGER.debug("Supported Versions: {}", packet.getSupportedVersions().getValue());
     }

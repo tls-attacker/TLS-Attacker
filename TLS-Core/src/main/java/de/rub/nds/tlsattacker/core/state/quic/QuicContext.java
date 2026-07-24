@@ -14,16 +14,21 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicPacketLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +37,6 @@ public class QuicContext extends LayerContext {
     private static final Logger LOGGER = LogManager.getLogger();
 
     // TODO we may want to add config fields for these one day
-    public static final byte[] DEFAULT_INITIAL_PACKET_TOKEN = new byte[] {};
     public static final int DEFAULT_INITIAL_PACKET_NUMBER = 0;
 
     private QuicVersion quicVersion;
@@ -40,23 +44,23 @@ public class QuicContext extends LayerContext {
     private byte[] firstDestinationConnectionId;
     private byte[] destinationConnectionId;
     private byte[] sourceConnectionId;
-    private byte[] initialPacketToken = DEFAULT_INITIAL_PACKET_TOKEN;
+    private byte[] initialPacketToken;
     private QuicTransportParameters receivedTransportParameters;
 
     private byte[] initialSalt;
     private HKDFAlgorithm initialHKDFAlgorithm;
-    private Cipher initialAeadCipher;
-    private Cipher initalHeaderProtectionCipher;
+    private String initialAeadCipher;
+    private String initalHeaderProtectionCipher;
     private CipherSuite initialCipherSuite;
 
     private HKDFAlgorithm zeroRTTHKDFAlgorithm;
-    private Cipher zeroRTTAeadCipher;
-    private Cipher zeroRTTHeaderProtectionCipher;
+    private String zeroRTTAeadCipher;
+    private String zeroRTTHeaderProtectionCipher;
     private CipherSuite zeroRTTCipherSuite;
 
     private HKDFAlgorithm hkdfAlgorithm;
-    private Cipher aeadCipher;
-    private Cipher headerProtectionCipher;
+    private String aeadCipher;
+    private String headerProtectionCipher;
 
     // Initial Keys
     private boolean initialSecretsInitialized;
@@ -126,14 +130,23 @@ public class QuicContext extends LayerContext {
     private final LinkedList<Integer> receivedHandshakePacketNumbers = new LinkedList<>();
     private final LinkedList<Integer> receivedOneRTTPacketNumbers = new LinkedList<>();
 
-    private final List<byte[]> receivedStatelessResetTokens = new ArrayList<>();
-
     private List<byte[]> supportedVersions = new ArrayList<>();
 
     private ConnectionCloseFrame receivedConnectionCloseFrame;
-    private boolean receivedStatelessResetToken = false;
 
     private byte[] pathChallengeData;
+
+    // Indicates whether sending of acknowledgments is temporarily disabled
+    private boolean temporarilyDisabledAcks;
+
+    // Received stateless reset tokens to detect stateless reset packets
+    private final List<byte[]> receivedStatelessResetTokens = new ArrayList<>();
+
+    // Indicates whether a stateless reset packet was received
+    private boolean receivedStatelessResetToken;
+
+    private List<Integer> receivedStreamsIds = new ArrayList<>();
+
     private int amountOfUdpPaddingBytesReceived;
 
     public QuicContext(Context context) {
@@ -146,20 +159,21 @@ public class QuicContext extends LayerContext {
         this.initialSalt = quicVersion.getInitialSalt();
         this.initialCipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         this.initialHKDFAlgorithm = AlgorithmResolver.getHKDFAlgorithm(getInitialCipherSuite());
-        try {
-            this.initialAeadCipher = Cipher.getInstance("AES/GCM/NoPadding");
-            this.initalHeaderProtectionCipher = Cipher.getInstance("AES/ECB/NoPadding");
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            e.printStackTrace();
-        }
+        this.initialAeadCipher = "AES/GCM/NoPadding";
+        this.initalHeaderProtectionCipher = "AES/ECB/NoPadding";
         this.sourceConnectionId = this.generateRandomConnectionId(16);
-        this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
         this.destinationConnectionId = this.firstDestinationConnectionId;
-        try {
-            QuicPacketCryptoComputations.calculateInitialSecrets(this);
-        } catch (NoSuchAlgorithmException | CryptoException e) {
-            LOGGER.error("Could not initialize initial secrets: ", e);
+        if (getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            // we control the first destination ID as the client
+            this.firstDestinationConnectionId = this.generateRandomConnectionId(16);
+            try {
+                QuicPacketCryptoComputations.calculateInitialSecrets(this);
+            } catch (NoSuchAlgorithmException | CryptoException e) {
+                LOGGER.error("Could not initialize initial secrets: ", e);
+            }
         }
+        this.receivedStatelessResetToken = false;
+        this.temporarilyDisabledAcks = false;
         this.amountOfUdpPaddingBytesReceived = 0;
     }
 
@@ -214,13 +228,22 @@ public class QuicContext extends LayerContext {
         this.receivedInitialPacketNumbers.clear();
         this.receivedHandshakePacketNumbers.clear();
         this.receivedOneRTTPacketNumbers.clear();
+        this.receivedStatelessResetTokens.clear();
 
         this.supportedVersions.clear();
         this.receivedConnectionCloseFrame = null;
-        this.receivedStatelessResetToken = false;
-        this.receivedStatelessResetTokens.clear();
 
+        this.receivedStatelessResetToken = false;
+        this.temporarilyDisabledAcks = false;
         this.amountOfUdpPaddingBytesReceived = 0;
+    }
+
+    public QuicFrameLayer getQuicFrameLayer() {
+        return (QuicFrameLayer) getContext().getLayerStack().getLayer(QuicFrameLayer.class);
+    }
+
+    public QuicPacketLayer getQuicPacketLayer() {
+        return (QuicPacketLayer) getContext().getLayerStack().getLayer(QuicPacketLayer.class);
     }
 
     public int getOneRTTPacketPacketNumber() {
@@ -331,7 +354,7 @@ public class QuicContext extends LayerContext {
         return initialCipherSuite;
     }
 
-    public Cipher getInitialAeadCipher() {
+    public String getInitialAeadCipher() {
         return initialAeadCipher;
     }
 
@@ -662,27 +685,27 @@ public class QuicContext extends LayerContext {
         this.hkdfAlgorithm = hkdfAlgorithm;
     }
 
-    public Cipher getAeadCipher() {
+    public String getAeadCipher() {
         return aeadCipher;
     }
 
-    public void setAeadCipher(Cipher aeadCipher) {
+    public void setAeadCipher(String aeadCipher) {
         this.aeadCipher = aeadCipher;
     }
 
-    public Cipher getInitalHeaderProtectionCipher() {
+    public String getInitalHeaderProtectionCipher() {
         return initalHeaderProtectionCipher;
     }
 
-    public void setInitalHeaderProtectionCipher(Cipher initalHeaderProtectionCipher) {
+    public void setInitalHeaderProtectionCipher(String initalHeaderProtectionCipher) {
         this.initalHeaderProtectionCipher = initalHeaderProtectionCipher;
     }
 
-    public Cipher getHeaderProtectionCipher() {
+    public String getHeaderProtectionCipher() {
         return headerProtectionCipher;
     }
 
-    public void setHeaderProtectionCipher(Cipher headerProtectionCipher) {
+    public void setHeaderProtectionCipher(String headerProtectionCipher) {
         this.headerProtectionCipher = headerProtectionCipher;
     }
 
@@ -714,19 +737,19 @@ public class QuicContext extends LayerContext {
         this.zeroRTTHKDFAlgorithm = zeroRTTHKDFAlgorithm;
     }
 
-    public Cipher getZeroRTTAeadCipher() {
+    public String getZeroRTTAeadCipher() {
         return zeroRTTAeadCipher;
     }
 
-    public void setZeroRTTAeadCipher(Cipher zeroRTTAeadCipher) {
+    public void setZeroRTTAeadCipher(String zeroRTTAeadCipher) {
         this.zeroRTTAeadCipher = zeroRTTAeadCipher;
     }
 
-    public Cipher getZeroRTTHeaderProtectionCipher() {
+    public String getZeroRTTHeaderProtectionCipher() {
         return zeroRTTHeaderProtectionCipher;
     }
 
-    public void setZeroRTTHeaderProtectionCipher(Cipher zeroRTTHeaderProtectionCipher) {
+    public void setZeroRTTHeaderProtectionCipher(String zeroRTTHeaderProtectionCipher) {
         this.zeroRTTHeaderProtectionCipher = zeroRTTHeaderProtectionCipher;
     }
 
@@ -747,7 +770,6 @@ public class QuicContext extends LayerContext {
     }
 
     public void addStatelessResetToken(byte[] token) {
-        LOGGER.debug("Adding new Stateless Reset Token: {}", token);
         receivedStatelessResetTokens.add(token);
     }
 
@@ -766,6 +788,27 @@ public class QuicContext extends LayerContext {
 
     public boolean hasReceivedStatelessResetToken() {
         return receivedStatelessResetToken;
+    }
+
+    public boolean isTemporarilyDisabledAcks() {
+        return temporarilyDisabledAcks;
+    }
+
+    public void setTemporarilyDisabledAcks(boolean temporarilyDisabledAcks) {
+        this.temporarilyDisabledAcks = temporarilyDisabledAcks;
+    }
+
+    public void addReceivedStreamsId(int id) {
+        receivedStreamsIds.add(id);
+    }
+
+    public boolean isReceivedStreamsId(int id) {
+        for (int streamId : receivedStreamsIds) {
+            if (streamId == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getAmountOfUdpPaddingBytesReceived() {

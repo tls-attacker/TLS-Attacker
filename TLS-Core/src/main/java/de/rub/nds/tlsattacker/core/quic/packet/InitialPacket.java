@@ -146,6 +146,11 @@ public class InitialPacket extends LongHeaderPacket {
         return new InitialPacketParser(stream, context.getQuicContext());
     }
 
+    @Override
+    public String toShortString() {
+        return "IN";
+    }
+
     public void setToken(ModifiableByteArray token) {
         this.token = token;
     }

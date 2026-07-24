@@ -19,8 +19,10 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -217,6 +219,15 @@ public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMess
                                             clientKeySet,
                                             tlsContext.getChooser().getEarlyDataCipherSuite(),
                                             tlsContext.getWriteConnectionId()));
+                }
+                if (tlsContext.getConfig().getDefaultLayerConfiguration()
+                        == StackConfiguration.QUIC) {
+                    try {
+                        QuicPacketCryptoComputations.calculateZeroRTTSecrets(
+                                tlsContext.getContext());
+                    } catch (NoSuchAlgorithmException | CryptoException e) {
+                        LOGGER.error("Could not calculate 0-RTT secrets", e);
+                    }
                 }
             }
         } catch (NoSuchAlgorithmException ex) {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.packet;
 
-import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,16 +24,21 @@ public class VersionNegotiationPacketSerializer
     @Override
     protected byte[] serializeBytes() {
         writeUnprotectedFlags(packet);
-        writeQuicVersion(packet); // Version set to 0x00000000 in preparator
+        writeQuicVersion(packet);
         writeDestinationConnectionIdLength(packet);
         writeDestinationConnectionId(packet);
         writeSourceConnectionIdLength(packet);
         writeSourceConnectionId(packet);
-        appendBytes(QuicVersion.VERSION_1.getByteValue());
+        writeSupportedVersions(packet);
         return getAlreadySerialized();
     }
 
-    protected void writeUnprotectedFlags(VersionNegotiationPacket packet) {
+    private void writeSupportedVersions(VersionNegotiationPacket packet) {
+        appendBytes(packet.getSupportedVersions().getValue());
+        LOGGER.debug("Supported Versions: {}", packet.getSupportedVersions().getValue());
+    }
+
+    private void writeUnprotectedFlags(VersionNegotiationPacket packet) {
         appendByte(packet.getUnprotectedFlags().getValue());
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }

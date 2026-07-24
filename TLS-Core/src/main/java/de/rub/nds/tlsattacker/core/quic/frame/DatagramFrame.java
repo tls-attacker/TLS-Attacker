@@ -118,4 +118,9 @@ public class DatagramFrame extends QuicFrame {
     public void setLengthField(boolean hasLengthField) {
         this.hasLengthField = hasLengthField;
     }
+
+    @Override
+    public String toShortString() {
+        return "DG";
+    }
 }

@@ -27,10 +27,12 @@ public class RetryPacketPreparator extends LongHeaderPacketPreparator<RetryPacke
     public void prepare() {
         LOGGER.debug("Preparing Retry Packet");
         prepareUnprotectedFlags();
+        prepareQuicVersion();
+        prepareDestinationConnectionId();
+        prepareDestinationConnectionIdLength();
+        prepareSourceConnectionId();
+        prepareSourceConnectionIdLength();
         prepareRetryToken();
-        packet.setUnprotectedPacketNumber(0); // Retry packets do not have a packet number
-        packet.setUnprotectedPayload(new byte[0]);
-        prepareLongHeaderPacket();
         prepareRetryIntegrityTag();
     }
 

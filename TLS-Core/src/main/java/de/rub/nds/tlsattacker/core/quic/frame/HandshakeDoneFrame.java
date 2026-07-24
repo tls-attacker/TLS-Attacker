@@ -47,4 +47,9 @@ public class HandshakeDoneFrame extends QuicFrame {
     public HandshakeDoneFrameParser getParser(Context context, InputStream stream) {
         return new HandshakeDoneFrameParser(stream);
     }
+
+    @Override
+    public String toShortString() {
+        return "HD";
+    }
 }

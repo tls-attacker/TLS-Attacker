@@ -101,4 +101,9 @@ public class MaxStreamDataFrame extends QuicFrame {
     public void setMaximumStreamDataConfig(int maximumStreamDataConfig) {
         this.maximumStreamDataConfig = maximumStreamDataConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "MSD";
+    }
 }

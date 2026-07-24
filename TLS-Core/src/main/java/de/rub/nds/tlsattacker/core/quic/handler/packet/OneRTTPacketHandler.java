@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +31,7 @@ public class OneRTTPacketHandler extends QuicPacketHandler<OneRTTPacket> {
             if (!quicContext.isApplicationSecretsInitialized()) {
                 QuicPacketCryptoComputations.calculateApplicationSecrets(quicContext.getContext());
             }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
+        } catch (NoSuchAlgorithmException | CryptoException e) {
             LOGGER.error("Could not calculate application secrets", e);
         }
     }
