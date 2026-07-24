@@ -23,7 +23,7 @@ public class ServerTcpTransportHandlerTest {
 
     @BeforeEach
     public void setUp() {
-        handler = new ServerTcpTransportHandler(100, 100, FreePortFinder.getPossiblyFreePort());
+        handler = new ServerTcpTransportHandler(100, 100, FreePortFinder.getPossiblyFreeTcpPort());
     }
 
     @AfterEach

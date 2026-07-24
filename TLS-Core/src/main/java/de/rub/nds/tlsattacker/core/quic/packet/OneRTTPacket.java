@@ -37,7 +37,7 @@ public class OneRTTPacket extends QuicPacket {
 
     public OneRTTPacket(byte flags) {
         super(QuicPacketType.ONE_RTT_PACKET);
-        this.setProtectedFlags((byte) flags);
+        this.setProtectedFlags(flags);
         protectedHeaderHelper.write(flags);
         this.packetSecret = QuicCryptoSecrets.APPLICATION_SECRET;
     }
@@ -89,5 +89,10 @@ public class OneRTTPacket extends QuicPacket {
     @Override
     public OneRTTPacketParser getParser(Context context, InputStream stream) {
         return new OneRTTPacketParser(stream, context.getQuicContext());
+    }
+
+    @Override
+    public String toShortString() {
+        return "1-RTT";
     }
 }

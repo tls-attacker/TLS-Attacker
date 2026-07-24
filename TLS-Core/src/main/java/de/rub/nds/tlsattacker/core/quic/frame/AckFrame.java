@@ -258,4 +258,9 @@ public class AckFrame extends QuicFrame {
     public void setEcnCeConfig(long ecnCeConfig) {
         this.ecnCeConfig = ecnCeConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "ACK";
+    }
 }

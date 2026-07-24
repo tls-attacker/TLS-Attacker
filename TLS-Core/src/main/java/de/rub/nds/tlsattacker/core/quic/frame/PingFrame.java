@@ -49,4 +49,9 @@ public class PingFrame extends QuicFrame {
     public QuicFrameParser<PingFrame> getParser(Context context, InputStream stream) {
         return new PingFrameParser(stream);
     }
+
+    @Override
+    public String toShortString() {
+        return "PNG";
+    }
 }

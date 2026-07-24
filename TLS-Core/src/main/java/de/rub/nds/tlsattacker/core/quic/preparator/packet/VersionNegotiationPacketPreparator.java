@@ -26,12 +26,25 @@ public class VersionNegotiationPacketPreparator
 
     @Override
     public void prepare() {
+        LOGGER.debug("Preparing Version Negotiation Packet");
         prepareUnprotectedFlags();
         prepareQuicVersion();
-        prepareSourceConnectionId();
-        prepareSourceConnectionIdLength();
         prepareDestinationConnectionId();
         prepareDestinationConnectionIdLength();
+        prepareSourceConnectionId();
+        prepareSourceConnectionIdLength();
+        prepareSupportedVersions();
+    }
+
+    private void prepareSupportedVersions() {
+        packet.setSupportedVersions(context.getConfig().getQuicVersion().getByteValue());
+        LOGGER.debug("Supported Versions: {}", packet.getSupportedVersions().getValue());
+    }
+
+    @Override
+    public void prepareQuicVersion() {
+        packet.setQuicVersion(QuicVersion.NULL_VERSION);
+        LOGGER.debug("Quic Version: {}", packet.getQuicVersion().getValue());
     }
 
     private void prepareUnprotectedFlags() {
@@ -40,10 +53,5 @@ public class VersionNegotiationPacketPreparator
         packet.setUnprotectedFlags(unprotectedFlags);
         packet.setProtectedFlags(unprotectedFlags);
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
-    }
-
-    @Override
-    public void prepareQuicVersion() {
-        packet.setQuicVersion(QuicVersion.NULL_VERSION);
     }
 }

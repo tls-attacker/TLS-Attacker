@@ -9,8 +9,12 @@
 package de.rub.nds.tlsattacker.core.quic.crypto;
 
 import de.rub.nds.protocol.exception.CryptoException;
-import de.rub.nds.tlsattacker.core.quic.packet.*;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
+import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -27,60 +31,76 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The QuicEncryptor encrypts {@link QuicPacket} objects. It uses the {@link QuicContext} to get the
+ * The QuicEncryptor encrypts {@link QuicPacket} objects. It uses the {@link Chooser} to get the
  * necessary keys and cipher.
  */
 public class QuicEncryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final QuicContext context;
+    private final Chooser chooser;
 
-    public QuicEncryptor(QuicContext context) {
-        this.context = context;
+    public QuicEncryptor(Chooser chooser) {
+        this.chooser = chooser;
     }
 
     public void addHeaderProtectionInitial(InitialPacket packet) throws CryptoException {
         this.addHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateInitialServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateInitialClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicInitialHeaderProtectionCipher(),
+                        chooser.getQuicInitialServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicInitialHeaderProtectionCipher(),
+                        chooser.getQuicInitialClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void addHeaderProtectionHandshake(HandshakePacket packet) throws CryptoException {
         this.addHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateHandshakeServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateHandshakeClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicHeaderProtectionCipher(),
+                        chooser.getQuicHandshakeServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicHeaderProtectionCipher(),
+                        chooser.getQuicHandshakeClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void addHeaderProtectionZeroRTT(QuicPacket packet) throws CryptoException {
         this.addHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateZeroRTTServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateZeroRTTClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicZeroRTTHeaderProtectionCipher(),
+                        chooser.getQuicZeroRTTServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicZeroRTTHeaderProtectionCipher(),
+                        chooser.getQuicZeroRTTClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     public void addHeaderProtectionOneRRT(QuicPacket packet) throws CryptoException {
         this.addHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateOneRTTServerHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateOneRRTClientHeaderProtectionMask(
-                        context, packet.getHeaderProtectionSample()));
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicHeaderProtectionCipher(),
+                        chooser.getQuicApplicationServerHpKey(),
+                        packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHeaderProtectionMask(
+                        chooser.getQuicHeaderProtectionCipher(),
+                        chooser.getQuicApplicationClientHpKey(),
+                        packet.getHeaderProtectionSample()));
     }
 
     private void addHeaderProtection(
             QuicPacket packet,
             byte[] serverHeaderProtectionMask,
             byte[] clientHeaderProtectionMask) {
-        ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
+        ConnectionEndType connectionEndType = chooser.getTalkingConnectionEnd();
         byte[] headerProtectionMask;
 
         switch (connectionEndType) {
@@ -117,41 +137,41 @@ public class QuicEncryptor {
     public void encryptInitialPacket(InitialPacket packet) throws CryptoException {
         this.encrypt(
                 packet,
-                context.getInitialServerIv(),
-                context.getInitialServerKey(),
-                context.getInitialClientIv(),
-                context.getInitialClientKey(),
-                context.getInitialAeadCipher());
+                chooser.getQuicInitialServerIv(),
+                chooser.getQuicInitialServerKey(),
+                chooser.getQuicInitialClientIv(),
+                chooser.getQuicInitialClientKey(),
+                chooser.getQuicInitialAeadCipher());
     }
 
     public void encryptHandshakePacket(HandshakePacket packet) throws CryptoException {
         this.encrypt(
                 packet,
-                context.getHandshakeServerIv(),
-                context.getHandshakeServerKey(),
-                context.getHandshakeClientIv(),
-                context.getHandshakeClientKey(),
-                context.getAeadCipher());
+                chooser.getQuicHandshakeServerIv(),
+                chooser.getQuicHandshakeServerKey(),
+                chooser.getQuicHandshakeClientIv(),
+                chooser.getQuicHandshakeClientKey(),
+                chooser.getQuicAeadCipher());
     }
 
     public void encryptOneRRTPacket(QuicPacket packet) throws CryptoException {
         this.encrypt(
                 packet,
-                context.getApplicationServerIv(),
-                context.getApplicationServerKey(),
-                context.getApplicationClientIv(),
-                context.getApplicationClientKey(),
-                context.getAeadCipher());
+                chooser.getQuicApplicationServerIv(),
+                chooser.getQuicApplicationServerKey(),
+                chooser.getQuicApplicationClientIv(),
+                chooser.getQuicApplicationClientKey(),
+                chooser.getQuicAeadCipher());
     }
 
     public void encryptZeroRTTPacket(QuicPacket packet) throws CryptoException {
         this.encrypt(
                 packet,
-                context.getZeroRTTServerIv(),
-                context.getZeroRTTServerKey(),
-                context.getZeroRTTClientIv(),
-                context.getZeroRTTClientKey(),
-                context.getZeroRTTAeadCipher());
+                chooser.getQuicZeroRTTServerIv(),
+                chooser.getQuicZeroRTTServerKey(),
+                chooser.getQuicZeroRTTClientIv(),
+                chooser.getQuicZeroRTTClientKey(),
+                chooser.getQuicZeroRTTAeadCipher());
     }
 
     private void encrypt(
@@ -160,9 +180,9 @@ public class QuicEncryptor {
             byte[] serverKey,
             byte[] clientIv,
             byte[] clientKey,
-            Cipher cipher)
+            String cipherAlgorithm)
             throws CryptoException {
-        ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
+        ConnectionEndType connectionEndType = chooser.getTalkingConnectionEnd();
         byte[] encryptionIv;
         byte[] encryptionKey;
 
@@ -200,7 +220,12 @@ public class QuicEncryptor {
 
         try {
             byte[] encryptedPayload =
-                    aeadEncrypt(associatedData, decryptedPayload, nonce, encryptionKey, cipher);
+                    aeadEncrypt(
+                            associatedData,
+                            decryptedPayload,
+                            nonce,
+                            encryptionKey,
+                            cipherAlgorithm);
             packet.setProtectedPayload(encryptedPayload);
         } catch (IllegalStateException
                 | IllegalBlockSizeException
@@ -210,15 +235,17 @@ public class QuicEncryptor {
             throw new CryptoException("Could not encrypt " + packet.getPacketType().getName(), ex);
         } catch (InvalidAlgorithmParameterException ex) {
             LOGGER.info("Ignoring InvalidArgumentException");
-        } catch (NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
+            throw new CryptoException("Could not encrypt " + packet.getPacketType().getName(), e);
         }
     }
 
     private byte[] aeadEncrypt(
-            byte[] associatedData, byte[] plaintext, byte[] nonce, byte[] key, Cipher aeadCipher)
+            byte[] associatedData,
+            byte[] plaintext,
+            byte[] nonce,
+            byte[] key,
+            String cipherAlgorithm)
             throws InvalidKeyException,
                     IllegalBlockSizeException,
                     BadPaddingException,
@@ -227,16 +254,16 @@ public class QuicEncryptor {
                     InvalidAlgorithmParameterException {
         AlgorithmParameterSpec parameterSpec;
         String algo;
-        Cipher _cipher = Cipher.getInstance(aeadCipher.getAlgorithm());
-        if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
+        Cipher cipher = Cipher.getInstance(cipherAlgorithm);
+        if (cipherAlgorithm.equals("ChaCha20-Poly1305")) {
             algo = "ChaCha20";
             parameterSpec = new IvParameterSpec(nonce);
         } else {
             algo = "AES";
             parameterSpec = new GCMParameterSpec(128, nonce);
         }
-        _cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
-        _cipher.updateAAD(associatedData);
-        return _cipher.doFinal(plaintext);
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
+        cipher.updateAAD(associatedData);
+        return cipher.doFinal(plaintext);
     }
 }

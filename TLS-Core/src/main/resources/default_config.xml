@@ -1334,13 +1334,20 @@
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
     <maxUDPRetransmissions>3</maxUDPRetransmissions>
+    <quicFrameLayerAllConfigurationsOnePacket>true</quicFrameLayerAllConfigurationsOnePacket>
+    <quicPacketLayerAllConfigurationsOnePacket>true</quicPacketLayerAllConfigurationsOnePacket>
     <expectHandshakeDoneQuicFrame>false</expectHandshakeDoneQuicFrame>
     <isQuic>false</isQuic>
     <quicRetryFlowRequired>false</quicRetryFlowRequired>
     <quicVersion>VERSION_1</quicVersion>
+    <defaultQuicNewToken></defaultQuicNewToken>
     <quicImmediateCloseOnTlsError>false</quicImmediateCloseOnTlsError>
-    <defaultQuicNewToken>qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/</defaultQuicNewToken>
     <defaultQuicPathChallange>qrvM3QARIjM=</defaultQuicPathChallange>
+    <defaultQuicEncryptionKey>AAAAAAAAAAAAAAAAAAAAAA==</defaultQuicEncryptionKey>
+    <defaultQuicEncryptionIv>AAAAAAAAAAAAAAAA</defaultQuicEncryptionIv>
+    <defaultQuicHeaderProtectionKey>AAAAAAAAAAAAAAAAAAAAAA==</defaultQuicHeaderProtectionKey>
+    <defaultQuicAeadCipherAlgorithm>AES/GCM/NoPadding</defaultQuicAeadCipherAlgorithm>
+    <defaultQuicHeaderProtectionCipherAlgorithm>AES/ECB/NoPadding</defaultQuicHeaderProtectionCipherAlgorithm>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
@@ -1493,8 +1500,8 @@
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
-    <quicDoNotPad>false</quicDoNotPad>
-    <discardPacketsWithMismatchedSCID>true</discardPacketsWithMismatchedSCID>
+    <quicDoNotPadPackets>false</quicDoNotPadPackets>
+    <discardQuicPacketsWithMismatchedSCID>true</discardQuicPacketsWithMismatchedSCID>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>

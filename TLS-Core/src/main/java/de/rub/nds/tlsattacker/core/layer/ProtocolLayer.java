@@ -47,9 +47,9 @@ public abstract class ProtocolLayer<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<ContextType, Hint, Container> higherLayer = null;
+    private ProtocolLayer<?, ?, ?> higherLayer = null;
 
-    private ProtocolLayer<ContextType, Hint, Container> lowerLayer = null;
+    private ProtocolLayer<?, ?, ?> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -78,20 +78,20 @@ public abstract class ProtocolLayer<
         this.enabled = enabled;
     }
 
-    public ProtocolLayer<ContextType, Hint, Container> getHigherLayer() {
+    public ProtocolLayer<?, ?, ?> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer<ContextType, Hint, Container> getLowerLayer() {
+    public ProtocolLayer<?, ?, ?> getLowerLayer() {
         return lowerLayer;
     }
 
     public void setHigherLayer(ProtocolLayer<?, ?, ?> higherLayer) {
-        this.higherLayer = (ProtocolLayer<ContextType, Hint, Container>) higherLayer;
+        this.higherLayer = higherLayer;
     }
 
     public void setLowerLayer(ProtocolLayer<?, ?, ?> lowerLayer) {
-        this.lowerLayer = (ProtocolLayer<ContextType, Hint, Container>) lowerLayer;
+        this.lowerLayer = lowerLayer;
     }
 
     /**
@@ -158,7 +158,8 @@ public abstract class ProtocolLayer<
             if (getLowerLayer() == null) {
                 throw new IOException("Lowest layer was disabled, no layer to send data via.");
             }
-            return getLowerLayer().sendData(hint, additionalData);
+            return (LayerProcessingResult<Container>)
+                    getLowerLayer().sendData(hint, additionalData);
         }
         return sendDataInternal(hint, additionalData);
     }

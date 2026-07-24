@@ -1177,4 +1177,300 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultSelectedSrtpProtectionProfile();
         }
     }
+
+    @Override
+    public byte[] getQuicPathChallengeData() {
+        if (context.getQuicContext().getPathChallengeData() != null) {
+            return context.getQuicContext().getPathChallengeData();
+        } else {
+            return config.getDefaultQuicPathChallange();
+        }
+    }
+
+    @Override
+    public byte[] getQuicInitialPacketToken() {
+        if (context.getQuicContext().getInitialPacketToken() != null) {
+            return context.getQuicContext().getInitialPacketToken();
+        } else {
+            return config.getDefaultQuicNewToken();
+        }
+    }
+
+    // QUIC Encryption Keys
+
+    @Override
+    public byte[] getQuicInitialClientKey() {
+        if (context.getQuicContext().getInitialClientKey() != null) {
+            return context.getQuicContext().getInitialClientKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicInitialServerKey() {
+        if (context.getQuicContext().getInitialServerKey() != null) {
+            return context.getQuicContext().getInitialServerKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicHandshakeClientKey() {
+        if (context.getQuicContext().getHandshakeClientKey() != null) {
+            return context.getQuicContext().getHandshakeClientKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicHandshakeServerKey() {
+        if (context.getQuicContext().getHandshakeServerKey() != null) {
+            return context.getQuicContext().getHandshakeServerKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicApplicationClientKey() {
+        if (context.getQuicContext().getApplicationClientKey() != null) {
+            return context.getQuicContext().getApplicationClientKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicApplicationServerKey() {
+        if (context.getQuicContext().getApplicationServerKey() != null) {
+            return context.getQuicContext().getApplicationServerKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicZeroRTTClientKey() {
+        if (context.getQuicContext().getZeroRTTClientKey() != null) {
+            return context.getQuicContext().getZeroRTTClientKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicZeroRTTServerKey() {
+        if (context.getQuicContext().getZeroRTTServerKey() != null) {
+            return context.getQuicContext().getZeroRTTServerKey();
+        } else {
+            return config.getDefaultQuicEncryptionKey();
+        }
+    }
+
+    // QUIC Encryption IVs
+
+    @Override
+    public byte[] getQuicInitialClientIv() {
+        if (context.getQuicContext().getInitialClientIv() != null) {
+            return context.getQuicContext().getInitialClientIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicInitialServerIv() {
+        if (context.getQuicContext().getInitialServerIv() != null) {
+            return context.getQuicContext().getInitialServerIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicHandshakeClientIv() {
+        if (context.getQuicContext().getHandshakeClientIv() != null) {
+            return context.getQuicContext().getHandshakeClientIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicHandshakeServerIv() {
+        if (context.getQuicContext().getHandshakeServerIv() != null) {
+            return context.getQuicContext().getHandshakeServerIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicApplicationClientIv() {
+        if (context.getQuicContext().getApplicationClientIv() != null) {
+            return context.getQuicContext().getApplicationClientIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicApplicationServerIv() {
+        if (context.getQuicContext().getApplicationServerIv() != null) {
+            return context.getQuicContext().getApplicationServerIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicZeroRTTClientIv() {
+        if (context.getQuicContext().getZeroRTTClientIv() != null) {
+            return context.getQuicContext().getZeroRTTClientIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    @Override
+    public byte[] getQuicZeroRTTServerIv() {
+        if (context.getQuicContext().getZeroRTTServerIv() != null) {
+            return context.getQuicContext().getZeroRTTServerIv();
+        } else {
+            return config.getDefaultQuicEncryptionIv();
+        }
+    }
+
+    // QUIC Header Protection Keys
+
+    @Override
+    public byte[] getQuicInitialClientHpKey() {
+        if (context.getQuicContext().getInitialClientHeaderProtectionKey() != null) {
+            return context.getQuicContext().getInitialClientHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicInitialServerHpKey() {
+        if (context.getQuicContext().getInitialServerHeaderProtectionKey() != null) {
+            return context.getQuicContext().getInitialServerHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicHandshakeClientHpKey() {
+        if (context.getQuicContext().getHandshakeClientHeaderProtectionKey() != null) {
+            return context.getQuicContext().getHandshakeClientHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicHandshakeServerHpKey() {
+        if (context.getQuicContext().getHandshakeServerHeaderProtectionKey() != null) {
+            return context.getQuicContext().getHandshakeServerHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicApplicationClientHpKey() {
+        if (context.getQuicContext().getApplicationClientHeaderProtectionKey() != null) {
+            return context.getQuicContext().getApplicationClientHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicApplicationServerHpKey() {
+        if (context.getQuicContext().getApplicationServerHeaderProtectionKey() != null) {
+            return context.getQuicContext().getApplicationServerHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicZeroRTTClientHpKey() {
+        if (context.getQuicContext().getZeroRTTClientHeaderProtectionKey() != null) {
+            return context.getQuicContext().getZeroRTTClientHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    @Override
+    public byte[] getQuicZeroRTTServerHpKey() {
+        if (context.getQuicContext().getZeroRTTServerHeaderProtectionKey() != null) {
+            return context.getQuicContext().getZeroRTTServerHeaderProtectionKey();
+        } else {
+            return config.getDefaultQuicHeaderProtectionKey();
+        }
+    }
+
+    // QUIC Cipher Algorithms
+
+    @Override
+    public String getQuicInitialAeadCipher() {
+        if (context.getQuicContext().getInitialAeadCipher() != null) {
+            return context.getQuicContext().getInitialAeadCipher();
+        } else {
+            return config.getDefaultQuicAeadCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicInitialHeaderProtectionCipher() {
+        if (context.getQuicContext().getInitalHeaderProtectionCipher() != null) {
+            return context.getQuicContext().getInitalHeaderProtectionCipher();
+        } else {
+            return config.getDefaultQuicHeaderProtectionCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicAeadCipher() {
+        if (context.getQuicContext().getAeadCipher() != null) {
+            return context.getQuicContext().getAeadCipher();
+        } else {
+            return config.getDefaultQuicAeadCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicHeaderProtectionCipher() {
+        if (context.getQuicContext().getHeaderProtectionCipher() != null) {
+            return context.getQuicContext().getHeaderProtectionCipher();
+        } else {
+            return config.getDefaultQuicHeaderProtectionCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicZeroRTTAeadCipher() {
+        if (context.getQuicContext().getZeroRTTAeadCipher() != null) {
+            return context.getQuicContext().getZeroRTTAeadCipher();
+        } else {
+            return config.getDefaultQuicAeadCipherAlgorithm();
+        }
+    }
+
+    @Override
+    public String getQuicZeroRTTHeaderProtectionCipher() {
+        if (context.getQuicContext().getZeroRTTHeaderProtectionCipher() != null) {
+            return context.getQuicContext().getZeroRTTHeaderProtectionCipher();
+        } else {
+            return config.getDefaultQuicHeaderProtectionCipherAlgorithm();
+        }
+    }
 }

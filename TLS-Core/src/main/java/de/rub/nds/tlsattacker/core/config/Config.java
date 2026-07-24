@@ -352,7 +352,7 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultQuicTransportParameters")
     private QuicTransportParameters defaultQuicTransportParameters;
 
-    /** Default Retry Tag to send as a server */
+    /** Default retry token to send as a server */
     @XmlElement(name = "defaultQuicServerRetryToken")
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultQuicServerRetryToken =
@@ -804,6 +804,12 @@ public class Config implements Serializable {
      */
     private Integer maxUDPRetransmissions = 3;
 
+    /** Every QUIC frame will be sent in one individual QUIC packet */
+    private Boolean quicFrameLayerAllConfigurationsOnePacket = true;
+
+    /** Every QUIC packet will be sent in one individual UDP datagram */
+    private Boolean quicPacketLayerAllConfigurationsOnePacket = true;
+
     private Boolean expectHandshakeDoneQuicFrame = false;
 
     private Boolean isQuic = false;
@@ -812,14 +818,22 @@ public class Config implements Serializable {
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
-    private Boolean quicImmediateCloseOnTlsError = false;
+    private byte[] defaultQuicNewToken = new byte[0];
 
-    private byte[] defaultQuicNewToken =
-            DataConverter.hexStringToByteArray(
-                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
+    private Boolean quicImmediateCloseOnTlsError = false;
 
     private byte[] defaultQuicPathChallange =
             DataConverter.hexStringToByteArray("AABBCCDD00112233");
+
+    private byte[] defaultQuicEncryptionKey = new byte[16];
+
+    private byte[] defaultQuicEncryptionIv = new byte[12];
+
+    private byte[] defaultQuicHeaderProtectionKey = new byte[16];
+
+    private String defaultQuicAeadCipherAlgorithm = "AES/GCM/NoPadding";
+
+    private String defaultQuicHeaderProtectionCipherAlgorithm = "AES/ECB/NoPadding";
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1070,13 +1084,14 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedQuicPackets = false;
 
-    private Boolean quicDoNotPad = false;
+    /** QUIC Packets will not be padded */
+    private Boolean quicDoNotPadPackets = false;
 
     /**
      * QUIC Packets with mismatching SCID are most likely stray packets from previous connection
      * etc. The default use case should be to discard them
      */
-    private Boolean discardPacketsWithMismatchedSCID = true;
+    private Boolean discardQuicPacketsWithMismatchedSCID = true;
 
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
@@ -1589,6 +1604,24 @@ public class Config implements Serializable {
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
         defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
+    }
+
+    public boolean isQuicPacketLayerAllConfigurationsOnePacket() {
+        return quicPacketLayerAllConfigurationsOnePacket;
+    }
+
+    public void setQuicPacketLayerAllConfigurationsOnePacket(
+            boolean quicPacketLayerAllConfigurationsOnePacket) {
+        this.quicPacketLayerAllConfigurationsOnePacket = quicPacketLayerAllConfigurationsOnePacket;
+    }
+
+    public boolean isQuicFrameLayerAllConfigurationsOnePacket() {
+        return quicFrameLayerAllConfigurationsOnePacket;
+    }
+
+    public void setQuicFrameLayerAllConfigurationsOnePacket(
+            boolean quicFrameLayerAllConfigurationsOnePacket) {
+        this.quicFrameLayerAllConfigurationsOnePacket = quicFrameLayerAllConfigurationsOnePacket;
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
@@ -4477,7 +4510,7 @@ public class Config implements Serializable {
         this.defaultQuicNewToken = defaultQuicNewToken;
     }
 
-    public boolean stopActionAfterQuicStatelessReset() {
+    public boolean isStopActionAfterQuicStatelessReset() {
         return stopActionsAfterQuicStatelessReset;
     }
 
@@ -4485,20 +4518,21 @@ public class Config implements Serializable {
         this.stopActionsAfterQuicStatelessReset = stopActionsAfterQuicStatelessReset;
     }
 
-    public Boolean isQuicDoNotPad() {
-        return quicDoNotPad;
+    public Boolean isQuicDoNotPadPackets() {
+        return quicDoNotPadPackets;
     }
 
-    public void setQuicDoNotPad(boolean quicDoNotPad) {
-        this.quicDoNotPad = quicDoNotPad;
+    public void setQuicDoNotPadPackets(boolean quicDoNotPadPackets) {
+        this.quicDoNotPadPackets = quicDoNotPadPackets;
     }
 
-    public Boolean isDiscardPacketsWithMismatchedSCID() {
-        return discardPacketsWithMismatchedSCID;
+    public Boolean discardQuicPacketsWithMismatchedSCID() {
+        return discardQuicPacketsWithMismatchedSCID;
     }
 
-    public void setDiscardPacketsWithMismatchedSCID(Boolean discardPacketsWithMismatchedSCID) {
-        this.discardPacketsWithMismatchedSCID = discardPacketsWithMismatchedSCID;
+    public void setDiscardQuicPacketsWithMismatchedSCID(
+            Boolean discardQuicPacketsWithMismatchedSCID) {
+        this.discardQuicPacketsWithMismatchedSCID = discardQuicPacketsWithMismatchedSCID;
     }
 
     public byte[] getDefaultQuicServerRetryToken() {
@@ -4507,6 +4541,48 @@ public class Config implements Serializable {
 
     public void setDefaultQuicServerRetryToken(byte[] defaultQuicServerRetryToken) {
         this.defaultQuicServerRetryToken = defaultQuicServerRetryToken;
+    }
+
+    public byte[] getDefaultQuicEncryptionKey() {
+        return defaultQuicEncryptionKey;
+    }
+
+    public void setDefaultQuicEncryptionKey(byte[] defaultQuicEncryptionKey) {
+        this.defaultQuicEncryptionKey = defaultQuicEncryptionKey;
+    }
+
+    public byte[] getDefaultQuicEncryptionIv() {
+        return defaultQuicEncryptionIv;
+    }
+
+    public void setDefaultQuicEncryptionIv(byte[] defaultQuicEncryptionIv) {
+        this.defaultQuicEncryptionIv = defaultQuicEncryptionIv;
+    }
+
+    public byte[] getDefaultQuicHeaderProtectionKey() {
+        return defaultQuicHeaderProtectionKey;
+    }
+
+    public void setDefaultQuicHeaderProtectionKey(byte[] defaultQuicHeaderProtectionKey) {
+        this.defaultQuicHeaderProtectionKey = defaultQuicHeaderProtectionKey;
+    }
+
+    public String getDefaultQuicAeadCipherAlgorithm() {
+        return defaultQuicAeadCipherAlgorithm;
+    }
+
+    public void setDefaultQuicAeadCipherAlgorithm(String defaultQuicAeadCipherAlgorithm) {
+        this.defaultQuicAeadCipherAlgorithm = defaultQuicAeadCipherAlgorithm;
+    }
+
+    public String getDefaultQuicHeaderProtectionCipherAlgorithm() {
+        return defaultQuicHeaderProtectionCipherAlgorithm;
+    }
+
+    public void setDefaultQuicHeaderProtectionCipherAlgorithm(
+            String defaultQuicHeaderProtectionCipherAlgorithm) {
+        this.defaultQuicHeaderProtectionCipherAlgorithm =
+                defaultQuicHeaderProtectionCipherAlgorithm;
     }
 
     public Boolean getQuicImmediateCloseOnTlsError() {
