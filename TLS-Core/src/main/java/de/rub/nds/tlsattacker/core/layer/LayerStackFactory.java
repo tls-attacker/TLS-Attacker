@@ -37,8 +37,9 @@ public class LayerStackFactory {
                                 new TcpLayer(context));
                 return layerStack;
             case GENERIC_OPPORTUNISTIC_SSL2:
-                layerStack = new LayerStack(
-                        context, new SSL2Layer(context, false), new TcpLayer(context));
+                layerStack =
+                        new LayerStack(
+                                context, new SSL2Layer(context, false), new TcpLayer(context));
                 return layerStack;
             case DTLS:
                 return new LayerStack(
