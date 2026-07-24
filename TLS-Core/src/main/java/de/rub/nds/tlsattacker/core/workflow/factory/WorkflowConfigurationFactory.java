@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
@@ -80,6 +81,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -197,8 +199,12 @@ public class WorkflowConfigurationFactory {
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
+            // The layers that have to be enabled after the StartTLS handshake depend on the
+            // configured layer stack, so the stack itself decides which ones these are.
+            Set<ImplementedLayers> layersToEnable =
+                    LayerStackFactory.getToggleableLayers(config.getDefaultLayerConfiguration());
             workflowTrace.addTlsAction(
-                    new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
+                    new EnableLayerAction(layersToEnable.toArray(new ImplementedLayers[0])));
         }
 
         if (config.getQuicRetryFlowRequired()) {

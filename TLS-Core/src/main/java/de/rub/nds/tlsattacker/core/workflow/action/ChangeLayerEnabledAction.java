@@ -61,6 +61,15 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
     }
 
     /**
+     * Returns the layers this action toggles.
+     *
+     * @return the targeted layers
+     */
+    public List<ImplementedLayers> getTargetedLayers() {
+        return targetedLayers;
+    }
+
+    /**
      * Given a layer, this method determines what the updated enabled state should be.
      *
      * @param layer the layer to check

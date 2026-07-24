@@ -32,19 +32,10 @@ public class StarttlsDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) throws ConfigurationException {
         config.setStarttlsType(starttlsType);
-        switch (starttlsType) {
-            case FTP:
-                config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
-                break;
-            case POP3:
-                config.setDefaultLayerConfiguration(StackConfiguration.POP3);
-                break;
-            case SMTP:
-                config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
-                break;
-            default:
-                // Leave the default TLS layer configuration in place for other StartTLS types
-                break;
+        StackConfiguration resolvedStack =
+                starttlsType.resolveStack(config.getDefaultLayerConfiguration());
+        if (resolvedStack != null) {
+            config.setDefaultLayerConfiguration(resolvedStack);
         }
     }
 }
