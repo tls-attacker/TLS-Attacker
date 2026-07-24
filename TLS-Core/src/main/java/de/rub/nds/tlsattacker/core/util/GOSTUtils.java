@@ -95,6 +95,15 @@ public class GOSTUtils {
     private static PublicKey convertPointToPublicKey(
             GOSTCurve curve, Point point, String keyFactoryAlg) {
         try {
+            if (point == null || point.getFieldX() == null || point.getFieldY() == null) {
+                LOGGER.error(
+                        "Cannot convert null point or point with null coordinates to public key");
+                return null;
+            }
+            if (point.getFieldX().getData() == null || point.getFieldY().getData() == null) {
+                LOGGER.error("Cannot convert point with null coordinate data to public key");
+                return null;
+            }
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPoint ecPoint = new ECPoint(point.getFieldX().getData(), point.getFieldY().getData());
             ECPublicKeySpec privateKeySpec = new ECPublicKeySpec(ecPoint, ecParameterSpec);
