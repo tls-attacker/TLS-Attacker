@@ -246,7 +246,6 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
 
             delegate.applyDelegate(config);
 
-     
             Context context = new Context(new State(new Config()), new InboundConnection());
             assertNotNull(
                     LayerStackFactory.createLayerStack(
