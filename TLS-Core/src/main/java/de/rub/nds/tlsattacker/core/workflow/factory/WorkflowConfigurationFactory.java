@@ -1247,8 +1247,8 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
-        // TODO: fix for the new layer system since we removed ascii actions, leaving the old
-        // messages in comments
+        // TODO: the types that still throw below have their message flow left in comments, they
+        // are added one by one with the text actions the FTP flow uses.
 
         switch (type) {
             case FTP:

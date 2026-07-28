@@ -26,8 +26,8 @@ public class SendTextAction extends TextAction {
         super();
     }
 
-    public SendTextAction(String asciiString, String encoding) {
-        super(asciiString, encoding);
+    public SendTextAction(String text, String encoding) {
+        super(text, encoding);
     }
 
     public SendTextAction(String encoding) {
