@@ -32,10 +32,19 @@ public class StarttlsDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) throws ConfigurationException {
         config.setStarttlsType(starttlsType);
-        StackConfiguration resolvedStack =
-                starttlsType.resolveStack(config.getDefaultLayerConfiguration());
-        if (resolvedStack != null) {
-            config.setDefaultLayerConfiguration(resolvedStack);
+        switch (starttlsType) {
+            case NONE:
+                break;
+            case POP3:
+                config.setDefaultLayerConfiguration(StackConfiguration.POP3);
+                break;
+            case SMTP:
+                config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
+                break;
+            default:
+                config.setDefaultLayerConfiguration(
+                        config.getDefaultLayerConfiguration().opportunisticVariant());
+                break;
         }
     }
 }

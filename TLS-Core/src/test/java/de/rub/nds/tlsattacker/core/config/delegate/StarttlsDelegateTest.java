@@ -201,21 +201,55 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
             names = {"NONE", "POP3", "SMTP"},
             mode = EnumSource.Mode.EXCLUDE)
     public void testLightweightTypesUseGenericStacks(StarttlsType starttlsType) {
-        assertSame(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS, starttlsType.getStack());
-        assertSame(StackConfiguration.GENERIC_OPPORTUNISTIC_SSL2, starttlsType.getSsl2Stack());
+        Config config = new Config();
+        config.setDefaultLayerConfiguration(StackConfiguration.TLS);
+        delegate.setStarttlsType(starttlsType);
+
+        delegate.applyDelegate(config);
+
+        assertSame(
+                StackConfiguration.GENERIC_OPPORTUNISTIC_TLS,
+                config.getDefaultLayerConfiguration());
+    }
+
+    /**
+     * A lightweight type must keep an SSL2 layer for a config that committed to SSL2 (e.g. the
+     * scanner's ssl2Only.config), otherwise the SSL2 messages of the workflow have no layer to be
+     * handled by.
+     */
+    @ParameterizedTest
+    @EnumSource(
+            value = StarttlsType.class,
+            names = {"NONE", "POP3", "SMTP"},
+            mode = EnumSource.Mode.EXCLUDE)
+    public void testLightweightTypesKeepSsl2(StarttlsType starttlsType) {
+        Config config = new Config();
+        config.setDefaultLayerConfiguration(StackConfiguration.SSL2);
+        delegate.setStarttlsType(starttlsType);
+
+        delegate.applyDelegate(config);
+
+        assertSame(
+                StackConfiguration.GENERIC_OPPORTUNISTIC_SSL2,
+                config.getDefaultLayerConfiguration());
     }
 
     /** Every StartTLS type must resolve to a stack the layer stack factory can build. */
     @ParameterizedTest
     @EnumSource(value = StarttlsType.class, names = "NONE", mode = EnumSource.Mode.EXCLUDE)
     public void testResolvedStacksAreBuildable(StarttlsType starttlsType) {
-        Context context = new Context(new State(new Config()), new InboundConnection());
+        for (StackConfiguration initialStack :
+                new StackConfiguration[] {StackConfiguration.TLS, StackConfiguration.SSL2}) {
+            Config config = new Config();
+            config.setDefaultLayerConfiguration(initialStack);
+            delegate.setStarttlsType(starttlsType);
 
-        assertNotNull(
-                LayerStackFactory.createLayerStack(
-                        starttlsType.resolveStack(StackConfiguration.TLS), context));
-        assertNotNull(
-                LayerStackFactory.createLayerStack(
-                        starttlsType.resolveStack(StackConfiguration.SSL2), context));
+            delegate.applyDelegate(config);
+
+            Context context = new Context(new State(config), new InboundConnection());
+            assertNotNull(
+                    LayerStackFactory.createLayerStack(
+                            config.getDefaultLayerConfiguration(), context));
+        }
     }
 }

@@ -26,4 +26,8 @@ public enum StackConfiguration {
     SMTP,
     SMTPS,
     SSL2;
+
+    public StackConfiguration opportunisticVariant() {
+        return this == SSL2 ? GENERIC_OPPORTUNISTIC_SSL2 : GENERIC_OPPORTUNISTIC_TLS;
+    }
 }
