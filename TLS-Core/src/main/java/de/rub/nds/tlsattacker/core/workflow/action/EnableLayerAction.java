@@ -21,6 +21,10 @@ public class EnableLayerAction extends ChangeLayerEnabledAction {
         super(layers);
     }
 
+    public EnableLayerAction(boolean ignoreMissingLayers, ImplementedLayers... layers) {
+        super(ignoreMissingLayers, layers);
+    }
+
     @Override
     public boolean layerPredicate(ProtocolLayer<?, ?, ?> layer) {
         return true;

@@ -8,11 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
 import de.rub.nds.tlsattacker.core.state.Context;
-import java.util.Set;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with
@@ -116,23 +114,5 @@ public class LayerStackFactory {
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }
-    }
-
-    /**
-     * Returns the layers that have to be enabled once a StartTLS handshake upgraded the connection.
-     * The layers of a stack are created in a disabled state for StartTLS, so that the plain text
-     * negotiation is not encapsulated, and are enabled afterwards.
-     *
-     * <p>Which layers these are depends on the stack: an SSL2 stack carries neither a record nor a
-     * message layer, whereas every other stack negotiates TLS on top of both.
-     *
-     * @param type the layer stack the connection uses
-     * @return the layers to enable after the StartTLS handshake
-     */
-    public static Set<ImplementedLayers> getToggleableLayers(StackConfiguration type) {
-        if (type == StackConfiguration.GENERIC_OPPORTUNISTIC_SSL2) {
-            return Set.of(ImplementedLayers.SSL2);
-        }
-        return Set.of(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE);
     }
 }

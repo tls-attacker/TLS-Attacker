@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
@@ -81,7 +80,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -199,12 +197,16 @@ public class WorkflowConfigurationFactory {
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
-            // The layers that have to be enabled after the StartTLS handshake depend on the
-            // configured layer stack, so the stack itself decides which ones these are.
-            Set<ImplementedLayers> layersToEnable =
-                    LayerStackFactory.getToggleableLayers(config.getDefaultLayerConfiguration());
+            // Which of these layers exist depends on the layer stack of the connection, which is
+            // only known once the workflow runs. An SSL2 stack carries no record and no message
+            // layer, every other stack negotiates TLS on top of both, so the layers that are not
+            // part of the stack are skipped when the action is executed.
             workflowTrace.addTlsAction(
-                    new EnableLayerAction(layersToEnable.toArray(new ImplementedLayers[0])));
+                    new EnableLayerAction(
+                            true,
+                            ImplementedLayers.RECORD,
+                            ImplementedLayers.MESSAGE,
+                            ImplementedLayers.SSL2));
         }
 
         if (config.getQuicRetryFlowRequired()) {

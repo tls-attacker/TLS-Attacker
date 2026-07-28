@@ -81,4 +81,27 @@ public class EnableLayerActionTest {
         assertTrue(action.isExecuted());
         assertFalse(action.executedAsPlanned());
     }
+
+    /**
+     * A StartTLS upgrade targets the layers of several alternative stacks at once, because the
+     * stack of the connection is only known at runtime. The layers that are not part of the stack
+     * must be skipped instead of failing the action.
+     */
+    @Test
+    public void testEnableLayerNotInStackIgnoringMissingLayers() {
+        HttpLayer httpLayer = new HttpLayer(state.getContext());
+        TcpLayer tcpLayer = new TcpLayer(state.getContext());
+        LayerStack layerStack = new LayerStack(state.getContext(), httpLayer, tcpLayer);
+
+        state.getContext().setLayerStack(layerStack);
+        httpLayer.setEnabled(false);
+
+        EnableLayerAction action =
+                new EnableLayerAction(true, ImplementedLayers.HTTP, ImplementedLayers.SMTP);
+        action.execute(state);
+
+        assertTrue(action.isExecuted());
+        assertTrue(action.executedAsPlanned());
+        assertTrue(httpLayer.isEnabled());
+    }
 }
