@@ -8,14 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * The application protocols that can be upgraded to TLS via a StartTLS handshake.
- *
- * <p>Which layer stack a type needs is decided by {@code StarttlsDelegate}, not here. Adding a
- * protocol that negotiates the upgrade with plain text actions (the lightweight approach) only
- * requires a new constant here plus its message flow in {@code
- * WorkflowConfigurationFactory.addStartTlsActions}.
- */
 public enum StarttlsType {
     NONE,
     FTP,
