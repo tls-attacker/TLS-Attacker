@@ -82,7 +82,6 @@ public enum ActionOption {
      * less strict than the default behavior.
      */
     CHECK_ONLY_EXPECTED,
-
     QUIC_FRAMES_STRICT_PADDING,
     QUIC_FRAMES_IGNORE_NT_NCID_RTCID,
     QUIC_FRAMES_IGNORE_ACK,
