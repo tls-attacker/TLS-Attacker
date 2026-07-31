@@ -31,13 +31,6 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
     // ideal, we would prefer to use the LayerType interface but alas
     private final List<ImplementedLayers> targetedLayers;
 
-    /**
-     * If set, targeted layers that the layer stack does not contain are skipped instead of failing
-     * the action. This allows targeting the layers of several alternative stacks without knowing
-     * which one the connection actually uses.
-     */
-    private boolean ignoreMissingLayers = false;
-
     protected ChangeLayerEnabledAction() {
         // JAXB constructor
         this.targetedLayers = new ArrayList<>();
@@ -52,20 +45,6 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
         this.targetedLayers = new ArrayList<>(List.of(targetedLayers));
     }
 
-    /**
-     * Creates a new instance of ChangeLayerEnabledAction that tolerates targeted layers which are
-     * not part of the layer stack.
-     *
-     * @param ignoreMissingLayers whether targeted layers missing from the stack are skipped instead
-     *     of failing the action
-     * @param targetedLayers the layer(s) to change
-     */
-    public ChangeLayerEnabledAction(
-            boolean ignoreMissingLayers, ImplementedLayers... targetedLayers) {
-        this(targetedLayers);
-        this.ignoreMissingLayers = ignoreMissingLayers;
-    }
-
     @Override
     public void execute(State state) throws ActionExecutionException {
         executedAsPlanned = true;
@@ -74,23 +53,12 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
             if (layer != null) {
                 layer.setEnabled(layerPredicate(layer));
                 LOGGER.debug("Set layer {} enabled to {}", layerType, layer.isEnabled());
-            } else if (ignoreMissingLayers) {
-                LOGGER.debug("Layer {} is not part of the layer stack, skipping it", layerType);
             } else {
+                LOGGER.warn("Layer {} is not part of the layer stack", layerType);
                 executedAsPlanned = false;
             }
         }
         setExecuted(true);
-    }
-
-    /**
-     * Returns whether targeted layers missing from the layer stack are skipped instead of failing
-     * the action.
-     *
-     * @return true if missing layers are ignored
-     */
-    public boolean isIgnoreMissingLayers() {
-        return ignoreMissingLayers;
     }
 
     /**

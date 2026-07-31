@@ -415,9 +415,8 @@ public class WorkflowConfigurationFactoryTest {
 
         assertEquals(EnableLayerAction.class, actions.get(3).getClass());
         assertEquals(
-                Set.of(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE, ImplementedLayers.SSL2),
+                Set.of(ImplementedLayers.SSL2),
                 Set.copyOf(((EnableLayerAction) actions.get(3)).getTargetedLayers()));
-        assertTrue(((EnableLayerAction) actions.get(3)).isIgnoreMissingLayers());
 
         assertMessage(MessageActionDirection.SENDING, actions.get(4), SSL2ClientHelloMessage.class);
         assertMessage(
@@ -441,9 +440,8 @@ public class WorkflowConfigurationFactoryTest {
         TlsAction enableAction = workflowTrace.getTlsActions().get(3);
         assertEquals(EnableLayerAction.class, enableAction.getClass());
         assertEquals(
-                Set.of(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE, ImplementedLayers.SSL2),
+                Set.of(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE),
                 Set.copyOf(((EnableLayerAction) enableAction).getTargetedLayers()));
-        assertTrue(((EnableLayerAction) enableAction).isIgnoreMissingLayers());
     }
 
     private static void assertMessage(

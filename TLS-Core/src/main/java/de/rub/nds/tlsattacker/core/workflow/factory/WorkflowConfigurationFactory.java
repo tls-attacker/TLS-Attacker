@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
@@ -197,16 +198,13 @@ public class WorkflowConfigurationFactory {
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
-            // Which of these layers exist depends on the layer stack of the connection, which is
-            // only known once the workflow runs. An SSL2 stack carries no record and no message
-            // layer, every other stack negotiates TLS on top of both, so the layers that are not
-            // part of the stack are skipped when the action is executed.
+            // The layer stack is pinned by the StarttlsDelegate before the workflow is created, so
+            // the layers that the upgrade has to enable are already known here.
             workflowTrace.addTlsAction(
                     new EnableLayerAction(
-                            true,
-                            ImplementedLayers.RECORD,
-                            ImplementedLayers.MESSAGE,
-                            ImplementedLayers.SSL2));
+                            LayerStackFactory.getInitiallyDisabledLayers(
+                                            config.getDefaultLayerConfiguration())
+                                    .toArray(new ImplementedLayers[0])));
         }
 
         if (config.getQuicRetryFlowRequired()) {
