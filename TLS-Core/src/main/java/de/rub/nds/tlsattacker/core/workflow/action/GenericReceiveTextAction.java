@@ -16,14 +16,14 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement(name = "GenericReceiveAscii")
-public class GenericReceiveAsciiAction extends AsciiAction {
+@XmlRootElement(name = "GenericReceiveText")
+public class GenericReceiveTextAction extends TextAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    GenericReceiveAsciiAction() {}
+    GenericReceiveTextAction() {}
 
-    public GenericReceiveAsciiAction(String encoding) {
+    public GenericReceiveTextAction(String encoding) {
         super(encoding);
     }
 
@@ -35,10 +35,10 @@ public class GenericReceiveAsciiAction extends AsciiAction {
             throw new ActionExecutionException("Action already executed!");
         }
         try {
-            LOGGER.debug("Receiving ASCII message...");
+            LOGGER.debug("Receiving text message...");
             byte[] fetchData = tcpContext.getTransportHandler().fetchData();
-            setAsciiText(new String(fetchData, getEncoding()));
-            LOGGER.info("Received: {}", getAsciiText());
+            setText(new String(fetchData, getEncoding()));
+            LOGGER.info("Received: {}", getText());
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);

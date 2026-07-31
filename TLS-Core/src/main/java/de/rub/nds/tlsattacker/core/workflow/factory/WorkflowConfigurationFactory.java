@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.pop3.command.*;
 import de.rub.nds.tlsattacker.core.pop3.reply.Pop3InitialGreeting;
@@ -197,8 +198,13 @@ public class WorkflowConfigurationFactory {
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
+            // The layer stack is pinned by the StarttlsDelegate before the workflow is created, so
+            // the layers that the upgrade has to enable are already known here.
             workflowTrace.addTlsAction(
-                    new EnableLayerAction(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE));
+                    new EnableLayerAction(
+                            LayerStackFactory.getInitiallyDisabledLayers(
+                                            config.getDefaultLayerConfiguration())
+                                    .toArray(new ImplementedLayers[0])));
         }
 
         if (config.getQuicRetryFlowRequired()) {
@@ -594,7 +600,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new RenegotiationAction());
         WorkflowTrace renegotiationTrace = createResumptionWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }
@@ -608,7 +614,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }
@@ -625,7 +631,7 @@ public class WorkflowConfigurationFactory {
                         config, connection, ConnectionEndType.SERVER, new HelloRequestMessage());
         trace.addTlsAction(action);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }
@@ -1239,16 +1245,19 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
-        // TODO: fix for the new layer system since we removed ascii actions, leaving the old
-        // messages in comments
+        // TODO: the types that still throw below have their message flow left in comments, they
+        // are added one by one with the text actions the FTP flow uses.
 
         switch (type) {
             case FTP:
                 {
-                    throw new NotImplementedException("FTP STARTTLS not implemented yet");
-                    // server: "211-Extensions supported\r\nAUTH TLS\r\n211 END\r\n"
+                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220"));
+                    workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
+                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^234"));
+                    return workflowTrace;
+                    // server: "Welcome to FTP server"
                     // client: "AUTH TLS\r\n"
-                    // server: "234 AUTH command ok. Initializing TLS Connection.\r\n"
+                    // server: "234 AUTH TLS"
                 }
             case IMAP:
                 {
@@ -1509,7 +1518,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createDynamicHandshakeWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
-            if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
+            if (reneAction.isMessageAction()) { // DO NOT ADD TEXT ACTIONS
                 trace.addTlsAction(reneAction);
             }
         }

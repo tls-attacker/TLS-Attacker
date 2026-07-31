@@ -40,7 +40,11 @@ public class SSL2Layer extends ProtocolLayer<Context, LayerProcessingHint, SSL2M
     private Context context;
 
     public SSL2Layer(Context context) {
-        super(ImplementedLayers.SSL2);
+        this(context, true);
+    }
+
+    public SSL2Layer(Context context, boolean enabled) {
+        super(ImplementedLayers.SSL2, enabled);
         this.context = context;
     }
 

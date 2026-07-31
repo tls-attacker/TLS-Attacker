@@ -163,7 +163,7 @@
 
   <xs:element name="GenericReceive" type="genericReceiveAction"/>
 
-  <xs:element name="GenericReceiveAscii" type="genericReceiveAsciiAction"/>
+  <xs:element name="GenericReceiveText" type="genericReceiveTextAction"/>
 
   <xs:element name="GreaseExtension" type="greaseExtensionMessage"/>
 
@@ -245,8 +245,6 @@
 
   <xs:element name="Receive" type="receiveAction"/>
 
-  <xs:element name="ReceiveAscii" type="receiveAsciiAction"/>
-
   <xs:element name="ReceiveTill" type="receiveTillAction"/>
 
   <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
@@ -277,7 +275,7 @@
 
   <xs:element name="Send" type="sendAction"/>
 
-  <xs:element name="SendAscii" type="sendAsciiAction"/>
+  <xs:element name="SendText" type="sendTextAction"/>
 
   <xs:element name="SendDynamicClientKeyExchange" type="sendDynamicClientKeyExchangeAction"/>
 
@@ -343,7 +341,7 @@
 
   <xs:element name="algorithmIdentifier" type="algorithmIdentifier"/>
 
-  <xs:element name="asciiAction" type="asciiAction"/>
+  <xs:element name="textAction" type="textAction"/>
 
   <xs:element name="asn1BitString" type="asn1BitString"/>
 
@@ -479,7 +477,7 @@
 
   <xs:element name="genericReceiveAction" type="genericReceiveAction"/>
 
-  <xs:element name="genericReceiveAsciiAction" type="genericReceiveAsciiAction"/>
+  <xs:element name="genericReceiveTextAction" type="genericReceiveTextAction"/>
 
   <xs:element name="hpkeCipherSuite" type="hpkeCipherSuite"/>
 
@@ -549,8 +547,6 @@
 
   <xs:element name="receiveAction" type="receiveAction"/>
 
-  <xs:element name="receiveAsciiAction" type="receiveAsciiAction"/>
-
   <xs:element name="receiveTillAction" type="receiveTillAction"/>
 
   <xs:element name="remBufferedChCiphersAction" type="remBufferedChCiphersAction"/>
@@ -563,7 +559,7 @@
 
   <xs:element name="sendAction" type="sendAction"/>
 
-  <xs:element name="sendAsciiAction" type="sendAsciiAction"/>
+  <xs:element name="sendTextAction" type="sendTextAction"/>
 
   <xs:element name="sendDynamicClientKeyExchangeAction" type="sendDynamicClientKeyExchangeAction"/>
 
@@ -680,9 +676,8 @@
         <xs:element name="SetEncryptChangeCipherSpecConfig" type="setEncryptChangeCipherSpecConfigAction"/>
         <xs:element name="Wait" type="waitAction"/>
         <xs:element name="FlushSessionCache" type="flushSessionCacheAction"/>
-        <xs:element name="SendAscii" type="sendAsciiAction"/>
-        <xs:element name="ReceiveAscii" type="receiveAsciiAction"/>
-        <xs:element name="GenericReceiveAscii" type="genericReceiveAsciiAction"/>
+        <xs:element name="SendText" type="sendTextAction"/>
+        <xs:element name="GenericReceiveText" type="genericReceiveTextAction"/>
       </xs:choice>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
       <xs:element name="description" type="xs:string" minOccurs="0"/>
@@ -4506,19 +4501,19 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="genericReceiveAsciiAction">
+  <xs:complexType name="genericReceiveTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="asciiAction" abstract="true">
+  <xs:complexType name="textAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence>
-          <xs:element name="asciiText" type="xs:string" minOccurs="0"/>
+          <xs:element name="text" type="xs:string" minOccurs="0"/>
           <xs:element name="encoding" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -4674,15 +4669,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="receiveAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence>
-          <xs:element name="receivedAsciiString" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
   <xs:complexType name="printSecretsAction">
     <xs:complexContent>
@@ -5045,9 +5031,9 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendAsciiAction">
+  <xs:complexType name="sendTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -6873,38 +6859,29 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendAsciiAction">
+  <xs:complexType name="sendTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="asciiAction" abstract="true">
+  <xs:complexType name="textAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence>
-          <xs:element name="asciiText" type="xs:string" minOccurs="0"/>
+          <xs:element name="text" type="xs:string" minOccurs="0"/>
           <xs:element name="encoding" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="receiveAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence>
-          <xs:element name="receivedAsciiString" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
-  <xs:complexType name="genericReceiveAsciiAction">
+  <xs:complexType name="genericReceiveTextAction">
     <xs:complexContent>
-      <xs:extension base="asciiAction">
+      <xs:extension base="textAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
