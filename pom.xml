@@ -400,12 +400,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!-- GPG Signing (global im pluginManagement) -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.2.7</version>
-                </plugin>
+                <!-- GPG Signing -->
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -524,6 +519,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <keyname>61C9874574C7433E</keyname>
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -655,16 +663,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <!-- besser als verify -->
-                            </execution>
-                        </executions>
                     </plugin>
 
                     <!-- Sources -->
