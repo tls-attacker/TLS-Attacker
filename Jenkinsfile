@@ -14,7 +14,11 @@ pipeline {
     }
 
     stages {
-
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Standard Pipeline') {
             steps {
                 script {
