@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -203,5 +204,138 @@ public class ReceiveRegexTextActionTest {
         // The second fragment must not have been read.
         assertEquals("NO", action.getReceivedText());
         assertEquals(1, fetchCount[0]);
+    }
+
+    /** An action created without an explicit rule reads a single line, as it always has. */
+    @Test
+    public void testDefaultTerminationIsSingleLine() {
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
+        assertEquals(TextReplyTermination.SINGLE_LINE, action.getTermination());
+    }
+
+    /**
+     * A multiline read keeps going past the lines that do not match and stops on the one that does.
+     * A single-line action would have stopped at the first line and left the rest of the reply in
+     * the socket.
+     */
+    @Test
+    public void testMultilineReplyIsReadUntilTheMatchingLine() {
+        int[] fetchCount = feedChunks("* FIRST\r\n", "* SECOND\r\n", "TAG OK done\r\n");
+
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^TAG OK", null, TextReplyTermination.MULTI_LINE);
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals("* FIRST\r\n* SECOND\r\nTAG OK done\r\n", action.getReceivedText());
+        assertEquals(3, fetchCount[0]);
+    }
+
+    /**
+     * The fail-fast check must not fire on a multiline reply: the leading lines legitimately do not
+     * match the pattern, which targets the terminating line. Aborting on them would reject a
+     * perfectly good reply.
+     */
+    @Test
+    public void testMultilineReplyDoesNotFailFastOnLeadingLines() {
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^TAG OK", null, TextReplyTermination.MULTI_LINE);
+        feed("* NOMATCH at all\r\nTAG OK done\r\n");
+
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+    }
+
+    /** A complete multiline reply whose terminating line does not match is still not as planned. */
+    @Test
+    public void testMultilineReplyWithMismatchingFinalLineIsNotExecutedAsPlanned() {
+        feed("* FIRST\r\nTAG NO refused\r\n");
+
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^TAG OK", null, TextReplyTermination.MULTI_LINE);
+        action.execute(state);
+
+        assertTrue(action.isExecuted());
+        assertFalse(action.executedAsPlanned());
+    }
+
+    /**
+     * A multiline reply is only complete once the matching line has been terminated, so a pattern
+     * that matches a prefix of the final line still drains the rest of it. Stopping early would
+     * leave plaintext in the socket for the TLS handshake to trip over.
+     */
+    @Test
+    public void testMultilineReplyDrainsRestOfMatchingLine() {
+        int[] fetchCount = feedChunks("* FIRST\r\n", "TAG OK", " done\r\n");
+
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^TAG OK", null, TextReplyTermination.MULTI_LINE);
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals("* FIRST\r\nTAG OK done\r\n", action.getReceivedText());
+        assertEquals(3, fetchCount[0]);
+    }
+
+    /**
+     * NNTP terminates a block with a lone dot (RFC 4642), which the pattern can name directly. The
+     * whole block is read, so nothing of it is left for the handshake.
+     */
+    @Test
+    public void testDotTerminatedBlockIsReadWhole() {
+        feed("101 Capability list:\r\nVERSION 2\r\nSTARTTLS\r\n.\r\n");
+
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^\\.$", null, TextReplyTermination.MULTI_LINE);
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "101 Capability list:\r\nVERSION 2\r\nSTARTTLS\r\n.\r\n", action.getReceivedText());
+    }
+
+    /**
+     * LMTP and SMTP mark continuation lines with a hyphen after the status code and the final line
+     * with a space (RFC 3207), so the pattern names the space form to find the end of the reply.
+     */
+    @Test
+    public void testSpaceAfterCodeEndsAnLmtpReply() {
+        feed("250-mail.example.org\r\n250-PIPELINING\r\n250 STARTTLS\r\n");
+
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^250 ", null, TextReplyTermination.MULTI_LINE);
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "250-mail.example.org\r\n250-PIPELINING\r\n250 STARTTLS\r\n",
+                action.getReceivedText());
+    }
+
+    /**
+     * ManageSieve answers StartTls with a capability listing followed by a bare OK (RFC 5804),
+     * which is neither dot-terminated nor tagged - the same multiline read covers it.
+     */
+    @Test
+    public void testManageSieveCapabilityListingEndsOnBareOk() {
+        feed("\"IMPLEMENTATION\" \"Example1\"\r\n\"SIEVE\" \"fileinto vacation\"\r\nOK\r\n");
+
+        ReceiveRegexTextAction action =
+                new ReceiveRegexTextAction("^OK", null, TextReplyTermination.MULTI_LINE);
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+    }
+
+    /** The termination rule takes part in equality, comparing through the defaulting getter. */
+    @Test
+    public void testEqualityAccountsForTermination() {
+        assertEquals(
+                new ReceiveRegexTextAction("^MATCH"),
+                new ReceiveRegexTextAction("^MATCH", null, TextReplyTermination.SINGLE_LINE));
+        assertNotEquals(
+                new ReceiveRegexTextAction("^MATCH"),
+                new ReceiveRegexTextAction("^MATCH", null, TextReplyTermination.MULTI_LINE));
     }
 }

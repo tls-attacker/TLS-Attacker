@@ -41,6 +41,8 @@ public class ReceiveRegexTextAction extends TextAction {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String receivedText;
 
+    private TextReplyTermination termination;
+
     @SuppressWarnings("unused")
     ReceiveRegexTextAction() {
         super();
@@ -56,6 +58,12 @@ public class ReceiveRegexTextAction extends TextAction {
         this.regex = regex;
     }
 
+    public ReceiveRegexTextAction(String regex, String encoding, TextReplyTermination termination) {
+        super(encoding);
+        this.regex = regex;
+        this.termination = termination;
+    }
+
     @Override
     public void execute(State state) throws ActionExecutionException {
         TcpContext tcpContext = state.getTcpContext();
@@ -64,7 +72,8 @@ public class ReceiveRegexTextAction extends TextAction {
             throw new ActionExecutionException("Action already executed!");
         }
         LOGGER.debug("Receiving text message (expecting /{}/)...", regex);
-        Pattern pattern = Pattern.compile(regex);
+        TextReplyTermination termination = getTermination();
+        Pattern pattern = compilePattern();
         StringBuilder received = new StringBuilder();
         try {
             while (true) {
@@ -73,20 +82,22 @@ public class ReceiveRegexTextAction extends TextAction {
                     break;
                 }
                 received.append(new String(fetchData, getEncoding()));
-                Matcher matcher = pattern.matcher(received);
-                if (!matcher.lookingAt() && !matcher.hitEnd()) {
-                    receivedText = received.toString();
-                    setExecuted(true);
-                    throw new WorkflowExecutionException(
-                            "Received text \""
-                                    + receivedText
-                                    + "\" can never match /"
-                                    + regex
-                                    + "/, aborting STARTTLS upgrade.");
+                if (termination.failsFastOnMismatch()) {
+                    Matcher matcher = pattern.matcher(received);
+                    if (!matcher.lookingAt() && !matcher.hitEnd()) {
+                        receivedText = received.toString();
+                        setExecuted(true);
+                        throw new WorkflowExecutionException(
+                                "Received text \""
+                                        + receivedText
+                                        + "\" can never match /"
+                                        + regex
+                                        + "/, aborting STARTTLS upgrade.");
+                    }
                 }
-                if (received.indexOf("\n") < 0) {
+                if (!isReplyComplete(pattern, received)) {
                     LOGGER.debug(
-                            "Reply not yet a full line (/{}/), waiting for more data...", received);
+                            "Reply not yet complete (/{}/), waiting for more data...", received);
                     continue;
                 }
                 break;
@@ -107,8 +118,38 @@ public class ReceiveRegexTextAction extends TextAction {
         return regex;
     }
 
+    public TextReplyTermination getTermination() {
+        return termination == null ? TextReplyTermination.SINGLE_LINE : termination;
+    }
+
+    public void setTermination(TextReplyTermination termination) {
+        this.termination = termination;
+    }
+
     public String getReceivedText() {
         return receivedText;
+    }
+
+    private Pattern compilePattern() {
+        return getTermination().failsFastOnMismatch()
+                ? Pattern.compile(regex)
+                : Pattern.compile(regex, Pattern.MULTILINE);
+    }
+
+    private boolean isReplyComplete(Pattern pattern, CharSequence received) {
+        Matcher matcher = pattern.matcher(received);
+        boolean matched =
+                getTermination().failsFastOnMismatch() ? matcher.lookingAt() : matcher.find();
+        return matched && indexOfLineFeed(received, matcher.end()) >= 0;
+    }
+
+    private static int indexOfLineFeed(CharSequence received, int fromIndex) {
+        for (int i = fromIndex; i < received.length(); i++) {
+            if (received.charAt(i) == '\n') {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -119,10 +160,12 @@ public class ReceiveRegexTextAction extends TextAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted()
-                && receivedText != null
-                && regex != null
-                && Pattern.compile(regex).matcher(receivedText).lookingAt();
+        return isExecuted() && receivedText != null && regex != null && matches(receivedText);
+    }
+
+    private boolean matches(CharSequence reply) {
+        Matcher matcher = compilePattern().matcher(reply);
+        return getTermination().failsFastOnMismatch() ? matcher.lookingAt() : matcher.find();
     }
 
     @Override
@@ -131,11 +174,13 @@ public class ReceiveRegexTextAction extends TextAction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ReceiveRegexTextAction that = (ReceiveRegexTextAction) o;
-        return Objects.equals(regex, that.regex) && Objects.equals(receivedText, that.receivedText);
+        return Objects.equals(regex, that.regex)
+                && Objects.equals(receivedText, that.receivedText)
+                && getTermination() == that.getTermination();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), regex, receivedText);
+        return Objects.hash(super.hashCode(), regex, receivedText, getTermination());
     }
 }
