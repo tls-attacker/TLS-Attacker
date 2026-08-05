@@ -383,11 +383,11 @@ public class WorkflowConfigurationFactoryTest {
 
         List<TlsAction> actions = workflowTrace.getTlsActions();
         assertEquals(ReceiveRegexTextAction.class, actions.get(0).getClass());
-        assertEquals("^220", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals("^220 ", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
         assertEquals(SendTextAction.class, actions.get(1).getClass());
         assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(1)).getText());
         assertEquals(ReceiveRegexTextAction.class, actions.get(2).getClass());
-        assertEquals("^234", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
+        assertEquals("^234 ", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
         assertEquals(EnableLayerAction.class, actions.get(3).getClass());
     }
 
@@ -407,11 +407,11 @@ public class WorkflowConfigurationFactoryTest {
 
         List<TlsAction> actions = workflowTrace.getTlsActions();
         assertEquals(ReceiveRegexTextAction.class, actions.get(0).getClass());
-        assertEquals("^220", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals("^220 ", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
         assertEquals(SendTextAction.class, actions.get(1).getClass());
         assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(1)).getText());
         assertEquals(ReceiveRegexTextAction.class, actions.get(2).getClass());
-        assertEquals("^234", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
+        assertEquals("^234 ", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
 
         assertEquals(EnableLayerAction.class, actions.get(3).getClass());
         assertEquals(
