@@ -29,8 +29,7 @@ import org.apache.logging.log4j.Logger;
  * control-channel exchanges assert on the protocol status code (e.g. FTP "234" for an accepted
  * "AUTH TLS") and fail the workflow when the server refuses the upgrade instead of silently
  * proceeding.
- */ 
-
+ */
 @XmlRootElement(name = "ReceiveRegexText")
 public class ReceiveRegexTextAction extends TextAction {
 
@@ -123,11 +122,9 @@ public class ReceiveRegexTextAction extends TextAction {
         return receivedText;
     }
 
-    
     private static Pattern compile(String regex) {
         return Pattern.compile(regex, Pattern.MULTILINE);
     }
-
 
     private static boolean isCompleteMatch(Pattern pattern, CharSequence received) {
         Matcher matcher = pattern.matcher(received);
