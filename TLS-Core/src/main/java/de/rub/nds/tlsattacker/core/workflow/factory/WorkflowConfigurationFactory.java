@@ -1251,16 +1251,9 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    // A reply may span several lines: RFC 959 marks continuations with a
-                    // hyphen after the status code and the final line with a space, so the
-                    // pattern names the space form to read the reply to its end. Stopping on
-                    // a "220-"/"234-" continuation would leave the rest in the socket for the
-                    // TLS handshake to parse as a record.
                     workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220 "));
                     workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
                     ReceiveRegexTextAction authReply = new ReceiveRegexTextAction("^234 ");
-                    // A 4xx or 5xx final line means the upgrade will not happen, so stop on it
-                    // rather than reading until the socket times out.
                     authReply.setAbortRegex("^[45]\\d\\d ");
                     workflowTrace.addTlsAction(authReply);
                     return workflowTrace;

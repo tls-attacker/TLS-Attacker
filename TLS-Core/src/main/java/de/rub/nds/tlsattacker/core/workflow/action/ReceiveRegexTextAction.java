@@ -29,12 +29,8 @@ import org.apache.logging.log4j.Logger;
  * control-channel exchanges assert on the protocol status code (e.g. FTP "234" for an accepted
  * "AUTH TLS") and fail the workflow when the server refuses the upgrade instead of silently
  * proceeding.
- *
- * <p>The reply is read until the pattern matches on a terminated line, so a reply spanning several
- * lines and arriving in several TCP packets is drained in full. The regex is what says where the
- * reply ends - {@code ^234 } for FTP's final status line, {@code ^a001 OK} for IMAP's tagged one -
- * which is how one rule covers protocols that delimit their replies differently.
- */
+ */ 
+
 @XmlRootElement(name = "ReceiveRegexText")
 public class ReceiveRegexTextAction extends TextAction {
 
@@ -127,30 +123,17 @@ public class ReceiveRegexTextAction extends TextAction {
         return receivedText;
     }
 
-    /**
-     * Compiles with {@link Pattern#MULTILINE} so that an anchored pattern such as {@code ^234 }
-     * binds to the start of any line rather than only to the start of the whole reply.
-     */
+    
     private static Pattern compile(String regex) {
         return Pattern.compile(regex, Pattern.MULTILINE);
     }
 
-    /**
-     * Whether the pattern has matched on a line that has since been terminated.
-     *
-     * <p>Requiring the terminator is what keeps this one rule working across protocols that delimit
-     * replies differently - FTP's space-after-code final line, IMAP's tagged line after its
-     * untagged ones, NNTP's lone dot - because in each case the pattern describes the line that
-     * ends the reply. It also stops the read from ending mid-line when the pattern matches on a
-     * prefix: leaving the rest of the line in the socket would push plaintext into the TLS
-     * handshake that follows.
-     */
+
     private static boolean isCompleteMatch(Pattern pattern, CharSequence received) {
         Matcher matcher = pattern.matcher(received);
         return matcher.find() && indexOfLineFeed(received, matcher.end()) >= 0;
     }
 
-    /** Index of the next LF at or after {@code fromIndex}, or -1 if there is none. */
     private static int indexOfLineFeed(CharSequence received, int fromIndex) {
         for (int i = fromIndex; i < received.length(); i++) {
             if (received.charAt(i) == '\n') {
