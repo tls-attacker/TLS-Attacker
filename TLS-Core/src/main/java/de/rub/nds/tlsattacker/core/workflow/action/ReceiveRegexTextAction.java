@@ -115,17 +115,6 @@ public class ReceiveRegexTextAction extends TextAction {
         return regex;
     }
 
-    /**
-     * A pattern whose match ends the read at once and aborts the trace, or null for no such
-     * pattern. Lets a caller name the replies that mean the upgrade will never happen - FTP's
-     * {@code 4xx} and {@code 5xx} refusals, say - so a refusal fails on the read that carries it
-     * instead of blocking until the socket times out, which at crawler scale is the difference
-     * between one read and a full timeout per refusing host.
-     *
-     * <p>It is a positive assertion about what a refusal looks like, not "does not match the
-     * expected reply", so it cannot misfire on the continuation lines that legitimately precede a
-     * successful final line.
-     */
     public String getAbortRegex() {
         return abortRegex;
     }
