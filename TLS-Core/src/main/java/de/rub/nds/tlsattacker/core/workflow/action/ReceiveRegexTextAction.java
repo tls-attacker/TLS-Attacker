@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
-import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.StarttlsNotSupportedException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -80,7 +80,7 @@ public class ReceiveRegexTextAction extends TextAction {
                 if (abortPattern != null && isCompleteMatch(abortPattern, received)) {
                     receivedText = received.toString();
                     setExecuted(true);
-                    throw new WorkflowExecutionException(
+                    throw new StarttlsNotSupportedException(
                             "Received text \""
                                     + receivedText.trim()
                                     + "\" matches the refusal pattern /"
