@@ -44,25 +44,65 @@ public class ReceiveRegexTextActionFtpTest {
                 .setFetchableByte(reply.getBytes(StandardCharsets.US_ASCII));
     }
 
+    /**
+     * The actions as {@link
+     * de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory} builds them: the
+     * pattern names the final line by its space after the status code, and a 4xx/5xx final line
+     * aborts.
+     */
+    private static ReceiveRegexTextAction authTlsReply() {
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234 ");
+        action.setAbortRegex("^[45]\\d\\d ");
+        return action;
+    }
+
     /** The 220 service-ready greeting the server sends before any command. */
     @Test
     public void testGreetingIsAccepted() {
         feed("220 Welcome to FTP server\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220 ");
         action.execute(state);
         assertTrue(action.executedAsPlanned());
         assertEquals("220 Welcome to FTP server\r\n", action.getReceivedText());
+    }
+
+    /**
+     * RFC 959 lets the greeting span several lines, marking continuations with a hyphen after the
+     * code and the final line with a space. The whole greeting must be drained, or what is left of
+     * it is parsed as a TLS record once the handshake starts.
+     */
+    @Test
+    public void testMultilineGreetingIsDrained() {
+        feed("220-Welcome to FTP server\r\n220-Unauthorized access prohibited\r\n220 Ready\r\n");
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^220 ");
+        action.execute(state);
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "220-Welcome to FTP server\r\n220-Unauthorized access prohibited\r\n220 Ready\r\n",
+                action.getReceivedText());
     }
 
     /** 234 is the affirmative answer to AUTH TLS: the TLS handshake may start. */
     @Test
     public void testAuthTlsAcceptedReplyIsExecutedAsPlanned() {
         feed("234 AUTH TLS successful\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        ReceiveRegexTextAction action = authTlsReply();
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
         assertEquals("234 AUTH TLS successful\r\n", action.getReceivedText());
+    }
+
+    /** A multiline 234 is accepted too, and read to its final line. */
+    @Test
+    public void testMultilineAuthTlsAcceptedReplyIsDrained() {
+        feed("234-AUTH TLS OK\r\n234-continuation line\r\n234 End\r\n");
+        ReceiveRegexTextAction action = authTlsReply();
+        action.execute(state);
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "234-AUTH TLS OK\r\n234-continuation line\r\n234 End\r\n",
+                action.getReceivedText());
     }
 
     /**
@@ -72,7 +112,7 @@ public class ReceiveRegexTextActionFtpTest {
     @Test
     public void testAuthTlsUnimplementedReplyAbortsTrace() {
         feed("502 Command not implemented\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        ReceiveRegexTextAction action = authTlsReply();
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }
@@ -81,7 +121,7 @@ public class ReceiveRegexTextActionFtpTest {
     @Test
     public void testAuthTlsRejectedReplyAbortsTrace() {
         feed("534 Request denied for policy reasons\r\n");
-        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234");
+        ReceiveRegexTextAction action = authTlsReply();
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }

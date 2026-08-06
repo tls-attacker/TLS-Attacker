@@ -1251,11 +1251,13 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220"));
+                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220 "));
                     workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
-                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^234"));
+                    ReceiveRegexTextAction authReply = new ReceiveRegexTextAction("^234 ");
+                    authReply.setAbortRegex("^[45]\\d\\d ");
+                    workflowTrace.addTlsAction(authReply);
                     return workflowTrace;
-                    // server: "Welcome to FTP server"
+                    // server: "220-Welcome to FTP server\r\n220 Ready\r\n"
                     // client: "AUTH TLS\r\n"
                     // server: "234 AUTH TLS"
                 }

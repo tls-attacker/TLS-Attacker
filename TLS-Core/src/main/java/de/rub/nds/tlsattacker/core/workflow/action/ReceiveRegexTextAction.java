@@ -39,6 +39,9 @@ public class ReceiveRegexTextAction extends TextAction {
     private String regex;
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String abortRegex;
+
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String receivedText;
 
     @SuppressWarnings("unused")
@@ -64,7 +67,8 @@ public class ReceiveRegexTextAction extends TextAction {
             throw new ActionExecutionException("Action already executed!");
         }
         LOGGER.debug("Receiving text message (expecting /{}/)...", regex);
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = compile(regex);
+        Pattern abortPattern = abortRegex == null ? null : compile(abortRegex);
         StringBuilder received = new StringBuilder();
         try {
             while (true) {
@@ -73,20 +77,19 @@ public class ReceiveRegexTextAction extends TextAction {
                     break;
                 }
                 received.append(new String(fetchData, getEncoding()));
-                Matcher matcher = pattern.matcher(received);
-                if (!matcher.lookingAt() && !matcher.hitEnd()) {
+                if (abortPattern != null && isCompleteMatch(abortPattern, received)) {
                     receivedText = received.toString();
                     setExecuted(true);
                     throw new WorkflowExecutionException(
                             "Received text \""
-                                    + receivedText
-                                    + "\" can never match /"
-                                    + regex
+                                    + receivedText.trim()
+                                    + "\" matches the refusal pattern /"
+                                    + abortRegex
                                     + "/, aborting STARTTLS upgrade.");
                 }
-                if (received.indexOf("\n") < 0) {
+                if (!isCompleteMatch(pattern, received)) {
                     LOGGER.debug(
-                            "Reply not yet a full line (/{}/), waiting for more data...", received);
+                            "Reply not yet complete (/{}/), waiting for more data...", received);
                     continue;
                 }
                 break;
@@ -107,8 +110,34 @@ public class ReceiveRegexTextAction extends TextAction {
         return regex;
     }
 
+    public String getAbortRegex() {
+        return abortRegex;
+    }
+
+    public void setAbortRegex(String abortRegex) {
+        this.abortRegex = abortRegex;
+    }
+
     public String getReceivedText() {
         return receivedText;
+    }
+
+    private static Pattern compile(String regex) {
+        return Pattern.compile(regex, Pattern.MULTILINE);
+    }
+
+    private static boolean isCompleteMatch(Pattern pattern, CharSequence received) {
+        Matcher matcher = pattern.matcher(received);
+        return matcher.find() && indexOfLineFeed(received, matcher.end()) >= 0;
+    }
+
+    private static int indexOfLineFeed(CharSequence received, int fromIndex) {
+        for (int i = fromIndex; i < received.length(); i++) {
+            if (received.charAt(i) == '\n') {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -122,7 +151,7 @@ public class ReceiveRegexTextAction extends TextAction {
         return isExecuted()
                 && receivedText != null
                 && regex != null
-                && Pattern.compile(regex).matcher(receivedText).lookingAt();
+                && compile(regex).matcher(receivedText).find();
     }
 
     @Override
@@ -131,11 +160,13 @@ public class ReceiveRegexTextAction extends TextAction {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ReceiveRegexTextAction that = (ReceiveRegexTextAction) o;
-        return Objects.equals(regex, that.regex) && Objects.equals(receivedText, that.receivedText);
+        return Objects.equals(regex, that.regex)
+                && Objects.equals(abortRegex, that.abortRegex)
+                && Objects.equals(receivedText, that.receivedText);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), regex, receivedText);
+        return Objects.hash(super.hashCode(), regex, abortRegex, receivedText);
     }
 }

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -123,13 +124,19 @@ public class ReceiveRegexTextActionTest {
         assertEquals("MATCH rest of line\r\n", action.getReceivedText());
     }
 
-    /** A reply that can never match the regex aborts the trace. */
+    /**
+     * A reply that does not match is read to the end of what the server sends and then reported as
+     * not-as-planned. Without an abort pattern there is nothing to distinguish "wrong reply" from
+     * "the line the pattern targets has not arrived yet", so the read cannot end early.
+     */
     @Test
-    public void testMismatchingReplyAbortsTrace() {
+    public void testMismatchingReplyIsNotExecutedAsPlanned() {
         feed("NOMATCH rest of line\r\n");
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        action.execute(state);
+        assertTrue(action.isExecuted());
         assertFalse(action.executedAsPlanned());
+        assertEquals("NOMATCH rest of line\r\n", action.getReceivedText());
     }
 
     /** The default constructor uses US-ASCII so callers need not pass an encoding. */
@@ -188,20 +195,179 @@ public class ReceiveRegexTextActionTest {
     }
 
     /**
-     * A reply that diverges from the pattern aborts the whole trace as soon as it can no longer
-     * match, without waiting for the remaining fragments.
+     * A pattern anchored to the start of a line is not satisfied by a match in the middle of one:
+     * "NOMATCH" contains "MATCH", but not at a line start, so the reply is read to the end and
+     * reported as not-as-planned.
      */
     @Test
-    public void testFragmentedDivergingReplyFailsFast() {
-        int[] fetchCount = feedChunks("NO", "MATCH rest of line\r\n");
+    public void testMatchMustBeAtTheStartOfALine() {
+        feedChunks("NO", "MATCH rest of line\r\n");
 
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^MATCH");
+        action.execute(state);
 
-        // Once "NO" can never match /^MATCH/ the action aborts the trace instead of silently
-        // proceeding into the TLS handshake.
+        assertTrue(action.isExecuted());
+        assertFalse(action.executedAsPlanned());
+        assertEquals("NOMATCH rest of line\r\n", action.getReceivedText());
+    }
+
+    /**
+     * The read keeps going past the lines that do not match and stops on the one that does. Ending
+     * at the first line would leave the rest of the reply in the socket.
+     */
+    @Test
+    public void testReplyIsReadUntilTheMatchingLine() {
+        int[] fetchCount = feedChunks("* FIRST\r\n", "* SECOND\r\n", "TAG OK done\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^TAG OK");
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals("* FIRST\r\n* SECOND\r\nTAG OK done\r\n", action.getReceivedText());
+        assertEquals(3, fetchCount[0]);
+    }
+
+    /**
+     * Leading lines that do not match are expected, since the pattern targets the terminating line.
+     * Aborting on them would reject a perfectly good reply.
+     */
+    @Test
+    public void testReplyDoesNotAbortOnLeadingLines() {
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^TAG OK");
+        feed("* NOMATCH at all\r\nTAG OK done\r\n");
+
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+    }
+
+    /** A complete reply whose terminating line does not match is not executed as planned. */
+    @Test
+    public void testReplyWithMismatchingFinalLineIsNotExecutedAsPlanned() {
+        feed("* FIRST\r\nTAG NO refused\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^TAG OK");
+        action.execute(state);
+
+        assertTrue(action.isExecuted());
+        assertFalse(action.executedAsPlanned());
+    }
+
+    /**
+     * A reply is only complete once the matching line has been terminated, so a pattern that
+     * matches a prefix of the final line still drains the rest of it. Stopping early would leave
+     * plaintext in the socket for the TLS handshake to trip over.
+     */
+    @Test
+    public void testReplyDrainsRestOfMatchingLine() {
+        int[] fetchCount = feedChunks("* FIRST\r\n", "TAG OK", " done\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^TAG OK");
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals("* FIRST\r\nTAG OK done\r\n", action.getReceivedText());
+        assertEquals(3, fetchCount[0]);
+    }
+
+    /**
+     * A block terminated by a lone dot, as NNTP uses (RFC 4642), is named directly by the pattern.
+     * The whole block is read, so nothing of it is left for the handshake.
+     */
+    @Test
+    public void testDotTerminatedBlockIsReadWhole() {
+        feed("101 Capability list:\r\nVERSION 2\r\nSTARTTLS\r\n.\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^\\.$");
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "101 Capability list:\r\nVERSION 2\r\nSTARTTLS\r\n.\r\n", action.getReceivedText());
+    }
+
+    /**
+     * SMTP marks continuation lines with a hyphen after the status code and the final line with a
+     * space (RFC 3207), so the pattern names the space form to find the end of the reply.
+     */
+    @Test
+    public void testSpaceAfterCodeEndsReply() {
+        feed("250-mail.example.org\r\n250-PIPELINING\r\n250 STARTTLS\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^250 ");
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "250-mail.example.org\r\n250-PIPELINING\r\n250 STARTTLS\r\n",
+                action.getReceivedText());
+    }
+
+    /** No abort pattern is configured by default, so nothing cuts the read short. */
+    @Test
+    public void testNoAbortRegexByDefault() {
+        assertEquals(null, new ReceiveRegexTextAction("^MATCH").getAbortRegex());
+    }
+
+    /**
+     * A reply matching the abort pattern ends the read on the packet that carries it, rather than
+     * reading on until the socket times out. At crawler scale that is a full timeout saved per
+     * refusing host.
+     */
+    @Test
+    public void testAbortRegexStopsTheReadAtOnce() {
+        int[] fetchCount = feedChunks("534 Policy requires SSL\r\n", "234 never read\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234 ");
+        action.setAbortRegex("^[45]\\d\\d ");
+
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertFalse(action.executedAsPlanned());
+        assertEquals("534 Policy requires SSL\r\n", action.getReceivedText());
         // The second fragment must not have been read.
-        assertEquals("NO", action.getReceivedText());
         assertEquals(1, fetchCount[0]);
+    }
+
+    /**
+     * The abort pattern is only honoured on a terminated line, so a refusal split mid-line does not
+     * fire it early and the rest of the line is still drained into the reported text.
+     */
+    @Test
+    public void testAbortRegexWaitsForACompleteLine() {
+        feedChunks("53", "4 Policy requires SSL\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234 ");
+        action.setAbortRegex("^[45]\\d\\d ");
+
+        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertEquals("534 Policy requires SSL\r\n", action.getReceivedText());
+    }
+
+    /**
+     * The abort pattern must not fire on the continuation lines of a reply that is going to
+     * succeed: it names what a refusal looks like, not "anything that is not the expected reply".
+     */
+    @Test
+    public void testAbortRegexDoesNotFireOnContinuationLines() {
+        feed("234-AUTH TLS OK\r\n234-continuation line\r\n234 End\r\n");
+
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234 ");
+        action.setAbortRegex("^[45]\\d\\d ");
+        action.execute(state);
+
+        assertTrue(action.executedAsPlanned());
+        assertEquals(
+                "234-AUTH TLS OK\r\n234-continuation line\r\n234 End\r\n",
+                action.getReceivedText());
+    }
+
+    /** The abort pattern takes part in equality. */
+    @Test
+    public void testEqualityAccountsForAbortRegex() {
+        ReceiveRegexTextAction withAbort = new ReceiveRegexTextAction("^MATCH");
+        withAbort.setAbortRegex("^[45]\\d\\d ");
+
+        assertEquals(new ReceiveRegexTextAction("^MATCH"), new ReceiveRegexTextAction("^MATCH"));
+        assertNotEquals(new ReceiveRegexTextAction("^MATCH"), withAbort);
     }
 }
