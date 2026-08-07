@@ -1252,21 +1252,23 @@ public class WorkflowConfigurationFactory {
             case FTP:
                 {
                     workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220 "));
-                    if (!config.isStarttlsMinimalUpgrade()) {
+                    if (config.isStarttlsUseCapabilityDiscovery()) {
                         workflowTrace.addTlsAction(new SendTextAction("FEAT\r\n", null));
                         ReceiveRegexTextAction featReply = new ReceiveRegexTextAction("^211 ");
                         featReply.setAbortRegex("^[45]\\d\\d ");
                         workflowTrace.addTlsAction(featReply);
                         workflowTrace.addTlsAction(
-                                new AssertCapabilityAdvertisedAction("AUTH TLS"));
+                                new AssertStartTlsCapabilityAdvertisedAction("AUTH TLS"));
                     }
                     workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
                     ReceiveRegexTextAction authReply = new ReceiveRegexTextAction("^234 ");
                     authReply.setAbortRegex("^[45]\\d\\d ");
                     workflowTrace.addTlsAction(authReply);
                     return workflowTrace;
+                    // RFC 4217 places AUTH TLS directly after the greeting, so the discovery
+                    // exchange is skipped unless a server was seen to insist on it.
                     // server: "220-Welcome to FTP server\r\n220 Ready\r\n"
-                    // client: "FEAT\r\n"                     (full sequence only)
+                    // client: "FEAT\r\n"                     (discovery variant only)
                     // server: "211-Features:\r\n AUTH TLS\r\n211 End\r\n"
                     // client: "AUTH TLS\r\n"
                     // server: "234 AUTH TLS"

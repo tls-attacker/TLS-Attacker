@@ -24,8 +24,8 @@ import org.apache.logging.log4j.Logger;
  * Asserts that a capability-discovery reply advertised the upgrade the workflow is about to
  * request.
  */
-@XmlRootElement(name = "AssertCapabilityAdvertised")
-public class AssertCapabilityAdvertisedAction extends TlsAction {
+@XmlRootElement(name = "AssertStartTlsCapabilityAdvertised")
+public class AssertStartTlsCapabilityAdvertisedAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,9 +35,9 @@ public class AssertCapabilityAdvertisedAction extends TlsAction {
     private Boolean advertised;
 
     @SuppressWarnings("unused")
-    AssertCapabilityAdvertisedAction() {}
+    AssertStartTlsCapabilityAdvertisedAction() {}
 
-    public AssertCapabilityAdvertisedAction(String capability) {
+    public AssertStartTlsCapabilityAdvertisedAction(String capability) {
         this.capability = capability;
     }
 
@@ -116,7 +116,8 @@ public class AssertCapabilityAdvertisedAction extends TlsAction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AssertCapabilityAdvertisedAction that = (AssertCapabilityAdvertisedAction) o;
+        AssertStartTlsCapabilityAdvertisedAction that =
+                (AssertStartTlsCapabilityAdvertisedAction) o;
         return Objects.equals(capability, that.capability)
                 && Objects.equals(advertised, that.advertised);
     }

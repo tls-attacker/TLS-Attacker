@@ -1506,6 +1506,7 @@
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <defaultMaxHttpLength>65536</defaultMaxHttpLength>
     <starttlsType>NONE</starttlsType>
+    <starttlsUseCapabilityDiscovery>false</starttlsUseCapabilityDiscovery>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>
     <sessionTicketEncryptionKey>53 65 63 75 72 65 53 54 69 63 6B 65 74 4B 65 79</sessionTicketEncryptionKey>
