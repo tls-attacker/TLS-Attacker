@@ -65,7 +65,6 @@ public class AssertStartTlsCapabilityAdvertisedAction extends TlsAction {
         LOGGER.debug("Capability \"{}\" is advertised", capability);
     }
 
-    /** Returns the text received by the closest preceding text-receiving action. */
     private String findDiscoveryReply(State state) {
         List<TlsAction> actions = state.getWorkflowTrace().getTlsActions();
         for (int i = actions.indexOf(this) - 1; i >= 0; i--) {
@@ -76,11 +75,6 @@ public class AssertStartTlsCapabilityAdvertisedAction extends TlsAction {
         return null;
     }
 
-    /**
-     * Capability lists are line-based and case-insensitive in every protocol that uses them, and
-     * the token is a whole entry rather than a substring: matching "STARTTLS" must not be satisfied
-     * by an unrelated "NOSTARTTLS" feature line.
-     */
     private boolean containsCapability(String discoveryReply) {
         return Pattern.compile(
                         "(?<![A-Z0-9-])" + Pattern.quote(capability) + "(?![A-Z0-9-])",
