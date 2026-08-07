@@ -1107,7 +1107,7 @@ public class Config implements Serializable {
     private Integer defaultMaxHttpLength = 65536; // 2^16
 
     private StarttlsType starttlsType = StarttlsType.NONE;
-    
+
     private Boolean starttlsMinimalUpgrade = false;
 
     /**
