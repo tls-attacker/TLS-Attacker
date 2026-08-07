@@ -1107,6 +1107,8 @@ public class Config implements Serializable {
     private Integer defaultMaxHttpLength = 65536; // 2^16
 
     private StarttlsType starttlsType = StarttlsType.NONE;
+    
+    private Boolean starttlsMinimalUpgrade = false;
 
     /**
      * By default, the Session ID is overwritten, if (1) the server receives an empty Session Ticket
@@ -3730,6 +3732,14 @@ public class Config implements Serializable {
 
     public void setStarttlsType(StarttlsType starttlsType) {
         this.starttlsType = starttlsType;
+    }
+
+    public Boolean isStarttlsMinimalUpgrade() {
+        return starttlsMinimalUpgrade;
+    }
+
+    public void setStarttlsMinimalUpgrade(Boolean starttlsMinimalUpgrade) {
+        this.starttlsMinimalUpgrade = starttlsMinimalUpgrade;
     }
 
     public KeyShareStoreEntry getDefaultServerKeyShareEntry() {
