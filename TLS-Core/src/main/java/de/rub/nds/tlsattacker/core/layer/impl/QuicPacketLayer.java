@@ -730,4 +730,8 @@ public class QuicPacketLayer
         }
         return false;
     }
+
+    public boolean hasBufferedPackets(QuicPacketType packetType) {
+        return !receivedPacketBuffer.get(packetType).isEmpty();
+    }
 }
