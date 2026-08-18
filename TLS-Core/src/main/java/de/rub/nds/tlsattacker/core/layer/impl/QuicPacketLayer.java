@@ -97,8 +97,8 @@ public class QuicPacketLayer
                     }
                     stream.writeBytes(writePacket(packet));
                     addProducedContainer(packet);
+                    getLowerLayer().sendData(null, stream.toByteArray());
                 }
-                getLowerLayer().sendData(null, stream.toByteArray());
             } else {
                 for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
                     if (packet.getPacketType().isFrameContainer() && isEmptyPacket(packet)) {
