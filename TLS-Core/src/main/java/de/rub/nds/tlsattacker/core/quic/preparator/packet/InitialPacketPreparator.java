@@ -60,13 +60,18 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     @Override
     protected int calculatePadding() {
+        byte[] dcid = context.getDestinationConnectionId();
+        if (dcid == null || dcid.length == 0) {
+            dcid = context.getFirstDestinationConnectionId();
+        }
+
         return Math.max(
                 0,
                 MiscRfcConstants.SMALLEST_MAX_DATAGRAM_SIZE
                         - (QuicPacketByteLength.QUIC_FIRST_HEADER_BYTE
                                 + QuicPacketByteLength.QUIC_VERSION_LENGTH
                                 + QuicPacketByteLength.DESTINATION_CONNECTION_ID_LENGTH
-                                + context.getDestinationConnectionId().length
+                                + dcid.length
                                 + QuicPacketByteLength.SOURCE_CONNECTION_ID_LENGTH
                                 + context.getSourceConnectionId().length
                                 + (packet.getToken().getValue().length == 0

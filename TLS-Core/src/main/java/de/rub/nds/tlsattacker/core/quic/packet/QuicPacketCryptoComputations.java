@@ -373,12 +373,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             throws CryptoException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic 0-RTT Secrets");
         QuicContext quicContext = context.getQuicContext();
-        quicContext.setZeroRTTCipherSuite(context.getTlsContext().getEarlyDataCipherSuite());
+        quicContext.setZeroRTTCipherSuite(context.getChooser().getEarlyDataCipherSuite());
         quicContext.setZeroRTTAeadCipher(
-                context.getTlsContext()
-                        .getEarlyDataCipherSuite()
-                        .getCipherAlgorithm()
-                        .getJavaName());
+                context.getChooser().getEarlyDataCipherSuite().getCipherAlgorithm().getJavaName());
 
         int keyLength = 16;
         switch (quicContext.getZeroRTTCipherSuite()) {
