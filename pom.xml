@@ -656,6 +656,9 @@
         <!-- Profile for release on maven central with publish api -->
         <profile>
             <id>central-release</id>
+            <properties>
+                <skip.signature>false</skip.signature>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -673,7 +676,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <configuration>
-                            <!-- für CI: gnupg pinentry loopback -->
+                            <skip>false</skip>
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>
                                 <arg>loopback</arg>

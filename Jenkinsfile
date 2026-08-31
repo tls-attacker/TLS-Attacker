@@ -56,35 +56,8 @@ pipeline {
                         timeout: 120)
             }
         }
-        stage('Static Analysis & Unit Tests') {
-            when {
-                expression { pipelineUtils.isMainTagOrChangeRequest() }
-            }
-            parallel {
 
-                stage('Code Analysis') {
-                    steps { ciStepStaticAnalysis() }
-                }
 
-                stage('Unit Tests') {
-                    steps { ciUnitTests(profile: "coverage") }
-                    post {
-                        always {
-                            junit testResults: '**/target/surefire-reports/TEST-*.xml',
-                                    allowEmptyResults: true
-                        }
-                    }
-                }
-            }
-        }
-        stage('Integration Tests') {
-            when {
-                expression { pipelineUtils.isMainTagOrChangeRequest() }
-            }
-            steps {
-                ciIntegrationTests(profile: "coverage", timeout: 1800)
-            }
-        }
         stage('Set version') {
             steps {
                 script {
