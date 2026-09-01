@@ -90,6 +90,12 @@ public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     * Matches the error replies of the text-based STARTTLS protocols, which all report both
+     * permanent and transient failures as a 4xx or 5xx status followed by a space.
+     */
+    private static final String ERROR_STATUS_REGEX = "^[45]\\d\\d ";
+
     protected final Config config;
     private RunningModeType mode;
 
@@ -1243,6 +1249,57 @@ public class WorkflowConfigurationFactory {
         }
     }
 
+    /**
+     * Adds the STARTTLS upgrade for a text-based protocol, in whichever of the two variants the
+     * config selects.
+     *
+     * <p>The minimal variant reads the greeting, sends the upgrade command and expects the success
+     * reply. The discovery variant runs the protocol's capability exchange in between, for servers
+     * that enforce the full command sequence from their RFC and refuse a bare upgrade command.
+     *
+     * <p>Which one to use is a property of the target that cannot be known before asking it, so it
+     * is chosen here from the config rather than during execution: whoever learns that the target
+     * needs discovery sets {@link Config#setStarttlsUseCapabilityDiscovery(Boolean)} and every
+     * trace built afterwards carries the longer exchange.
+     *
+     * @param workflowTrace the trace to add to
+     * @param greetingRegex matches the server's opening line
+     * @param discoveryCommand asks the server to list its capabilities
+     * @param discoveryReplyRegex matches the final line of the capability list
+     * @param upgradeCommand requests the TLS upgrade
+     * @param upgradeSuccessRegex matches the reply that grants it
+     * @return the trace, for chaining
+     */
+    private WorkflowTrace addUpgradeActions(
+            WorkflowTrace workflowTrace,
+            String greetingRegex,
+            String discoveryCommand,
+            String discoveryReplyRegex,
+            String upgradeCommand,
+            String upgradeSuccessRegex) {
+        workflowTrace.addTlsAction(new ReceiveRegexTextAction(greetingRegex));
+        if (config.isStarttlsUseCapabilityDiscovery()) {
+            workflowTrace.addTlsAction(new SendTextAction(discoveryCommand, null));
+            workflowTrace.addTlsAction(receiveOrAbort(discoveryReplyRegex));
+        }
+        workflowTrace.addTlsAction(new SendTextAction(upgradeCommand, null));
+        workflowTrace.addTlsAction(receiveOrAbort(upgradeSuccessRegex));
+        return workflowTrace;
+    }
+
+    /**
+     * Builds a receive action that gives up when the server answers with an error status, so a
+     * refused upgrade ends the trace instead of waiting for a reply that will never come.
+     *
+     * @param regex matches the reply the action is waiting for
+     * @return the prepared action
+     */
+    private ReceiveRegexTextAction receiveOrAbort(String regex) {
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction(regex);
+        action.setAbortRegex(ERROR_STATUS_REGEX);
+        return action;
+    }
+
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
         // TODO: the types that still throw below have their message flow left in comments, they
@@ -1251,15 +1308,13 @@ public class WorkflowConfigurationFactory {
         switch (type) {
             case FTP:
                 {
-                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220 "));
-                    workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
-                    ReceiveRegexTextAction authReply = new ReceiveRegexTextAction("^234 ");
-                    authReply.setAbortRegex("^[45]\\d\\d ");
-                    workflowTrace.addTlsAction(authReply);
-                    return workflowTrace;
                     // server: "220-Welcome to FTP server\r\n220 Ready\r\n"
+                    // client: "FEAT\r\n"                     (discovery variant only)
+                    // server: "211-Features:\r\n AUTH TLS\r\n211 End\r\n"
                     // client: "AUTH TLS\r\n"
                     // server: "234 AUTH TLS"
+                    return addUpgradeActions(
+                            workflowTrace, "^220 ", "FEAT\r\n", "^211 ", "AUTH TLS\r\n", "^234 ");
                 }
             case IMAP:
                 {

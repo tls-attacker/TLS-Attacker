@@ -1109,6 +1109,15 @@ public class Config implements Serializable {
     private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
+     * Whether the STARTTLS upgrade runs the protocol's capability-discovery exchange before the
+     * upgrade command. Off by default: most servers take the upgrade command straight after the
+     * greeting, and skipping discovery saves a round trip on every connection. Servers that enforce
+     * the full command sequence from their RFC refuse the bare upgrade, and only those need this
+     * turned on.
+     */
+    private Boolean starttlsUseCapabilityDiscovery = false;
+
+    /**
      * By default, the Session ID is overwritten, if (1) the server receives an empty Session Ticket
      * (it answers with an empty Server SID) (2) the client presents a sessionTicket
      * (defaultClientTicketResumptionSessionId is used). Unset this flag if you want to modify the
@@ -3730,6 +3739,14 @@ public class Config implements Serializable {
 
     public void setStarttlsType(StarttlsType starttlsType) {
         this.starttlsType = starttlsType;
+    }
+
+    public Boolean isStarttlsUseCapabilityDiscovery() {
+        return starttlsUseCapabilityDiscovery;
+    }
+
+    public void setStarttlsUseCapabilityDiscovery(Boolean starttlsUseCapabilityDiscovery) {
+        this.starttlsUseCapabilityDiscovery = starttlsUseCapabilityDiscovery;
     }
 
     public KeyShareStoreEntry getDefaultServerKeyShareEntry() {
