@@ -1,91 +1,27 @@
 @Library('jenkins-ci-library') _
 
-/**
- * Main CI/CD Pipeline for Maven-based projects.
- *
- * This pipeline handles the full build lifecycle: clean, build, tests, static analysis,
- * deployment to Nexus, and optional Maven Release.
- */
-pipeline {
-    agent any
+@Library('jenkins-ci-library') _
 
-    environment {
-        JDK_TOOL_NAME = 'JDK 21'
-        MAVEN_TOOL_NAME = 'Maven 3.9.9'
-    }
+standardPipeline(
+        jdkTool: 'JDK 21',
+        mavenTool: 'Maven 3.9.9',
+        spotlessTimeout: 60,
+        buildTimeout: 120,
+        intTestTimeout: 600,
+        codeAnalyseTimeout: 240,
+        uniTestTimeout: 180,
 
-    options {
-        skipStagesAfterUnstable()
-        disableConcurrentBuilds abortPrevious: true
-        timeout(time: 45, unit: 'MINUTES')
-    }
-
-    parameters {
-        booleanParam(
-                name: 'RELEASE',
-                defaultValue: true,
-                description: 'Perform a Maven Release'
-        )
-        booleanParam(
-                name: 'DRY_RUN',
-                defaultValue: true,
-                description: 'If true → Simulate release only (nothing is deployed to Nexus)'
-        )
-        string(
-                name: 'RELEASE_VERSION',
-                defaultValue: '7.7.1',
-                description: 'Release Version (z.B. 1.2.3). Leave empty to use tag name.'
-        )
-    }
-
-    stages {
-        stage('Clean') {
-            steps { ciMaven(
-                    goal: "clean") }
+        extraStages: {
+            setVersion(
+                    projectName: 'tls.attacker'
+            )
+            centralPublish(
+                    autoPublish: false,
+                    skipTests: true,
+                    quiet: false,
+                    useSettings: true,
+                    settingsId: 'central-settings',
+                    profile: '!protocol-attacker,central-release'
+            )
         }
-        stage('Format Check') {
-            steps { ciMaven(
-                    goal: "spotless:check",
-                    timeout: 60) }
-        }
-        stage('Build') {
-            steps {
-                ciMaven(
-                        goal: "package",
-                        args: "-DskipTests=true",
-                        timeout: 120)
-            }
-        }
-
-
-        stage('Set version') {
-            steps {
-                script {
-                    def releaseVersion = sh(
-                            script: "grep '^tls.attacker.version=' version.properties | cut -d'=' -f2",
-                            returnStdout: true
-                    ).trim()
-                    echo "Release version: ${releaseVersion}"
-                    ciSetVersion(releaseVersion: releaseVersion)
-                }
-            }
-        }
-        stage('Publish to Maven Central') {
-            steps {
-                ciCentralPublish(
-                        autoPublish: false,
-                        skipTests: true,
-                        quiet: false,
-                        useSettings: true,
-                        settingsId: 'central-settings',
-                        profile: '!protocol-attacker,central-release'
-                )
-            }
-        }
-    }
-    post {
-        always {
-            recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
-        }
-    }
-}
+)
