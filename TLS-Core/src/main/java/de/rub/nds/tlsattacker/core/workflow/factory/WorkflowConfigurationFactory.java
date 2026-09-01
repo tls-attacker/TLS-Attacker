@@ -90,12 +90,6 @@ public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Matches the error replies of the text-based STARTTLS protocols, which all report both
-     * permanent and transient failures as a 4xx or 5xx status followed by a space.
-     */
-    private static final String ERROR_STATUS_REGEX = "^[45]\\d\\d ";
-
     protected final Config config;
     private RunningModeType mode;
 
@@ -1250,6 +1244,51 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
+     * The lines one text-based STARTTLS protocol exchanges to reach its TLS upgrade.
+     *
+     * <p>Every such protocol runs the same conversation and differs only in what it says, so the
+     * wording lives here and the two upgrade variants are built from it. The error pattern is part
+     * of that wording: the numeric protocols report failures as a 4xx or 5xx status, while others
+     * use their own vocabulary, so each one brings its own.
+     */
+    private static final class StartTlsDialect {
+
+        private final String greetingRegex;
+        private final String discoveryCommand;
+        private final String discoveryReplyRegex;
+        private final String upgradeCommand;
+        private final String upgradeSuccessRegex;
+        private final String errorRegex;
+
+        private StartTlsDialect(
+                String greetingRegex,
+                String discoveryCommand,
+                String discoveryReplyRegex,
+                String upgradeCommand,
+                String upgradeSuccessRegex,
+                String errorRegex) {
+            this.greetingRegex = greetingRegex;
+            this.discoveryCommand = discoveryCommand;
+            this.discoveryReplyRegex = discoveryReplyRegex;
+            this.upgradeCommand = upgradeCommand;
+            this.upgradeSuccessRegex = upgradeSuccessRegex;
+            this.errorRegex = errorRegex;
+        }
+    }
+
+    /** Matches the error replies of the protocols that report failures as a numeric status. */
+    private static final String NUMERIC_ERROR_STATUS_REGEX = "^[45]\\d\\d ";
+
+    private static final StartTlsDialect FTP_DIALECT =
+            new StartTlsDialect(
+                    "^220 ",
+                    "FEAT\r\n",
+                    "^211 ",
+                    "AUTH TLS\r\n",
+                    "^234 ",
+                    NUMERIC_ERROR_STATUS_REGEX);
+
+    /**
      * Adds the STARTTLS upgrade for a text-based protocol, in whichever of the two variants the
      * config selects.
      *
@@ -1263,40 +1302,31 @@ public class WorkflowConfigurationFactory {
      * trace built afterwards carries the longer exchange.
      *
      * @param workflowTrace the trace to add to
-     * @param greetingRegex matches the server's opening line
-     * @param discoveryCommand asks the server to list its capabilities
-     * @param discoveryReplyRegex matches the final line of the capability list
-     * @param upgradeCommand requests the TLS upgrade
-     * @param upgradeSuccessRegex matches the reply that grants it
+     * @param dialect what the protocol says at each step of the upgrade
      * @return the trace, for chaining
      */
-    private WorkflowTrace addUpgradeActions(
-            WorkflowTrace workflowTrace,
-            String greetingRegex,
-            String discoveryCommand,
-            String discoveryReplyRegex,
-            String upgradeCommand,
-            String upgradeSuccessRegex) {
-        workflowTrace.addTlsAction(new ReceiveRegexTextAction(greetingRegex));
+    private WorkflowTrace addUpgradeActions(WorkflowTrace workflowTrace, StartTlsDialect dialect) {
+        workflowTrace.addTlsAction(new ReceiveRegexTextAction(dialect.greetingRegex));
         if (config.isStarttlsUseCapabilityDiscovery()) {
-            workflowTrace.addTlsAction(new SendTextAction(discoveryCommand, null));
-            workflowTrace.addTlsAction(receiveOrAbort(discoveryReplyRegex));
+            workflowTrace.addTlsAction(new SendTextAction(dialect.discoveryCommand, null));
+            workflowTrace.addTlsAction(receiveOrAbort(dialect.discoveryReplyRegex, dialect));
         }
-        workflowTrace.addTlsAction(new SendTextAction(upgradeCommand, null));
-        workflowTrace.addTlsAction(receiveOrAbort(upgradeSuccessRegex));
+        workflowTrace.addTlsAction(new SendTextAction(dialect.upgradeCommand, null));
+        workflowTrace.addTlsAction(receiveOrAbort(dialect.upgradeSuccessRegex, dialect));
         return workflowTrace;
     }
 
     /**
-     * Builds a receive action that gives up when the server answers with an error status, so a
-     * refused upgrade ends the trace instead of waiting for a reply that will never come.
+     * Builds a receive action that gives up when the server answers with an error, so a refused
+     * upgrade ends the trace instead of waiting for a reply that will never come.
      *
      * @param regex matches the reply the action is waiting for
+     * @param dialect supplies the protocol's error pattern
      * @return the prepared action
      */
-    private ReceiveRegexTextAction receiveOrAbort(String regex) {
+    private ReceiveRegexTextAction receiveOrAbort(String regex, StartTlsDialect dialect) {
         ReceiveRegexTextAction action = new ReceiveRegexTextAction(regex);
-        action.setAbortRegex(ERROR_STATUS_REGEX);
+        action.setAbortRegex(dialect.errorRegex);
         return action;
     }
 
@@ -1313,8 +1343,7 @@ public class WorkflowConfigurationFactory {
                     // server: "211-Features:\r\n AUTH TLS\r\n211 End\r\n"
                     // client: "AUTH TLS\r\n"
                     // server: "234 AUTH TLS"
-                    return addUpgradeActions(
-                            workflowTrace, "^220 ", "FEAT\r\n", "^211 ", "AUTH TLS\r\n", "^234 ");
+                    return addUpgradeActions(workflowTrace, FTP_DIALECT);
                 }
             case IMAP:
                 {
