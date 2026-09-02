@@ -126,4 +126,9 @@ public class ResetStreamFrame extends QuicFrame {
     public void setFinalSizeConfig(int finalSizeConfig) {
         this.finalSizeConfig = finalSizeConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "RS";
+    }
 }

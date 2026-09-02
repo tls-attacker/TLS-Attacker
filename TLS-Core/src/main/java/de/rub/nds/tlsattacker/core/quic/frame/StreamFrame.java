@@ -47,6 +47,16 @@ public class StreamFrame extends QuicFrame {
         super(frameType);
     }
 
+    public StreamFrame(
+            byte[] dataConfig, int streamIdConfig, int offsetConfig, boolean finalFrameConfig) {
+        this();
+        this.dataConfig = dataConfig;
+        this.streamIdConfig = streamIdConfig;
+        this.lengthConfig = dataConfig.length;
+        this.finalFrameConfig = finalFrameConfig;
+        this.offsetConfig = offsetConfig;
+    }
+
     public StreamFrame(byte[] dataConfig, int streamIdConfig, boolean finalFrameConfig) {
         this();
         this.dataConfig = dataConfig;
@@ -150,5 +160,10 @@ public class StreamFrame extends QuicFrame {
 
     public void setFinalFrameConfig(boolean finalFrameConfig) {
         this.finalFrameConfig = finalFrameConfig;
+    }
+
+    @Override
+    public String toShortString() {
+        return "STR";
     }
 }

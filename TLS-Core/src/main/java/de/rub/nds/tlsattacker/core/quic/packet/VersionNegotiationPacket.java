@@ -34,6 +34,11 @@ public class VersionNegotiationPacket extends LongHeaderPacket {
         super(QuicPacketType.VERSION_NEGOTIATION);
     }
 
+    public VersionNegotiationPacket(byte flags) {
+        super(QuicPacketType.VERSION_NEGOTIATION);
+        this.setUnprotectedFlags(flags);
+    }
+
     @Override
     public void buildUnprotectedPacketHeader() {}
 
@@ -58,6 +63,11 @@ public class VersionNegotiationPacket extends LongHeaderPacket {
     @Override
     public VersionNegotiationPacketParser getParser(Context context, InputStream stream) {
         return new VersionNegotiationPacketParser(stream, context.getQuicContext());
+    }
+
+    @Override
+    public String toShortString() {
+        return "VN";
     }
 
     public ModifiableByteArray getSupportedVersions() {

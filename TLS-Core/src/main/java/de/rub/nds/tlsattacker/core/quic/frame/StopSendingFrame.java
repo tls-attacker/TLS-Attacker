@@ -101,4 +101,9 @@ public class StopSendingFrame extends QuicFrame {
     public void setApplicationProtocolErrorCodeConfig(int applicationProtocolErrorCodeConfig) {
         this.applicationProtocolErrorCodeConfig = applicationProtocolErrorCodeConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "SS";
+    }
 }

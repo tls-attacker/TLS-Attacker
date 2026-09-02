@@ -61,7 +61,7 @@ public abstract class AbstractHandshakeIT {
     private static final int PORT_MAX_TRIES = 10;
     private static final int PORT_WAIT_TIME_MS = 500;
 
-    private static final Integer PORT = FreePortFinder.getPossiblyFreePort();
+    private static final Integer PORT = FreePortFinder.getPossiblyFreeTcpPort();
     private static List<Image> localImages;
 
     private final TlsImplementationType implementation;

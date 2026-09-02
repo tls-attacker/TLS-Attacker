@@ -9,37 +9,35 @@
 package de.rub.nds.tlsattacker.core.layer.hints;
 
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuicPacketLayerHint implements LayerProcessingHint {
 
-    private final QuicPacketType quicPacketType;
+    private QuicPacketType quicPacketType;
 
-    private final boolean newPacket;
+    private List<Integer> frameBoundaries;
 
-    public QuicPacketLayerHint() {
-        quicPacketType = QuicPacketType.UNKNOWN;
-        newPacket = false;
-    }
+    public QuicPacketLayerHint() {}
 
     public QuicPacketLayerHint(QuicPacketType quicPacketType) {
         this.quicPacketType = quicPacketType;
-        this.newPacket = false;
-    }
-
-    public QuicPacketLayerHint(QuicPacketType quicPacketType, boolean newPacket) {
-        this.quicPacketType = quicPacketType;
-        this.newPacket = newPacket;
+        frameBoundaries = new ArrayList<>();
     }
 
     public QuicPacketType getQuicPacketType() {
         return quicPacketType;
     }
 
-    public boolean isNewPacket() {
-        return newPacket;
+    public List<Integer> getFrameBoundaries() {
+        return frameBoundaries;
     }
 
-    public QuicPacketLayerHint asNewPacket(boolean newPacket) {
-        return new QuicPacketLayerHint(quicPacketType, newPacket);
+    public void setFrameBoundaries(List<Integer> frameBoundaries) {
+        this.frameBoundaries = frameBoundaries;
+    }
+
+    public void addFrameBoundary(int boundary) {
+        frameBoundaries.add(boundary);
     }
 }

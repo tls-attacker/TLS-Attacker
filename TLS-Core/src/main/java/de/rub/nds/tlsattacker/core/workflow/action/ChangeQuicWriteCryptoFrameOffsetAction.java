@@ -9,41 +9,34 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
+import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement(name = "GenericReceiveAscii")
-public class GenericReceiveAsciiAction extends AsciiAction {
+public abstract class ChangeQuicWriteCryptoFrameOffsetAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    GenericReceiveAsciiAction() {}
+    protected Long writeCryptoFrameOffset = null;
 
-    public GenericReceiveAsciiAction(String encoding) {
-        super(encoding);
+    public ChangeQuicWriteCryptoFrameOffsetAction() {}
+
+    public ChangeQuicWriteCryptoFrameOffsetAction(long writeCryptoFrameOffset) {
+        this.writeCryptoFrameOffset = writeCryptoFrameOffset;
     }
+
+    protected abstract void changeWriteCryptoFrameOffset(QuicContext quicContext);
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TcpContext tcpContext = state.getTcpContext();
+        QuicContext quicContext = state.getContext(getConnectionAlias()).getQuicContext();
 
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        try {
-            LOGGER.debug("Receiving ASCII message...");
-            byte[] fetchData = tcpContext.getTransportHandler().fetchData();
-            setAsciiText(new String(fetchData, getEncoding()));
-            LOGGER.info("Received: {}", getAsciiText());
-            setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            setExecuted(false);
-        }
+        changeWriteCryptoFrameOffset(quicContext);
+        setExecuted(true);
     }
 
     @Override

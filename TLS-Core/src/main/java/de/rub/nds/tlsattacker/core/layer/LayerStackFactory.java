@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.*;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
 import de.rub.nds.tlsattacker.core.state.Context;
+import java.util.List;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with
@@ -25,9 +26,21 @@ public class LayerStackFactory {
         LayerStack layerStack;
         switch (type) {
             case OPEN_VPN:
-            case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
 
+            case GENERIC_OPPORTUNISTIC_TLS:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new MessageLayer(context, false),
+                                new RecordLayer(context, false),
+                                new TcpLayer(context));
+                return layerStack;
+            case GENERIC_OPPORTUNISTIC_SSL2:
+                layerStack =
+                        new LayerStack(
+                                context, new SSL2Layer(context, false), new TcpLayer(context));
+                return layerStack;
             case DTLS:
                 return new LayerStack(
                         context,
@@ -102,6 +115,27 @@ public class LayerStackFactory {
 
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
+        }
+    }
+
+    /**
+     * Returns the layers of the given stack configuration that are created in a disabled state.
+     * These are exactly the layers a plaintext-to-TLS upgrade (STARTTLS) has to enable once the
+     * negotiation succeeded.
+     *
+     * @param type the stack configuration to inspect
+     * @return the layers that start out disabled, in stack order
+     */
+    public static List<ImplementedLayers> getInitiallyDisabledLayers(StackConfiguration type) {
+        switch (type) {
+            case GENERIC_OPPORTUNISTIC_SSL2:
+                return List.of(ImplementedLayers.SSL2);
+            case GENERIC_OPPORTUNISTIC_TLS:
+            case POP3:
+            case SMTP:
+                return List.of(ImplementedLayers.MESSAGE, ImplementedLayers.RECORD);
+            default:
+                return List.of();
         }
     }
 }

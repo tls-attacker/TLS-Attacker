@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +29,7 @@ public class Quicv2Test {
 
     @Test
     public void versionDependentInitialSecretsTest()
-            throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
+            throws NoSuchAlgorithmException, CryptoException {
         // Check that we generate the correct version-dependent initial secrets
         QuicContext quicv1Context = calculateInitialSecretsForVersion(QuicVersion.VERSION_1);
         Assert.assertArrayEquals(
@@ -61,7 +60,7 @@ public class Quicv2Test {
 
     @Test
     public void versionDependentZeroRTTSecretsTest()
-            throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
+            throws NoSuchAlgorithmException, CryptoException {
         // Check that we generate the correct version-dependent initial secrets
         QuicContext quicv1Context = calculateZeroRTTSecretsForVersion(QuicVersion.VERSION_1);
         QuicContext quicv2Context = calculateZeroRTTSecretsForVersion(QuicVersion.VERSION_2);
@@ -79,7 +78,7 @@ public class Quicv2Test {
     }
 
     private QuicContext calculateInitialSecretsForVersion(QuicVersion version)
-            throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
+            throws NoSuchAlgorithmException, CryptoException {
         Config config = new Config();
         config.setQuicVersion(version);
         QuicContext context =
@@ -93,7 +92,7 @@ public class Quicv2Test {
     }
 
     private QuicContext calculateZeroRTTSecretsForVersion(QuicVersion version)
-            throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
+            throws NoSuchAlgorithmException, CryptoException {
         Config config = new Config();
         config.setQuicVersion(version);
         Context context = new Context(new State(config), new InboundConnection());

@@ -59,4 +59,9 @@ public class ZeroRTTPacket extends LongHeaderPacket {
     public Parser<ZeroRTTPacket> getParser(Context context, InputStream stream) {
         return new ZeroRTTPacketParser(stream, context.getQuicContext());
     }
+
+    @Override
+    public String toShortString() {
+        return "0-RTT";
+    }
 }

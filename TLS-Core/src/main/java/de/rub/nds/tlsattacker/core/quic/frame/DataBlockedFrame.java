@@ -75,4 +75,9 @@ public class DataBlockedFrame extends QuicFrame {
     public void setMaximumDataConfig(int maximumDataConfig) {
         this.maximumDataConfig = maximumDataConfig;
     }
+
+    @Override
+    public String toShortString() {
+        return "DB";
+    }
 }

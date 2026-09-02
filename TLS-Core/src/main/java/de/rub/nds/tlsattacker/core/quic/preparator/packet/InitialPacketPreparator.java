@@ -35,13 +35,8 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
     }
 
     private void prepareToken() {
-        if (context.getInitialPacketToken() != null) {
-            packet.setToken(context.getInitialPacketToken());
-            packet.setTokenLength(context.getInitialPacketToken().length);
-        } else {
-            packet.setToken(new byte[] {});
-            packet.setTokenLength(0);
-        }
+        packet.setToken(chooser.getQuicInitialPacketToken());
+        packet.setTokenLength(chooser.getQuicInitialPacketToken().length);
         LOGGER.debug("Token: {}", packet.getToken().getValue());
         LOGGER.debug("Token Length: {}", packet.getTokenLength());
     }
@@ -65,19 +60,18 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     @Override
     protected int calculatePadding() {
-        if (context.getConfig().isQuicDoNotPad()) {
-            return 0;
+        byte[] dcid = context.getDestinationConnectionId();
+        if (dcid == null || dcid.length == 0) {
+            dcid = context.getFirstDestinationConnectionId();
         }
-        if (packet.getConfiguredPadding() > -1) {
-            return packet.getConfiguredPadding();
-        }
+
         return Math.max(
                 0,
                 MiscRfcConstants.SMALLEST_MAX_DATAGRAM_SIZE
                         - (QuicPacketByteLength.QUIC_FIRST_HEADER_BYTE
                                 + QuicPacketByteLength.QUIC_VERSION_LENGTH
                                 + QuicPacketByteLength.DESTINATION_CONNECTION_ID_LENGTH
-                                + context.getDestinationConnectionId().length
+                                + dcid.length
                                 + QuicPacketByteLength.SOURCE_CONNECTION_ID_LENGTH
                                 + context.getSourceConnectionId().length
                                 + (packet.getToken().getValue().length == 0

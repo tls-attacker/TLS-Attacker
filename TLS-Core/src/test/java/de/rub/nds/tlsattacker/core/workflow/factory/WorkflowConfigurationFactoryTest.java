@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3NOOPCommand;
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3STLSCommand;
@@ -32,6 +34,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpSTARTTLSCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
@@ -41,6 +45,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -309,7 +314,7 @@ public class WorkflowConfigurationFactoryTest {
 
     /** Test of addStartTlsAction method, of class WorkflowConfigurationFactory. */
     @Test
-    @Disabled("ASCII Action WorkfloConfigurationFactory not implemented")
+    @Disabled("Text Action WorkflowConfigurationFactory not implemented")
     public void testAddStartTlsAction() {
         config.setStarttlsType(StarttlsType.FTP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -318,10 +323,10 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
 
         config.setStarttlsType(StarttlsType.IMAP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -330,10 +335,10 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
 
         config.setStarttlsType(StarttlsType.POP3);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -342,10 +347,10 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
 
         config.setStarttlsType(StarttlsType.SMTP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
@@ -354,13 +359,89 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
 
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(0).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(1).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(0).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(1).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(2).getClass());
-        assertEquals(SendAsciiAction.class, workflowTrace.getTlsActions().get(3).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(2).getClass());
+        assertEquals(SendTextAction.class, workflowTrace.getTlsActions().get(3).getClass());
         assertEquals(
-                GenericReceiveAsciiAction.class, workflowTrace.getTlsActions().get(4).getClass());
+                GenericReceiveTextAction.class, workflowTrace.getTlsActions().get(4).getClass());
+    }
+
+    /**
+     * FTP STARTTLS (RFC 4217) client upgrade: the trace must begin with the plaintext exchange
+     * (receive greeting, send "AUTH TLS\r\n", receive reply), then an EnableLayerAction(RECORD,
+     * MESSAGE) before any TLS messages.
+     */
+    @Test
+    public void testAddStartTlsActionFtp() {
+        config.setStarttlsType(StarttlsType.FTP);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
+
+        List<TlsAction> actions = workflowTrace.getTlsActions();
+        assertEquals(ReceiveRegexTextAction.class, actions.get(0).getClass());
+        assertEquals("^220 ", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals(SendTextAction.class, actions.get(1).getClass());
+        assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(1)).getText());
+        assertEquals(ReceiveRegexTextAction.class, actions.get(2).getClass());
+        assertEquals("^234 ", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
+        assertEquals(EnableLayerAction.class, actions.get(3).getClass());
+    }
+
+    /**
+     * An SSL2 hello workflow under -starttls FTP must use the plaintext FTP prefix, then enable the
+     * SSL2 layer (an SSL2 stack has neither a record nor a message layer), and only then exchange
+     * the SSL2 messages.
+     */
+    @Test
+    public void testCreateSsl2HelloWorkflowWithFtpStarttls() {
+        config.setStarttlsType(StarttlsType.FTP);
+        config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_SSL2);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
+
+        List<TlsAction> actions = workflowTrace.getTlsActions();
+        assertEquals(ReceiveRegexTextAction.class, actions.get(0).getClass());
+        assertEquals("^220 ", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals(SendTextAction.class, actions.get(1).getClass());
+        assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(1)).getText());
+        assertEquals(ReceiveRegexTextAction.class, actions.get(2).getClass());
+        assertEquals("^234 ", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
+
+        assertEquals(EnableLayerAction.class, actions.get(3).getClass());
+        assertEquals(
+                Set.of(ImplementedLayers.SSL2),
+                Set.copyOf(((EnableLayerAction) actions.get(3)).getTargetedLayers()));
+
+        assertMessage(MessageActionDirection.SENDING, actions.get(4), SSL2ClientHelloMessage.class);
+        assertMessage(
+                MessageActionDirection.RECEIVING, actions.get(5), SSL2ServerHelloMessage.class);
+        assertEquals(6, actions.size());
+    }
+
+    /**
+     * Without an SSL2 stack the STARTTLS prefix keeps enabling the record and message layers, so
+     * regular TLS STARTTLS workflows are unaffected by the SSL2 special case.
+     */
+    @Test
+    public void testStarttlsEnablesRecordAndMessageLayerForTlsStack() {
+        config.setStarttlsType(StarttlsType.FTP);
+        config.setDefaultLayerConfiguration(StackConfiguration.GENERIC_OPPORTUNISTIC_TLS);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
+
+        TlsAction enableAction = workflowTrace.getTlsActions().get(3);
+        assertEquals(EnableLayerAction.class, enableAction.getClass());
+        assertEquals(
+                Set.of(ImplementedLayers.RECORD, ImplementedLayers.MESSAGE),
+                Set.copyOf(((EnableLayerAction) enableAction).getTargetedLayers()));
     }
 
     private static void assertMessage(

@@ -18,11 +18,16 @@ public enum StackConfiguration {
     DTLS,
     QUIC,
     OPEN_VPN,
-    STARTTLS,
+    GENERIC_OPPORTUNISTIC_TLS,
+    GENERIC_OPPORTUNISTIC_SSL2,
     HTTPS,
     POP3,
     POP3S,
     SMTP,
     SMTPS,
     SSL2;
+
+    public StackConfiguration opportunisticVariant() {
+        return this == SSL2 ? GENERIC_OPPORTUNISTIC_SSL2 : GENERIC_OPPORTUNISTIC_TLS;
+    }
 }

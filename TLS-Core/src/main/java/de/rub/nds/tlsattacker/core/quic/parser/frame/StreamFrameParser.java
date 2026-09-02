@@ -61,7 +61,8 @@ public class StreamFrameParser extends QuicFrameParser<StreamFrame> {
     protected void parseData(StreamFrame frame, QuicFrameType frameType) {
         if (frameType == QuicFrameType.STREAM_FRAME
                 || frameType == QuicFrameType.STREAM_FRAME_OFF
-                || frameType == QuicFrameType.STREAM_FRAME_FIN) {
+                || frameType == QuicFrameType.STREAM_FRAME_FIN
+                || frameType == QuicFrameType.STREAM_FRAME_OFF_FIN) {
             frame.setData(parseTillEnd());
         } else {
             frame.setData(parseByteArrayField(frame.getLength().getValue()));

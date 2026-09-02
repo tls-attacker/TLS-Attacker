@@ -53,6 +53,20 @@ public class NewConnectionIdFrame extends QuicFrame {
         super(QuicFrameType.NEW_CONNECTION_ID_FRAME);
     }
 
+    public NewConnectionIdFrame(
+            long sequenceNumberConfig,
+            long retirePriorToConfig,
+            int lengthConfig,
+            byte[] connectionIdConfig,
+            byte[] statelessResetTokenConfig) {
+        super(QuicFrameType.NEW_CONNECTION_ID_FRAME);
+        this.sequenceNumberConfig = sequenceNumberConfig;
+        this.retirePriorToConfig = retirePriorToConfig;
+        this.lengthConfig = lengthConfig;
+        this.connectionIdConfig = connectionIdConfig;
+        this.statelessResetTokenConfig = statelessResetTokenConfig;
+    }
+
     @Override
     public NewConnectionIdFrameHandler getHandler(Context context) {
         return new NewConnectionIdFrameHandler(context.getQuicContext());
@@ -165,5 +179,10 @@ public class NewConnectionIdFrame extends QuicFrame {
 
     public void setStatelessResetTokenConfig(byte[] statelessResetTokenConfig) {
         this.statelessResetTokenConfig = statelessResetTokenConfig;
+    }
+
+    @Override
+    public String toShortString() {
+        return "NCID";
     }
 }

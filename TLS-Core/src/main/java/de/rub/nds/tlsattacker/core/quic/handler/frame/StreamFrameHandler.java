@@ -18,5 +18,7 @@ public class StreamFrameHandler extends QuicFrameHandler<StreamFrame> {
     }
 
     @Override
-    public void adjustContext(StreamFrame object) {}
+    public void adjustContext(StreamFrame object) {
+        quicContext.addReceivedStreamsId(object.getStreamId().getValue());
+    }
 }

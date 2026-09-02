@@ -33,19 +33,19 @@ public class RetryPacketSerializer extends LongHeaderPacketSerializer<RetryPacke
         return getAlreadySerialized();
     }
 
-    protected void writeUnprotectedFlags(RetryPacket packet) {
+    private void writeUnprotectedFlags(RetryPacket packet) {
         appendByte(packet.getUnprotectedFlags().getValue());
         LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 
-    protected void writeRetryToken(RetryPacket packet) {
+    private void writeRetryToken(RetryPacket packet) {
         if (packet.getRetryToken() != null) {
             appendBytes(packet.getRetryToken().getValue());
             LOGGER.debug("Retry Token: {}", packet.getRetryToken().getValue());
         }
     }
 
-    protected void writeRetryIntegrityTag(RetryPacket packet) {
+    private void writeRetryIntegrityTag(RetryPacket packet) {
         if (packet.getRetryIntegrityTag() != null) {
             appendBytes(packet.getRetryIntegrityTag().getValue());
             LOGGER.debug("Retry Integrity Tag: {}", packet.getRetryIntegrityTag().getValue());

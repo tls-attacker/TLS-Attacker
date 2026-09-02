@@ -54,10 +54,20 @@ public abstract class ChangeLayerEnabledAction extends ConnectionBoundAction {
                 layer.setEnabled(layerPredicate(layer));
                 LOGGER.debug("Set layer {} enabled to {}", layerType, layer.isEnabled());
             } else {
+                LOGGER.warn("Layer {} is not part of the layer stack", layerType);
                 executedAsPlanned = false;
             }
         }
         setExecuted(true);
+    }
+
+    /**
+     * Returns the layers this action toggles.
+     *
+     * @return the targeted layers
+     */
+    public List<ImplementedLayers> getTargetedLayers() {
+        return targetedLayers;
     }
 
     /**
