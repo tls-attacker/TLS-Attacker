@@ -1243,18 +1243,6 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    /** Matches the error replies of the protocols that report failures as a numeric status. */
-    private static final String NUMERIC_ERROR_STATUS_REGEX = "^[45]\\d\\d ";
-
-    private static final StartTlsDialect FTP_DIALECT =
-            new StartTlsDialect(
-                    "^220 ",
-                    "FEAT\r\n",
-                    "^211 ",
-                    "AUTH TLS\r\n",
-                    "^234 ",
-                    NUMERIC_ERROR_STATUS_REGEX);
-
     /**
      * Adds the STARTTLS upgrade for a text-based protocol, in whichever of the two variants the
      * config selects.
@@ -1310,7 +1298,8 @@ public class WorkflowConfigurationFactory {
                     // server: "211-Features:\r\n AUTH TLS\r\n211 End\r\n"
                     // client: "AUTH TLS\r\n"
                     // server: "234 AUTH TLS"
-                    return addUpgradeActions(workflowTrace, FTP_DIALECT);
+                    return addUpgradeActions(
+                            workflowTrace, StartTlsDialect.forType(StarttlsType.FTP).orElseThrow());
                 }
             case IMAP:
                 {
