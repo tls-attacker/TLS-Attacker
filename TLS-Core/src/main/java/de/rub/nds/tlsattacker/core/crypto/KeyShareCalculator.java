@@ -13,15 +13,16 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.constants.GroupParameters;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
 import de.rub.nds.protocol.crypto.ffdh.FfdhGroup;
+import de.rub.nds.protocol.crypto.kem.MlKemParameterConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -113,7 +114,10 @@ public class KeyShareCalculator {
     public static void createMLKEMKeyShare(
             NamedGroup namedGroup, KeyShareEntry keyShareEntry, SecureRandom random) {
         LOGGER.debug("Using group: {}", namedGroup);
-        MLKEMParameters params = PQUtils.getMLKEMParameters(namedGroup);
+        MLKEMParameters params =
+                MlKemParameterConverter.toKemParameters(
+                        (MlKemParameters)
+                                namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters());
         MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
         generator.init(new MLKEMKeyGenerationParameters(random, params));
         AsymmetricCipherKeyPair pair = generator.generateKeyPair();
@@ -152,7 +156,10 @@ public class KeyShareCalculator {
      */
     public static SecretWithEncapsulation mlkemEncaps(
             NamedGroup namedGroup, byte[] clientPublicKeyBytes, SecureRandom random) {
-        MLKEMParameters mlkemParameters = PQUtils.getMLKEMParameters(namedGroup);
+        MLKEMParameters mlkemParameters =
+                MlKemParameterConverter.toKemParameters(
+                        (MlKemParameters)
+                                namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters());
         MLKEMPublicKeyParameters publicKey =
                 new MLKEMPublicKeyParameters(mlkemParameters, clientPublicKeyBytes);
         MLKEMGenerator generator = new MLKEMGenerator(random);

@@ -1547,6 +1547,7 @@
     <defaultClientPWDMask>4F 74 5B DF C2 95 D3 B3 84 29 F7 EB 30 25 A4 88 83 72 8B 07 D8 86 05 C0 EE 20 23 16 A0 72 D1 BD</defaultClientPWDMask>
     <defaultClientMLKEMPrivateKey></defaultClientMLKEMPrivateKey>
     <defaultClientMLKEMPublicKey></defaultClientMLKEMPublicKey>
+    <defaultServerMLKEMCiphertext></defaultServerMLKEMCiphertext>
     <defaultServerPWDSalt>96 3C 77 CD C1 3A 2A 8D 75 CD DD D1 E0 44 99 29 84 37 11 C2 1D 47 CE 6E 63 83 CD DA 37 E4 7D A3</defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
     <defaultDnsServer>8.8.8.8</defaultDnsServer>

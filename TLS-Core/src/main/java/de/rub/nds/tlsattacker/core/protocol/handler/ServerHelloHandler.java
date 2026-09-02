@@ -376,8 +376,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
      * @return The computed hybrid post-quantum shared secret.
      */
     private byte[] computeHybridPQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
-        NamedGroup classicalGroup = PQUtils.getClassicalGroup(keyShareStoreEntry.getGroup());
-        NamedGroup pqGroup = PQUtils.getPQGroup(keyShareStoreEntry.getGroup());
+        NamedGroup classicalGroup =
+                keyShareStoreEntry.getGroup().getHybridPostQuantumClassicNamedGroup();
+        NamedGroup pqGroup = keyShareStoreEntry.getGroup().getHybridPostQuantumNamedGroup();
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             byte[] classicalPubKey;

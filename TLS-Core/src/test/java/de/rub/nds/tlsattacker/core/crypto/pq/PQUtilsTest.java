@@ -28,7 +28,7 @@ public class PQUtilsTest {
         SecureRandom secureRandom = new SecureRandom();
         ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
 
-        int classicalKeyShareLength = PQUtils.getClassicalKeyShareLength(namedGroup);
+        int classicalKeyShareLength = PQUtils.getEcPublicKeyLength(namedGroup);
         int pqKeyShareLength = PQUtils.getPQKeyShareLength(namedGroup, connectionEndType);
 
         byte[] classicalKeyShare = new byte[classicalKeyShareLength];
@@ -57,7 +57,7 @@ public class PQUtilsTest {
         SecureRandom secureRandom = new SecureRandom();
         ConnectionEndType connectionEndType = ConnectionEndType.SERVER;
 
-        int classicalKeyShareLength = PQUtils.getClassicalKeyShareLength(namedGroup);
+        int classicalKeyShareLength = PQUtils.getEcPublicKeyLength(namedGroup);
         int pqKeyShareLength = PQUtils.getPQKeyShareLength(namedGroup, connectionEndType);
 
         byte[] classicalKeyShare = new byte[classicalKeyShareLength];
@@ -85,7 +85,7 @@ public class PQUtilsTest {
     public void testConcatenateKeyShare(NamedGroup namedGroup) {
         SecureRandom secureRandom = new SecureRandom();
 
-        int classicalKeyShareLength = PQUtils.getClassicalKeyShareLength(namedGroup);
+        int classicalKeyShareLength = PQUtils.getEcPublicKeyLength(namedGroup);
         int pqKeyShareLength = PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT);
 
         byte[] classicalKeyShare = new byte[classicalKeyShareLength];
@@ -117,32 +117,6 @@ public class PQUtilsTest {
                             concatenatedHybridKeyShare,
                             classicalKeyShareLength,
                             concatenatedHybridKeyShare.length));
-        }
-
-        byte[] reverseConcatenatedHybridKeyShare =
-                PQUtils.concatenateHybridKeyShare(namedGroup, classicalKeyShare, pqKeyShare);
-
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
-            assertArrayEquals(
-                    classicalKeyShare,
-                    Arrays.copyOfRange(
-                            reverseConcatenatedHybridKeyShare, 0, classicalKeyShareLength));
-            assertArrayEquals(
-                    pqKeyShare,
-                    Arrays.copyOfRange(
-                            reverseConcatenatedHybridKeyShare,
-                            classicalKeyShareLength,
-                            reverseConcatenatedHybridKeyShare.length));
-        } else {
-            assertArrayEquals(
-                    pqKeyShare,
-                    Arrays.copyOfRange(reverseConcatenatedHybridKeyShare, 0, pqKeyShareLength));
-            assertArrayEquals(
-                    classicalKeyShare,
-                    Arrays.copyOfRange(
-                            reverseConcatenatedHybridKeyShare,
-                            pqKeyShareLength,
-                            reverseConcatenatedHybridKeyShare.length));
         }
     }
 }

@@ -156,8 +156,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void prepareHybridPQKeyShare() {
         LOGGER.debug("Generating Hybrid PQ Keyshare for group: {}", entry.getGroupConfig());
-        NamedGroup classicalGroup = PQUtils.getClassicalGroup(entry.getGroupConfig());
-        NamedGroup pqGroup = PQUtils.getPQGroup(entry.getGroupConfig());
+        NamedGroup classicalGroup = entry.getGroupConfig().getHybridPostQuantumClassicNamedGroup();
+        NamedGroup pqGroup = entry.getGroupConfig().getHybridPostQuantumNamedGroup();
 
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             // In the case of a hybrid pq group the client must handle two separate

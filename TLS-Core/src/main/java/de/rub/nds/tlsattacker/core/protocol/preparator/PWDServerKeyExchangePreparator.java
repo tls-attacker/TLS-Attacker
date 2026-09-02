@@ -221,7 +221,7 @@ public class PWDServerKeyExchangePreparator
                         (NamedEllipticCurveParameters)
                                 chooser.getConfig()
                                         .getDefaultSelectedNamedGroup()
-                                        .getGroupParameters(),
+                                        .getAsymmetricParameters(),
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat().getFormat());
         msg.setElement(serializedElement);

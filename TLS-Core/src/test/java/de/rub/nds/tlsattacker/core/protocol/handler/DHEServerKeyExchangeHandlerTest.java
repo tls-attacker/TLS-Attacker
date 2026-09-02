@@ -64,7 +64,8 @@ public class DHEServerKeyExchangeHandlerTest
     @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
     public void testadjustContextWithFFDHEGroup(NamedGroup providedNamedGroup) {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        FfdhGroupParameters group = (FfdhGroupParameters) providedNamedGroup.getGroupParameters();
+        FfdhGroupParameters group =
+                (FfdhGroupParameters) providedNamedGroup.getAsymmetricParameters();
         message.setModulus(group.getModulus().toByteArray());
         message.setGenerator(group.getGenerator().toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});

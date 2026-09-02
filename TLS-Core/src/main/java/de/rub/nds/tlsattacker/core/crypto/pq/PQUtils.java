@@ -9,84 +9,40 @@
 package de.rub.nds.tlsattacker.core.crypto.pq;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
 
 public class PQUtils {
 
-    public static MLKEMParameters getMLKEMParameters(NamedGroup namedGroup) {
-        NamedGroup pqComponent = namedGroup;
-        if (namedGroup.isHybridPQGroup()) {
-            pqComponent = getPQGroup(namedGroup);
-        }
-
-        switch (pqComponent) {
-            case MLKEM512:
-                return MLKEMParameters.ml_kem_512;
-            case MLKEM768:
-                return MLKEMParameters.ml_kem_768;
-            case MLKEM1024:
-                return MLKEMParameters.ml_kem_1024;
-
-            default:
-                throw new IllegalArgumentException("Unsupported PQ group: " + namedGroup);
-        }
-    }
-
-    // This method is only for the use with hybrid pq groups
-    public static NamedGroup getClassicalGroup(NamedGroup namedGroup) {
-        switch (namedGroup) {
-            case X25519_MLKEM768:
-                return NamedGroup.ECDH_X25519;
-            case SECP256R1_MLKEM768:
-                return NamedGroup.SECP256R1;
-            case SECP384R1_MLKEM1024:
-                return NamedGroup.SECP384R1;
-            default:
-                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
-        }
-    }
-
-    // This method is only for the use with hybrid pq groups
-    public static NamedGroup getPQGroup(NamedGroup namedGroup) {
-        switch (namedGroup) {
-            case X25519_MLKEM768:
-                return NamedGroup.MLKEM768;
-            case SECP256R1_MLKEM768:
-                return NamedGroup.MLKEM768;
-            case SECP384R1_MLKEM1024:
-                return NamedGroup.MLKEM1024;
-            default:
-                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
-        }
-    }
-
-    public static int getClassicalKeyShareLength(NamedGroup namedGroup) {
-        switch (namedGroup) {
-            case X25519_MLKEM768:
-                return 32;
-            case SECP256R1_MLKEM768:
-                return 65;
-            case SECP384R1_MLKEM1024:
-                return 97;
-            default:
-                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
-        }
-    }
-
     public static int getPQKeyShareLength(
             NamedGroup namedGroup, ConnectionEndType connectionEndType) {
-        switch (namedGroup) {
-            case X25519_MLKEM768:
-                return (connectionEndType.equals(ConnectionEndType.CLIENT)) ? 1184 : 1088;
-            case SECP256R1_MLKEM768:
-                return (connectionEndType.equals(ConnectionEndType.CLIENT)) ? 1184 : 1088;
-            case SECP384R1_MLKEM1024:
-                return 1568;
-            default:
-                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+
+        NamedGroup pqGroup = namedGroup.getAnyInvolvedPqGroup();
+        if (pqGroup.isMlKemGroup()) {
+            MlKemParameters parameters = (MlKemParameters) pqGroup.getAsymmetricParameters();
+            if (connectionEndType == ConnectionEndType.CLIENT) {
+                // we parse the encapsulation key
+                return parameters.getEncapsulationKeySizeBytes();
+            } else {
+                // we parse the ciphertext
+                return parameters.getCiphertextSizeBytes();
+            }
+        }
+        throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+    }
+
+    public static int getEcPublicKeyLength(NamedGroup namedGroup) {
+        NamedGroup pqGroup = namedGroup.getHybridPostQuantumClassicNamedGroup();
+        if (!pqGroup.isEcGroup()) {
+            throw new IllegalArgumentException("Group is not an elliptic curve");
+        }
+
+        if (pqGroup.isMontgomery()) {
+            return pqGroup.getGroupParameters().getElementSizeBytes();
+        } else {
+            return pqGroup.getGroupParameters().getElementSizeBytes() * 2 + 1;
         }
     }
 
@@ -104,20 +60,13 @@ public class PQUtils {
         switch (namedGroup) {
             case X25519_MLKEM768:
                 splitAtIndex = getPQKeyShareLength(namedGroup, connectionEndType);
-                /* The server sends a ciphertext of length 1088 bytes instead of the 1184 bytes public
-                key share send by the client */
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length),
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex)
                 };
             case SECP256R1_MLKEM768:
-                splitAtIndex = getClassicalKeyShareLength(namedGroup);
-                return new byte[][] {
-                    Arrays.copyOfRange(keyShare, 0, splitAtIndex),
-                    Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
-                };
             case SECP384R1_MLKEM1024:
-                splitAtIndex = getClassicalKeyShareLength(namedGroup);
+                splitAtIndex = getEcPublicKeyLength(namedGroup);
                 return new byte[][] {
                     Arrays.copyOfRange(keyShare, 0, splitAtIndex),
                     Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
@@ -132,9 +81,7 @@ public class PQUtils {
      *
      * @param namedGroup The namedGroup that should be used
      * @param classicalKeyShare The classical key share to be used
-     * @param pqKeyShare The post-quantum key share to be used
-     * @param useStandardConcatenation The order in which to concatenate the shares. If true or null
-     *     standard logic is used.
+     * @param pqKeyShare The post-quantum key share to be used standard logic is used.
      * @return The concatenated key share
      */
     public static byte[] concatenateHybridKeyShare(

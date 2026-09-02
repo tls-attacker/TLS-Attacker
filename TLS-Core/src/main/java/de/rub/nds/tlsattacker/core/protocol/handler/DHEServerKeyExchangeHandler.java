@@ -66,7 +66,8 @@ public class DHEServerKeyExchangeHandler<KeyExchangeMessage extends DHEServerKey
         BigInteger serverDhModulus = tlsContext.getServerEphemeralDhModulus();
         for (NamedGroup group : NamedGroup.getImplemented()) {
             if (group.isDhGroup()) {
-                FfdhGroupParameters ffdhGroup = (FfdhGroupParameters) group.getGroupParameters();
+                FfdhGroupParameters ffdhGroup =
+                        (FfdhGroupParameters) group.getAsymmetricParameters();
                 if (serverDhGenerator.equals(ffdhGroup.getGenerator())
                         && serverDhModulus.equals(ffdhGroup.getModulus())) {
                     tlsContext.setSelectedGroup(group);
