@@ -169,7 +169,6 @@ public class ServerHelloHandlerTest
         message.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256.getByteValue());
         message.setSessionId(new byte[] {6, 6, 6});
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        tlsContext.getConfig().setDefaultHybridConcatenation(true);
 
         MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
         generator.init(
@@ -201,8 +200,7 @@ public class ServerHelloHandlerTest
                                 NamedGroup.X25519_MLKEM768,
                                 DataConverter.hexStringToByteArray(
                                         "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
-                                encapsResult.getEncapsulation(),
-                                true)));
+                                encapsResult.getEncapsulation())));
         tlsContext.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         handler.adjustContext(message);
 

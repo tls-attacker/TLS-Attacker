@@ -138,23 +138,11 @@ public class PQUtils {
      * @return The concatenated key share
      */
     public static byte[] concatenateHybridKeyShare(
-            NamedGroup namedGroup,
-            byte[] classicalKeyShare,
-            byte[] pqKeyShare,
-            Boolean useStandardConcatenation) {
-        boolean standard = (useStandardConcatenation == null) ? true : useStandardConcatenation;
-        if (standard) {
-            if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
-                return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
-            } else {
-                return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
-            }
+            NamedGroup namedGroup, byte[] classicalKeyShare, byte[] pqKeyShare) {
+        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+            return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
         } else {
-            if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
-                return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
-            } else {
-                return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
-            }
+            return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
         }
     }
 }

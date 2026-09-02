@@ -95,7 +95,7 @@ public class PQUtilsTest {
         secureRandom.nextBytes(pqKeyShare);
 
         byte[] concatenatedHybridKeyShare =
-                PQUtils.concatenateHybridKeyShare(namedGroup, classicalKeyShare, pqKeyShare, true);
+                PQUtils.concatenateHybridKeyShare(namedGroup, classicalKeyShare, pqKeyShare);
 
         if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
             assertArrayEquals(
@@ -120,7 +120,7 @@ public class PQUtilsTest {
         }
 
         byte[] reverseConcatenatedHybridKeyShare =
-                PQUtils.concatenateHybridKeyShare(namedGroup, classicalKeyShare, pqKeyShare, false);
+                PQUtils.concatenateHybridKeyShare(namedGroup, classicalKeyShare, pqKeyShare);
 
         if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
             assertArrayEquals(
