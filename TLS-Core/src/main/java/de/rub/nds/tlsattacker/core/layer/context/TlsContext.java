@@ -74,6 +74,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
@@ -2367,11 +2368,11 @@ public class TlsContext extends LayerContext {
         this.peerReceiveLimit = peerReceiveLimit;
     }
 
-    public java.util.Map<NamedGroup, MLKEMPrivateKeyParameters> getClientMLKEMPrivateKeys() {
+    public Map<NamedGroup, MLKEMPrivateKeyParameters> getClientMLKEMPrivateKeys() {
         return clientMLKEMPrivateKeys;
     }
 
-    public java.util.Map<NamedGroup, MLKEMPublicKeyParameters> getClientMLKEMPublicKeys() {
+    public Map<NamedGroup, MLKEMPublicKeyParameters> getClientMLKEMPublicKeys() {
         return clientMLKEMPublicKeys;
     }
 
