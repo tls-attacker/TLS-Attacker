@@ -1243,39 +1243,6 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    /**
-     * The lines one text-based STARTTLS protocol exchanges to reach its TLS upgrade.
-     *
-     * <p>Every such protocol runs the same conversation and differs only in what it says, so the
-     * wording lives here and the two upgrade variants are built from it. The error pattern is part
-     * of that wording: the numeric protocols report failures as a 4xx or 5xx status, while others
-     * use their own vocabulary, so each one brings its own.
-     */
-    private static final class StartTlsDialect {
-
-        private final String greetingRegex;
-        private final String discoveryCommand;
-        private final String discoveryReplyRegex;
-        private final String upgradeCommand;
-        private final String upgradeSuccessRegex;
-        private final String errorRegex;
-
-        private StartTlsDialect(
-                String greetingRegex,
-                String discoveryCommand,
-                String discoveryReplyRegex,
-                String upgradeCommand,
-                String upgradeSuccessRegex,
-                String errorRegex) {
-            this.greetingRegex = greetingRegex;
-            this.discoveryCommand = discoveryCommand;
-            this.discoveryReplyRegex = discoveryReplyRegex;
-            this.upgradeCommand = upgradeCommand;
-            this.upgradeSuccessRegex = upgradeSuccessRegex;
-            this.errorRegex = errorRegex;
-        }
-    }
-
     /** Matches the error replies of the protocols that report failures as a numeric status. */
     private static final String NUMERIC_ERROR_STATUS_REGEX = "^[45]\\d\\d ";
 
@@ -1306,13 +1273,13 @@ public class WorkflowConfigurationFactory {
      * @return the trace, for chaining
      */
     private WorkflowTrace addUpgradeActions(WorkflowTrace workflowTrace, StartTlsDialect dialect) {
-        workflowTrace.addTlsAction(new ReceiveRegexTextAction(dialect.greetingRegex));
+        workflowTrace.addTlsAction(new ReceiveRegexTextAction(dialect.greetingRegex()));
         if (config.isStarttlsUseCapabilityDiscovery()) {
-            workflowTrace.addTlsAction(new SendTextAction(dialect.discoveryCommand, null));
-            workflowTrace.addTlsAction(receiveOrAbort(dialect.discoveryReplyRegex, dialect));
+            workflowTrace.addTlsAction(new SendTextAction(dialect.discoveryCommand(), null));
+            workflowTrace.addTlsAction(receiveOrAbort(dialect.discoveryReplyRegex(), dialect));
         }
-        workflowTrace.addTlsAction(new SendTextAction(dialect.upgradeCommand, null));
-        workflowTrace.addTlsAction(receiveOrAbort(dialect.upgradeSuccessRegex, dialect));
+        workflowTrace.addTlsAction(new SendTextAction(dialect.upgradeCommand(), null));
+        workflowTrace.addTlsAction(receiveOrAbort(dialect.upgradeSuccessRegex(), dialect));
         return workflowTrace;
     }
 
@@ -1326,7 +1293,7 @@ public class WorkflowConfigurationFactory {
      */
     private ReceiveRegexTextAction receiveOrAbort(String regex, StartTlsDialect dialect) {
         ReceiveRegexTextAction action = new ReceiveRegexTextAction(regex);
-        action.setAbortRegex(dialect.errorRegex);
+        action.setAbortRegex(dialect.errorRegex());
         return action;
     }
 
