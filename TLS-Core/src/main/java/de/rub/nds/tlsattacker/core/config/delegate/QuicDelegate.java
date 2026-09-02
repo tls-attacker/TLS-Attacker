@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuicDelegate extends Delegate {
-    @Parameter(names = "-quic", description = "Scan QUIC")
+    @Parameter(names = "-quic", description = "Scan the QUIC protocol.")
     private boolean quic = false;
 
     public QuicDelegate() {}
@@ -50,6 +50,8 @@ public class QuicDelegate extends Delegate {
             config.setDefaultLayerConfiguration(StackConfiguration.QUIC);
             config.setWorkflowExecutorType(WorkflowExecutorType.QUIC);
             config.setFinishWithCloseNotify(true);
+            config.setExpectHandshakeDoneQuicFrame(true);
+            config.setQuicRetryFlowRequired(false);
 
             // Protocol Version
             config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -91,6 +93,7 @@ public class QuicDelegate extends Delegate {
             alpnEntries.add("hq-29");
             alpnEntries.add("echo");
             alpnEntries.add("hq-interop");
+            alpnEntries.add("ossltest");
             config.setDefaultProposedAlpnProtocols(alpnEntries);
 
             // QUIC Transport Parameters

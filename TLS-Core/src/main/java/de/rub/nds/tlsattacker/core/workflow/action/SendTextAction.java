@@ -8,33 +8,30 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement(name = "ReceiveAscii")
-public class ReceiveAsciiAction extends AsciiAction {
+@XmlRootElement(name = "SendText")
+public class SendTextAction extends TextAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String receivedAsciiString;
-
-    public ReceiveAsciiAction() {
+    SendTextAction() {
         super();
     }
 
-    public ReceiveAsciiAction(String asciiText, String encoding) {
-        super(asciiText, encoding);
-        receivedAsciiString = null;
+    public SendTextAction(String text, String encoding) {
+        super(text, encoding);
+    }
+
+    public SendTextAction(String encoding) {
+        super(encoding);
     }
 
     @Override
@@ -44,21 +41,15 @@ public class ReceiveAsciiAction extends AsciiAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        try {
-            LOGGER.debug("Receiving ASCII message...");
-            byte[] fetchData = tcpContext.getTransportHandler().fetchData();
-            receivedAsciiString = new String(fetchData, getEncoding());
-            LOGGER.info("Received: {}", receivedAsciiString);
 
+        try {
+            LOGGER.info("Sending text message: {}", getText());
+            tcpContext.getTransportHandler().sendData(getText().getBytes(getEncoding()));
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
             setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
-    }
-
-    public String getReceivedAsciiString() {
-        return receivedAsciiString;
     }
 
     @Override
@@ -68,20 +59,6 @@ public class ReceiveAsciiAction extends AsciiAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return Objects.equals(receivedAsciiString, getAsciiText());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ReceiveAsciiAction that = (ReceiveAsciiAction) o;
-        return Objects.equals(receivedAsciiString, that.receivedAsciiString);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), receivedAsciiString);
+        return isExecuted();
     }
 }

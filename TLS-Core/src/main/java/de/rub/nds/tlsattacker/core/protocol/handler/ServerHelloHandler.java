@@ -54,7 +54,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -104,9 +103,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     try {
                         QuicPacketCryptoComputations.calculateHandshakeSecrets(
                                 tlsContext.getContext());
-                    } catch (NoSuchAlgorithmException
-                            | NoSuchPaddingException
-                            | CryptoException e) {
+                    } catch (NoSuchAlgorithmException | CryptoException e) {
                         LOGGER.error("Could not initialize handshake secrets: ", e);
                     }
                 }

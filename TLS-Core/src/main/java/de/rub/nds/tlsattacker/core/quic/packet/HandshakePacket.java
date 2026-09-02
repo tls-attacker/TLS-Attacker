@@ -58,4 +58,9 @@ public class HandshakePacket extends LongHeaderPacket {
     public HandshakePacketParser getParser(Context context, InputStream stream) {
         return new HandshakePacketParser(stream, context.getQuicContext());
     }
+
+    @Override
+    public String toShortString() {
+        return "HS";
+    }
 }

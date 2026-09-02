@@ -37,6 +37,7 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
         preparePadding();
         prepareUnprotectedPayload();
         preparePacketLength();
+        packet.updateFlagsWithEncodedPacketNumber();
         packet.buildUnprotectedPacketHeader();
     }
 
@@ -51,19 +52,22 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
     private void prepareUnprotectedPayload() {
         SilentByteArrayOutputStream outputStream = new SilentByteArrayOutputStream();
         outputStream.write(packet.getUnprotectedPayload().getValue());
-        if (packet.getPadding() > 0) {
-            outputStream.write(new byte[packet.getPadding()]);
+        if (packet.getPadding().getValue() != null && packet.getPadding().getValue() > 0) {
+            outputStream.write(new byte[packet.getPadding().getValue()]);
         }
         packet.setUnprotectedPayload(outputStream.toByteArray());
         LOGGER.debug("Unprotected Payload: {}", packet.getUnprotectedPayload().getValue());
     }
 
     protected void prepareDestinationConnectionId() {
-        if (packet.getConfiguredDestinationConnectionId() != null
-                && packet.getConfiguredDestinationConnectionId().getValue().length > 0) {
-            packet.setDestinationConnectionId(packet.getConfiguredDestinationConnectionId());
-        } else {
+        if (packet.getDestinationConnectionIdConfig() != null
+                && packet.getDestinationConnectionIdConfig().length > 0) {
+            packet.setDestinationConnectionId(packet.getDestinationConnectionIdConfig());
+        } else if (context.getDestinationConnectionId() != null
+                && context.getDestinationConnectionId().length != 0) {
             packet.setDestinationConnectionId(context.getDestinationConnectionId());
+        } else {
+            packet.setDestinationConnectionId(context.getFirstDestinationConnectionId());
         }
         LOGGER.debug(
                 "Destination Connection ID: {}", packet.getDestinationConnectionId().getValue());
@@ -83,19 +87,19 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
     }
 
     private void preparePadding() {
-        if (packet.getPadding() == 0) {
+        if (packet.getPadddingConfig() != null) {
+            packet.setPadding(packet.getPadddingConfig());
+        } else if (context.getConfig().isQuicDoNotPadPackets()) {
+            packet.setPadding(0);
+        } else if (packet.getPadding() != null) {
+            packet.setPadding(packet.getPadding().getValue());
+        } else {
             packet.setPadding(calculatePadding());
-            LOGGER.debug("Padding: {}", packet.getPadding());
         }
+        LOGGER.debug("Padding: {}", packet.getPadding().getValue());
     }
 
     protected int calculatePadding() {
-        if (packet.getConfiguredPadding() > -1) {
-            return packet.getConfiguredPadding();
-        }
-        if (context.getConfig().isQuicDoNotPad()) {
-            return 0;
-        }
         return Math.max(
                 0,
                 MiscCustomConstants.MIN_PACKET_CONTENT_SIZE

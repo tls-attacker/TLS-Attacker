@@ -33,6 +33,8 @@ public class StarttlsDelegate extends Delegate {
     public void applyDelegate(Config config) throws ConfigurationException {
         config.setStarttlsType(starttlsType);
         switch (starttlsType) {
+            case NONE:
+                break;
             case POP3:
                 config.setDefaultLayerConfiguration(StackConfiguration.POP3);
                 break;
@@ -40,7 +42,8 @@ public class StarttlsDelegate extends Delegate {
                 config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
                 break;
             default:
-                // Leave the default TLS layer configuration in place for other StartTLS types
+                config.setDefaultLayerConfiguration(
+                        config.getDefaultLayerConfiguration().opportunisticVariant());
                 break;
         }
     }
