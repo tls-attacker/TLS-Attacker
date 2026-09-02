@@ -20,8 +20,10 @@ import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
@@ -124,7 +126,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         } else {
             // The Server does not generate an own keypair for post-quantum groups,
             // but encapsulates the shared secret using the Client's public key share.
-            byte[] clientPublicKey = chooser.getClientKeySharePublicKey(entry.getGroupConfig());
+            byte[] clientPublicKey = getClientKeySharePublicKey(entry.getGroupConfig());
 
             if (clientPublicKey == null) {
                 throw new PreparationException(
@@ -218,7 +220,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                     PQUtils.splitKeyShare(
                             entry.getGroupConfig(),
                             ConnectionEndType.CLIENT,
-                            chooser.getClientKeySharePublicKey(entry.getGroupConfig()));
+                            getClientKeySharePublicKey(entry.getGroupConfig()));
 
             // Use Client public key share to compute encapsulation algorithm
             byte[] clientPQPublicKey = splitClientKeyShare[1];
@@ -243,6 +245,22 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                             entry.getGroupConfig(), classicalPublicKey, pqCiphertext));
             LOGGER.debug("Generated Server Hybrid PQ KeyShare for {}", entry.getGroupConfig());
         }
+    }
+
+    private byte[] getClientKeySharePublicKey(NamedGroup group) {
+        List<KeyShareStoreEntry> clientKeyShareEntryList =
+                chooser.getContext().getTlsContext().getClientKeyShareStoreEntryList();
+        if (clientKeyShareEntryList != null) {
+            for (KeyShareStoreEntry entry : clientKeyShareEntryList) {
+                if (entry.getGroup() == group) {
+                    return entry.getPublicKey();
+                }
+            }
+        }
+
+        // If no matching KeyShare is found, return null.
+        // Our KeyShareEntryPreparator will safely catch this and throw a PreparationException.
+        return null;
     }
 
     private void prepareKeyShareType() {

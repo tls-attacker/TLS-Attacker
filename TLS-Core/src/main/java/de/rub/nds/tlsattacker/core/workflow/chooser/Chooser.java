@@ -361,6 +361,4 @@ public abstract class Chooser {
     public abstract Integer getNumberOfRequestedConnectionIds();
 
     public abstract SrtpProtectionProfile getSelectedSrtpProtectionProfile();
-
-    public abstract byte[] getClientKeySharePublicKey(NamedGroup namedGroup);
 }

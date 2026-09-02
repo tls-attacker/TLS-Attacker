@@ -1177,20 +1177,4 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultSelectedSrtpProtectionProfile();
         }
     }
-
-    @Override
-    public byte[] getClientKeySharePublicKey(NamedGroup group) {
-        if (context.getTlsContext().getClientKeyShareStoreEntryList() != null) {
-            for (KeyShareStoreEntry entry :
-                    context.getTlsContext().getClientKeyShareStoreEntryList()) {
-                if (entry.getGroup() == group) {
-                    return entry.getPublicKey();
-                }
-            }
-        }
-
-        // If no matching KeyShare is found, return null.
-        // Our KeyShareEntryPreparator will safely catch this and throw a PreparationException.
-        return null;
-    }
 }
