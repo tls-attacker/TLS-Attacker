@@ -91,7 +91,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 }
             }
             byte[] serializedPoint =
-                    KeyShareCalculator.createPublicKey(
+                    KeyShareCalculator.createKeyAgreementPublicKey(
                             entry.getGroupConfig(),
                             entry.getPrivateKey(),
                             chooser.getConfig().getDefaultSelectedPointFormat());
@@ -168,7 +168,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 entry.setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
             }
             byte[] classicalPublicKey =
-                    KeyShareCalculator.createPublicKey(
+                    KeyShareCalculator.createKeyAgreementPublicKey(
                             classicalGroup,
                             entry.getPrivateKey(),
                             chooser.getConfig().getDefaultSelectedPointFormat());
@@ -211,7 +211,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 entry.setPrivateKey(chooser.getServerEphemeralEcPrivateKey());
             }
             byte[] classicalPublicKey =
-                    KeyShareCalculator.createPublicKey(
+                    KeyShareCalculator.createKeyAgreementPublicKey(
                             classicalGroup,
                             entry.getPrivateKey(),
                             chooser.getConfig().getDefaultSelectedPointFormat());

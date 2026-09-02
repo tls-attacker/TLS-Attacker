@@ -294,7 +294,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                 .getConfig()
                                 .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
                 sharedSecret =
-                        KeyShareCalculator.computeSharedSecret(
+                        KeyShareCalculator.computeDhSharedSecret(
                                 keyShareStoreEntry.getGroup(),
                                 privateKey,
                                 keyShareStoreEntry.getPublicKey());
@@ -402,7 +402,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             }
 
             byte[] classicalSharedSecret =
-                    KeyShareCalculator.computeSharedSecret(
+                    KeyShareCalculator.computeDhSharedSecret(
                             classicalGroup, classicalPrivateKey, classicalPubKey);
             LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
 
@@ -435,7 +435,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] clientClassicalPubKey = splitClientKeyShare[0];
 
             byte[] classicalSharedSecret =
-                    KeyShareCalculator.computeSharedSecret(
+                    KeyShareCalculator.computeDhSharedSecret(
                             classicalGroup, classicalPrivateKey, clientClassicalPubKey);
             LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
 

@@ -46,16 +46,16 @@ public class KeyShareCalculator {
                 CacheBuilder.newBuilder()
                         .maximumSize(256)
                         .expireAfterAccess(10, TimeUnit.MINUTES)
-                        .build(CacheLoader.from(KeyShareCalculator::createPublicKey));
+                        .build(CacheLoader.from(KeyShareCalculator::createDhPublicKey));
     }
 
-    public static byte[] createPublicKey(
+    public static byte[] createKeyAgreementPublicKey(
             NamedGroup namedGroup, BigInteger privateKey, ECPointFormat pointFormat) {
         // FIXME: remove cache once the crypto implementation is faster
         return publicKeyCache.getUnchecked(Triple.of(namedGroup, privateKey, pointFormat));
     }
 
-    private static byte[] createPublicKey(
+    private static byte[] createDhPublicKey(
             Triple<NamedGroup, BigInteger, ECPointFormat> parameters) {
         NamedGroup namedGroup = parameters.getLeft();
         BigInteger privateKey = parameters.getMiddle();
@@ -63,28 +63,32 @@ public class KeyShareCalculator {
         if (namedGroup.isGrease()) {
             return new byte[0];
         }
-        CyclicGroup<?> group = namedGroup.getGroupParameters().getGroup();
+        if (!namedGroup.isMlKemGroup()) {
+            // PQ key encapsulations vary significantly from classic TLS 1.3 public key computations
+            // and are hence handled separately
+            CyclicGroup<?> group = namedGroup.getGroupParameters().getGroup();
 
-        if (namedGroup.isEcGroup()) {
-            if (namedGroup.isShortWeierstrass()) {
-                Point publicKey = (Point) group.nTimesGroupOperationOnGenerator(privateKey);
-                return PointFormatter.formatToByteArray(
-                        namedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
-            } else {
-                RFC7748Curve rfcCurve = (RFC7748Curve) group;
-                return rfcCurve.computePublicKey(privateKey);
+            if (namedGroup.isEcGroup()) {
+                if (namedGroup.isShortWeierstrass()) {
+                    Point publicKey = (Point) group.nTimesGroupOperationOnGenerator(privateKey);
+                    return PointFormatter.formatToByteArray(
+                            namedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
+                } else {
+                    RFC7748Curve rfcCurve = (RFC7748Curve) group;
+                    return rfcCurve.computePublicKey(privateKey);
+                }
+            } else if (namedGroup.isDhGroup()) {
+                BigInteger publicKey =
+                        (BigInteger) group.nTimesGroupOperationOnGenerator(privateKey);
+                return DataConverter.bigIntegerToNullPaddedByteArray(
+                        publicKey, ((FfdhGroup) group).getParameters().getElementSizeBytes());
             }
-        } else if (namedGroup.isDhGroup()) {
-            BigInteger publicKey = (BigInteger) group.nTimesGroupOperationOnGenerator(privateKey);
-            return DataConverter.bigIntegerToNullPaddedByteArray(
-                    publicKey, ((FfdhGroup) group).getParameters().getElementSizeBytes());
-        } else {
-            LOGGER.warn("Cannot create Public Key for group {}", namedGroup.name());
-            return new byte[0];
         }
+        LOGGER.warn("Cannot create Public Key for group {}", namedGroup.name());
+        return new byte[0];
     }
 
-    public static byte[] computeSharedSecret(
+    public static byte[] computeDhSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
         if (group.isGrease()) {
             return new byte[0];

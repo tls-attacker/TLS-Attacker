@@ -56,14 +56,16 @@ public class KeyShareCalculatorTest {
         somePrivateKeyList.add(new BigInteger(256, new Random(0)));
         for (BigInteger bigInt : somePrivateKeyList) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
-                KeyShareCalculator.createPublicKey(group, bigInt, ECPointFormat.UNCOMPRESSED);
+                KeyShareCalculator.createKeyAgreementPublicKey(
+                        group, bigInt, ECPointFormat.UNCOMPRESSED);
             }
 
             for (NamedGroup greaseGroup :
                     Arrays.stream(NamedGroup.values())
                             .filter(NamedGroup::isGrease)
                             .collect(Collectors.toList())) {
-                KeyShareCalculator.createPublicKey(greaseGroup, bigInt, ECPointFormat.UNCOMPRESSED);
+                KeyShareCalculator.createKeyAgreementPublicKey(
+                        greaseGroup, bigInt, ECPointFormat.UNCOMPRESSED);
             }
         }
     }

@@ -108,7 +108,7 @@ public class HpkeUtil {
         this.publicKeyReceiver = echServerPublicKey;
         this.publicKeySender = keyShareEntry.getPublicKey().getValue();
         byte[] dh =
-                KeyShareCalculator.computeSharedSecret(
+                KeyShareCalculator.computeDhSharedSecret(
                         this.hpkeKeyEncapsulationMechanism.getNamedGroup(),
                         keyShareEntry.getPrivateKey(),
                         echServerPublicKey);
@@ -132,7 +132,7 @@ public class HpkeUtil {
 
         // compute shared secret
         byte[] dh =
-                KeyShareCalculator.computeSharedSecret(
+                KeyShareCalculator.computeDhSharedSecret(
                         this.hpkeKeyEncapsulationMechanism.getNamedGroup(),
                         keysReceiver.getPrivateKey(),
                         enc);
