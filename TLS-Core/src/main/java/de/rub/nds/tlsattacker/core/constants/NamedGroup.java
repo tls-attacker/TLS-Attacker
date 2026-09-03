@@ -8,9 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.AsymmetricParameters;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.GroupParameters;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group2048;
@@ -18,6 +20,7 @@ import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group3072;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group6144;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group8192;
+import de.rub.nds.protocol.crypto.hybrid.HybridPostQuantumParameters;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import java.io.ByteArrayInputStream;
@@ -85,12 +88,27 @@ public enum NamedGroup {
     FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new Rfc7919Group4096()),
     FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new Rfc7919Group6144()),
     FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new Rfc7919Group8192()),
-    MLKEM512(new byte[] {(byte) 2, (byte) 0}, null),
-    MLKEM768(new byte[] {(byte) 2, (byte) 1}, null),
-    MLKEM1024(new byte[] {(byte) 2, (byte) 2}, null),
-    SECP256R1_MLKEM768(new byte[] {0x11, (byte) 0xEB}, null),
-    X25519_MLKEM768(new byte[] {0x11, (byte) 0xEC}, null),
-    SECP384R1_MLKEM1024(new byte[] {0x11, (byte) 0xED}, null),
+    MLKEM512(new byte[] {(byte) 2, (byte) 0}, MlKemParameters.ML_KEM_512),
+    MLKEM768(new byte[] {(byte) 2, (byte) 1}, MlKemParameters.ML_KEM_768),
+    MLKEM1024(new byte[] {(byte) 2, (byte) 2}, MlKemParameters.ML_KEM_1024),
+    SECP256R1_MLKEM768(
+            new byte[] {0x11, (byte) 0xEB},
+            new HybridPostQuantumParameters(
+                    NamedEllipticCurveParameters.SECP256R1,
+                    MlKemParameters.ML_KEM_768,
+                    "secp256r1_mlkem768")),
+    X25519_MLKEM768(
+            new byte[] {0x11, (byte) 0xEC},
+            new HybridPostQuantumParameters(
+                    NamedEllipticCurveParameters.CURVE_X25519,
+                    MlKemParameters.ML_KEM_768,
+                    "x25519_mlkem768")),
+    SECP384R1_MLKEM1024(
+            new byte[] {0x11, (byte) 0xED},
+            new HybridPostQuantumParameters(
+                    NamedEllipticCurveParameters.SECP384R1,
+                    MlKemParameters.ML_KEM_1024,
+                    "secp348r1_mlkem1024")),
     X25519_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x99}, null),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
@@ -116,7 +134,7 @@ public enum NamedGroup {
 
     private byte[] value;
 
-    private GroupParameters<?> groupParameters;
+    private AsymmetricParameters asymmetricParameters;
 
     private static final Map<ByteBuffer, NamedGroup> MAP;
 
@@ -144,9 +162,9 @@ public enum NamedGroup {
                             SECP256R1_MLKEM768,
                             SECP384R1_MLKEM1024));
 
-    NamedGroup(byte[] value, GroupParameters<?> group) {
+    NamedGroup(byte[] value, AsymmetricParameters group) {
         this.value = value;
-        this.groupParameters = group;
+        this.asymmetricParameters = group;
     }
 
     static {
@@ -359,21 +377,54 @@ public enum NamedGroup {
         }
     }
 
-    public static NamedGroup convert(GroupParameters<?> parameters) {
+    public static NamedGroup convert(AsymmetricParameters parameters) {
         for (NamedGroup group : values()) {
-            if (group.getGroupParameters() == parameters) {
+            if (group.getAsymmetricParameters() == parameters) {
                 return group;
             }
         }
         return null;
     }
 
+    public NamedGroup getHybridPostQuantumClassicNamedGroup() {
+        switch (this) {
+            case X25519_MLKEM768:
+                return NamedGroup.ECDH_X25519;
+            case SECP256R1_MLKEM768:
+                return NamedGroup.SECP256R1;
+            case SECP384R1_MLKEM1024:
+                return NamedGroup.SECP384R1;
+            default:
+                throw new UnsupportedOperationException("This group is no hybrid PQ NamedGroup.");
+        }
+    }
+
+    public NamedGroup getHybridPostQuantumNamedGroup() {
+        switch (this) {
+            case X25519_MLKEM768:
+                return NamedGroup.MLKEM768;
+            case SECP256R1_MLKEM768:
+                return NamedGroup.MLKEM768;
+            case SECP384R1_MLKEM1024:
+                return NamedGroup.MLKEM1024;
+            default:
+                throw new UnsupportedOperationException("This group is no hybrid PQ NamedGroup.");
+        }
+    }
+
     public byte[] getValue() {
         return value;
     }
 
+    public AsymmetricParameters getAsymmetricParameters() {
+        return asymmetricParameters;
+    }
+
     public GroupParameters<?> getGroupParameters() {
-        return groupParameters;
+        if (asymmetricParameters instanceof GroupParameters) {
+            return (GroupParameters<?>) asymmetricParameters;
+        }
+        return null;
     }
 
     public static NamedGroup getRandom(Random random) {
@@ -429,12 +480,13 @@ public enum NamedGroup {
 
     public boolean isShortWeierstrass() {
         if (this.isEcGroup()) {
-            if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
-                return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
+            if (this.getAsymmetricParameters() instanceof NamedEllipticCurveParameters) {
+                return ((NamedEllipticCurveParameters) asymmetricParameters).getEquationType()
                         == EcCurveEquationType.SHORT_WEIERSTRASS;
             } else {
                 throw new UnsupportedOperationException(
-                        "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+                        "Unknown group parameters: "
+                                + asymmetricParameters.getClass().getSimpleName());
             }
         } else {
             return false;
@@ -443,33 +495,60 @@ public enum NamedGroup {
 
     public boolean isMontgomery() {
         if (this.isEcGroup()) {
-            if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
-                return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
+            if (this.getAsymmetricParameters() instanceof NamedEllipticCurveParameters) {
+                return ((NamedEllipticCurveParameters) asymmetricParameters).getEquationType()
                         == EcCurveEquationType.MONTGOMERY;
             } else {
                 throw new UnsupportedOperationException(
-                        "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+                        "Unknown group parameters: "
+                                + asymmetricParameters.getClass().getSimpleName());
             }
         } else {
             return false;
         }
     }
 
-    @Deprecated
-    public boolean isCurve() {
-        return groupParameters != null && groupParameters.getGroup() != null;
-    }
-
     public boolean isEcGroup() {
-        return groupParameters != null && groupParameters.getGroup() instanceof EllipticCurve;
+        return getGroupParameters() != null
+                && getGroupParameters().getGroup() instanceof EllipticCurve;
     }
 
     public boolean isDhGroup() {
-        return groupParameters != null && groupParameters instanceof FfdhGroupParameters;
+        return getGroupParameters() != null && getGroupParameters() instanceof FfdhGroupParameters;
     }
 
     public boolean isGrease() {
         return this.name().contains("GREASE");
+    }
+
+    public boolean isPQGroup() {
+        return this == MLKEM512 || this == MLKEM768 || this == MLKEM1024;
+    }
+
+    public boolean isHybridPQGroup() {
+        return this == SECP256R1_MLKEM768 || this == X25519_MLKEM768 || this == SECP384R1_MLKEM1024;
+    }
+
+    public boolean isMlKemGroup() {
+        if (this.isHybridPQGroup()) {
+            return this.getHybridPostQuantumNamedGroup().isMlKemGroup();
+        }
+        return this == MLKEM512 || this == MLKEM768 || this == MLKEM1024;
+    }
+
+    /**
+     * Shorthand to handle PQ and hybrid PQ groups identically.
+     *
+     * @return The post quantum NamedGroup used by this NamedGroup construction. Both plain MLKEM
+     *     and SECP_MLKEM constructions will yield the appropriate MLKEM group
+     */
+    public NamedGroup getAnyInvolvedPqGroup() {
+        if (isHybridPQGroup()) {
+            return this.getHybridPostQuantumNamedGroup();
+        } else if (isPQGroup()) {
+            return this;
+        }
+        throw new UnsupportedOperationException("This is not a PQ or hybrid PQ NamedGroup");
     }
 
     public static List<NamedGroup> getImplemented() {
@@ -513,6 +592,12 @@ public enum NamedGroup {
         list.add(FFDHE4096);
         list.add(FFDHE6144);
         list.add(FFDHE8192);
+        list.add(MLKEM512);
+        list.add(MLKEM768);
+        list.add(MLKEM1024);
+        list.add(SECP256R1_MLKEM768);
+        list.add(X25519_MLKEM768);
+        list.add(SECP384R1_MLKEM1024);
         return list;
     }
 

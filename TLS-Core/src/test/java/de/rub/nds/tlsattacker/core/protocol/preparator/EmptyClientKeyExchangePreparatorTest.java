@@ -223,7 +223,7 @@ public class EmptyClientKeyExchangePreparatorTest
                                 tlsContext
                                         .getChooser()
                                         .getSelectedNamedGroup()
-                                        .getGroupParameters(),
+                                        .getAsymmetricParameters(),
                         EC_SERVER_PUBLIC_KEY_BYTES);
         tlsContext.getServerX509Context().setSubjectEcPublicKey(pubKey);
 
