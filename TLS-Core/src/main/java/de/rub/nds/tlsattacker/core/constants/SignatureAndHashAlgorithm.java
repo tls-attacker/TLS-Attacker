@@ -100,7 +100,7 @@ public enum SignatureAndHashAlgorithm {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static List<? extends SignatureAndHashAlgorithm> getImplemented() {
+    public static List<SignatureAndHashAlgorithm> getImplemented() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(DSA_SHA1);
         algoList.add(DSA_SHA224);
