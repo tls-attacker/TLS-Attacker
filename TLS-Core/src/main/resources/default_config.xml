@@ -1049,6 +1049,12 @@
         <defaultClientNamedGroup>FFDHE4096</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE6144</defaultClientNamedGroup>
         <defaultClientNamedGroup>FFDHE8192</defaultClientNamedGroup>
+        <defaultClientNamedGroup>MLKEM512</defaultClientNamedGroup>
+        <defaultClientNamedGroup>MLKEM768</defaultClientNamedGroup>
+        <defaultClientNamedGroup>MLKEM1024</defaultClientNamedGroup>
+        <defaultClientNamedGroup>SECP256R1_MLKEM768</defaultClientNamedGroup>
+        <defaultClientNamedGroup>X25519_MLKEM768</defaultClientNamedGroup>
+        <defaultClientNamedGroup>SECP384R1_MLKEM1024</defaultClientNamedGroup>
     </defaultClientNamedGroups>
     <defaultServerNamedGroups>
         <defaultServerNamedGroup>SECP160K1</defaultServerNamedGroup>
@@ -1090,6 +1096,12 @@
         <defaultServerNamedGroup>FFDHE4096</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE6144</defaultServerNamedGroup>
         <defaultServerNamedGroup>FFDHE8192</defaultServerNamedGroup>
+        <defaultServerNamedGroup>MLKEM512</defaultServerNamedGroup>
+        <defaultServerNamedGroup>MLKEM768</defaultServerNamedGroup>
+        <defaultServerNamedGroup>MLKEM1024</defaultServerNamedGroup>
+        <defaultServerNamedGroup>SECP256R1_MLKEM768</defaultServerNamedGroup>
+        <defaultServerNamedGroup>X25519_MLKEM768</defaultServerNamedGroup>
+        <defaultServerNamedGroup>SECP384R1_MLKEM1024</defaultServerNamedGroup>
     </defaultServerNamedGroups>
     <supportedVersions>
         <supportedVersion>TLS13</supportedVersion>
@@ -1541,6 +1553,9 @@
     <defaultServerPWDMask>0D 96 AB 62 4D 08 2C 71 25 5B E3 64 8D CD 30 3F 6A B0 CA 61 A9 50 34 A5 53 E3 30 8D 1D 37 44 E5</defaultServerPWDMask>
     <defaultClientPWDPrivate>17 1D E8 CA A5 35 2D 36 EE 96 A3 99 79 B5 B7 2F A1 89 AE 7A 6A 09 C7 7F 7B 43 8A F1 6D F4 A8 8B</defaultClientPWDPrivate>
     <defaultClientPWDMask>4F 74 5B DF C2 95 D3 B3 84 29 F7 EB 30 25 A4 88 83 72 8B 07 D8 86 05 C0 EE 20 23 16 A0 72 D1 BD</defaultClientPWDMask>
+    <defaultClientMLKEMPrivateKey></defaultClientMLKEMPrivateKey>
+    <defaultClientMLKEMPublicKey></defaultClientMLKEMPublicKey>
+    <defaultServerMLKEMCiphertext></defaultServerMLKEMCiphertext>
     <defaultServerPWDSalt>96 3C 77 CD C1 3A 2A 8D 75 CD DD D1 E0 44 99 29 84 37 11 C2 1D 47 CE 6E 63 83 CD DA 37 E4 7D A3</defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
     <defaultDnsServer>8.8.8.8</defaultDnsServer>
@@ -1920,6 +1935,12 @@
         <clientSupportedEsniNamedGroup>FFDHE4096</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE6144</clientSupportedEsniNamedGroup>
         <clientSupportedEsniNamedGroup>FFDHE8192</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>MLKEM512</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>MLKEM768</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>MLKEM1024</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>SECP256R1_MLKEM768</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>X25519_MLKEM768</clientSupportedEsniNamedGroup>
+        <clientSupportedEsniNamedGroup>SECP384R1_MLKEM1024</clientSupportedEsniNamedGroup>
     </clientSupportedEsniNamedGroups>
     <esniServerKeyPairs/>
     <defaultEsniClientNonce>A7 28 4C 9A 52 F1 5C 13 64 4B 94 72 61 77 46 57</defaultEsniClientNonce>

@@ -14,17 +14,22 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 
 public class KeyShareEntry extends ModifiableVariableHolder {
 
     private NamedGroup groupConfig;
     private BigInteger privateKey;
+    private MLKEMPrivateKeyParameters mlkemPrivateKeyParameters;
+    private MLKEMPublicKeyParameters mlkemPublicKeyParameters;
 
     private ModifiableByteArray group;
 
     private ModifiableInteger publicKeyLength;
 
     private ModifiableByteArray publicKey;
+    private ModifiableByteArray mlkemPublicKey;
 
     public KeyShareEntry() {}
 
@@ -84,5 +89,32 @@ public class KeyShareEntry extends ModifiableVariableHolder {
 
     public void setPrivateKey(BigInteger privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public byte[] getMLKEMPrivateKey() {
+        return mlkemPrivateKeyParameters.getEncoded();
+    }
+
+    public MLKEMPrivateKeyParameters getMLKEMPrivateKeyParameters() {
+        return mlkemPrivateKeyParameters;
+    }
+
+    public void setMLKEMPrivateKey(MLKEMPrivateKeyParameters mlkemPrivateKeyParameters) {
+        this.mlkemPrivateKeyParameters = mlkemPrivateKeyParameters;
+    }
+
+    public ModifiableByteArray getMLKEMPublicKey() {
+        return mlkemPublicKey;
+    }
+
+    public void setMLKEMPublicKey(MLKEMPublicKeyParameters mlkemPublicKeyParameters) {
+        this.mlkemPublicKeyParameters = mlkemPublicKeyParameters; // Store the object
+        this.mlkemPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.mlkemPublicKey, mlkemPublicKeyParameters.getEncoded());
+    }
+
+    public MLKEMPublicKeyParameters getMLKEMPublicKeyParameters() {
+        return mlkemPublicKeyParameters;
     }
 }

@@ -341,7 +341,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] serverPublicKey =
                 msg.getEncryptedSniComputation().getEsniServerPublicKey().getValue();
         byte[] esniSharedSecret =
-                KeyShareCalculator.computeSharedSecret(group, clientPrivateKey, serverPublicKey);
+                KeyShareCalculator.computeDhSharedSecret(group, clientPrivateKey, serverPublicKey);
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug(
                 "EsniSharedSecret: {}",
@@ -366,7 +366,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] clientPublicKey = msg.getKeyShareEntry().getPublicKey().getValue();
 
         byte[] esniSharedSecret =
-                KeyShareCalculator.computeSharedSecret(group, serverPrivateKey, clientPublicKey);
+                KeyShareCalculator.computeDhSharedSecret(group, serverPrivateKey, clientPublicKey);
 
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug(

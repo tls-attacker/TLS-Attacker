@@ -24,12 +24,14 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
+import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -275,27 +277,31 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             new byte[0],
                             tlsContext.getChooser().getSelectedProtocolVersion());
             byte[] sharedSecret = new byte[0];
-            // if PSK_only mode is selected, the keyShare will be null, and there is no sharedSecret
-            if (keyShareStoreEntry != null) {
+            if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
+                sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
+            } else if (keyShareStoreEntry.getGroup().isPQGroup()) {
+                sharedSecret = computePQSharedSecret(keyShareStoreEntry);
+                LOGGER.debug("Computed PQ Shared Secret: {}", sharedSecret);
+            } else if (keyShareStoreEntry.getGroup().isHybridPQGroup()) {
+                sharedSecret = computeHybridPQSharedSecret(keyShareStoreEntry);
+                LOGGER.debug("Computed Hybrid PQ Shared Secret: {}", sharedSecret);
+            } else {
                 BigInteger privateKey =
                         tlsContext
                                 .getConfig()
                                 .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
-                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
-                    sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
-                } else {
-                    sharedSecret =
-                            KeyShareCalculator.computeSharedSecret(
-                                    keyShareStoreEntry.getGroup(),
-                                    privateKey,
-                                    keyShareStoreEntry.getPublicKey());
-                    // This is a workaround for Tls1.3 InvalidCurve attacks
-                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
-                        LOGGER.debug("Using specified PMS instead of computed PMS");
-                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
-                    }
-                }
+                sharedSecret =
+                        KeyShareCalculator.computeDhSharedSecret(
+                                keyShareStoreEntry.getGroup(),
+                                privateKey,
+                                keyShareStoreEntry.getPublicKey());
             }
+            // This is a workaround for TLS 1.3 InvalidCurve attacks
+            if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                LOGGER.debug("Using specified PMS instead of computed PMS");
+                sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+            }
+
             byte[] handshakeSecret =
                     HKDFunction.extract(hkdfAlgorithm, saltHandshakeSecret, sharedSecret);
             tlsContext.setHandshakeSecret(handshakeSecret);
@@ -326,6 +332,117 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     serverHandshakeTrafficSecret);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             throw new AdjustmentException(ex);
+        }
+    }
+
+    /**
+     * The post-quantum shared secret for ML-KEM algorithms as defined in draft-ietf-tls-mlkem-07 is
+     * computed differently for client and server. The server uses the encapsulation algorithm and
+     * the client's public key share to compute a ciphertext and the shared secret in the same
+     * iteration. The client computes the shared secret with the decapsulation algorithm from the
+     * server's ciphertext and the client's secret key.
+     *
+     * @param keyShareStoreEntry The keyShareStoreEntry that should be used.
+     * @return The computed pq shared secret.
+     */
+    private byte[] computePQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return KeyShareCalculator.mlkemDecaps(
+                    keyShareStoreEntry.getGroup(),
+                    tlsContext.getClientMLKEMPrivateKeys().get(keyShareStoreEntry.getGroup()),
+                    keyShareStoreEntry.getPublicKey());
+        } else {
+
+            if (tlsContext.getPQSharedSecret() == null) {
+                throw new CryptoException(
+                        "SERVER: PQ Shared Secret was not set in TlsContext during encapsulation!");
+            } else {
+                return tlsContext.getPQSharedSecret();
+            }
+        }
+    }
+
+    /**
+     * The shared secret for hybrid pq algorithms is computed as defined in
+     * draft-ietf-tls-hybrid-design-16: The keyshare is split into its classical and pq component.
+     * Then the shared secrets for those components is computed individually. In the end the
+     * resulting shared secret is the concatenation of the individual shared secrets in the same
+     * order as the keyshare.
+     *
+     * @param keyShareStoreEntry The keyShareStoreEntry that should be used.
+     * @return The computed hybrid post-quantum shared secret.
+     */
+    private byte[] computeHybridPQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
+        NamedGroup classicalGroup =
+                keyShareStoreEntry.getGroup().getHybridPostQuantumClassicNamedGroup();
+        NamedGroup pqGroup = keyShareStoreEntry.getGroup().getHybridPostQuantumNamedGroup();
+
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            byte[] classicalPubKey;
+            byte[] pqPubKey;
+            byte[][] splitKeyShare =
+                    PQUtils.splitKeyShare(
+                            keyShareStoreEntry.getGroup(),
+                            ConnectionEndType.SERVER,
+                            keyShareStoreEntry.getPublicKey());
+
+            classicalPubKey = splitKeyShare[0];
+            pqPubKey = splitKeyShare[1];
+
+            BigInteger classicalPrivateKey =
+                    tlsContext
+                            .getConfig()
+                            .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
+            if (classicalPrivateKey == null) {
+                classicalPrivateKey =
+                        tlsContext.getConfig().getDefaultKeySharePrivateKey(classicalGroup);
+            }
+
+            byte[] classicalSharedSecret =
+                    KeyShareCalculator.computeDhSharedSecret(
+                            classicalGroup, classicalPrivateKey, classicalPubKey);
+            LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
+
+            byte[] pqSharedSecret =
+                    KeyShareCalculator.mlkemDecaps(
+                            pqGroup,
+                            tlsContext
+                                    .getClientMLKEMPrivateKeys()
+                                    .get(keyShareStoreEntry.getGroup()),
+                            pqPubKey);
+            LOGGER.debug("Computed ML-KEM Shared Secret: {}", pqSharedSecret);
+
+            byte[] sharedSecret =
+                    PQUtils.concatenateHybridKeyShare(
+                            keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
+
+            return sharedSecret;
+        } else {
+            BigInteger classicalPrivateKey =
+                    tlsContext
+                            .getConfig()
+                            .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
+
+            byte[][] splitClientKeyShare =
+                    PQUtils.splitKeyShare(
+                            keyShareStoreEntry.getGroup(),
+                            ConnectionEndType.CLIENT,
+                            keyShareStoreEntry.getPublicKey());
+
+            byte[] clientClassicalPubKey = splitClientKeyShare[0];
+
+            byte[] classicalSharedSecret =
+                    KeyShareCalculator.computeDhSharedSecret(
+                            classicalGroup, classicalPrivateKey, clientClassicalPubKey);
+            LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
+
+            byte[] pqSharedSecret = tlsContext.getPQSharedSecret();
+            LOGGER.debug("Retreived ML-KEM Shared Secret from TLS-Context: {}", pqSharedSecret);
+
+            byte[] sharedSecret =
+                    PQUtils.concatenateHybridKeyShare(
+                            keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
+            return sharedSecret;
         }
     }
 
@@ -611,11 +728,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                 selectedKeyShareStore.getPublicKey());
             }
             tlsContext.setServerEphemeralEcPublicKey(publicPoint);
-        } else {
+        } else if (selectedKeyShareStore.getGroup().isDhGroup()) {
             tlsContext.setServerEphemeralDhPublicKey(
                     new BigInteger(selectedKeyShareStore.getPublicKey()));
+        } else if (selectedKeyShareStore.getGroup().isPQGroup()) {
+            LOGGER.debug(
+                    "Server KeyShare for PQ KEM is a ciphertext, not a public key. Skipping key object instantiation.");
         }
-
         return selectedKeyShareStore;
     }
 

@@ -50,7 +50,8 @@ public class PWDServerKeyExchangeHandlerTest
                 DataConverter.bigIntegerToByteArray(
                         PointFormatter.formatFromByteArray(
                                         (NamedEllipticCurveParameters)
-                                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
+                                                NamedGroup.BRAINPOOLP256R1
+                                                        .getAsymmetricParameters(),
                                         element)
                                 .getFieldX()
                                 .getData()),

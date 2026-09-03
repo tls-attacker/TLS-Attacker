@@ -194,7 +194,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
         LOGGER.debug(
                 "Negotiating NamedGroup {} for Server Key Exchange message", chosenGroup.name());
-        FfdhGroupParameters ffdhGroup = (FfdhGroupParameters) chosenGroup.getGroupParameters();
+        FfdhGroupParameters ffdhGroup = (FfdhGroupParameters) chosenGroup.getAsymmetricParameters();
         msg.getKeyExchangeComputations().setGenerator(ffdhGroup.getGenerator());
         msg.getKeyExchangeComputations().setModulus(ffdhGroup.getModulus());
     }

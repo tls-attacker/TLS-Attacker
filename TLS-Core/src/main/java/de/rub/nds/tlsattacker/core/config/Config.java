@@ -1218,6 +1218,15 @@ public class Config implements Serializable {
             DataConverter.hexStringToByteArray(
                     "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMLKEMPrivateKey = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMLKEMPublicKey = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultServerMLKEMCiphertext = new byte[0];
+
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDSalt =
@@ -4608,5 +4617,29 @@ public class Config implements Serializable {
 
     public void setQuicImmediateCloseOnTlsError(Boolean quicImmediateCloseOnTlsError) {
         this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
+    }
+
+    public byte[] getDefaultClientMLKEMPrivateKey() {
+        return Arrays.copyOf(defaultClientMLKEMPrivateKey, defaultClientMLKEMPrivateKey.length);
+    }
+
+    public void setDefaultClientMLKEMPrivateKey(byte[] defaultClientMLKEMPrivateKey) {
+        this.defaultClientMLKEMPrivateKey = defaultClientMLKEMPrivateKey;
+    }
+
+    public byte[] getDefaultClientMLKEMPublicKey() {
+        return Arrays.copyOf(defaultClientMLKEMPublicKey, defaultClientMLKEMPublicKey.length);
+    }
+
+    public void setDefaultClientMLKEMPublicKey(byte[] defaultClientMLKEMPublicKey) {
+        this.defaultClientMLKEMPublicKey = defaultClientMLKEMPublicKey;
+    }
+
+    public byte[] getDefaultServerMLKEMCiphertext() {
+        return Arrays.copyOf(defaultServerMLKEMCiphertext, defaultServerMLKEMCiphertext.length);
+    }
+
+    public void setDefaultServerMLKEMCiphertext(byte[] defaultServerMLKEMCiphertext) {
+        this.defaultServerMLKEMCiphertext = defaultServerMLKEMCiphertext;
     }
 }

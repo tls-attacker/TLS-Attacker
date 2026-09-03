@@ -46,20 +46,20 @@ public class ECDHEServerKeyExchangeHandler<KeyExchangeMessage extends ECDHEServe
             LOGGER.debug("Adjusting EC Point");
 
             Point publicKeyPoint;
-            if (group.getGroupParameters() == null
-                    || group.getGroupParameters() instanceof NamedEllipticCurveParameters
+            if (group.getAsymmetricParameters() == null
+                    || group.getAsymmetricParameters() instanceof NamedEllipticCurveParameters
                             == false) {
                 LOGGER.debug(
                         "Unsuited group parameters for EC point adjustment. Falling back to SECP256R1.");
                 publicKeyPoint =
                         PointFormatter.formatFromByteArray(
                                 (NamedEllipticCurveParameters)
-                                        NamedGroup.SECP256R1.getGroupParameters(),
+                                        NamedGroup.SECP256R1.getAsymmetricParameters(),
                                 message.getPublicKey().getValue());
             } else {
                 publicKeyPoint =
                         PointFormatter.formatFromByteArray(
-                                (NamedEllipticCurveParameters) group.getGroupParameters(),
+                                (NamedEllipticCurveParameters) group.getAsymmetricParameters(),
                                 message.getPublicKey().getValue());
             }
 

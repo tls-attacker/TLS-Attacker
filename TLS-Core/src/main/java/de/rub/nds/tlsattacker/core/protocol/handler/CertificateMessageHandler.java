@@ -74,7 +74,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         byte[] pointBytes = publicKey.getBytes();
                         Point publicKeyPoint =
                                 PointFormatter.formatFromByteArray(
-                                        (NamedEllipticCurveParameters) group.getGroupParameters(),
+                                        (NamedEllipticCurveParameters)
+                                                group.getAsymmetricParameters(),
                                         pointBytes);
                         // This uses the x509 context, its technically not correct but for usability
                         // its beneficial

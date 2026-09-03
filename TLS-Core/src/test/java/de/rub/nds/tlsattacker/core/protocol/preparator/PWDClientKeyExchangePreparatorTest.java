@@ -62,7 +62,7 @@ public class PWDClientKeyExchangePreparatorTest
         tlsContext.setServerPWDElement(
                 PointFormatter.formatFromByteArray(
                         (NamedEllipticCurveParameters)
-                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
+                                NamedGroup.BRAINPOOLP256R1.getAsymmetricParameters(),
                         element));
         tlsContext
                 .getConfig()

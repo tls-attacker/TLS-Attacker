@@ -583,29 +583,34 @@ public class DefaultChooserTest {
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()));
         assertEquals(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()),
                 config.getDefaultClientEphemeralEcPublicKey());
         assertEquals(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()),
                 chooser.getClientEphemeralEcPublicKey());
         context.setClientEphemeralEcPublicKey(
                 Point.createPoint(
                         BigInteger.ZERO,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()));
         assertEquals(
                 Point.createPoint(
                         BigInteger.ZERO,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()),
                 chooser.getClientEphemeralEcPublicKey());
     }
 
@@ -617,29 +622,34 @@ public class DefaultChooserTest {
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()));
         assertEquals(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()),
                 config.getDefaultServerEphemeralEcPublicKey());
         assertEquals(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()),
                 chooser.getServerEphemeralEcPublicKey());
         context.setServerEphemeralEcPublicKey(
                 Point.createPoint(
                         BigInteger.ZERO,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()));
         assertEquals(
                 Point.createPoint(
                         BigInteger.ZERO,
                         BigInteger.TEN,
-                        (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.SECP256R1.getAsymmetricParameters()),
                 chooser.getServerEphemeralEcPublicKey());
     }
 
