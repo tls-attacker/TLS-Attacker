@@ -45,14 +45,7 @@ public record StartTlsDialect(
     /** Matches the error replies of the protocols that report failures as a numeric status. */
     private static final String NUMERIC_ERROR_STATUS_REGEX = "^[45]\\d\\d ";
 
-    /**
-     * The only refusal that says the upgrade could still succeed in a different order. RFC 959
-     * defines 503 as a bad sequence of commands, which is exactly what a server means when it wants
-     * its capability exchange run first. Every other error either rejects the command itself (500,
-     * 502, 504), or describes a condition the exchange does not change (421, 431, 530), so retrying
-     * those would only cost a connection.
-     */
-    private static final String NUMERIC_BAD_SEQUENCE_STATUS_REGEX = "^503 ";
+    private static final String STATUS_503_BAD_SEQUENCE_REGEX = "^503 ";
 
     private static final StartTlsDialect FTP =
             new StartTlsDialect(
@@ -62,7 +55,7 @@ public record StartTlsDialect(
                     "AUTH TLS\r\n",
                     "^234 ",
                     NUMERIC_ERROR_STATUS_REGEX,
-                    NUMERIC_BAD_SEQUENCE_STATUS_REGEX);
+                    STATUS_503_BAD_SEQUENCE_REGEX);
 
     private static final Map<StarttlsType, StartTlsDialect> DIALECTS =
             new EnumMap<>(Map.of(StarttlsType.FTP, FTP));
