@@ -36,7 +36,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
          * All expected containers were received, but also additional unexpected containers were
          * received afterwards.
          */
-        UNEXPECTED_CONTAINER_SUFFIX;
+        ADDITIONAL_CONTAINERS;
 
         public boolean in(ExecutionStatus... statuses) {
             for (ExecutionStatus status : statuses) {
@@ -111,7 +111,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         // we got all required containers, check if there are unexpected trailing containers
         for (; j < receivedContainers.size(); j++) {
             if (!containerCanBeFiltered(receivedContainers.get(j))) {
-                return ExecutionStatus.UNEXPECTED_CONTAINER_SUFFIX;
+                return ExecutionStatus.ADDITIONAL_CONTAINERS;
             }
         }
 
@@ -127,7 +127,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
             List<Container> list, boolean mayReceiveMoreContainers) {
         var analysisResult = evaluateReceivedContainers(list);
         if (analysisResult.in(
-                ExecutionStatus.UNEXPECTED_CONTAINER_SUFFIX,
+                ExecutionStatus.ADDITIONAL_CONTAINERS,
                 ExecutionStatus.PENDING_MISSING_CONTAINERS)) {
             return mayReceiveMoreContainers;
         }
