@@ -20,14 +20,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
-
 import org.junit.Test;
 
 public class SpecificReceiveLayerConfigurationTest {
@@ -112,7 +109,9 @@ public class SpecificReceiveLayerConfigurationTest {
     }
 
     private static boolean originalEvaluateReceivedContainers(
-            SpecificReceiveLayerConfiguration self, List<? extends DataContainer> list, boolean mayReceiveMoreContainers) {
+            SpecificReceiveLayerConfiguration self,
+            List<? extends DataContainer> list,
+            boolean mayReceiveMoreContainers) {
         if (list == null) {
             return false;
         }
@@ -157,40 +156,46 @@ public class SpecificReceiveLayerConfigurationTest {
         List<ProtocolMessage> expectedMessages =
                 Arrays.asList(
                         new ProtocolMessage[] {
-                                new ServerHelloMessage(),
-                                optionalChangeCipherSpec,
-                                new CertificateMessage(),
-                                new CertificateVerifyMessage(),
-                                new FinishedMessage()
+                            new ServerHelloMessage(),
+                            optionalChangeCipherSpec,
+                            new CertificateMessage(),
+                            new CertificateVerifyMessage(),
+                            new FinishedMessage()
                         });
         var receiveConfig =
                 new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
 
-        var newFunc = SpecificReceiveLayerConfiguration.class.getDeclaredMethod("evaluateReceivedContainers", List.class, boolean.class);
+        var newFunc =
+                SpecificReceiveLayerConfiguration.class.getDeclaredMethod(
+                        "evaluateReceivedContainers", List.class, boolean.class);
         newFunc.setAccessible(true);
-        var newFuncDetails = SpecificReceiveLayerConfiguration.class.getDeclaredMethod("evaluateReceivedContainers", List.class);
+        var newFuncDetails =
+                SpecificReceiveLayerConfiguration.class.getDeclaredMethod(
+                        "evaluateReceivedContainers", List.class);
         newFunc.setAccessible(true);
 
-        Function<List<ProtocolMessage>, Void> testFunc = (list) -> {
-            try {
-                assertEquals(
-                        "New function return value differs, determined status " + newFuncDetails.invoke(receiveConfig, list) + " mayReceiveMoreContainers=false",
-                        originalEvaluateReceivedContainers(receiveConfig, list, false),
-                        newFunc.invoke(receiveConfig, list, false)
-                );
-                assertEquals(
-                        "New function return value differs, determined status " + newFuncDetails.invoke(receiveConfig, list) + " mayReceiveMoreContainers=true",
-                        originalEvaluateReceivedContainers(receiveConfig, list, true),
-                        newFunc.invoke(receiveConfig, list, true)
-                );
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-            return null;
-        };
-
+        Function<List<ProtocolMessage>, Void> testFunc =
+                (list) -> {
+                    try {
+                        assertEquals(
+                                "New function return value differs, determined status "
+                                        + newFuncDetails.invoke(receiveConfig, list)
+                                        + " mayReceiveMoreContainers=false",
+                                originalEvaluateReceivedContainers(receiveConfig, list, false),
+                                newFunc.invoke(receiveConfig, list, false));
+                        assertEquals(
+                                "New function return value differs, determined status "
+                                        + newFuncDetails.invoke(receiveConfig, list)
+                                        + " mayReceiveMoreContainers=true",
+                                originalEvaluateReceivedContainers(receiveConfig, list, true),
+                                newFunc.invoke(receiveConfig, list, true));
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return null;
+                };
 
         testFunc.apply(expectedMessages);
 

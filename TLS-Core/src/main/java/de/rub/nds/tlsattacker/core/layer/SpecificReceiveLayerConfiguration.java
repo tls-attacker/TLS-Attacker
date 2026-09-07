@@ -23,20 +23,18 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
     protected enum ExecutionStatus {
-        /**
-         * All containers were received as configured.
-         */
+        /** All containers were received as configured. */
         AS_PLANNED,
         /**
-         * Thus far all received containers were expected, but some expected containers were not (yet) received.
+         * Thus far all received containers were expected, but some expected containers were not
+         * (yet) received.
          */
         PENDING_MISSING_CONTAINERS,
-        /**
-         * A container that was not expected was encountered.
-         */
+        /** A container that was not expected was encountered. */
         UNEXPECTED_CONTAINER,
         /**
-         * All expected containers were received, but also additional unexpected containers were received afterwards.
+         * All expected containers were received, but also additional unexpected containers were
+         * received afterwards.
          */
         UNEXPECTED_CONTAINER_SUFFIX;
 
@@ -71,8 +69,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
      *
      * @param receivedContainers The list of DataContainers
      */
-    protected ExecutionStatus evaluateReceivedContainers(
-            List<Container> receivedContainers) {
+    protected ExecutionStatus evaluateReceivedContainers(List<Container> receivedContainers) {
         if (receivedContainers == null) {
             return ExecutionStatus.PENDING_MISSING_CONTAINERS;
         }
@@ -86,9 +83,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         while (i < expectedContainers.size() && j < receivedContainers.size()) {
             var expected = expectedContainers.get(i);
             var received = receivedContainers.get(j);
-            if (expected
-                    .getClass()
-                    .equals(receivedContainers.get(j).getClass())) {
+            if (expected.getClass().equals(receivedContainers.get(j).getClass())) {
                 // got an expected container -> increase reference
                 i++;
                 j++;
@@ -106,7 +101,8 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
 
         if (i < expectedContainers.size()) {
             // we have not received all expected containers
-            if(expectedContainers.subList(i, expectedContainers.size()).stream().anyMatch(DataContainer::isRequired)) {
+            if (expectedContainers.subList(i, expectedContainers.size()).stream()
+                    .anyMatch(DataContainer::isRequired)) {
                 // and one of them is required
                 return ExecutionStatus.PENDING_MISSING_CONTAINERS;
             }
@@ -123,13 +119,16 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
     }
 
     /**
-     * @deprecated Use {@link #evaluateReceivedContainers(List)} instead as its return value is more expressive.
+     * @deprecated Use {@link #evaluateReceivedContainers(List)} instead as its return value is more
+     *     expressive.
      */
     @Deprecated(since = "2026-08-17")
     protected boolean evaluateReceivedContainers(
             List<Container> list, boolean mayReceiveMoreContainers) {
         var analysisResult = evaluateReceivedContainers(list);
-        if(analysisResult.in(ExecutionStatus.UNEXPECTED_CONTAINER_SUFFIX, ExecutionStatus.PENDING_MISSING_CONTAINERS)) {
+        if (analysisResult.in(
+                ExecutionStatus.UNEXPECTED_CONTAINER_SUFFIX,
+                ExecutionStatus.PENDING_MISSING_CONTAINERS)) {
             return mayReceiveMoreContainers;
         }
         return analysisResult == ExecutionStatus.AS_PLANNED;
