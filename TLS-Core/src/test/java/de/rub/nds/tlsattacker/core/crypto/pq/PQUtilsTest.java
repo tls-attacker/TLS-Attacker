@@ -9,8 +9,11 @@
 package de.rub.nds.tlsattacker.core.crypto.pq;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.SecureRandom;
@@ -117,6 +120,91 @@ public class PQUtilsTest {
                             concatenatedHybridKeyShare,
                             classicalKeyShareLength,
                             concatenatedHybridKeyShare.length));
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"ECDH_X25519", "SECP256R1", "FFDHE2048"})
+    public void testGetPQKeyShareLengthRejectsNonPqGroup(NamedGroup namedGroup) {
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM512", "MLKEM768", "MLKEM1024"})
+    public void testGetPQKeyShareLengthAcceptsPureMlKemGroup(NamedGroup namedGroup) {
+        assertEquals(
+                ((MlKemParameters) namedGroup.getAsymmetricParameters())
+                        .getEncapsulationKeySizeBytes(),
+                PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT));
+        assertEquals(
+                ((MlKemParameters) namedGroup.getAsymmetricParameters()).getCiphertextSizeBytes(),
+                PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.SERVER));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM768", "ECDH_X25519", "FFDHE2048"})
+    public void testGetEcPublicKeyLengthRejectsNonHybridGroup(NamedGroup namedGroup) {
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> PQUtils.getEcPublicKeyLength(namedGroup));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM768", "ECDH_X25519", "FFDHE2048"})
+    public void testSplitKeyShareRejectsNonHybridGroup(NamedGroup namedGroup) {
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                PQUtils.splitKeyShare(
+                                        namedGroup, ConnectionEndType.CLIENT, new byte[1216]));
+        assertEquals("Unsupported Hybrid PQ group: " + namedGroup, exception.getMessage());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+    public void testSplitKeyShareRejectsKeyShareShorterThanSplitIndex(NamedGroup namedGroup) {
+        for (ConnectionEndType connectionEndType :
+                new ConnectionEndType[] {ConnectionEndType.CLIENT, ConnectionEndType.SERVER}) {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> PQUtils.splitKeyShare(namedGroup, connectionEndType, new byte[0]));
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+    public void testSplitKeyShareAcceptsOversizedKeyShare(NamedGroup namedGroup) {
+        int classicalKeyShareLength = PQUtils.getEcPublicKeyLength(namedGroup);
+        int pqKeyShareLength = PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT);
+        int surplus = 84;
+
+        byte[][] splitKeyShare =
+                PQUtils.splitKeyShare(
+                        namedGroup,
+                        ConnectionEndType.CLIENT,
+                        new byte[classicalKeyShareLength + pqKeyShareLength + surplus]);
+
+        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+            assertEquals(classicalKeyShareLength + surplus, splitKeyShare[0].length);
+            assertEquals(pqKeyShareLength, splitKeyShare[1].length);
+        } else {
+            assertEquals(classicalKeyShareLength, splitKeyShare[0].length);
+            assertEquals(pqKeyShareLength + surplus, splitKeyShare[1].length);
         }
     }
 }
