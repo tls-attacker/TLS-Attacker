@@ -20,19 +20,20 @@ import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
 import de.rub.nds.protocol.crypto.ffdh.FfdhGroup;
-import de.rub.nds.protocol.crypto.kem.MlKemParameterConverter;
+import de.rub.nds.protocol.crypto.kem.MlKemCalculator;
+import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
+import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
+import de.rub.nds.protocol.crypto.key.MlKemPublicKey;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.SecretWithEncapsulation;
-import org.bouncycastle.pqc.crypto.mlkem.*;
 
 public class KeyShareCalculator {
 
@@ -118,18 +119,11 @@ public class KeyShareCalculator {
     public static void createMLKEMKeyShare(
             NamedGroup namedGroup, KeyShareEntry keyShareEntry, SecureRandom random) {
         LOGGER.debug("Using group: {}", namedGroup);
-        MLKEMParameters params =
-                MlKemParameterConverter.toKemParameters(
-                        (MlKemParameters)
-                                namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters());
-        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
-        generator.init(new MLKEMKeyGenerationParameters(random, params));
-        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
-        MLKEMPublicKeyParameters pub = (MLKEMPublicKeyParameters) pair.getPublic();
-        MLKEMPrivateKeyParameters priv = (MLKEMPrivateKeyParameters) pair.getPrivate();
+        Pair<MlKemPublicKey, MlKemPrivateKey> keyPair =
+                MlKemCalculator.generateKeyPair(getMlKemParameters(namedGroup), random);
 
-        keyShareEntry.setMLKEMPublicKey(pub);
-        keyShareEntry.setMLKEMPrivateKey(priv);
+        keyShareEntry.setMLKEMPublicKey(keyPair.getLeft());
+        keyShareEntry.setMLKEMPrivateKey(keyPair.getRight());
         LOGGER.debug("KeyShare: {}", keyShareEntry.getMLKEMPublicKey().getValue());
     }
 
@@ -139,14 +133,13 @@ public class KeyShareCalculator {
      *
      * @param namedGroup The group that should be used.
      * @param privateKey The private key that should be used.
-     * @param publicKey The public key that should be used.
+     * @param ciphertext The server's ciphertext that should be decapsulated.
      * @return The computed shared secret.
      */
     public static byte[] mlkemDecaps(
-            NamedGroup namedGroup, MLKEMPrivateKeyParameters privateKey, byte[] publicKey) {
-
-        MLKEMExtractor mlkemExtractor = new MLKEMExtractor(privateKey);
-        return mlkemExtractor.extractSecret(publicKey);
+            NamedGroup namedGroup, MlKemPrivateKey privateKey, byte[] ciphertext) {
+        LOGGER.debug("Using group: {}", namedGroup);
+        return MlKemCalculator.decapsulate(privateKey, ciphertext);
     }
 
     /**
@@ -158,16 +151,21 @@ public class KeyShareCalculator {
      * @param random The secure random that should be used
      * @return The encapsulation result containing both the ciphertext and the shared secret.
      */
-    public static SecretWithEncapsulation mlkemEncaps(
+    public static MlKemEncapsulation mlkemEncaps(
             NamedGroup namedGroup, byte[] clientPublicKeyBytes, SecureRandom random) {
-        MLKEMParameters mlkemParameters =
-                MlKemParameterConverter.toKemParameters(
-                        (MlKemParameters)
-                                namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters());
-        MLKEMPublicKeyParameters publicKey =
-                new MLKEMPublicKeyParameters(mlkemParameters, clientPublicKeyBytes);
-        MLKEMGenerator generator = new MLKEMGenerator(random);
-        return generator.generateEncapsulated(publicKey);
+        return MlKemCalculator.encapsulate(
+                getMlKemParameters(namedGroup), clientPublicKeyBytes, random);
+    }
+
+    /**
+     * Returns the ML-KEM parameter set of the given group, which may either be a pure ML-KEM group
+     * or a hybrid group with an ML-KEM component.
+     *
+     * @param namedGroup The named group that should be used.
+     * @return The ML-KEM parameter set of the group.
+     */
+    private static MlKemParameters getMlKemParameters(NamedGroup namedGroup) {
+        return (MlKemParameters) namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters();
     }
 
     /**

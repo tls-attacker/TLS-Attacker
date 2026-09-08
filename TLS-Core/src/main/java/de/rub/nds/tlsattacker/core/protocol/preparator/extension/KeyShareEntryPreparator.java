@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
 import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -26,7 +27,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.SecretWithEncapsulation;
 
 public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
@@ -117,11 +117,11 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPublicKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyContainer());
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPrivateKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyContainer());
             LOGGER.debug("Generated Client PQ KeyPair for group: {}", entry.getGroupConfig());
         } else {
             // The Server does not generate an own keypair for post-quantum groups,
@@ -135,7 +135,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 + " is missing from the context.");
             }
 
-            SecretWithEncapsulation result =
+            MlKemEncapsulation result =
                     KeyShareCalculator.mlkemEncaps(
                             entry.getGroupConfig(),
                             clientPublicKey,
@@ -145,9 +145,9 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 LOGGER.debug("Using defaultServerMLKEMCiphertext from config");
                 entry.setPublicKey(defaultMLKEMCiphertext);
             } else {
-                entry.setPublicKey(result.getEncapsulation());
+                entry.setPublicKey(result.getCiphertext());
             }
-            chooser.getContext().getTlsContext().setPQSharedSecret(result.getSecret());
+            chooser.getContext().getTlsContext().setPQSharedSecret(result.getSharedSecret());
             chooser.getContext()
                     .getTlsContext()
                     .setServerMLKEMCiphertext(entry.getPublicKey().getValue());
@@ -185,20 +185,20 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
             LOGGER.debug(
                     "Setting Client MLKEM public key to {}",
-                    entry.getMLKEMPublicKeyParameters().getEncoded());
+                    entry.getMLKEMPublicKeyContainer().getEncapsulationKey());
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPublicKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyContainer());
 
             LOGGER.debug(
                     "Setting Client MLKEM private key to {}",
-                    entry.getMLKEMPrivateKeyParameters().getEncoded());
+                    entry.getMLKEMPrivateKeyContainer().getDecapsulationKey());
 
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPrivateKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyContainer());
 
             entry.setPublicKey(
                     PQUtils.concatenateHybridKeyShare(
@@ -224,20 +224,22 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
             // Use Client public key share to compute encapsulation algorithm
             byte[] clientPQPublicKey = splitClientKeyShare[1];
-            SecretWithEncapsulation encapsulationResult =
+            MlKemEncapsulation encapsulationResult =
                     KeyShareCalculator.mlkemEncaps(
                             entry.getGroupConfig(),
                             clientPQPublicKey,
                             chooser.getContext().getTlsContext().getBadSecureRandom());
 
-            byte[] pqCiphertext = encapsulationResult.getEncapsulation();
+            byte[] pqCiphertext = encapsulationResult.getCiphertext();
             byte[] defaultMLKEMCiphertext = chooser.getConfig().getDefaultServerMLKEMCiphertext();
             if (defaultMLKEMCiphertext != null && defaultMLKEMCiphertext.length > 0) {
                 LOGGER.debug("Using defaultServerMLKEMCiphertext from config for hybrid KEX");
                 pqCiphertext = defaultMLKEMCiphertext;
             }
 
-            chooser.getContext().getTlsContext().setPQSharedSecret(encapsulationResult.getSecret());
+            chooser.getContext()
+                    .getTlsContext()
+                    .setPQSharedSecret(encapsulationResult.getSharedSecret());
             chooser.getContext().getTlsContext().setServerMLKEMCiphertext(pqCiphertext);
 
             entry.setPublicKey(
