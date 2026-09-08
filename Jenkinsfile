@@ -8,6 +8,8 @@ standardPipeline(
         intTestTimeout: 600,
         codeAnalyseTimeout: 240,
         uniTestTimeout: 180,
+        enableITs: false,
+        enableTests: false,
 
         extraStages: {
             setVersion(
