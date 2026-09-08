@@ -14,11 +14,13 @@ import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.CertificateChainConfigAdapter;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
+import de.rub.nds.tlsattacker.core.config.constants.MlkemDefaultKeys;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -1210,13 +1212,22 @@ public class Config implements Serializable {
                     "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMLKEMPrivateKey = new byte[0];
-
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientMLKEMPublicKey = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerMLKEMCiphertext = new byte[0];
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMlKem512DecapsulationKey =
+            MlkemDefaultKeys.getMlKem512DecapsulationKey();
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMlKem768DecapsulationKey =
+            MlkemDefaultKeys.getMlKem768DecapsulationKey();
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMlKem1024DecapsulationKey =
+            MlkemDefaultKeys.getMlKem1024DecapsulationKey();
 
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -4602,14 +4613,6 @@ public class Config implements Serializable {
         this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
     }
 
-    public byte[] getDefaultClientMLKEMPrivateKey() {
-        return Arrays.copyOf(defaultClientMLKEMPrivateKey, defaultClientMLKEMPrivateKey.length);
-    }
-
-    public void setDefaultClientMLKEMPrivateKey(byte[] defaultClientMLKEMPrivateKey) {
-        this.defaultClientMLKEMPrivateKey = defaultClientMLKEMPrivateKey;
-    }
-
     public byte[] getDefaultClientMLKEMPublicKey() {
         return Arrays.copyOf(defaultClientMLKEMPublicKey, defaultClientMLKEMPublicKey.length);
     }
@@ -4624,5 +4627,58 @@ public class Config implements Serializable {
 
     public void setDefaultServerMLKEMCiphertext(byte[] defaultServerMLKEMCiphertext) {
         this.defaultServerMLKEMCiphertext = defaultServerMLKEMCiphertext;
+    }
+
+    public byte[] getDefaultClientMlKem512DecapsulationKey() {
+        return Arrays.copyOf(
+                defaultClientMlKem512DecapsulationKey,
+                defaultClientMlKem512DecapsulationKey.length);
+    }
+
+    public void setDefaultClientMlKem512DecapsulationKey(
+            byte[] defaultClientMlKem512DecapsulationKey) {
+        this.defaultClientMlKem512DecapsulationKey = defaultClientMlKem512DecapsulationKey;
+    }
+
+    public byte[] getDefaultClientMlKem768DecapsulationKey() {
+        return Arrays.copyOf(
+                defaultClientMlKem768DecapsulationKey,
+                defaultClientMlKem768DecapsulationKey.length);
+    }
+
+    public void setDefaultClientMlKem768DecapsulationKey(
+            byte[] defaultClientMlKem768DecapsulationKey) {
+        this.defaultClientMlKem768DecapsulationKey = defaultClientMlKem768DecapsulationKey;
+    }
+
+    public byte[] getDefaultClientMlKem1024DecapsulationKey() {
+        return Arrays.copyOf(
+                defaultClientMlKem1024DecapsulationKey,
+                defaultClientMlKem1024DecapsulationKey.length);
+    }
+
+    public void setDefaultClientMlKem1024DecapsulationKey(
+            byte[] defaultClientMlKem1024DecapsulationKey) {
+        this.defaultClientMlKem1024DecapsulationKey = defaultClientMlKem1024DecapsulationKey;
+    }
+
+    /**
+     * Returns the configured client decapsulation key for the given ML-KEM parameter set. An empty
+     * array indicates that no key is configured and that a fresh key pair should be generated.
+     *
+     * @param parameters The ML-KEM parameter set that should be used.
+     * @return The encoded decapsulation key, or an empty array if none is configured.
+     */
+    public byte[] getDefaultClientMlKemDecapsulationKey(MlKemParameters parameters) {
+        switch (parameters) {
+            case ML_KEM_512:
+                return getDefaultClientMlKem512DecapsulationKey();
+            case ML_KEM_768:
+                return getDefaultClientMlKem768DecapsulationKey();
+            case ML_KEM_1024:
+                return getDefaultClientMlKem1024DecapsulationKey();
+            default:
+                return new byte[0];
+        }
     }
 }
