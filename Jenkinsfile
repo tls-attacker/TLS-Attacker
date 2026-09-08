@@ -12,16 +12,18 @@ standardPipeline(
         enableTests: false,
 
         extraStages: {
-            setVersion(
-                    projectName: 'tls.attacker'
-            )
-            centralPublish(
-                    autoPublish: false,
-                    skipTests: true,
-                    quiet: false,
-                    useSettings: true,
-                    settingsId: 'central-settings',
-                    profile: '!protocol-attacker,central-release'
-            )
+            stage('🏷️ Version') {
+                setVersion(projectName: 'tls.attacker')
+            }
+            stage('🚀 Maven Central') {
+                centralPublish(
+                        autoPublish: false,
+                        skipTests: true,
+                        quiet: false,
+                        useSettings: true,
+                        settingsId: 'central-settings',
+                        profile: '!protocol-attacker,central-release'
+                )
+            }
         }
 )
