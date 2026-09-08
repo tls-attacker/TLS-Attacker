@@ -752,6 +752,66 @@ public class ConfigTest {
     }
 
     @Test
+    public void generateTls13PqConfig() {
+        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
+        config.setSupportedVersions(ProtocolVersion.TLS13);
+
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
+        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
+        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
+        config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
+
+        ArrayList<NamedGroup> defaultNamedGroups = new ArrayList<>();
+        defaultNamedGroups.add(NamedGroup.X25519_MLKEM768);
+        defaultNamedGroups.add(NamedGroup.SECP256R1_MLKEM768);
+        defaultNamedGroups.add(NamedGroup.SECP384R1_MLKEM1024);
+        defaultNamedGroups.add(NamedGroup.MLKEM512);
+        defaultNamedGroups.add(NamedGroup.MLKEM768);
+        defaultNamedGroups.add(NamedGroup.MLKEM1024);
+        config.setDefaultClientNamedGroups(new ArrayList<>(defaultNamedGroups));
+        config.setDefaultServerNamedGroups(new ArrayList<>(defaultNamedGroups));
+        config.setDefaultClientKeyShareNamedGroups(new ArrayList<>(defaultNamedGroups));
+
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
+
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
+
+        config.setDefaultSelectedNamedGroup(NamedGroup.X25519_MLKEM768);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+
+        config.setAddECPointFormatExtension(false);
+        config.setAddEllipticCurveExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setAddSupportedVersionsExtension(true);
+        config.setAddKeyShareExtension(true);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13_pq.config"));
+    }
+
+    @Test
     public void generateTlsZeroRttConfig() {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
