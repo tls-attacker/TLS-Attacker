@@ -13,21 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.SecretWithEncapsulation;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMKeyGenerationParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMKeyPairGenerator;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 import org.junit.jupiter.api.Test;
 
 public class ServerHelloHandlerTest
@@ -134,23 +129,22 @@ public class ServerHelloHandlerTest
         message.setSessionId(new byte[] {6, 6, 6});
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
 
-        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
-        generator.init(
-                new MLKEMKeyGenerationParameters(new SecureRandom(), MLKEMParameters.ml_kem_768));
-        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
+        KeyShareEntry clientEntry = new KeyShareEntry();
+        KeyShareCalculator.createMLKEMKeyShare(
+                NamedGroup.MLKEM768, clientEntry, new SecureRandom());
 
         tlsContext
                 .getClientMLKEMPrivateKeys()
-                .put(NamedGroup.MLKEM768, (MLKEMPrivateKeyParameters) pair.getPrivate());
+                .put(NamedGroup.MLKEM768, clientEntry.getMLKEMPrivateKeyContainer());
 
-        SecretWithEncapsulation encapsResult =
+        MlKemEncapsulation encapsResult =
                 KeyShareCalculator.mlkemEncaps(
                         NamedGroup.MLKEM768,
-                        ((MLKEMPublicKeyParameters) pair.getPublic()).getEncoded(),
+                        clientEntry.getMLKEMPublicKey().getValue(),
                         new SecureRandom());
 
         tlsContext.setServerKeyShareStoreEntry(
-                new KeyShareStoreEntry(NamedGroup.MLKEM768, encapsResult.getEncapsulation()));
+                new KeyShareStoreEntry(NamedGroup.MLKEM768, encapsResult.getCiphertext()));
         tlsContext.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         handler.adjustContext(message);
 
@@ -170,19 +164,18 @@ public class ServerHelloHandlerTest
         message.setSessionId(new byte[] {6, 6, 6});
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
 
-        MLKEMKeyPairGenerator generator = new MLKEMKeyPairGenerator();
-        generator.init(
-                new MLKEMKeyGenerationParameters(new SecureRandom(), MLKEMParameters.ml_kem_768));
-        AsymmetricCipherKeyPair pair = generator.generateKeyPair();
+        KeyShareEntry clientEntry = new KeyShareEntry();
+        KeyShareCalculator.createMLKEMKeyShare(
+                NamedGroup.MLKEM768, clientEntry, new SecureRandom());
 
         tlsContext
                 .getClientMLKEMPrivateKeys()
-                .put(NamedGroup.X25519_MLKEM768, (MLKEMPrivateKeyParameters) pair.getPrivate());
+                .put(NamedGroup.X25519_MLKEM768, clientEntry.getMLKEMPrivateKeyContainer());
 
-        SecretWithEncapsulation encapsResult =
+        MlKemEncapsulation encapsResult =
                 KeyShareCalculator.mlkemEncaps(
                         NamedGroup.MLKEM768,
-                        ((MLKEMPublicKeyParameters) pair.getPublic()).getEncoded(),
+                        clientEntry.getMLKEMPublicKey().getValue(),
                         new SecureRandom());
 
         tlsContext
@@ -200,7 +193,7 @@ public class ServerHelloHandlerTest
                                 NamedGroup.X25519_MLKEM768,
                                 DataConverter.hexStringToByteArray(
                                         "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
-                                encapsResult.getEncapsulation())));
+                                encapsResult.getCiphertext())));
         tlsContext.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         handler.adjustContext(message);
 

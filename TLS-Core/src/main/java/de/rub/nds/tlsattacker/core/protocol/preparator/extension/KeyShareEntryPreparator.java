@@ -9,9 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
+import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
 import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -26,7 +29,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.SecretWithEncapsulation;
 
 public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
@@ -103,25 +105,16 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void preparePQKeyShare() {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            KeyShareCalculator.createMLKEMKeyShare(
-                    entry.getGroupConfig(),
-                    entry,
-                    chooser.getContext().getTlsContext().getBadSecureRandom());
-            byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
-            if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
-                LOGGER.debug("Using defaultClientMLKEMPublicKey from config");
-                entry.setPublicKey(defaultMLKEMPublicKey);
-            } else {
-                entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
-            }
+            createClientMLKEMKeyShare(entry.getGroupConfig());
+            entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPublicKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyContainer());
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPrivateKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyContainer());
             LOGGER.debug("Generated Client PQ KeyPair for group: {}", entry.getGroupConfig());
         } else {
             // The Server does not generate an own keypair for post-quantum groups,
@@ -135,7 +128,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 + " is missing from the context.");
             }
 
-            SecretWithEncapsulation result =
+            MlKemEncapsulation result =
                     KeyShareCalculator.mlkemEncaps(
                             entry.getGroupConfig(),
                             clientPublicKey,
@@ -145,9 +138,9 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 LOGGER.debug("Using defaultServerMLKEMCiphertext from config");
                 entry.setPublicKey(defaultMLKEMCiphertext);
             } else {
-                entry.setPublicKey(result.getEncapsulation());
+                entry.setPublicKey(result.getCiphertext());
             }
-            chooser.getContext().getTlsContext().setPQSharedSecret(result.getSecret());
+            chooser.getContext().getTlsContext().setPQSharedSecret(result.getSharedSecret());
             chooser.getContext()
                     .getTlsContext()
                     .setServerMLKEMCiphertext(entry.getPublicKey().getValue());
@@ -173,32 +166,25 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                             entry.getPrivateKey(),
                             chooser.getConfig().getDefaultSelectedPointFormat());
 
-            KeyShareCalculator.createMLKEMKeyShare(
-                    pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
-
+            createClientMLKEMKeyShare(pqGroup);
             byte[] pqPublicKey = entry.getMLKEMPublicKey().getValue();
-            byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
-            if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
-                LOGGER.debug("Using defaultClientMLKEMPublicKey from config for hybrid KEX");
-                pqPublicKey = defaultMLKEMPublicKey;
-            }
 
             LOGGER.debug(
                     "Setting Client MLKEM public key to {}",
-                    entry.getMLKEMPublicKeyParameters().getEncoded());
+                    entry.getMLKEMPublicKeyContainer().getEncapsulationKey());
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPublicKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPublicKeyContainer());
 
             LOGGER.debug(
                     "Setting Client MLKEM private key to {}",
-                    entry.getMLKEMPrivateKeyParameters().getEncoded());
+                    entry.getMLKEMPrivateKeyContainer().getDecapsulationKey());
 
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPrivateKeys()
-                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyParameters());
+                    .put(entry.getGroupConfig(), entry.getMLKEMPrivateKeyContainer());
 
             entry.setPublicKey(
                     PQUtils.concatenateHybridKeyShare(
@@ -224,26 +210,48 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
             // Use Client public key share to compute encapsulation algorithm
             byte[] clientPQPublicKey = splitClientKeyShare[1];
-            SecretWithEncapsulation encapsulationResult =
+            MlKemEncapsulation encapsulationResult =
                     KeyShareCalculator.mlkemEncaps(
                             entry.getGroupConfig(),
                             clientPQPublicKey,
                             chooser.getContext().getTlsContext().getBadSecureRandom());
 
-            byte[] pqCiphertext = encapsulationResult.getEncapsulation();
+            byte[] pqCiphertext = encapsulationResult.getCiphertext();
             byte[] defaultMLKEMCiphertext = chooser.getConfig().getDefaultServerMLKEMCiphertext();
             if (defaultMLKEMCiphertext != null && defaultMLKEMCiphertext.length > 0) {
                 LOGGER.debug("Using defaultServerMLKEMCiphertext from config for hybrid KEX");
                 pqCiphertext = defaultMLKEMCiphertext;
             }
 
-            chooser.getContext().getTlsContext().setPQSharedSecret(encapsulationResult.getSecret());
+            chooser.getContext()
+                    .getTlsContext()
+                    .setPQSharedSecret(encapsulationResult.getSharedSecret());
             chooser.getContext().getTlsContext().setServerMLKEMCiphertext(pqCiphertext);
 
             entry.setPublicKey(
                     PQUtils.concatenateHybridKeyShare(
                             entry.getGroupConfig(), classicalPublicKey, pqCiphertext));
             LOGGER.debug("Generated Server Hybrid PQ KeyShare for {}", entry.getGroupConfig());
+        }
+    }
+
+    /**
+     * Creates the client's ML-KEM key pair for the given group. If a decapsulation key is
+     * configured for the group's parameter set, it is used instead of generating a fresh key pair.
+     *
+     * @param namedGroup The group whose ML-KEM parameter set should be used.
+     */
+    private void createClientMLKEMKeyShare(NamedGroup namedGroup) {
+        byte[] decapsulationKey =
+                chooser.getConfig()
+                        .getDefaultClientMlKemKeyParameters(
+                                KeyShareCalculator.getMlKemParameters(namedGroup));
+        if (decapsulationKey != null && decapsulationKey.length > 0) {
+            LOGGER.debug("Using configured client ML-KEM decapsulation key for {}", namedGroup);
+            KeyShareCalculator.createMLKEMKeyShare(namedGroup, entry, decapsulationKey);
+        } else {
+            KeyShareCalculator.createMLKEMKeyShare(
+                    namedGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
         }
     }
 
@@ -257,10 +265,60 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 }
             }
         }
+        LOGGER.debug("No client key share for group {}, using the configured default", group);
+        return getDefaultClientKeySharePublicKey(group);
+    }
 
-        // If no matching KeyShare is found, return null.
-        // Our KeyShareEntryPreparator will safely catch this and throw a PreparationException.
-        return null;
+    /**
+     * Returns the configured client ML-KEM key parameters for the given parameter set.
+     *
+     * @param parameters The ML-KEM parameter set that should be used.
+     * @return The encoded key parameters, or an empty array if none are configured.
+     */
+    public byte[] getDefaultClientMlKemKeyParameters(MlKemParameters parameters) {
+        switch (parameters) {
+            case ML_KEM_512:
+                return chooser.getConfig().getDefaultClientMlKem512KeyParameters();
+            case ML_KEM_768:
+                return chooser.getConfig().getDefaultClientMlKem768KeyParameters();
+            case ML_KEM_1024:
+                return chooser.getConfig().getDefaultClientMlKem1024KeyParameters();
+            default:
+                return new byte[0];
+        }
+    }
+
+    /**
+     * Derives the client's public key share from the configured default decapsulation key, which
+     * embeds the matching encapsulation key. This lets the server proceed with a key share of the
+     * expected length when the client did not send one for the group.
+     *
+     * @param group The group whose key share should be derived.
+     * @return The derived client public key share.
+     */
+    private byte[] getDefaultClientKeySharePublicKey(NamedGroup group) {
+        MlKemParameters parameters = KeyShareCalculator.getMlKemParameters(group);
+        byte[] decapsulationKey = getDefaultClientMlKemKeyParameters(parameters);
+        if (decapsulationKey == null
+                || decapsulationKey.length != parameters.getDecapsulationKeySizeBytes()) {
+            throw new PreparationException(
+                    "Cannot prepare Server KeyShare: Client public key for group "
+                            + group
+                            + " is missing from the context and no default decapsulation key is"
+                            + " configured for "
+                            + parameters.getName());
+        }
+        byte[] encapsulationKey =
+                new MlKemPrivateKey(parameters, decapsulationKey).getEncapsulationKey();
+        if (!group.isHybridPQGroup()) {
+            return encapsulationKey;
+        }
+        byte[] classicalPublicKey =
+                KeyShareCalculator.createKeyAgreementPublicKey(
+                        group.getHybridPostQuantumClassicNamedGroup(),
+                        chooser.getClientEphemeralEcPrivateKey(),
+                        chooser.getConfig().getDefaultSelectedPointFormat());
+        return PQUtils.concatenateHybridKeyShare(group, classicalPublicKey, encapsulationKey);
     }
 
     private void prepareKeyShareType() {

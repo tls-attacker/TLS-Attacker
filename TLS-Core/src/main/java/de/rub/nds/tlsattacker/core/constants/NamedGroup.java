@@ -108,7 +108,7 @@ public enum NamedGroup {
             new HybridPostQuantumParameters(
                     NamedEllipticCurveParameters.SECP384R1,
                     MlKemParameters.ML_KEM_1024,
-                    "secp348r1_mlkem1024")),
+                    "secp384r1_mlkem1024")),
     X25519_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x99}, null),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
