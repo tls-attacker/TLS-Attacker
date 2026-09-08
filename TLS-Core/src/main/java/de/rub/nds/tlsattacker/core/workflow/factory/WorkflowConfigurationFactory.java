@@ -1257,17 +1257,17 @@ public class WorkflowConfigurationFactory {
      * trace built afterwards carries the longer exchange.
      *
      * @param workflowTrace the trace to add to
-     * @param dialect what the protocol says at each step of the upgrade
+     * @param type the protocol, which carries what it says at each step of the upgrade
      * @return the trace, for chaining
      */
-    private WorkflowTrace addUpgradeActions(WorkflowTrace workflowTrace, StartTlsDialect dialect) {
-        workflowTrace.addTlsAction(new ReceiveRegexTextAction(dialect.greetingRegex()));
+    private WorkflowTrace addUpgradeActions(WorkflowTrace workflowTrace, StarttlsType type) {
+        workflowTrace.addTlsAction(new ReceiveRegexTextAction(type.getGreetingRegex()));
         if (config.isStarttlsUseCapabilityDiscovery()) {
-            workflowTrace.addTlsAction(new SendTextAction(dialect.discoveryCommand(), null));
-            workflowTrace.addTlsAction(receiveOrAbort(dialect.discoveryReplyRegex(), dialect));
+            workflowTrace.addTlsAction(new SendTextAction(type.getDiscoveryCommand(), null));
+            workflowTrace.addTlsAction(receiveOrAbort(type.getDiscoveryReplyRegex(), type));
         }
-        workflowTrace.addTlsAction(new SendTextAction(dialect.upgradeCommand(), null));
-        workflowTrace.addTlsAction(receiveOrAbort(dialect.upgradeSuccessRegex(), dialect));
+        workflowTrace.addTlsAction(new SendTextAction(type.getUpgradeCommand(), null));
+        workflowTrace.addTlsAction(receiveOrAbort(type.getUpgradeSuccessRegex(), type));
         return workflowTrace;
     }
 
@@ -1276,31 +1276,25 @@ public class WorkflowConfigurationFactory {
      * upgrade ends the trace instead of waiting for a reply that will never come.
      *
      * @param regex matches the reply the action is waiting for
-     * @param dialect supplies the protocol's error pattern
+     * @param type supplies the protocol's error pattern
      * @return the prepared action
      */
-    private ReceiveRegexTextAction receiveOrAbort(String regex, StartTlsDialect dialect) {
+    private ReceiveRegexTextAction receiveOrAbort(String regex, StarttlsType type) {
         ReceiveRegexTextAction action = new ReceiveRegexTextAction(regex);
-        action.setAbortRegex(dialect.errorRegex());
+        action.setAbortRegex(type.getErrorRegex());
         return action;
     }
 
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
         // TODO: the types that still throw below have their message flow left in comments, they
-        // are added one by one with the text actions the FTP flow uses.
+        // are added one by one with the text actions the dialect-carrying protocols use.
+
+        if (type.hasDialect()) {
+            return addUpgradeActions(workflowTrace, type);
+        }
 
         switch (type) {
-            case FTP:
-                {
-                    // server: "220-Welcome to FTP server\r\n220 Ready\r\n"
-                    // client: "FEAT\r\n"                     (discovery variant only)
-                    // server: "211-Features:\r\n AUTH TLS\r\n211 End\r\n"
-                    // client: "AUTH TLS\r\n"
-                    // server: "234 AUTH TLS"
-                    return addUpgradeActions(
-                            workflowTrace, StartTlsDialect.forType(StarttlsType.FTP).orElseThrow());
-                }
             case IMAP:
                 {
                     throw new NotImplementedException("IMAP STARTTLS not implemented yet");
