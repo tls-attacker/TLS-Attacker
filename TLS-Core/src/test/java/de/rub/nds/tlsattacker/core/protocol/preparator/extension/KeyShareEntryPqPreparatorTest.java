@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
 import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
 import de.rub.nds.protocol.exception.PreparationException;
@@ -125,35 +126,6 @@ public class KeyShareEntryPqPreparatorTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"MLKEM768", "X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
-    public void testDefaultClientMlKemPublicKeyOverridesWireBytesOnly(NamedGroup namedGroup) {
-        TlsContext context = clientContext();
-        byte[] override =
-                filled(
-                        PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT),
-                        (byte) 0x11);
-        context.getConfig().setDefaultClientMLKEMPublicKey(override);
-        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
-
-        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
-
-        byte[] sentPqKeyShare =
-                namedGroup.isHybridPQGroup()
-                        ? PQUtils.splitKeyShare(
-                                namedGroup,
-                                ConnectionEndType.CLIENT,
-                                entry.getPublicKey().getValue())[1]
-                        : entry.getPublicKey().getValue();
-        assertArrayEquals(override, sentPqKeyShare);
-        assertFalse(Arrays.equals(override, entry.getMLKEMPublicKey().getValue()));
-        assertArrayEquals(
-                entry.getMLKEMPublicKey().getValue(),
-                context.getClientMLKEMPublicKeys().get(namedGroup).getEncapsulationKey());
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = NamedGroup.class,
             names = {"MLKEM512", "MLKEM768", "MLKEM1024"})
     public void testPrepareServerPqKeyShare(NamedGroup namedGroup) {
         ClientKeyPair clientKeyPair = generateClientKeyPair(namedGroup);
@@ -239,32 +211,6 @@ public class KeyShareEntryPqPreparatorTest {
         assertArrayEquals(override, sentCiphertext);
         assertArrayEquals(override, context.getServerMLKEMCiphertext());
         assertEquals(32, context.getPQSharedSecret().length);
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = NamedGroup.class,
-            names = {"MLKEM512", "MLKEM768", "MLKEM1024"})
-    public void testPrepareServerPqKeyShareWithoutClientKeyShareThrows(NamedGroup namedGroup) {
-        TlsContext context = serverContext();
-        KeyShareEntry entry = new KeyShareEntry(namedGroup, null);
-        KeyShareEntryPreparator preparator =
-                new KeyShareEntryPreparator(context.getChooser(), entry);
-
-        assertThrows(PreparationException.class, preparator::prepare);
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
-    public void testPrepareServerHybridKeyShareWithoutClientKeyShareThrows(NamedGroup namedGroup) {
-        TlsContext context = serverContext();
-        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
-        KeyShareEntryPreparator preparator =
-                new KeyShareEntryPreparator(context.getChooser(), entry);
-
-        assertThrows(NullPointerException.class, preparator::prepare);
     }
 
     @ParameterizedTest
@@ -428,6 +374,73 @@ public class KeyShareEntryPqPreparatorTest {
                     namedGroup, ConnectionEndType.CLIENT, entry.getPublicKey().getValue())[1];
         }
         return entry.getPublicKey().getValue();
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM512", "MLKEM768", "MLKEM1024"})
+    public void testPrepareServerPqKeyShareWithoutClientKeyShareUsesDefaultKey(
+            NamedGroup namedGroup) {
+        TlsContext context = serverContext();
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, null);
+
+        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+
+        byte[] ciphertext = entry.getPublicKey().getValue();
+        assertEquals(
+                PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.SERVER),
+                ciphertext.length);
+        assertArrayEquals(
+                KeyShareCalculator.mlkemDecaps(
+                        namedGroup, defaultClientPrivateKey(context, namedGroup), ciphertext),
+                context.getPQSharedSecret());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+    public void testPrepareServerHybridKeyShareWithoutClientKeyShareUsesDefaultKey(
+            NamedGroup namedGroup) {
+        TlsContext context = serverContext();
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
+
+        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+
+        byte[] publicKey = entry.getPublicKey().getValue();
+        assertEquals(
+                PQUtils.getEcPublicKeyLength(namedGroup)
+                        + PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.SERVER),
+                publicKey.length);
+        byte[][] splitKeyShare =
+                PQUtils.splitKeyShare(namedGroup, ConnectionEndType.SERVER, publicKey);
+        assertArrayEquals(
+                KeyShareCalculator.mlkemDecaps(
+                        namedGroup, defaultClientPrivateKey(context, namedGroup), splitKeyShare[1]),
+                context.getPQSharedSecret());
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM768", "X25519_MLKEM768"})
+    public void testPrepareServerKeyShareWithoutClientKeyShareAndClearedDefaultThrows(
+            NamedGroup namedGroup) {
+        TlsContext context = serverContext();
+        setConfiguredDecapsulationKey(context, namedGroup, new byte[0]);
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
+        KeyShareEntryPreparator preparator =
+                new KeyShareEntryPreparator(context.getChooser(), entry);
+
+        assertThrows(PreparationException.class, preparator::prepare);
+    }
+
+    private static MlKemPrivateKey defaultClientPrivateKey(
+            TlsContext context, NamedGroup namedGroup) {
+        MlKemParameters parameters = KeyShareCalculator.getMlKemParameters(namedGroup);
+        return new MlKemPrivateKey(
+                parameters, context.getConfig().getDefaultClientMlKemDecapsulationKey(parameters));
     }
 
     private static ClientKeyPair generateClientKeyPair(NamedGroup namedGroup) {

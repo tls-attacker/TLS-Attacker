@@ -1212,9 +1212,6 @@ public class Config implements Serializable {
                     "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMLKEMPublicKey = new byte[0];
-
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerMLKEMCiphertext = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -4611,14 +4608,6 @@ public class Config implements Serializable {
 
     public void setQuicImmediateCloseOnTlsError(Boolean quicImmediateCloseOnTlsError) {
         this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
-    }
-
-    public byte[] getDefaultClientMLKEMPublicKey() {
-        return Arrays.copyOf(defaultClientMLKEMPublicKey, defaultClientMLKEMPublicKey.length);
-    }
-
-    public void setDefaultClientMLKEMPublicKey(byte[] defaultClientMLKEMPublicKey) {
-        this.defaultClientMLKEMPublicKey = defaultClientMLKEMPublicKey;
     }
 
     public byte[] getDefaultServerMLKEMCiphertext() {
