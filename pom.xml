@@ -215,6 +215,12 @@
             <artifactId>log4j-slf4j-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.6.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
         </dependency>
@@ -265,12 +271,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.6.3</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -673,10 +673,10 @@
                         <executions>
                             <execution>
                                 <id>require-release-deps</id>
-                                <phase>validate</phase>
                                 <goals>
                                     <goal>enforce</goal>
                                 </goals>
+                                <phase>validate</phase>
                                 <configuration>
                                     <fail>true</fail>
                                     <rules>
