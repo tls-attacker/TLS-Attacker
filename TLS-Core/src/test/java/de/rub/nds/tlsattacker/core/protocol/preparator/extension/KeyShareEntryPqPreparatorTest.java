@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
 import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -264,6 +265,169 @@ public class KeyShareEntryPqPreparatorTest {
                 new KeyShareEntryPreparator(context.getChooser(), entry);
 
         assertThrows(NullPointerException.class, preparator::prepare);
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {
+                "MLKEM512",
+                "MLKEM768",
+                "MLKEM1024",
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024"
+            })
+    public void testConfiguredDecapsulationKeyIsUsedForClientKeyShare(NamedGroup namedGroup) {
+        TlsContext context = clientContext();
+        byte[] decapsulationKey = generateDecapsulationKey(namedGroup);
+        setConfiguredDecapsulationKey(context, namedGroup, decapsulationKey);
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
+
+        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+
+        MlKemPrivateKey expected =
+                new MlKemPrivateKey(
+                        KeyShareCalculator.getMlKemParameters(namedGroup), decapsulationKey);
+        assertArrayEquals(decapsulationKey, entry.getMLKEMPrivateKey());
+        assertArrayEquals(expected.getEncapsulationKey(), entry.getMLKEMPublicKey().getValue());
+        assertArrayEquals(expected.getEncapsulationKey(), sentPqKeyShare(namedGroup, entry));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {
+                "MLKEM512",
+                "MLKEM768",
+                "MLKEM1024",
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024"
+            })
+    public void testConfiguredDecapsulationKeyMakesClientKeyShareStable(NamedGroup namedGroup) {
+        TlsContext context = clientContext();
+        setConfiguredDecapsulationKey(context, namedGroup, generateDecapsulationKey(namedGroup));
+
+        assertArrayEquals(
+                prepareInContext(context, namedGroup), prepareInContext(context, namedGroup));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {
+                "MLKEM512",
+                "MLKEM768",
+                "MLKEM1024",
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024"
+            })
+    public void testClearedDecapsulationKeyFallsBackToGeneratedKeyShare(NamedGroup namedGroup) {
+        TlsContext context = clientContext();
+        setConfiguredDecapsulationKey(context, namedGroup, new byte[0]);
+
+        assertFalse(
+                Arrays.equals(
+                        prepareInContext(context, namedGroup),
+                        prepareInContext(context, namedGroup)));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM768", "X25519_MLKEM768"})
+    public void testConfiguredDecapsulationKeyRoundTripsThroughEncapsulation(
+            NamedGroup namedGroup) {
+        TlsContext context = clientContext();
+        byte[] decapsulationKey = generateDecapsulationKey(namedGroup);
+        setConfiguredDecapsulationKey(context, namedGroup, decapsulationKey);
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
+
+        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+
+        MlKemEncapsulation encapsulation =
+                KeyShareCalculator.mlkemEncaps(
+                        namedGroup, entry.getMLKEMPublicKey().getValue(), new SecureRandom());
+        assertArrayEquals(
+                encapsulation.getSharedSecret(),
+                KeyShareCalculator.mlkemDecaps(
+                        namedGroup,
+                        entry.getMLKEMPrivateKeyContainer(),
+                        encapsulation.getCiphertext()));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {
+                "MLKEM512",
+                "MLKEM768",
+                "MLKEM1024",
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024"
+            })
+    public void testDefaultConfigUsesHardCodedDecapsulationKey(NamedGroup namedGroup) {
+        TlsContext context = clientContext();
+        byte[] configuredKey =
+                context.getConfig()
+                        .getDefaultClientMlKemDecapsulationKey(
+                                KeyShareCalculator.getMlKemParameters(namedGroup));
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
+
+        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+
+        assertEquals(
+                KeyShareCalculator.getMlKemParameters(namedGroup).getDecapsulationKeySizeBytes(),
+                configuredKey.length);
+        assertArrayEquals(configuredKey, entry.getMLKEMPrivateKey());
+
+        MlKemEncapsulation encapsulation =
+                KeyShareCalculator.mlkemEncaps(
+                        namedGroup, entry.getMLKEMPublicKey().getValue(), new SecureRandom());
+        assertArrayEquals(
+                encapsulation.getSharedSecret(),
+                KeyShareCalculator.mlkemDecaps(
+                        namedGroup,
+                        entry.getMLKEMPrivateKeyContainer(),
+                        encapsulation.getCiphertext()));
+    }
+
+    private static byte[] prepareInContext(TlsContext context, NamedGroup namedGroup) {
+        KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
+        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+        return entry.getPublicKey().getValue();
+    }
+
+    private static void setConfiguredDecapsulationKey(
+            TlsContext context, NamedGroup namedGroup, byte[] decapsulationKey) {
+        switch (KeyShareCalculator.getMlKemParameters(namedGroup)) {
+            case ML_KEM_512:
+                context.getConfig().setDefaultClientMlKem512DecapsulationKey(decapsulationKey);
+                break;
+            case ML_KEM_768:
+                context.getConfig().setDefaultClientMlKem768DecapsulationKey(decapsulationKey);
+                break;
+            case ML_KEM_1024:
+                context.getConfig().setDefaultClientMlKem1024DecapsulationKey(decapsulationKey);
+                break;
+        }
+    }
+
+    private static byte[] generateDecapsulationKey(NamedGroup namedGroup) {
+        KeyShareEntry entry = new KeyShareEntry();
+        KeyShareCalculator.createMLKEMKeyShare(namedGroup, entry, new SecureRandom());
+        return entry.getMLKEMPrivateKey();
+    }
+
+    private static byte[] sentPqKeyShare(NamedGroup namedGroup, KeyShareEntry entry) {
+        if (namedGroup.isHybridPQGroup()) {
+            return PQUtils.splitKeyShare(
+                    namedGroup, ConnectionEndType.CLIENT, entry.getPublicKey().getValue())[1];
+        }
+        return entry.getPublicKey().getValue();
     }
 
     private static ClientKeyPair generateClientKeyPair(NamedGroup namedGroup) {

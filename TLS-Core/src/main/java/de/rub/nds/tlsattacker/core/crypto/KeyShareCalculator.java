@@ -128,6 +128,27 @@ public class KeyShareCalculator {
     }
 
     /**
+     * Creates a post-quantum mlkem key share for the client from a fixed decapsulation key and sets
+     * both values in the keyShareEntry. The encapsulation key is taken from the decapsulation key,
+     * which embeds it. The decapsulation key must have the length defined by the parameter set.
+     *
+     * @param namedGroup The namedGroup that should be used.
+     * @param keyShareEntry The keyShareEntry that should be used.
+     * @param decapsulationKey The encoded decapsulation key that should be used.
+     */
+    public static void createMLKEMKeyShare(
+            NamedGroup namedGroup, KeyShareEntry keyShareEntry, byte[] decapsulationKey) {
+        LOGGER.debug("Using group: {}", namedGroup);
+        MlKemParameters parameters = getMlKemParameters(namedGroup);
+        MlKemPrivateKey privateKey = new MlKemPrivateKey(parameters, decapsulationKey);
+
+        keyShareEntry.setMLKEMPrivateKey(privateKey);
+        keyShareEntry.setMLKEMPublicKey(
+                new MlKemPublicKey(parameters, privateKey.getEncapsulationKey()));
+        LOGGER.debug("KeyShare: {}", keyShareEntry.getMLKEMPublicKey().getValue());
+    }
+
+    /**
      * Computes the shared secret for the ML-KEM algorithms. The client uses the decaps algorithm to
      * retreive the shared secret from the servers share.
      *
@@ -164,7 +185,7 @@ public class KeyShareCalculator {
      * @param namedGroup The named group that should be used.
      * @return The ML-KEM parameter set of the group.
      */
-    private static MlKemParameters getMlKemParameters(NamedGroup namedGroup) {
+    public static MlKemParameters getMlKemParameters(NamedGroup namedGroup) {
         return (MlKemParameters) namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters();
     }
 

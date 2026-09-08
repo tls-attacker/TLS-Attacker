@@ -103,17 +103,8 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void preparePQKeyShare() {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            KeyShareCalculator.createMLKEMKeyShare(
-                    entry.getGroupConfig(),
-                    entry,
-                    chooser.getContext().getTlsContext().getBadSecureRandom());
-            byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
-            if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
-                LOGGER.debug("Using defaultClientMLKEMPublicKey from config");
-                entry.setPublicKey(defaultMLKEMPublicKey);
-            } else {
-                entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
-            }
+            createClientMLKEMKeyShare(entry.getGroupConfig());
+            entry.setPublicKey(entry.getMLKEMPublicKey().getValue());
             chooser.getContext()
                     .getTlsContext()
                     .getClientMLKEMPublicKeys()
@@ -173,9 +164,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                             entry.getPrivateKey(),
                             chooser.getConfig().getDefaultSelectedPointFormat());
 
-            KeyShareCalculator.createMLKEMKeyShare(
-                    pqGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
-
+            createClientMLKEMKeyShare(pqGroup);
             byte[] pqPublicKey = entry.getMLKEMPublicKey().getValue();
             byte[] defaultMLKEMPublicKey = chooser.getConfig().getDefaultClientMLKEMPublicKey();
             if (defaultMLKEMPublicKey != null && defaultMLKEMPublicKey.length > 0) {
@@ -249,6 +238,26 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         }
     }
 
+    /**
+     * Creates the client's ML-KEM key pair for the given group. If a decapsulation key is
+     * configured for the group's parameter set, it is used instead of generating a fresh key pair.
+     *
+     * @param namedGroup The group whose ML-KEM parameter set should be used.
+     */
+    private void createClientMLKEMKeyShare(NamedGroup namedGroup) {
+        byte[] decapsulationKey =
+                chooser.getConfig()
+                        .getDefaultClientMlKemDecapsulationKey(
+                                KeyShareCalculator.getMlKemParameters(namedGroup));
+        if (decapsulationKey != null && decapsulationKey.length > 0) {
+            LOGGER.debug("Using configured client ML-KEM decapsulation key for {}", namedGroup);
+            KeyShareCalculator.createMLKEMKeyShare(namedGroup, entry, decapsulationKey);
+        } else {
+            KeyShareCalculator.createMLKEMKeyShare(
+                    namedGroup, entry, chooser.getContext().getTlsContext().getBadSecureRandom());
+        }
+    }
+
     private byte[] getClientKeySharePublicKey(NamedGroup group) {
         List<KeyShareStoreEntry> clientKeyShareEntryList =
                 chooser.getContext().getTlsContext().getClientKeyShareStoreEntryList();
@@ -259,10 +268,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                 }
             }
         }
-
-        // If no matching KeyShare is found, return null.
-        // Our KeyShareEntryPreparator will safely catch this and throw a PreparationException.
-        return null;
+        return chooser.getConfig().getDefaultClientMLKEMPublicKey();
     }
 
     private void prepareKeyShareType() {
