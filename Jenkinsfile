@@ -8,14 +8,12 @@ standardPipeline(
         intTestTimeout: 600,
         codeAnalyseTimeout: 240,
         uniTestTimeout: 180,
-        enableITs: false,
-        enableTests: false,
 
         extraStages: {
-            stage('🏷️ Version') {
+            stage('🏷️ Set version') {
                 setVersion(projectName: 'tls.attacker')
             }
-            stage('🚀 Maven Central') {
+            stage('🚀 Maven publish central') {
                 centralPublish(
                         autoPublish: false,
                         skipTests: true,
