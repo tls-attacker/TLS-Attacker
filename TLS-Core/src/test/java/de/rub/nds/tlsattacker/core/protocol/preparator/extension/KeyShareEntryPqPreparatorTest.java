@@ -317,18 +317,20 @@ public class KeyShareEntryPqPreparatorTest {
             })
     public void testDefaultConfigUsesHardCodedDecapsulationKey(NamedGroup namedGroup) {
         TlsContext context = clientContext();
-        byte[] configuredKey =
-                context.getConfig()
-                        .getDefaultClientMlKemKeyParameters(
-                                KeyShareCalculator.getMlKemParameters(namedGroup));
+
         KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
 
-        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+        KeyShareEntryPreparator preparator =
+                new KeyShareEntryPreparator(context.getChooser(), entry);
+        byte[] applicableDefaultKey =
+                preparator.getDefaultClientMlKemKeyParameters(
+                        KeyShareCalculator.getMlKemParameters(namedGroup));
+        preparator.prepare();
 
         assertEquals(
                 KeyShareCalculator.getMlKemParameters(namedGroup).getDecapsulationKeySizeBytes(),
-                configuredKey.length);
-        assertArrayEquals(configuredKey, entry.getMLKEMPrivateKey());
+                applicableDefaultKey.length);
+        assertArrayEquals(applicableDefaultKey, entry.getMLKEMPrivateKey());
 
         MlKemEncapsulation encapsulation =
                 KeyShareCalculator.mlkemEncaps(
@@ -385,7 +387,9 @@ public class KeyShareEntryPqPreparatorTest {
         TlsContext context = serverContext();
         KeyShareEntry entry = new KeyShareEntry(namedGroup, null);
 
-        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+        KeyShareEntryPreparator preparator =
+                new KeyShareEntryPreparator(context.getChooser(), entry);
+        preparator.prepare();
 
         byte[] ciphertext = entry.getPublicKey().getValue();
         assertEquals(
@@ -393,7 +397,9 @@ public class KeyShareEntryPqPreparatorTest {
                 ciphertext.length);
         assertArrayEquals(
                 KeyShareCalculator.mlkemDecaps(
-                        namedGroup, defaultClientPrivateKey(context, namedGroup), ciphertext),
+                        namedGroup,
+                        defaultClientPrivateKey(context, namedGroup, preparator),
+                        ciphertext),
                 context.getPQSharedSecret());
     }
 
@@ -406,7 +412,9 @@ public class KeyShareEntryPqPreparatorTest {
         TlsContext context = serverContext();
         KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
 
-        new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
+        KeyShareEntryPreparator preparator =
+                new KeyShareEntryPreparator(context.getChooser(), entry);
+        preparator.prepare();
 
         byte[] publicKey = entry.getPublicKey().getValue();
         assertEquals(
@@ -417,7 +425,9 @@ public class KeyShareEntryPqPreparatorTest {
                 PQUtils.splitKeyShare(namedGroup, ConnectionEndType.SERVER, publicKey);
         assertArrayEquals(
                 KeyShareCalculator.mlkemDecaps(
-                        namedGroup, defaultClientPrivateKey(context, namedGroup), splitKeyShare[1]),
+                        namedGroup,
+                        defaultClientPrivateKey(context, namedGroup, preparator),
+                        splitKeyShare[1]),
                 context.getPQSharedSecret());
     }
 
@@ -437,10 +447,10 @@ public class KeyShareEntryPqPreparatorTest {
     }
 
     private static MlKemPrivateKey defaultClientPrivateKey(
-            TlsContext context, NamedGroup namedGroup) {
+            TlsContext context, NamedGroup namedGroup, KeyShareEntryPreparator preparator) {
         MlKemParameters parameters = KeyShareCalculator.getMlKemParameters(namedGroup);
         return new MlKemPrivateKey(
-                parameters, context.getConfig().getDefaultClientMlKemKeyParameters(parameters));
+                parameters, preparator.getDefaultClientMlKemKeyParameters(parameters));
     }
 
     private static ClientKeyPair generateClientKeyPair(NamedGroup namedGroup) {

@@ -270,6 +270,25 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     }
 
     /**
+     * Returns the configured client ML-KEM key parameters for the given parameter set.
+     *
+     * @param parameters The ML-KEM parameter set that should be used.
+     * @return The encoded key parameters, or an empty array if none are configured.
+     */
+    public byte[] getDefaultClientMlKemKeyParameters(MlKemParameters parameters) {
+        switch (parameters) {
+            case ML_KEM_512:
+                return chooser.getConfig().getDefaultClientMlKem512KeyParameters();
+            case ML_KEM_768:
+                return chooser.getConfig().getDefaultClientMlKem768KeyParameters();
+            case ML_KEM_1024:
+                return chooser.getConfig().getDefaultClientMlKem1024KeyParameters();
+            default:
+                return new byte[0];
+        }
+    }
+
+    /**
      * Derives the client's public key share from the configured default decapsulation key, which
      * embeds the matching encapsulation key. This lets the server proceed with a key share of the
      * expected length when the client did not send one for the group.
@@ -279,8 +298,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
      */
     private byte[] getDefaultClientKeySharePublicKey(NamedGroup group) {
         MlKemParameters parameters = KeyShareCalculator.getMlKemParameters(group);
-        byte[] decapsulationKey =
-                chooser.getConfig().getDefaultClientMlKemKeyParameters(parameters);
+        byte[] decapsulationKey = getDefaultClientMlKemKeyParameters(parameters);
         if (decapsulationKey == null
                 || decapsulationKey.length != parameters.getDecapsulationKeySizeBytes()) {
             throw new PreparationException(
