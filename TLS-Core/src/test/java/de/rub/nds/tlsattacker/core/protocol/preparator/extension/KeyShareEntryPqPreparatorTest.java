@@ -319,7 +319,7 @@ public class KeyShareEntryPqPreparatorTest {
         TlsContext context = clientContext();
         byte[] configuredKey =
                 context.getConfig()
-                        .getDefaultClientMlKemDecapsulationKey(
+                        .getDefaultClientMlKemKeyParameters(
                                 KeyShareCalculator.getMlKemParameters(namedGroup));
         KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
 
@@ -351,13 +351,13 @@ public class KeyShareEntryPqPreparatorTest {
             TlsContext context, NamedGroup namedGroup, byte[] decapsulationKey) {
         switch (KeyShareCalculator.getMlKemParameters(namedGroup)) {
             case ML_KEM_512:
-                context.getConfig().setDefaultClientMlKem512DecapsulationKey(decapsulationKey);
+                context.getConfig().setDefaultClientMlKem512KeyParameters(decapsulationKey);
                 break;
             case ML_KEM_768:
-                context.getConfig().setDefaultClientMlKem768DecapsulationKey(decapsulationKey);
+                context.getConfig().setDefaultClientMlKem768KeyParameters(decapsulationKey);
                 break;
             case ML_KEM_1024:
-                context.getConfig().setDefaultClientMlKem1024DecapsulationKey(decapsulationKey);
+                context.getConfig().setDefaultClientMlKem1024KeyParameters(decapsulationKey);
                 break;
         }
     }
@@ -440,7 +440,7 @@ public class KeyShareEntryPqPreparatorTest {
             TlsContext context, NamedGroup namedGroup) {
         MlKemParameters parameters = KeyShareCalculator.getMlKemParameters(namedGroup);
         return new MlKemPrivateKey(
-                parameters, context.getConfig().getDefaultClientMlKemDecapsulationKey(parameters));
+                parameters, context.getConfig().getDefaultClientMlKemKeyParameters(parameters));
     }
 
     private static ClientKeyPair generateClientKeyPair(NamedGroup namedGroup) {

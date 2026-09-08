@@ -244,7 +244,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     private void createClientMLKEMKeyShare(NamedGroup namedGroup) {
         byte[] decapsulationKey =
                 chooser.getConfig()
-                        .getDefaultClientMlKemDecapsulationKey(
+                        .getDefaultClientMlKemKeyParameters(
                                 KeyShareCalculator.getMlKemParameters(namedGroup));
         if (decapsulationKey != null && decapsulationKey.length > 0) {
             LOGGER.debug("Using configured client ML-KEM decapsulation key for {}", namedGroup);
@@ -280,7 +280,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     private byte[] getDefaultClientKeySharePublicKey(NamedGroup group) {
         MlKemParameters parameters = KeyShareCalculator.getMlKemParameters(group);
         byte[] decapsulationKey =
-                chooser.getConfig().getDefaultClientMlKemDecapsulationKey(parameters);
+                chooser.getConfig().getDefaultClientMlKemKeyParameters(parameters);
         if (decapsulationKey == null
                 || decapsulationKey.length != parameters.getDecapsulationKeySizeBytes()) {
             throw new PreparationException(

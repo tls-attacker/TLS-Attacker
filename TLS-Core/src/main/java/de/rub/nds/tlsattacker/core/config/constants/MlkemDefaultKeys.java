@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.config.constants;
 import de.rub.nds.modifiablevariable.util.DataConverter;
 
 /**
- * Default client ML-KEM decapsulation keys used by the Config. Each key was generated from the key
- * generation seed 00 01 02 ... 3f and is stored in its FIPS 203 encoding, which embeds the matching
- * encapsulation key.
+ * Default client ML-KEM key parameters used by the Config. Each entry was generated from the key
+ * generation seed 00 01 02 ... 3f and is stored in the FIPS 203 decapsulation key encoding, which
+ * embeds the matching encapsulation key.
  */
 public class MlkemDefaultKeys {
 
-    private static final String ML_KEM_512_DECAPSULATION_KEY =
+    private static final String ML_KEM_512_KEY_PARAMETERS =
             "70554fd436344f2785b1b3b1bac184b6679003336c26f15a7de878c4825c6be03f3c4a480f75b748"
                     + "6aad31d3a00518623fd207ab528dd62721495835ae0062c367b74a71baf10aad0e8a2902076be313"
                     + "48beb15ccc0957cdebb4aff226756bbc601b6568ab784acbaeb34702f0f86a26202118b22b23f835"
@@ -60,7 +60,7 @@ public class MlkemDefaultKeys {
                     + "9a065a1b6d63b26c82f101ff648063b376e2bb6c5b7455f655a50c2feadade150efa0e0e6f365aea"
                     + "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f";
 
-    private static final String ML_KEM_768_DECAPSULATION_KEY =
+    private static final String ML_KEM_768_KEY_PARAMETERS =
             "27d2a77f33756f61208ef113abe82595873d4abc730e5b5d679529bf6a4ceb6383427231a8612f41"
                     + "550515acba52e48ead8b942833bbe6865d13d14a79d2c5c3e07f0a056d8de7aadfcaba058c493c80"
                     + "b37cab8c562753bb3ba6b6ec8297f885eaa7540d530015a84406e55b1366b577e236ce58a26d8a1e"
@@ -122,7 +122,7 @@ public class MlkemDefaultKeys {
                     + "1ea893c3e2cb32da8bc342fa4dea0578a24e16d8f8f9383a95b77050f4d9fd2f5733eec1d63ef3c2"
                     + "3ebf9918173669a7202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f";
 
-    private static final String ML_KEM_1024_DECAPSULATION_KEY =
+    private static final String ML_KEM_1024_KEY_PARAMETERS =
             "f77b7f6b15c73fe2cc546b67fb774ca19b42cd463ea9fbb984ca477a77b6c71087cbf051abe4736a"
                     + "9072c6e870c8311c55963f500a3c7b1b8f2a58558f49c62527b6c594b5e7acb3bcf597273a574351"
                     + "7d151208bd4aa61e75ba67b0bd594a994919627ac0a804d489e171336bc339f4666706e5134412b3"
@@ -205,30 +205,30 @@ public class MlkemDefaultKeys {
                     + "38393a3b3c3d3e3f";
 
     /**
-     * Returns the default ML-KEM-512 decapsulation key.
+     * Returns the default ML-KEM-512 key parameters.
      *
-     * @return The encoded decapsulation key, 1632 bytes long.
+     * @return The encoded key parameters, 1632 bytes long.
      */
-    public static byte[] getMlKem512DecapsulationKey() {
-        return DataConverter.hexStringToByteArray(ML_KEM_512_DECAPSULATION_KEY);
+    public static byte[] getMlKem512KeyParameters() {
+        return DataConverter.hexStringToByteArray(ML_KEM_512_KEY_PARAMETERS);
     }
 
     /**
-     * Returns the default ML-KEM-768 decapsulation key.
+     * Returns the default ML-KEM-768 key parameters.
      *
-     * @return The encoded decapsulation key, 2400 bytes long.
+     * @return The encoded key parameters, 2400 bytes long.
      */
-    public static byte[] getMlKem768DecapsulationKey() {
-        return DataConverter.hexStringToByteArray(ML_KEM_768_DECAPSULATION_KEY);
+    public static byte[] getMlKem768KeyParameters() {
+        return DataConverter.hexStringToByteArray(ML_KEM_768_KEY_PARAMETERS);
     }
 
     /**
-     * Returns the default ML-KEM-1024 decapsulation key.
+     * Returns the default ML-KEM-1024 key parameters.
      *
-     * @return The encoded decapsulation key, 3168 bytes long.
+     * @return The encoded key parameters, 3168 bytes long.
      */
-    public static byte[] getMlKem1024DecapsulationKey() {
-        return DataConverter.hexStringToByteArray(ML_KEM_1024_DECAPSULATION_KEY);
+    public static byte[] getMlKem1024KeyParameters() {
+        return DataConverter.hexStringToByteArray(ML_KEM_1024_KEY_PARAMETERS);
     }
 
     private MlkemDefaultKeys() {}

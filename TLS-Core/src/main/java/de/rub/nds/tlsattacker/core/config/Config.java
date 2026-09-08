@@ -1214,17 +1214,20 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerMLKEMCiphertext = new byte[0];
 
+    /**
+     * The client's ML-KEM key parameters, stored in the FIPS 203 decapsulation key encoding. That
+     * encoding concatenates the K-PKE decryption key, the encapsulation key, the hash of the
+     * encapsulation key and the implicit rejection value z.
+     */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMlKem512DecapsulationKey =
-            MlkemDefaultKeys.getMlKem512DecapsulationKey();
+    private byte[] defaultClientMlKem512KeyParameters = MlkemDefaultKeys.getMlKem512KeyParameters();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMlKem768DecapsulationKey =
-            MlkemDefaultKeys.getMlKem768DecapsulationKey();
+    private byte[] defaultClientMlKem768KeyParameters = MlkemDefaultKeys.getMlKem768KeyParameters();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMlKem1024DecapsulationKey =
-            MlkemDefaultKeys.getMlKem1024DecapsulationKey();
+    private byte[] defaultClientMlKem1024KeyParameters =
+            MlkemDefaultKeys.getMlKem1024KeyParameters();
 
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -4618,54 +4621,47 @@ public class Config implements Serializable {
         this.defaultServerMLKEMCiphertext = defaultServerMLKEMCiphertext;
     }
 
-    public byte[] getDefaultClientMlKem512DecapsulationKey() {
+    public byte[] getDefaultClientMlKem512KeyParameters() {
         return Arrays.copyOf(
-                defaultClientMlKem512DecapsulationKey,
-                defaultClientMlKem512DecapsulationKey.length);
+                defaultClientMlKem512KeyParameters, defaultClientMlKem512KeyParameters.length);
     }
 
-    public void setDefaultClientMlKem512DecapsulationKey(
-            byte[] defaultClientMlKem512DecapsulationKey) {
-        this.defaultClientMlKem512DecapsulationKey = defaultClientMlKem512DecapsulationKey;
+    public void setDefaultClientMlKem512KeyParameters(byte[] defaultClientMlKem512KeyParameters) {
+        this.defaultClientMlKem512KeyParameters = defaultClientMlKem512KeyParameters;
     }
 
-    public byte[] getDefaultClientMlKem768DecapsulationKey() {
+    public byte[] getDefaultClientMlKem768KeyParameters() {
         return Arrays.copyOf(
-                defaultClientMlKem768DecapsulationKey,
-                defaultClientMlKem768DecapsulationKey.length);
+                defaultClientMlKem768KeyParameters, defaultClientMlKem768KeyParameters.length);
     }
 
-    public void setDefaultClientMlKem768DecapsulationKey(
-            byte[] defaultClientMlKem768DecapsulationKey) {
-        this.defaultClientMlKem768DecapsulationKey = defaultClientMlKem768DecapsulationKey;
+    public void setDefaultClientMlKem768KeyParameters(byte[] defaultClientMlKem768KeyParameters) {
+        this.defaultClientMlKem768KeyParameters = defaultClientMlKem768KeyParameters;
     }
 
-    public byte[] getDefaultClientMlKem1024DecapsulationKey() {
+    public byte[] getDefaultClientMlKem1024KeyParameters() {
         return Arrays.copyOf(
-                defaultClientMlKem1024DecapsulationKey,
-                defaultClientMlKem1024DecapsulationKey.length);
+                defaultClientMlKem1024KeyParameters, defaultClientMlKem1024KeyParameters.length);
     }
 
-    public void setDefaultClientMlKem1024DecapsulationKey(
-            byte[] defaultClientMlKem1024DecapsulationKey) {
-        this.defaultClientMlKem1024DecapsulationKey = defaultClientMlKem1024DecapsulationKey;
+    public void setDefaultClientMlKem1024KeyParameters(byte[] defaultClientMlKem1024KeyParameters) {
+        this.defaultClientMlKem1024KeyParameters = defaultClientMlKem1024KeyParameters;
     }
 
     /**
-     * Returns the configured client decapsulation key for the given ML-KEM parameter set. An empty
-     * array indicates that no key is configured and that a fresh key pair should be generated.
+     * Returns the configured client ML-KEM key parameters for the given parameter set.
      *
      * @param parameters The ML-KEM parameter set that should be used.
-     * @return The encoded decapsulation key, or an empty array if none is configured.
+     * @return The encoded key parameters, or an empty array if none are configured.
      */
-    public byte[] getDefaultClientMlKemDecapsulationKey(MlKemParameters parameters) {
+    public byte[] getDefaultClientMlKemKeyParameters(MlKemParameters parameters) {
         switch (parameters) {
             case ML_KEM_512:
-                return getDefaultClientMlKem512DecapsulationKey();
+                return getDefaultClientMlKem512KeyParameters();
             case ML_KEM_768:
-                return getDefaultClientMlKem768DecapsulationKey();
+                return getDefaultClientMlKem768KeyParameters();
             case ML_KEM_1024:
-                return getDefaultClientMlKem1024DecapsulationKey();
+                return getDefaultClientMlKem1024KeyParameters();
             default:
                 return new byte[0];
         }
