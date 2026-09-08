@@ -19,7 +19,7 @@ standardPipeline(
                     quiet: false,
                     useSettings: true,
                     settingsId: 'central-settings',
-                    profile: '!protocol-attacker,central'
+                    profile: '!protocol-attacker,central-release'
             )
         }
 )
