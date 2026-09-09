@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.protocol.exception.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.StarttlsNotSupportedException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
@@ -113,7 +113,7 @@ public class ReceiveRegexTextActionFtpTest {
     public void testAuthTlsUnimplementedReplyAbortsTrace() {
         feed("502 Command not implemented\r\n");
         ReceiveRegexTextAction action = authTlsReply();
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertThrows(StarttlsNotSupportedException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }
 
@@ -122,7 +122,7 @@ public class ReceiveRegexTextActionFtpTest {
     public void testAuthTlsRejectedReplyAbortsTrace() {
         feed("534 Request denied for policy reasons\r\n");
         ReceiveRegexTextAction action = authTlsReply();
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertThrows(StarttlsNotSupportedException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
     }
 }

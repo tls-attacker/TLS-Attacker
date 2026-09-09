@@ -392,6 +392,67 @@ public class WorkflowConfigurationFactoryTest {
     }
 
     /**
+     * With capability discovery enabled the FTP trace runs FEAT before AUTH TLS, so a server that
+     * enforces the RFC 4217 command sequence can still be reached.
+     */
+    @Test
+    public void testAddStartTlsActionFtpWithCapabilityDiscovery() {
+        config.setStarttlsType(StarttlsType.FTP);
+        config.setStarttlsUseCapabilityDiscovery(true);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
+
+        List<TlsAction> actions = workflowTrace.getTlsActions();
+        assertEquals(ReceiveRegexTextAction.class, actions.get(0).getClass());
+        assertEquals("^220 ", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals(SendTextAction.class, actions.get(1).getClass());
+        assertEquals("FEAT\r\n", ((SendTextAction) actions.get(1)).getText());
+        assertEquals(ReceiveRegexTextAction.class, actions.get(2).getClass());
+        assertEquals("^211 ", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
+        assertEquals(SendTextAction.class, actions.get(3).getClass());
+        assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(3)).getText());
+        assertEquals(ReceiveRegexTextAction.class, actions.get(4).getClass());
+        assertEquals("^234 ", ((ReceiveRegexTextAction) actions.get(4)).getRegex());
+        assertEquals(EnableLayerAction.class, actions.get(5).getClass());
+    }
+
+    /**
+     * Both replies of the discovery variant must abort on an error status, not only the upgrade.
+     */
+    @Test
+    public void testCapabilityDiscoveryRepliesAbortOnErrorStatus() {
+        config.setStarttlsType(StarttlsType.FTP);
+        config.setStarttlsUseCapabilityDiscovery(true);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
+
+        List<TlsAction> actions = workflowTrace.getTlsActions();
+        assertEquals("^[45]\\d\\d ", ((ReceiveRegexTextAction) actions.get(2)).getAbortRegex());
+        assertEquals("^[45]\\d\\d ", ((ReceiveRegexTextAction) actions.get(4)).getAbortRegex());
+    }
+
+    /** The discovery exchange is off by default, so the minimal RFC 4217 flow is what FTP emits. */
+    @Test
+    public void testCapabilityDiscoveryIsDisabledByDefault() {
+        config.setStarttlsType(StarttlsType.FTP);
+        assertFalse(config.isStarttlsUseCapabilityDiscovery());
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace workflowTrace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HELLO, RunningModeType.CLIENT);
+
+        List<TlsAction> actions = workflowTrace.getTlsActions();
+        assertEquals("^220 ", ((ReceiveRegexTextAction) actions.get(0)).getRegex());
+        assertEquals("AUTH TLS\r\n", ((SendTextAction) actions.get(1)).getText());
+        assertEquals("^234 ", ((ReceiveRegexTextAction) actions.get(2)).getRegex());
+        assertEquals(EnableLayerAction.class, actions.get(3).getClass());
+    }
+
+    /**
      * An SSL2 hello workflow under -starttls FTP must use the plaintext FTP prefix, then enable the
      * SSL2 layer (an SSL2 stack has neither a record nor a message layer), and only then exchange
      * the SSL2 messages.

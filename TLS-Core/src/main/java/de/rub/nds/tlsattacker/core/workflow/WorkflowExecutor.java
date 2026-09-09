@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.StarttlsNotSupportedException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -147,6 +148,10 @@ public abstract class WorkflowExecutor {
     protected void executeAction(TlsAction action, State state) throws SkipActionException {
         try {
             action.execute(state);
+        } catch (StarttlsNotSupportedException ex) {
+            LOGGER.debug("Stopping execution: {}", ex.getMessage());
+            state.setExecutionException(ex);
+            throw ex;
         } catch (WorkflowExecutionException ex) {
             LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
             state.setExecutionException(ex);
