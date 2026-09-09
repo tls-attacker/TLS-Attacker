@@ -15,8 +15,11 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
 import de.rub.nds.protocol.crypto.key.MlKemPublicKey;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class KeyShareEntry extends ModifiableVariableHolder {
 
     private NamedGroup groupConfig;

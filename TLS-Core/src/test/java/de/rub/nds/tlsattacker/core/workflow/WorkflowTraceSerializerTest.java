@@ -14,13 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.protocol.constants.MlKemParameters;
+import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
+import de.rub.nds.protocol.crypto.key.MlKemPublicKey;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.unittest.helper.DefaultNormalizeFilter;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -33,13 +39,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 
 public class WorkflowTraceSerializerTest {
@@ -316,5 +327,53 @@ public class WorkflowTraceSerializerTest {
 
         // Should have read 2 files (excluding .gitignore)
         assertEquals(2, result.size());
+    }
+
+    /**
+     * The ML-KEM key material of a key share entry has to survive a workflow trace roundtrip, for
+     * the pure as well as for the hybrid post quantum groups.
+     */
+    @ParameterizedTest
+    @EnumSource(
+            value = NamedGroup.class,
+            names = {"MLKEM768", "X25519_MLKEM768"})
+    public void testWriteReadMlKemKeyShareEntry(NamedGroup group) throws Exception {
+        MlKemParameters parameters = MlKemParameters.ML_KEM_768;
+        byte[] decapsulationKey = new byte[parameters.getDecapsulationKeySizeBytes()];
+        byte[] encapsulationKey = new byte[parameters.getEncapsulationKeySizeBytes()];
+        Random random = new Random(0);
+        random.nextBytes(decapsulationKey);
+        random.nextBytes(encapsulationKey);
+
+        KeyShareEntry entry = new KeyShareEntry(group, BigInteger.TEN);
+        entry.setMLKEMPrivateKey(new MlKemPrivateKey(parameters, decapsulationKey));
+        entry.setMLKEMPublicKey(new MlKemPublicKey(parameters, encapsulationKey));
+        KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
+        extension.setKeyShareList(List.of(entry));
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        clientHello.setExtensions(List.of(extension));
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(new SendAction(clientHello));
+
+        String serialized = WorkflowTraceSerializer.write(trace);
+        WorkflowTrace readTrace =
+                WorkflowTraceSerializer.insecureRead(
+                        new ByteArrayInputStream(serialized.getBytes(StandardCharsets.UTF_8)));
+
+        SendAction readAction = (SendAction) readTrace.getTlsActions().get(0);
+        ClientHelloMessage readClientHello =
+                (ClientHelloMessage) readAction.getConfiguredMessages().get(0);
+        KeyShareExtensionMessage readExtension =
+                (KeyShareExtensionMessage) readClientHello.getExtensions().get(0);
+        KeyShareEntry readEntry = readExtension.getKeyShareList().get(0);
+
+        assertEquals(group, readEntry.getGroupConfig());
+        assertEquals(BigInteger.TEN, readEntry.getPrivateKey());
+        assertEquals(parameters, readEntry.getMLKEMPrivateKeyContainer().getParameters());
+        assertArrayEquals(decapsulationKey, readEntry.getMLKEMPrivateKey());
+        assertEquals(parameters, readEntry.getMLKEMPublicKeyContainer().getParameters());
+        assertArrayEquals(
+                encapsulationKey, readEntry.getMLKEMPublicKeyContainer().getEncapsulationKey());
+        assertArrayEquals(encapsulationKey, readEntry.getMLKEMPublicKey().getValue());
     }
 }
