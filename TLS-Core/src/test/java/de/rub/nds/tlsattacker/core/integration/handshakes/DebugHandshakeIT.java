@@ -16,11 +16,9 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 @Tag(TestCategories.INTEGRATION_TEST)
-@Disabled // Disabled because OpenSSL images is causing problems
 public class DebugHandshakeIT extends AbstractHandshakeIT {
 
     public DebugHandshakeIT() {
@@ -28,7 +26,7 @@ public class DebugHandshakeIT extends AbstractHandshakeIT {
         super(
                 TlsImplementationType.OPENSSL,
                 ConnectionRole.SERVER,
-                "3.4.0",
+                "3.5.0",
                 "-tls1_3 -curves brainpoolP256r1tls13");
     }
 
