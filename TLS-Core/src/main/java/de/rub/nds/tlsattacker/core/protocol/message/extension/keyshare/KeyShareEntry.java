@@ -12,17 +12,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
+import de.rub.nds.protocol.crypto.key.MlKemPublicKey;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class KeyShareEntry extends ModifiableVariableHolder {
 
     private NamedGroup groupConfig;
     private BigInteger privateKey;
-    private MLKEMPrivateKeyParameters mlkemPrivateKeyParameters;
-    private MLKEMPublicKeyParameters mlkemPublicKeyParameters;
+    private MlKemPrivateKey mlkemPrivateKey;
+    private MlKemPublicKey mlkemPublicKeyContainer;
 
     private ModifiableByteArray group;
 
@@ -92,29 +95,29 @@ public class KeyShareEntry extends ModifiableVariableHolder {
     }
 
     public byte[] getMLKEMPrivateKey() {
-        return mlkemPrivateKeyParameters.getEncoded();
+        return mlkemPrivateKey.getDecapsulationKey();
     }
 
-    public MLKEMPrivateKeyParameters getMLKEMPrivateKeyParameters() {
-        return mlkemPrivateKeyParameters;
+    public MlKemPrivateKey getMLKEMPrivateKeyContainer() {
+        return mlkemPrivateKey;
     }
 
-    public void setMLKEMPrivateKey(MLKEMPrivateKeyParameters mlkemPrivateKeyParameters) {
-        this.mlkemPrivateKeyParameters = mlkemPrivateKeyParameters;
+    public void setMLKEMPrivateKey(MlKemPrivateKey mlkemPrivateKey) {
+        this.mlkemPrivateKey = mlkemPrivateKey;
     }
 
     public ModifiableByteArray getMLKEMPublicKey() {
         return mlkemPublicKey;
     }
 
-    public void setMLKEMPublicKey(MLKEMPublicKeyParameters mlkemPublicKeyParameters) {
-        this.mlkemPublicKeyParameters = mlkemPublicKeyParameters; // Store the object
+    public void setMLKEMPublicKey(MlKemPublicKey mlkemPublicKeyContainer) {
+        this.mlkemPublicKeyContainer = mlkemPublicKeyContainer; // Store the object
         this.mlkemPublicKey =
                 ModifiableVariableFactory.safelySetValue(
-                        this.mlkemPublicKey, mlkemPublicKeyParameters.getEncoded());
+                        this.mlkemPublicKey, mlkemPublicKeyContainer.getEncapsulationKey());
     }
 
-    public MLKEMPublicKeyParameters getMLKEMPublicKeyParameters() {
-        return mlkemPublicKeyParameters;
+    public MlKemPublicKey getMLKEMPublicKeyContainer() {
+        return mlkemPublicKeyContainer;
     }
 }

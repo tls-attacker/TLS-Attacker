@@ -14,11 +14,13 @@ import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.constants.MlKemParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.CertificateChainConfigAdapter;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
+import de.rub.nds.tlsattacker.core.config.constants.MlkemDefaultKeys;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -1212,13 +1214,22 @@ public class Config implements Serializable {
                     "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMLKEMPrivateKey = new byte[0];
-
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMLKEMPublicKey = new byte[0];
-
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerMLKEMCiphertext = new byte[0];
+
+    /**
+     * The client's ML-KEM key parameters, stored in the FIPS 203 decapsulation key encoding. That
+     * encoding concatenates the K-PKE decryption key, the encapsulation key, the hash of the
+     * encapsulation key and the implicit rejection value z.
+     */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMlKem512KeyParameters = MlkemDefaultKeys.getMlKem512KeyParameters();
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMlKem768KeyParameters = MlkemDefaultKeys.getMlKem768KeyParameters();
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] defaultClientMlKem1024KeyParameters =
+            MlkemDefaultKeys.getMlKem1024KeyParameters();
 
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -4612,27 +4623,57 @@ public class Config implements Serializable {
         this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
     }
 
-    public byte[] getDefaultClientMLKEMPrivateKey() {
-        return Arrays.copyOf(defaultClientMLKEMPrivateKey, defaultClientMLKEMPrivateKey.length);
-    }
-
-    public void setDefaultClientMLKEMPrivateKey(byte[] defaultClientMLKEMPrivateKey) {
-        this.defaultClientMLKEMPrivateKey = defaultClientMLKEMPrivateKey;
-    }
-
-    public byte[] getDefaultClientMLKEMPublicKey() {
-        return Arrays.copyOf(defaultClientMLKEMPublicKey, defaultClientMLKEMPublicKey.length);
-    }
-
-    public void setDefaultClientMLKEMPublicKey(byte[] defaultClientMLKEMPublicKey) {
-        this.defaultClientMLKEMPublicKey = defaultClientMLKEMPublicKey;
-    }
-
     public byte[] getDefaultServerMLKEMCiphertext() {
         return Arrays.copyOf(defaultServerMLKEMCiphertext, defaultServerMLKEMCiphertext.length);
     }
 
     public void setDefaultServerMLKEMCiphertext(byte[] defaultServerMLKEMCiphertext) {
         this.defaultServerMLKEMCiphertext = defaultServerMLKEMCiphertext;
+    }
+
+    public byte[] getDefaultClientMlKem512KeyParameters() {
+        return Arrays.copyOf(
+                defaultClientMlKem512KeyParameters, defaultClientMlKem512KeyParameters.length);
+    }
+
+    public void setDefaultClientMlKem512KeyParameters(byte[] defaultClientMlKem512KeyParameters) {
+        this.defaultClientMlKem512KeyParameters = defaultClientMlKem512KeyParameters;
+    }
+
+    public byte[] getDefaultClientMlKem768KeyParameters() {
+        return Arrays.copyOf(
+                defaultClientMlKem768KeyParameters, defaultClientMlKem768KeyParameters.length);
+    }
+
+    public void setDefaultClientMlKem768KeyParameters(byte[] defaultClientMlKem768KeyParameters) {
+        this.defaultClientMlKem768KeyParameters = defaultClientMlKem768KeyParameters;
+    }
+
+    public byte[] getDefaultClientMlKem1024KeyParameters() {
+        return Arrays.copyOf(
+                defaultClientMlKem1024KeyParameters, defaultClientMlKem1024KeyParameters.length);
+    }
+
+    public void setDefaultClientMlKem1024KeyParameters(byte[] defaultClientMlKem1024KeyParameters) {
+        this.defaultClientMlKem1024KeyParameters = defaultClientMlKem1024KeyParameters;
+    }
+
+    /**
+     * Returns the configured client ML-KEM key parameters for the given parameter set.
+     *
+     * @param parameters The ML-KEM parameter set that should be used.
+     * @return The encoded key parameters, or an empty array if none are configured.
+     */
+    public byte[] getDefaultClientMlKemKeyParameters(MlKemParameters parameters) {
+        switch (parameters) {
+            case ML_KEM_512:
+                return getDefaultClientMlKem512KeyParameters();
+            case ML_KEM_768:
+                return getDefaultClientMlKem768KeyParameters();
+            case ML_KEM_1024:
+                return getDefaultClientMlKem1024KeyParameters();
+            default:
+                return new byte[0];
+        }
     }
 }

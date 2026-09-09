@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.layer.context;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.key.MlKemPrivateKey;
+import de.rub.nds.protocol.crypto.key.MlKemPublicKey;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
@@ -71,14 +73,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPrivateKeyParameters;
-import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 
 /** Holds all runtime variables of the TLSLayer. */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -504,11 +505,9 @@ public class TlsContext extends LayerContext {
 
     private Long esniNotAfter;
 
-    private java.util.Map<NamedGroup, MLKEMPrivateKeyParameters> clientMLKEMPrivateKeys =
-            new java.util.HashMap<>();
+    private Map<NamedGroup, MlKemPrivateKey> clientMLKEMPrivateKeys = new HashMap<>();
 
-    private java.util.Map<NamedGroup, MLKEMPublicKeyParameters> clientMLKEMPublicKeys =
-            new java.util.HashMap<>();
+    private Map<NamedGroup, MlKemPublicKey> clientMLKEMPublicKeys = new HashMap<>();
 
     private byte[] serverMLKEMCiphertext;
 
@@ -2368,11 +2367,11 @@ public class TlsContext extends LayerContext {
         this.peerReceiveLimit = peerReceiveLimit;
     }
 
-    public Map<NamedGroup, MLKEMPrivateKeyParameters> getClientMLKEMPrivateKeys() {
+    public Map<NamedGroup, MlKemPrivateKey> getClientMLKEMPrivateKeys() {
         return clientMLKEMPrivateKeys;
     }
 
-    public Map<NamedGroup, MLKEMPublicKeyParameters> getClientMLKEMPublicKeys() {
+    public Map<NamedGroup, MlKemPublicKey> getClientMLKEMPublicKeys() {
         return clientMLKEMPublicKeys;
     }
 
