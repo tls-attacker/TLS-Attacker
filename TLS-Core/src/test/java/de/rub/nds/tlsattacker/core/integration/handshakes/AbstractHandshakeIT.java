@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.FreePortFinder;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
@@ -60,6 +61,12 @@ public abstract class AbstractHandshakeIT {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int PORT_MAX_TRIES = 10;
     private static final int PORT_WAIT_TIME_MS = 500;
+    private static final int SERVER_READY_MAX_TRIES = 200;
+    private static final int SERVER_READY_WAIT_TIME_MS = 25;
+    private static final Map<TlsImplementationType, String> SERVER_READY_LOG_MARKERS =
+            Map.of(
+                    TlsImplementationType.OPENSSL, "ACCEPT",
+                    TlsImplementationType.MBEDTLS, "Bind on tcp");
 
     private static final Integer PORT = FreePortFinder.getPossiblyFreeTcpPort();
     private static List<Image> localImages;
@@ -176,6 +183,53 @@ public abstract class AbstractHandshakeIT {
         }
         dockerInstance = instanceBuilder.build();
         dockerInstance.start();
+        if (dockerConnectionRole == ConnectionRole.SERVER) {
+            waitUntilServerAcceptsConnections();
+        }
+    }
+
+    private void waitUntilServerAcceptsConnections() {
+        String readyLogMarker = SERVER_READY_LOG_MARKERS.get(implementation);
+        if (readyLogMarker == null) {
+            return;
+        }
+        for (int currentTry = 0; currentTry < SERVER_READY_MAX_TRIES; currentTry++) {
+            if (readContainerLogs().contains(readyLogMarker)) {
+                return;
+            }
+            try {
+                Thread.sleep(SERVER_READY_WAIT_TIME_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted while waiting for the server", e);
+            }
+        }
+        LOGGER.warn(
+                "Container did not report an accepting server within {} ms",
+                SERVER_READY_MAX_TRIES * SERVER_READY_WAIT_TIME_MS);
+    }
+
+    private String readContainerLogs() {
+        StringBuilder logs = new StringBuilder();
+        try {
+            DockerClientManager.getDockerClient()
+                    .logContainerCmd(dockerInstance.getId())
+                    .withSince(0)
+                    .withStdOut(true)
+                    .withStdErr(true)
+                    .exec(
+                            new ResultCallback.Adapter<Frame>() {
+                                @Override
+                                public void onNext(Frame frame) {
+                                    logs.append(new String(frame.getPayload()));
+                                }
+                            })
+                    .awaitCompletion();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while reading container logs", e);
+        }
+        return logs.toString();
     }
 
     @ParameterizedTest
@@ -432,6 +486,7 @@ public abstract class AbstractHandshakeIT {
         if (cipherSuite.isTls13()) {
             config.setAddExtendedMasterSecretExtension(false);
             config.setAddEncryptThenMacExtension(false);
+            config.setAddRenegotiationInfoExtension(false);
             config.setAddSupportedVersionsExtension(true);
             config.setAddKeyShareExtension(true);
             if (workflowTraceType == WorkflowTraceType.FULL_TLS13_PSK
