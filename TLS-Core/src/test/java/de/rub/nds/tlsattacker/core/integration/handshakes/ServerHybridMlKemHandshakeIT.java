@@ -25,7 +25,8 @@ public class ServerHybridMlKemHandshakeIT extends AbstractHandshakeIT {
                 TlsImplementationType.OPENSSL,
                 ConnectionRole.CLIENT,
                 "3.5.0",
-                // OpenSSL accepts at most 4 forced key share groups, hence, we split the test in hybrid and pure PQ
+                // OpenSSL accepts at most 4 forced key share groups, hence, we split the test in
+                // hybrid and pure PQ
                 "-tls1_3 -groups *X25519MLKEM768:*SecP256r1MLKEM768:*SecP384r1MLKEM1024");
     }
 
