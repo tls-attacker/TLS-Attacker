@@ -4,7 +4,9 @@ Acronyms and abbreviations used in the TLS-Attacker codebase and in the surround
 literature you will run into while reading it.
 
 ## Message Short Names
+
 The following short names are used for minimal CLI output.
+
 ### Handshake Messages
 
 - **CH** - ClientHello
