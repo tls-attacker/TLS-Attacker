@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.protocol.exception.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.exceptions.StarttlsNotSupportedException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -93,6 +94,11 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                 }
                 hasError = true;
                 exception = e;
+            } catch (StarttlsNotSupportedException e) {
+                LOGGER.debug("Server does not support STARTTLS. Not reexecuting", e);
+                hasError = true;
+                exception = e;
+                break;
             } catch (Exception e) {
                 hasError = true;
                 if (increasingSleepTimes) {

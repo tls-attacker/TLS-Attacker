@@ -1243,24 +1243,58 @@ public class WorkflowConfigurationFactory {
         }
     }
 
+    /**
+     * Adds the STARTTLS upgrade for a text-based protocol, in whichever of the two variants the
+     * config selects.
+     *
+     * <p>The minimal variant reads the greeting, sends the upgrade command and expects the success
+     * reply. The discovery variant runs the protocol's capability exchange in between, for servers
+     * that enforce the full command sequence from their RFC and refuse a bare upgrade command.
+     *
+     * <p>Which one to use is a property of the target that cannot be known before asking it, so it
+     * is chosen here from the config rather than during execution: whoever learns that the target
+     * needs discovery sets {@link Config#setStarttlsUseCapabilityDiscovery(Boolean)} and every
+     * trace built afterwards carries the longer exchange.
+     *
+     * @param workflowTrace the trace to add to
+     * @param type the protocol, which carries what it says at each step of the upgrade
+     * @return the trace, for chaining
+     */
+    private WorkflowTrace addUpgradeActions(WorkflowTrace workflowTrace, StarttlsType type) {
+        workflowTrace.addTlsAction(new ReceiveRegexTextAction(type.getGreetingRegex()));
+        if (config.isStarttlsUseCapabilityDiscovery()) {
+            workflowTrace.addTlsAction(new SendTextAction(type.getDiscoveryCommand(), null));
+            workflowTrace.addTlsAction(receiveOrAbort(type.getDiscoveryReplyRegex(), type));
+        }
+        workflowTrace.addTlsAction(new SendTextAction(type.getUpgradeCommand(), null));
+        workflowTrace.addTlsAction(receiveOrAbort(type.getUpgradeSuccessRegex(), type));
+        return workflowTrace;
+    }
+
+    /**
+     * Builds a receive action that gives up when the server answers with an error, so a refused
+     * upgrade ends the trace instead of waiting for a reply that will never come.
+     *
+     * @param regex matches the reply the action is waiting for
+     * @param type supplies the protocol's error pattern
+     * @return the prepared action
+     */
+    private ReceiveRegexTextAction receiveOrAbort(String regex, StarttlsType type) {
+        ReceiveRegexTextAction action = new ReceiveRegexTextAction(regex);
+        action.setAbortRegex(type.getErrorRegex());
+        return action;
+    }
+
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
         // TODO: the types that still throw below have their message flow left in comments, they
-        // are added one by one with the text actions the FTP flow uses.
+        // are added one by one with the text actions the dialect-carrying protocols use.
+
+        if (type.hasDialect()) {
+            return addUpgradeActions(workflowTrace, type);
+        }
 
         switch (type) {
-            case FTP:
-                {
-                    workflowTrace.addTlsAction(new ReceiveRegexTextAction("^220 "));
-                    workflowTrace.addTlsAction(new SendTextAction("AUTH TLS\r\n", null));
-                    ReceiveRegexTextAction authReply = new ReceiveRegexTextAction("^234 ");
-                    authReply.setAbortRegex("^[45]\\d\\d ");
-                    workflowTrace.addTlsAction(authReply);
-                    return workflowTrace;
-                    // server: "220-Welcome to FTP server\r\n220 Ready\r\n"
-                    // client: "AUTH TLS\r\n"
-                    // server: "234 AUTH TLS"
-                }
             case IMAP:
                 {
                     throw new NotImplementedException("IMAP STARTTLS not implemented yet");

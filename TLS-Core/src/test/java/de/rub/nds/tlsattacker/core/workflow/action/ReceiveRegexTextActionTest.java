@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.exceptions.StarttlsNotSupportedException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
@@ -321,7 +321,7 @@ public class ReceiveRegexTextActionTest {
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234 ");
         action.setAbortRegex("^[45]\\d\\d ");
 
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertThrows(StarttlsNotSupportedException.class, () -> action.execute(state));
         assertFalse(action.executedAsPlanned());
         assertEquals("534 Policy requires SSL\r\n", action.getReceivedText());
         // The second fragment must not have been read.
@@ -339,7 +339,7 @@ public class ReceiveRegexTextActionTest {
         ReceiveRegexTextAction action = new ReceiveRegexTextAction("^234 ");
         action.setAbortRegex("^[45]\\d\\d ");
 
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        assertThrows(StarttlsNotSupportedException.class, () -> action.execute(state));
         assertEquals("534 Policy requires SSL\r\n", action.getReceivedText());
     }
 

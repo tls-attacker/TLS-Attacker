@@ -1110,6 +1110,8 @@ public class Config implements Serializable {
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
+    private Boolean starttlsUseCapabilityDiscovery = false;
+
     /**
      * By default, the Session ID is overwritten, if (1) the server receives an empty Session Ticket
      * (it answers with an empty Server SID) (2) the client presents a sessionTicket
@@ -3750,6 +3752,14 @@ public class Config implements Serializable {
 
     public void setStarttlsType(StarttlsType starttlsType) {
         this.starttlsType = starttlsType;
+    }
+
+    public Boolean isStarttlsUseCapabilityDiscovery() {
+        return starttlsUseCapabilityDiscovery;
+    }
+
+    public void setStarttlsUseCapabilityDiscovery(Boolean starttlsUseCapabilityDiscovery) {
+        this.starttlsUseCapabilityDiscovery = starttlsUseCapabilityDiscovery;
     }
 
     public KeyShareStoreEntry getDefaultServerKeyShareEntry() {
