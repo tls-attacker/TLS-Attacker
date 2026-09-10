@@ -48,6 +48,7 @@ public enum StarttlsType {
     private final String upgradeSuccessRegex;
     private final String errorRegex;
     private final String badSequenceRegex;
+    private final boolean unpromptedPostHandshakeGreeting;
 
     StarttlsType() {
         this(null, null, null, null, null, null, null);
@@ -61,6 +62,26 @@ public enum StarttlsType {
             String upgradeSuccessRegex,
             String errorRegex,
             String badSequenceRegex) {
+        this(
+                greetingRegex,
+                discoveryCommand,
+                discoveryReplyRegex,
+                upgradeCommand,
+                upgradeSuccessRegex,
+                errorRegex,
+                badSequenceRegex,
+                false);
+    }
+
+    StarttlsType(
+            String greetingRegex,
+            String discoveryCommand,
+            String discoveryReplyRegex,
+            String upgradeCommand,
+            String upgradeSuccessRegex,
+            String errorRegex,
+            String badSequenceRegex,
+            boolean unpromptedPostHandshakeGreeting) {
         this.greetingRegex = greetingRegex;
         this.discoveryCommand = discoveryCommand;
         this.discoveryReplyRegex = discoveryReplyRegex;
@@ -68,6 +89,7 @@ public enum StarttlsType {
         this.upgradeSuccessRegex = upgradeSuccessRegex;
         this.errorRegex = errorRegex;
         this.badSequenceRegex = badSequenceRegex;
+        this.unpromptedPostHandshakeGreeting = unpromptedPostHandshakeGreeting;
     }
 
     /**
@@ -135,5 +157,20 @@ public enum StarttlsType {
      */
     public String getBadSequenceRegex() {
         return badSequenceRegex;
+    }
+
+    /**
+     * Whether the server sends an application-layer message of its own accord as soon as the
+     * handshake finishes, before the client has asked for anything.
+     *
+     * <p>ManageSieve is the case this exists for: RFC 5804 section 2.2 requires the server to
+     * re-issue its capability listing after a successful TLS negotiation. Whether that listing
+     * lands in the same receive as the handshake or in the one after it is a matter of timing, so
+     * anything that compares two responses byte for byte has to know to expect it.
+     *
+     * @return true if a greeting arrives unprompted after the handshake
+     */
+    public boolean sendsUnpromptedPostHandshakeGreeting() {
+        return unpromptedPostHandshakeGreeting;
     }
 }

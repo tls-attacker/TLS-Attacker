@@ -75,6 +75,7 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -398,13 +399,15 @@ public class WorkflowConfigurationFactory {
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, messages));
         if (!config.getHighestProtocolVersion().is13()) {
+            List<ProtocolMessage> serverFinishedMessages = new LinkedList<>();
+            serverFinishedMessages.add(new ChangeCipherSpecMessage());
+            serverFinishedMessages.add(new FinishedMessage());
+            if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+                serverFinishedMessages.add(new ApplicationMessage());
+            }
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new ChangeCipherSpecMessage(),
-                            new FinishedMessage()));
+                            config, connection, ConnectionEndType.SERVER, serverFinishedMessages));
         }
         if (config.getHighestProtocolVersion().isDTLS13()) {
             workflowTrace.addTlsAction(
@@ -414,7 +417,30 @@ public class WorkflowConfigurationFactory {
         if (config.getExpectHandshakeDoneQuicFrame()) {
             workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
+        if (config.getHighestProtocolVersion().is13()) {
+            appendUnpromptedGreetingAction(connection, workflowTrace);
+        }
         return workflowTrace;
+    }
+
+    /**
+     * Adds the greeting that a STARTTLS server sends of its own accord once the handshake is done.
+     *
+     * <p>Only the handshake workflows add it. The hello workflows stop before the upgrade is
+     * finished, so the greeting has not been sent yet by the time they end.
+     *
+     * @param connection the connection the trace is built for
+     * @param workflowTrace the trace to append to
+     */
+    private void appendUnpromptedGreetingAction(
+            AliasedConnection connection, WorkflowTrace workflowTrace) {
+        if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+            TlsAction greetingAction =
+                    MessageActionFactory.createTLSAction(
+                            config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
+            greetingAction.addActionOption(ActionOption.MAY_FAIL);
+            workflowTrace.addTlsAction(greetingAction);
+        }
     }
 
     /**
@@ -590,6 +616,9 @@ public class WorkflowConfigurationFactory {
                         ConnectionEndType.CLIENT,
                         new ChangeCipherSpecMessage(),
                         new FinishedMessage()));
+        // The upgrade completes again on the resumed connection, so a server that greets of its
+        // own accord greets here too, after the client's Finished rather than with the server's.
+        appendUnpromptedGreetingAction(connection, trace);
 
         return trace;
     }
@@ -1484,8 +1513,10 @@ public class WorkflowConfigurationFactory {
                 if (config.getHighestProtocolVersion().isDTLS13()) {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
+                // The client's Finished ends the handshake here, so the greeting can only arrive
+                // after this trace's last receive and needs a receive of its own.
+                appendUnpromptedGreetingAction(connection, trace);
             } else {
-
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
@@ -1495,7 +1526,17 @@ public class WorkflowConfigurationFactory {
                 }
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+                    // The greeting follows the server's Finished and often shares its segment. A
+                    // receive that stops at the Finished takes the greeting along whenever the two
+                    // arrive together, and a separate greeting receive after it then waits out the
+                    // whole timeout for a second copy. Reading till the greeting instead ends the
+                    // action at the same point in both cases, because the greeting cannot arrive
+                    // before the Finished it follows.
+                    trace.addTlsAction(new ReceiveTillAction(new ApplicationMessage()));
+                } else {
+                    trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                }
             }
             return trace;
         } else {
@@ -1506,6 +1547,7 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
             }
+            appendUnpromptedGreetingAction(connection, trace);
             return trace;
         }
     }
