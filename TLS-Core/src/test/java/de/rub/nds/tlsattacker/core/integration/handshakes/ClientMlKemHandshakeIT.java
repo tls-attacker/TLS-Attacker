@@ -19,15 +19,14 @@ import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.junit.jupiter.api.Tag;
 
 @Tag(TestCategories.INTEGRATION_TEST)
-public class DebugHandshakeIT extends AbstractHandshakeIT {
+public class ClientMlKemHandshakeIT extends AbstractHandshakeIT {
 
-    public DebugHandshakeIT() {
-        // run OpenSSL with dummy HTTP server to get a reply for app data
+    public ClientMlKemHandshakeIT() {
         super(
                 TlsImplementationType.OPENSSL,
                 ConnectionRole.SERVER,
                 "3.5.0",
-                "-tls1_3 -curves brainpoolP256r1tls13");
+                "-tls1_3 -groups MLKEM512:MLKEM768:MLKEM1024:X25519MLKEM768:SecP256r1MLKEM768:SecP384r1MLKEM1024");
     }
 
     @Override
@@ -54,7 +53,14 @@ public class DebugHandshakeIT extends AbstractHandshakeIT {
 
     @Override
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] {NamedGroup.BRAINPOOLP256R1TLS13};
+        return new NamedGroup[] {
+            NamedGroup.MLKEM512,
+            NamedGroup.MLKEM768,
+            NamedGroup.MLKEM1024,
+            NamedGroup.X25519_MLKEM768,
+            NamedGroup.SECP256R1_MLKEM768,
+            NamedGroup.SECP384R1_MLKEM1024
+        };
     }
 
     @Override
@@ -74,7 +80,7 @@ public class DebugHandshakeIT extends AbstractHandshakeIT {
                 useCryptoExtensions,
                 useEarlyData,
                 protocolVersion);
-        config.setAddDebugExtension(true);
-        config.setDefaultDebugContent("TLS-Attacker Debug Content");
+        config.setDefaultClientNamedGroups(namedGroup);
+        config.setDefaultClientKeyShareNamedGroups(namedGroup);
     }
 }

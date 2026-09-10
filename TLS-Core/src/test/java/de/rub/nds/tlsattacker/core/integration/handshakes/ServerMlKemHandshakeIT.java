@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.integration.handshakes;
 
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -19,15 +18,14 @@ import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.junit.jupiter.api.Tag;
 
 @Tag(TestCategories.INTEGRATION_TEST)
-public class DebugHandshakeIT extends AbstractHandshakeIT {
+public class ServerMlKemHandshakeIT extends AbstractHandshakeIT {
 
-    public DebugHandshakeIT() {
-        // run OpenSSL with dummy HTTP server to get a reply for app data
+    public ServerMlKemHandshakeIT() {
         super(
                 TlsImplementationType.OPENSSL,
-                ConnectionRole.SERVER,
+                ConnectionRole.CLIENT,
                 "3.5.0",
-                "-tls1_3 -curves brainpoolP256r1tls13");
+                "-tls1_3 -groups *MLKEM512:*MLKEM768:*MLKEM1024");
     }
 
     @Override
@@ -54,27 +52,6 @@ public class DebugHandshakeIT extends AbstractHandshakeIT {
 
     @Override
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] {NamedGroup.BRAINPOOLP256R1TLS13};
-    }
-
-    @Override
-    protected void prepareConfig(
-            CipherSuite cipherSuite,
-            NamedGroup namedGroup,
-            Config config,
-            WorkflowTraceType workflowTraceType,
-            boolean useCryptoExtensions,
-            boolean useEarlyData,
-            ProtocolVersion protocolVersion) {
-        super.prepareConfig(
-                cipherSuite,
-                namedGroup,
-                config,
-                workflowTraceType,
-                useCryptoExtensions,
-                useEarlyData,
-                protocolVersion);
-        config.setAddDebugExtension(true);
-        config.setDefaultDebugContent("TLS-Attacker Debug Content");
+        return new NamedGroup[] {NamedGroup.MLKEM512, NamedGroup.MLKEM768, NamedGroup.MLKEM1024};
     }
 }
