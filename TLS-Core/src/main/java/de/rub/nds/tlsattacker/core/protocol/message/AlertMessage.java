@@ -159,7 +159,7 @@ public class AlertMessage extends ProtocolMessage {
         AlertDescription alertDescription =
                 AlertDescription.getAlertDescription(description.getValue());
         if (alertDescription == null) {
-            return "UKNOWN ALERT";
+            return "UNKNOWN ALERT";
         }
         return alertDescription.toString();
     }
