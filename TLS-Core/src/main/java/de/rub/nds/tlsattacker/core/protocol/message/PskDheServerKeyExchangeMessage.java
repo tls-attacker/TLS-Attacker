@@ -117,6 +117,6 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     @Override
     public String toShortString() {
-        return "PSK_DHE_CKE";
+        return "PSK_DHE_SKE";
     }
 }
