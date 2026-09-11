@@ -829,8 +829,10 @@ public class WorkflowConfigurationFactoryTest {
     /**
      * In TLS 1.3 the server holds its application keys once it has sent its Finished, so it may
      * greet right behind it before the client's Finished. The receive of the server's flight
-     * tolerates the greeting without waiting for it, and the trailing receive after the client's
-     * Finished may then come up empty.
+     * tolerates the greeting without waiting for it, and the receive after the client's Finished
+     * skips itself when the greeting was already taken instead of waiting out its timeout. Only
+     * NewSessionTickets may still turn up unasked there, so those are ignored rather than the whole
+     * receive being allowed to fail.
      */
     @ParameterizedTest(allowZeroInvocations = true)
     @MethodSource("unpromptedGreetingTypes")
@@ -850,11 +852,14 @@ public class WorkflowConfigurationFactoryTest {
         assertEquals(SendAction.class, clientFinished.getClass());
 
         TlsAction last = lastAction(trace);
-        assertEquals(ReceiveAction.class, last.getClass());
+        assertEquals(ReceiveUnlessAlreadyReceivedAction.class, last.getClass());
         List<ProtocolMessage> trailing = extractMessages((MessageAction) last);
         assertEquals(1, trailing.size());
         assertEquals(ApplicationMessage.class, trailing.get(0).getClass());
-        assertTrue(last.getActionOptions().contains(ActionOption.MAY_FAIL));
+        assertTrue(
+                last.getActionOptions()
+                        .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS));
+        assertFalse(last.getActionOptions().contains(ActionOption.MAY_FAIL));
     }
 
     /**
@@ -882,8 +887,9 @@ public class WorkflowConfigurationFactoryTest {
     }
 
     /**
-     * In TLS 1.3 the client's Finished ends the handshake, so the greeting can only arrive after
-     * the trace's last receive and gets a receive of its own, which may find nothing.
+     * In TLS 1.3 the client's Finished ends the handshake, so the greeting gets a receive of its
+     * own after it. The receive till the Finished before it tolerates an early greeting, so the
+     * trailing receive skips itself when that already happened.
      */
     @ParameterizedTest(allowZeroInvocations = true)
     @MethodSource("unpromptedGreetingTypes")
@@ -892,11 +898,14 @@ public class WorkflowConfigurationFactoryTest {
                 createTrace(type, ProtocolVersion.TLS13, WorkflowTraceType.DYNAMIC_HANDSHAKE);
 
         TlsAction last = lastAction(trace);
-        assertEquals(ReceiveAction.class, last.getClass());
+        assertEquals(ReceiveUnlessAlreadyReceivedAction.class, last.getClass());
         List<ProtocolMessage> expected = extractMessages((MessageAction) last);
         assertEquals(1, expected.size());
         assertEquals(ApplicationMessage.class, expected.get(0).getClass());
-        assertTrue(last.getActionOptions().contains(ActionOption.MAY_FAIL));
+        assertTrue(
+                last.getActionOptions()
+                        .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS));
+        assertFalse(last.getActionOptions().contains(ActionOption.MAY_FAIL));
     }
 
     /**

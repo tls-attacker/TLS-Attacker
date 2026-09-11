@@ -442,23 +442,30 @@ public class WorkflowConfigurationFactory {
      *
      * @param connection the connection the trace is built for
      * @param workflowTrace the trace to append to
-     * @param mayFail whether the receive is allowed to come up empty. In TLS 1.2 the server cannot
-     *     send the greeting before the client's Finished, so it has to arrive in exactly this
-     *     receive and a receive that finds nothing is a failure. In TLS 1.3 the server may already
-     *     have sent it along with its own Finished, and it may add NewSessionTickets of its own
-     *     accord, so this receive may find nothing or something else.
+     * @param tls13 whether the handshake is TLS 1.3. In TLS 1.2 the server cannot send the greeting
+     *     before the client's Finished, so it has to arrive in exactly this receive and a receive
+     *     that finds nothing is a failure. In TLS 1.3 the server may already have sent it along
+     *     with its own Finished, in which case the receive of that flight took it and this one
+     *     skips itself rather than waiting out its timeout for a second copy; and the server may
+     *     add NewSessionTickets of its own accord, which are ignored.
      */
     private void appendUnpromptedGreetingAction(
-            AliasedConnection connection, WorkflowTrace workflowTrace, boolean mayFail) {
-        if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
-            TlsAction greetingAction =
+            AliasedConnection connection, WorkflowTrace workflowTrace, boolean tls13) {
+        if (!config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+            return;
+        }
+        TlsAction greetingAction;
+        if (tls13 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            greetingAction =
+                    new ReceiveUnlessAlreadyReceivedAction(
+                            connection.getAlias(), new ApplicationMessage());
+            greetingAction.addActionOption(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        } else {
+            greetingAction =
                     MessageActionFactory.createTLSAction(
                             config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
-            if (mayFail) {
-                greetingAction.addActionOption(ActionOption.MAY_FAIL);
-            }
-            workflowTrace.addTlsAction(greetingAction);
         }
+        workflowTrace.addTlsAction(greetingAction);
     }
 
     /**
@@ -1533,8 +1540,8 @@ public class WorkflowConfigurationFactory {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
                 // The client's Finished ends the handshake here, so the greeting needs a receive of
-                // its own. It may come up empty when the server sent the greeting along with its
-                // own Finished and the receive till the Finished already took it.
+                // its own. That receive skips itself when the server sent the greeting along with
+                // its own Finished and the receive till the Finished already took it.
                 appendUnpromptedGreetingAction(connection, trace, true);
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
