@@ -75,6 +75,7 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -334,6 +335,13 @@ public class WorkflowConfigurationFactory {
                 messages.add(new CertificateVerifyMessage());
             }
             messages.add(new FinishedMessage());
+            if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+                // RFC 8446 lets the server greet right behind its Finished, so this receive must
+                // take the greeting when it comes along and must not wait for it when it does not.
+                ApplicationMessage greeting = new ApplicationMessage();
+                greeting.setRequired(false);
+                messages.add(greeting);
+            }
         } else {
             if (selectedCipherSuite.requiresServerCertificateMessage()) {
                 messages.add(new CertificateMessage());
@@ -398,13 +406,15 @@ public class WorkflowConfigurationFactory {
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, messages));
         if (!config.getHighestProtocolVersion().is13()) {
+            List<ProtocolMessage> serverFinishedMessages = new LinkedList<>();
+            serverFinishedMessages.add(new ChangeCipherSpecMessage());
+            serverFinishedMessages.add(new FinishedMessage());
+            if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+                serverFinishedMessages.add(new ApplicationMessage());
+            }
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new ChangeCipherSpecMessage(),
-                            new FinishedMessage()));
+                            config, connection, ConnectionEndType.SERVER, serverFinishedMessages));
         }
         if (config.getHighestProtocolVersion().isDTLS13()) {
             workflowTrace.addTlsAction(
@@ -414,7 +424,41 @@ public class WorkflowConfigurationFactory {
         if (config.getExpectHandshakeDoneQuicFrame()) {
             workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
+        if (config.getHighestProtocolVersion().is13()) {
+            appendUnpromptedGreetingAction(connection, workflowTrace, true);
+        }
         return workflowTrace;
+    }
+
+    /**
+     * Adds the greeting that a STARTTLS server sends of its own accord once the handshake is done.
+     * Only the handshake workflows add it; the hello workflows end before the greeting is due.
+     *
+     * @param connection the connection the trace is built for
+     * @param workflowTrace the trace to append to
+     * @param tls13 whether the handshake is TLS 1.3. In TLS 1.2 the greeting can only follow the
+     *     client's Finished, so it has to arrive in this very receive and an empty one is a
+     *     failure. In TLS 1.3 the server may have sent it with its own Finished, so the receive
+     *     skips itself when the flight before already took it and ignores unasked
+     *     NewSessionTickets.
+     */
+    private void appendUnpromptedGreetingAction(
+            AliasedConnection connection, WorkflowTrace workflowTrace, boolean tls13) {
+        if (!config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+            return;
+        }
+        TlsAction greetingAction;
+        if (tls13 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            greetingAction =
+                    new ReceiveUnlessAlreadyReceivedAction(
+                            connection.getAlias(), new ApplicationMessage());
+            greetingAction.addActionOption(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        } else {
+            greetingAction =
+                    MessageActionFactory.createTLSAction(
+                            config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
+        }
+        workflowTrace.addTlsAction(greetingAction);
     }
 
     /**
@@ -590,6 +634,9 @@ public class WorkflowConfigurationFactory {
                         ConnectionEndType.CLIENT,
                         new ChangeCipherSpecMessage(),
                         new FinishedMessage()));
+        // The upgrade completes again on the resumed connection, so the greeting is sent again. The
+        // abbreviated handshake is TLS 1.2, so it has to turn up in this very receive.
+        appendUnpromptedGreetingAction(connection, trace, false);
 
         return trace;
     }
@@ -1484,8 +1531,10 @@ public class WorkflowConfigurationFactory {
                 if (config.getHighestProtocolVersion().isDTLS13()) {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
+                // The client's Finished ends the handshake here, so the greeting needs a receive of
+                // its own, which skips itself when the flight before already took it.
+                appendUnpromptedGreetingAction(connection, trace, true);
             } else {
-
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
@@ -1495,7 +1544,14 @@ public class WorkflowConfigurationFactory {
                 }
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+                    // The greeting cannot precede the Finished it follows, so reading till the
+                    // greeting ends at the same point whether or not the two share a segment. A
+                    // separate receive would wait out the timeout when they arrived together.
+                    trace.addTlsAction(new ReceiveTillAction(new ApplicationMessage()));
+                } else {
+                    trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                }
             }
             return trace;
         } else {
@@ -1506,6 +1562,8 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
             }
+            appendUnpromptedGreetingAction(
+                    connection, trace, config.getHighestProtocolVersion().is13());
             return trace;
         }
     }
