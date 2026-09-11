@@ -335,6 +335,15 @@ public class WorkflowConfigurationFactory {
                 messages.add(new CertificateVerifyMessage());
             }
             messages.add(new FinishedMessage());
+            if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
+                // The server holds its application keys once it has sent its Finished, so RFC
+                // 8446 lets it greet right behind it without waiting for the client's Finished.
+                // This receive must take the greeting when it comes along and must not wait for
+                // it when it does not.
+                ApplicationMessage greeting = new ApplicationMessage();
+                greeting.setRequired(false);
+                messages.add(greeting);
+            }
         } else {
             if (selectedCipherSuite.requiresServerCertificateMessage()) {
                 messages.add(new CertificateMessage());
@@ -418,7 +427,7 @@ public class WorkflowConfigurationFactory {
             workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
         if (config.getHighestProtocolVersion().is13()) {
-            appendUnpromptedGreetingAction(connection, workflowTrace);
+            appendUnpromptedGreetingAction(connection, workflowTrace, true);
         }
         return workflowTrace;
     }
@@ -426,19 +435,28 @@ public class WorkflowConfigurationFactory {
     /**
      * Adds the greeting that a STARTTLS server sends of its own accord once the handshake is done.
      *
-     * <p>Only the handshake workflows add it. The hello workflows stop before the upgrade is
-     * finished, so the greeting has not been sent yet by the time they end.
+     * <p>Only the handshake workflows add it. The TLS 1.2 hello workflows stop before the upgrade
+     * is finished, so the greeting has not been sent yet by the time they end. The TLS 1.3 hello
+     * workflows end with the server's Finished, which the greeting may already ride along with, so
+     * their last receive tolerates it instead.
      *
      * @param connection the connection the trace is built for
      * @param workflowTrace the trace to append to
+     * @param mayFail whether the receive is allowed to come up empty. In TLS 1.2 the server cannot
+     *     send the greeting before the client's Finished, so it has to arrive in exactly this
+     *     receive and a receive that finds nothing is a failure. In TLS 1.3 the server may already
+     *     have sent it along with its own Finished, and it may add NewSessionTickets of its own
+     *     accord, so this receive may find nothing or something else.
      */
     private void appendUnpromptedGreetingAction(
-            AliasedConnection connection, WorkflowTrace workflowTrace) {
+            AliasedConnection connection, WorkflowTrace workflowTrace, boolean mayFail) {
         if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
             TlsAction greetingAction =
                     MessageActionFactory.createTLSAction(
                             config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
-            greetingAction.addActionOption(ActionOption.MAY_FAIL);
+            if (mayFail) {
+                greetingAction.addActionOption(ActionOption.MAY_FAIL);
+            }
             workflowTrace.addTlsAction(greetingAction);
         }
     }
@@ -617,8 +635,9 @@ public class WorkflowConfigurationFactory {
                         new ChangeCipherSpecMessage(),
                         new FinishedMessage()));
         // The upgrade completes again on the resumed connection, so a server that greets of its
-        // own accord greets here too, after the client's Finished rather than with the server's.
-        appendUnpromptedGreetingAction(connection, trace);
+        // own accord greets here too. The abbreviated handshake is TLS 1.2, where the greeting can
+        // only follow the client's Finished, so it has to turn up in this very receive.
+        appendUnpromptedGreetingAction(connection, trace, false);
 
         return trace;
     }
@@ -1513,9 +1532,10 @@ public class WorkflowConfigurationFactory {
                 if (config.getHighestProtocolVersion().isDTLS13()) {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
-                // The client's Finished ends the handshake here, so the greeting can only arrive
-                // after this trace's last receive and needs a receive of its own.
-                appendUnpromptedGreetingAction(connection, trace);
+                // The client's Finished ends the handshake here, so the greeting needs a receive of
+                // its own. It may come up empty when the server sent the greeting along with its
+                // own Finished and the receive till the Finished already took it.
+                appendUnpromptedGreetingAction(connection, trace, true);
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
@@ -1547,7 +1567,8 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
             }
-            appendUnpromptedGreetingAction(connection, trace);
+            appendUnpromptedGreetingAction(
+                    connection, trace, config.getHighestProtocolVersion().is13());
             return trace;
         }
     }

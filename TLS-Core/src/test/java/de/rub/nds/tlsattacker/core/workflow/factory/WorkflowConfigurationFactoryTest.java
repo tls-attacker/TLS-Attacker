@@ -809,6 +809,8 @@ public class WorkflowConfigurationFactoryTest {
     /**
      * The upgrade completes again on the resumed connection, so the greeting is sent again and has
      * to be read there as well. It follows the client's Finished, so it needs a receive of its own.
+     * The abbreviated handshake is TLS 1.2, where the server cannot send the greeting any sooner,
+     * so the receive has to find it and must not be allowed to come up empty.
      */
     @ParameterizedTest(allowZeroInvocations = true)
     @MethodSource("unpromptedGreetingTypes")
@@ -821,6 +823,37 @@ public class WorkflowConfigurationFactoryTest {
         List<ProtocolMessage> expected = extractMessages((MessageAction) last);
         assertEquals(1, expected.size());
         assertEquals(ApplicationMessage.class, expected.get(0).getClass());
+        assertFalse(last.getActionOptions().contains(ActionOption.MAY_FAIL));
+    }
+
+    /**
+     * In TLS 1.3 the server holds its application keys once it has sent its Finished, so it may
+     * greet right behind it before the client's Finished. The receive of the server's flight
+     * tolerates the greeting without waiting for it, and the trailing receive after the client's
+     * Finished may then come up empty.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testHandshakeTls13ToleratesGreetingWithServerFinished(StarttlsType type) {
+        WorkflowTrace trace = createTrace(type, ProtocolVersion.TLS13, WorkflowTraceType.HANDSHAKE);
+
+        List<TlsAction> actions = trace.getTlsActions();
+        TlsAction serverFlight = actions.get(actions.size() - 3);
+        assertEquals(ReceiveAction.class, serverFlight.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) serverFlight);
+        ProtocolMessage greeting = expected.get(expected.size() - 1);
+        assertEquals(ApplicationMessage.class, greeting.getClass());
+        assertFalse(greeting.isRequired());
+        assertEquals(FinishedMessage.class, expected.get(expected.size() - 2).getClass());
+
+        TlsAction clientFinished = actions.get(actions.size() - 2);
+        assertEquals(SendAction.class, clientFinished.getClass());
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveAction.class, last.getClass());
+        List<ProtocolMessage> trailing = extractMessages((MessageAction) last);
+        assertEquals(1, trailing.size());
+        assertEquals(ApplicationMessage.class, trailing.get(0).getClass());
         assertTrue(last.getActionOptions().contains(ActionOption.MAY_FAIL));
     }
 
@@ -894,6 +927,19 @@ public class WorkflowConfigurationFactoryTest {
         assertEquals(2, expected.size());
         assertEquals(ChangeCipherSpecMessage.class, expected.get(0).getClass());
         assertEquals(FinishedMessage.class, expected.get(1).getClass());
+    }
+
+    @Test
+    public void testFtpHandshakeTls13LeavesServerFlightReceiveAlone() {
+        WorkflowTrace trace =
+                createTrace(StarttlsType.FTP, ProtocolVersion.TLS13, WorkflowTraceType.HANDSHAKE);
+
+        List<TlsAction> actions = trace.getTlsActions();
+        TlsAction serverFlight = actions.get(actions.size() - 2);
+        assertEquals(ReceiveAction.class, serverFlight.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) serverFlight);
+        assertEquals(FinishedMessage.class, expected.get(expected.size() - 1).getClass());
+        assertEquals(SendAction.class, lastAction(trace).getClass());
     }
 
     @Test
