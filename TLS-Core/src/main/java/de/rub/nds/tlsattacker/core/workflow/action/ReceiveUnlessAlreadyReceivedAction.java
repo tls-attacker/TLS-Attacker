@@ -21,22 +21,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Receives like a {@link ReceiveAction} unless the receive before it already took every protocol
- * message this one expects, in which case it does nothing and counts as executed as planned.
+ * Receives like a {@link ReceiveAction} unless the nearest preceding receive on the same connection
+ * already took every expected message, in which case it skips itself and counts as executed as
+ * planned rather than waiting out its timeout.
  *
- * <p>This is for messages a server may send either along with its last flight or on their own right
- * after it, where the trace cannot know in advance which of the two happens. A STARTTLS server that
- * greets unprompted once the upgrade is done may in TLS 1.3 send that greeting in the same flight
- * as its Finished, as it holds its application keys by then, or only once it has seen the client's
- * Finished. A plain receive for the greeting after the client's Finished would wait out its timeout
- * whenever the greeting had already come along with the server's flight. This action looks at the
- * nearest receive before it on the same connection and skips itself when that receive already holds
- * what it expects, much like {@link SendDynamicServerKeyExchangeAction} skips itself for a cipher
- * suite without a ServerKeyExchange.
- *
- * <p>Only the expected protocol messages take part in the check. The search for the previous
- * receive stops at a {@link ResetConnectionAction}, as whatever arrived before it belongs to
- * another connection.
+ * <p>For messages a server may send either with its last flight or right after it, where the trace
+ * cannot know which: a TLS 1.3 STARTTLS greeting may ride along with the server's Finished or only
+ * follow the client's. The search stops at a {@link ResetConnectionAction}.
  */
 @XmlRootElement(name = "ReceiveUnlessAlreadyReceived")
 public class ReceiveUnlessAlreadyReceivedAction extends ReceiveAction {
@@ -77,10 +68,8 @@ public class ReceiveUnlessAlreadyReceivedAction extends ReceiveAction {
     }
 
     /**
-     * Whether the action did not receive because the receive before it had already taken the
-     * expected messages.
-     *
-     * @return true if the action skipped itself
+     * @return true if the action skipped itself because the receive before it had already taken the
+     *     expected messages
      */
     public boolean isSkipped() {
         return skipped;

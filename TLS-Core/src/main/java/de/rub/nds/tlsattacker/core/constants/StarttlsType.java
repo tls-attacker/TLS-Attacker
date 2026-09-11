@@ -160,13 +160,9 @@ public enum StarttlsType {
     }
 
     /**
-     * Whether the server sends an application-layer message of its own accord as soon as the
-     * handshake finishes, before the client has asked for anything.
-     *
-     * <p>ManageSieve is the case this exists for: RFC 5804 section 2.2 requires the server to
-     * re-issue its capability listing after a successful TLS negotiation. Whether that listing
-     * lands in the same receive as the handshake or in the one after it is a matter of timing, so
-     * anything that compares two responses byte for byte has to know to expect it.
+     * Whether the server sends an application-layer message of its own accord once the handshake
+     * finishes, before the client has asked for anything. Protocols that re-advertise their
+     * capabilities after the upgrade do this, ManageSieve among them (RFC 5804 section 2.2).
      *
      * @return true if a greeting arrives unprompted after the handshake
      */

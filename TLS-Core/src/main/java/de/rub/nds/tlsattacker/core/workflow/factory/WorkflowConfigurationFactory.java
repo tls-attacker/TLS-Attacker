@@ -336,10 +336,8 @@ public class WorkflowConfigurationFactory {
             }
             messages.add(new FinishedMessage());
             if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
-                // The server holds its application keys once it has sent its Finished, so RFC
-                // 8446 lets it greet right behind it without waiting for the client's Finished.
-                // This receive must take the greeting when it comes along and must not wait for
-                // it when it does not.
+                // RFC 8446 lets the server greet right behind its Finished, so this receive must
+                // take the greeting when it comes along and must not wait for it when it does not.
                 ApplicationMessage greeting = new ApplicationMessage();
                 greeting.setRequired(false);
                 messages.add(greeting);
@@ -434,20 +432,15 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Adds the greeting that a STARTTLS server sends of its own accord once the handshake is done.
-     *
-     * <p>Only the handshake workflows add it. The TLS 1.2 hello workflows stop before the upgrade
-     * is finished, so the greeting has not been sent yet by the time they end. The TLS 1.3 hello
-     * workflows end with the server's Finished, which the greeting may already ride along with, so
-     * their last receive tolerates it instead.
+     * Only the handshake workflows add it; the hello workflows end before the greeting is due.
      *
      * @param connection the connection the trace is built for
      * @param workflowTrace the trace to append to
-     * @param tls13 whether the handshake is TLS 1.3. In TLS 1.2 the server cannot send the greeting
-     *     before the client's Finished, so it has to arrive in exactly this receive and a receive
-     *     that finds nothing is a failure. In TLS 1.3 the server may already have sent it along
-     *     with its own Finished, in which case the receive of that flight took it and this one
-     *     skips itself rather than waiting out its timeout for a second copy; and the server may
-     *     add NewSessionTickets of its own accord, which are ignored.
+     * @param tls13 whether the handshake is TLS 1.3. In TLS 1.2 the greeting can only follow the
+     *     client's Finished, so it has to arrive in this very receive and an empty one is a
+     *     failure. In TLS 1.3 the server may have sent it with its own Finished, so the receive
+     *     skips itself when the flight before already took it and ignores unasked
+     *     NewSessionTickets.
      */
     private void appendUnpromptedGreetingAction(
             AliasedConnection connection, WorkflowTrace workflowTrace, boolean tls13) {
@@ -641,9 +634,8 @@ public class WorkflowConfigurationFactory {
                         ConnectionEndType.CLIENT,
                         new ChangeCipherSpecMessage(),
                         new FinishedMessage()));
-        // The upgrade completes again on the resumed connection, so a server that greets of its
-        // own accord greets here too. The abbreviated handshake is TLS 1.2, where the greeting can
-        // only follow the client's Finished, so it has to turn up in this very receive.
+        // The upgrade completes again on the resumed connection, so the greeting is sent again. The
+        // abbreviated handshake is TLS 1.2, so it has to turn up in this very receive.
         appendUnpromptedGreetingAction(connection, trace, false);
 
         return trace;
@@ -1540,8 +1532,7 @@ public class WorkflowConfigurationFactory {
                     trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
                 // The client's Finished ends the handshake here, so the greeting needs a receive of
-                // its own. That receive skips itself when the server sent the greeting along with
-                // its own Finished and the receive till the Finished already took it.
+                // its own, which skips itself when the flight before already took it.
                 appendUnpromptedGreetingAction(connection, trace, true);
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
@@ -1554,12 +1545,9 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
                 if (config.getStarttlsType().sendsUnpromptedPostHandshakeGreeting()) {
-                    // The greeting follows the server's Finished and often shares its segment. A
-                    // receive that stops at the Finished takes the greeting along whenever the two
-                    // arrive together, and a separate greeting receive after it then waits out the
-                    // whole timeout for a second copy. Reading till the greeting instead ends the
-                    // action at the same point in both cases, because the greeting cannot arrive
-                    // before the Finished it follows.
+                    // The greeting cannot precede the Finished it follows, so reading till the
+                    // greeting ends at the same point whether or not the two share a segment. A
+                    // separate receive would wait out the timeout when they arrived together.
                     trace.addTlsAction(new ReceiveTillAction(new ApplicationMessage()));
                 } else {
                     trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
