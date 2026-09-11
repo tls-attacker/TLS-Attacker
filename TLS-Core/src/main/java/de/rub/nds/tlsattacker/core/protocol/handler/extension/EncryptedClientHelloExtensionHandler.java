@@ -60,7 +60,7 @@ public class EncryptedClientHelloExtensionHandler
             KeyShareEntry keyShareEntry = tlsContext.getChooser().getEchServerKeyShareEntry();
 
             // log own private and public key
-            LOGGER.debug("ServerPrivateKey: {}", keyShareEntry.getPrivateKey().toByteArray());
+            LOGGER.debug("ServerPrivateKey: {}", keyShareEntry.getDhPrivateKey().toByteArray());
             LOGGER.debug("ServerPublicKey: {}", keyShareEntry.getPublicKey().getValue());
 
             // RFC 9180, Section 7.1

@@ -368,7 +368,7 @@ public class WorkflowTraceSerializerTest {
         KeyShareEntry readEntry = readExtension.getKeyShareList().get(0);
 
         assertEquals(group, readEntry.getGroupConfig());
-        assertEquals(BigInteger.TEN, readEntry.getPrivateKey());
+        assertEquals(BigInteger.TEN, readEntry.getDhPrivateKey());
         assertEquals(parameters, readEntry.getMLKEMPrivateKeyContainer().getParameters());
         assertArrayEquals(decapsulationKey, readEntry.getMLKEMPrivateKey());
         assertEquals(parameters, readEntry.getMLKEMPublicKeyContainer().getParameters());

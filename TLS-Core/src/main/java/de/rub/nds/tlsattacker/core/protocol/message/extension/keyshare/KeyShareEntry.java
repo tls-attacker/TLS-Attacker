@@ -23,7 +23,7 @@ import java.math.BigInteger;
 public class KeyShareEntry extends ModifiableVariableHolder {
 
     private NamedGroup groupConfig;
-    private BigInteger privateKey;
+    private BigInteger dhPrivateKey;
     private MlKemPrivateKey mlkemPrivateKey;
     private MlKemPublicKey mlkemPublicKeyContainer;
 
@@ -32,13 +32,15 @@ public class KeyShareEntry extends ModifiableVariableHolder {
     private ModifiableInteger publicKeyLength;
 
     private ModifiableByteArray publicKey;
+    private ModifiableByteArray dhPublicKey;
     private ModifiableByteArray mlkemPublicKey;
+    private ModifiableByteArray mlkemCiphertext;
 
     public KeyShareEntry() {}
 
-    public KeyShareEntry(NamedGroup groupConfig, BigInteger privateKey) {
+    public KeyShareEntry(NamedGroup groupConfig, BigInteger dhPrivateKey) {
         this.groupConfig = groupConfig;
-        this.privateKey = privateKey;
+        this.dhPrivateKey = dhPrivateKey;
     }
 
     public NamedGroup getGroupConfig() {
@@ -73,6 +75,18 @@ public class KeyShareEntry extends ModifiableVariableHolder {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 
+    public ModifiableByteArray getDhPublicKey() {
+        return dhPublicKey;
+    }
+
+    public void setDhPublicKey(ModifiableByteArray dhPublicKey) {
+        this.dhPublicKey = dhPublicKey;
+    }
+
+    public void setDhPublicKey(byte[] dhPublicKey) {
+        this.dhPublicKey = ModifiableVariableFactory.safelySetValue(this.dhPublicKey, dhPublicKey);
+    }
+
     public ModifiableInteger getPublicKeyLength() {
         return publicKeyLength;
     }
@@ -86,12 +100,12 @@ public class KeyShareEntry extends ModifiableVariableHolder {
                 ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
-    public BigInteger getPrivateKey() {
-        return privateKey;
+    public BigInteger getDhPrivateKey() {
+        return dhPrivateKey;
     }
 
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = privateKey;
+    public void setDhPrivateKey(BigInteger dhPrivateKey) {
+        this.dhPrivateKey = dhPrivateKey;
     }
 
     public byte[] getMLKEMPrivateKey() {
@@ -119,5 +133,18 @@ public class KeyShareEntry extends ModifiableVariableHolder {
 
     public MlKemPublicKey getMLKEMPublicKeyContainer() {
         return mlkemPublicKeyContainer;
+    }
+
+    public ModifiableByteArray getMLKEMCiphertext() {
+        return mlkemCiphertext;
+    }
+
+    public void setMLKEMCiphertext(ModifiableByteArray mlkemCiphertext) {
+        this.mlkemCiphertext = mlkemCiphertext;
+    }
+
+    public void setMLKEMCiphertext(byte[] mlkemCiphertext) {
+        this.mlkemCiphertext =
+                ModifiableVariableFactory.safelySetValue(this.mlkemCiphertext, mlkemCiphertext);
     }
 }

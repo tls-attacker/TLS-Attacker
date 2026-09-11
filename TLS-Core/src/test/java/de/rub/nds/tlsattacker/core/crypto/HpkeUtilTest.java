@@ -50,7 +50,7 @@ public class HpkeUtilTest {
 
         // create sender key
         KeyShareEntry keyShareEntry = new KeyShareEntry();
-        keyShareEntry.setPrivateKey(privateKeySender);
+        keyShareEntry.setDhPrivateKey(privateKeySender);
         keyShareEntry.setPublicKey(publicKeySender);
 
         hpkeUtil.setupBaseSender(echPublicKey, info, keyShareEntry);
@@ -131,7 +131,7 @@ public class HpkeUtilTest {
 
         // create receiver key
         KeyShareEntry keyShareEntry = new KeyShareEntry();
-        keyShareEntry.setPrivateKey(privateKeyReceiver);
+        keyShareEntry.setDhPrivateKey(privateKeyReceiver);
         keyShareEntry.setPublicKey(publicKeyReceiver);
 
         hpkeUtil.setupBaseReceiver(enc, info, keyShareEntry);
@@ -218,7 +218,7 @@ public class HpkeUtilTest {
 
         // create own key
         KeyShareEntry keyShareEntry = new KeyShareEntry();
-        keyShareEntry.setPrivateKey(privateKeySender);
+        keyShareEntry.setDhPrivateKey(privateKeySender);
         keyShareEntry.setPublicKey(publicKeySender);
 
         HpkeSenderContext hpkeSenderContext =
@@ -266,7 +266,7 @@ public class HpkeUtilTest {
 
         // create receiver key
         KeyShareEntry keyShareEntry = new KeyShareEntry();
-        keyShareEntry.setPrivateKey(privateKeyReceiver);
+        keyShareEntry.setDhPrivateKey(privateKeyReceiver);
         keyShareEntry.setPublicKey(publicKeyReceiver);
 
         HpkeReceiverContext hpkeReceiverContext =

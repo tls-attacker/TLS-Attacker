@@ -234,11 +234,12 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
     private void prepareKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
         KeyShareEntry keyShareEntry = msg.getKeyShareEntry();
-        keyShareEntry.setPrivateKey(chooser.getConfig().getDefaultEsniClientPrivateKey());
+        keyShareEntry.setDhPrivateKey(chooser.getConfig().getDefaultEsniClientPrivateKey());
         KeyShareEntryPreparator keyShareEntryPreparator =
                 new KeyShareEntryPreparator(chooser, keyShareEntry);
         keyShareEntryPreparator.prepare();
-        LOGGER.debug("ClientPrivateKey: {}", msg.getKeyShareEntry().getPrivateKey().toByteArray());
+        LOGGER.debug(
+                "ClientPrivateKey: {}", msg.getKeyShareEntry().getDhPrivateKey().toByteArray());
         LOGGER.debug("ClientPublicKey: {}", msg.getKeyShareEntry().getPublicKey().getValue());
     }
 
@@ -337,7 +338,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
     private void prepareEsniClientSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
         NamedGroup group = NamedGroup.getNamedGroup(msg.getKeyShareEntry().getGroup().getValue());
-        BigInteger clientPrivateKey = msg.getKeyShareEntry().getPrivateKey();
+        BigInteger clientPrivateKey = msg.getKeyShareEntry().getDhPrivateKey();
         byte[] serverPublicKey =
                 msg.getEncryptedSniComputation().getEsniServerPublicKey().getValue();
         byte[] esniSharedSecret =
@@ -352,10 +353,10 @@ public class EncryptedServerNameIndicationExtensionPreparator
         NamedGroup group = NamedGroup.getNamedGroup(msg.getKeyShareEntry().getGroup().getValue());
         boolean isFoundSharedNamedGroup = false;
         BigInteger serverPrivateKey =
-                chooser.getConfig().getEsniServerKeyPairs().get(0).getPrivateKey();
+                chooser.getConfig().getEsniServerKeyPairs().get(0).getDhPrivateKey();
         for (KeyShareEntry keyShareEntry : chooser.getConfig().getEsniServerKeyPairs()) {
             if (Arrays.equals(keyShareEntry.getGroup().getValue(), group.getValue())) {
-                serverPrivateKey = keyShareEntry.getPrivateKey();
+                serverPrivateKey = keyShareEntry.getDhPrivateKey();
                 isFoundSharedNamedGroup = true;
                 break;
             }

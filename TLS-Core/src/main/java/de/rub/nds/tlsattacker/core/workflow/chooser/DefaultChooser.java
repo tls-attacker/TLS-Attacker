@@ -1128,7 +1128,7 @@ public class DefaultChooser extends Chooser {
             return context.getTlsContext().getEchClientKeyShareEntry();
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
-            keyShareEntry.setPrivateKey(config.getDefaultEchClientPrivateKey());
+            keyShareEntry.setDhPrivateKey(config.getDefaultEchClientPrivateKey());
             KeyShareEntryPreparator keyShareEntryPreparator =
                     new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
@@ -1148,7 +1148,7 @@ public class DefaultChooser extends Chooser {
             return context.getTlsContext().getEchServerKeyShareEntry();
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
-            keyShareEntry.setPrivateKey(config.getDefaultEchServerPrivateKey());
+            keyShareEntry.setDhPrivateKey(config.getDefaultEchServerPrivateKey());
             KeyShareEntryPreparator keyShareEntryPreparator =
                     new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
