@@ -505,11 +505,11 @@ public class TlsContext extends LayerContext {
 
     private Long esniNotAfter;
 
-    private Map<NamedGroup, MlKemPrivateKey> clientMLKEMPrivateKeys = new HashMap<>();
+    private Map<NamedGroup, MlKemPrivateKey> clientMlKemPrivateKeys = new HashMap<>();
 
-    private Map<NamedGroup, MlKemPublicKey> clientMLKEMPublicKeys = new HashMap<>();
+    private Map<NamedGroup, MlKemPublicKey> clientMlKemPublicKeys = new HashMap<>();
 
-    private byte[] serverMLKEMCiphertext;
+    private byte[] serverMlKemCiphertext;
 
     /**
      * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension)
@@ -2367,20 +2367,20 @@ public class TlsContext extends LayerContext {
         this.peerReceiveLimit = peerReceiveLimit;
     }
 
-    public Map<NamedGroup, MlKemPrivateKey> getClientMLKEMPrivateKeys() {
-        return clientMLKEMPrivateKeys;
+    public Map<NamedGroup, MlKemPrivateKey> getClientMlKemPrivateKeys() {
+        return clientMlKemPrivateKeys;
     }
 
-    public Map<NamedGroup, MlKemPublicKey> getClientMLKEMPublicKeys() {
-        return clientMLKEMPublicKeys;
+    public Map<NamedGroup, MlKemPublicKey> getClientMlKemPublicKeys() {
+        return clientMlKemPublicKeys;
     }
 
-    public byte[] getServerMLKEMCiphertext() {
-        return serverMLKEMCiphertext;
+    public byte[] getServerMlKemCiphertext() {
+        return serverMlKemCiphertext;
     }
 
-    public void setServerMLKEMCiphertext(byte[] serverMLKEMCiphertext) {
-        this.serverMLKEMCiphertext = serverMLKEMCiphertext;
+    public void setServerMlKemCiphertext(byte[] serverMlKemCiphertext) {
+        this.serverMlKemCiphertext = serverMlKemCiphertext;
     }
 
     public byte[] getPQSharedSecret() {

@@ -20,7 +20,7 @@ import de.rub.nds.protocol.util.SilentByteArrayOutputStream;
 import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.CertificateChainConfigAdapter;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
-import de.rub.nds.tlsattacker.core.config.constants.MlkemDefaultKeys;
+import de.rub.nds.tlsattacker.core.config.constants.MlKemDefaultKeys;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -1214,7 +1214,7 @@ public class Config implements Serializable {
                     "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultServerMLKEMCiphertext = new byte[0];
+    private byte[] defaultServerMlKemCiphertext = new byte[0];
 
     /**
      * The client's ML-KEM key parameters, stored in the FIPS 203 decapsulation key encoding. That
@@ -1222,14 +1222,14 @@ public class Config implements Serializable {
      * encapsulation key and the implicit rejection value z.
      */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMlKem512KeyParameters = MlkemDefaultKeys.getMlKem512KeyParameters();
+    private byte[] defaultClientMlKem512KeyParameters = MlKemDefaultKeys.getMlKem512KeyParameters();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientMlKem768KeyParameters = MlkemDefaultKeys.getMlKem768KeyParameters();
+    private byte[] defaultClientMlKem768KeyParameters = MlKemDefaultKeys.getMlKem768KeyParameters();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientMlKem1024KeyParameters =
-            MlkemDefaultKeys.getMlKem1024KeyParameters();
+            MlKemDefaultKeys.getMlKem1024KeyParameters();
 
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -4623,12 +4623,12 @@ public class Config implements Serializable {
         this.quicImmediateCloseOnTlsError = quicImmediateCloseOnTlsError;
     }
 
-    public byte[] getDefaultServerMLKEMCiphertext() {
-        return Arrays.copyOf(defaultServerMLKEMCiphertext, defaultServerMLKEMCiphertext.length);
+    public byte[] getDefaultServerMlKemCiphertext() {
+        return Arrays.copyOf(defaultServerMlKemCiphertext, defaultServerMlKemCiphertext.length);
     }
 
-    public void setDefaultServerMLKEMCiphertext(byte[] defaultServerMLKEMCiphertext) {
-        this.defaultServerMLKEMCiphertext = defaultServerMLKEMCiphertext;
+    public void setDefaultServerMlKemCiphertext(byte[] defaultServerMlKemCiphertext) {
+        this.defaultServerMlKemCiphertext = defaultServerMlKemCiphertext;
     }
 
     public byte[] getDefaultClientMlKem512KeyParameters() {

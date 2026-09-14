@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.util.DataConverter;
  * generation seed 00 01 02 ... 3f and is stored in the FIPS 203 decapsulation key encoding, which
  * embeds the matching encapsulation key.
  */
-public class MlkemDefaultKeys {
+public class MlKemDefaultKeys {
 
     private static final String ML_KEM_512_KEY_PARAMETERS =
             "70554fd436344f2785b1b3b1bac184b6679003336c26f15a7de878c4825c6be03f3c4a480f75b748"
@@ -231,5 +231,5 @@ public class MlkemDefaultKeys {
         return DataConverter.hexStringToByteArray(ML_KEM_1024_KEY_PARAMETERS);
     }
 
-    private MlkemDefaultKeys() {}
+    private MlKemDefaultKeys() {}
 }

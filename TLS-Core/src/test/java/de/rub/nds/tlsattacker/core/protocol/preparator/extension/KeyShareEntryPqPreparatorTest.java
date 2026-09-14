@@ -58,7 +58,7 @@ public class KeyShareEntryPqPreparatorTest {
                 PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT),
                 publicKey.length);
         assertEquals(publicKey.length, (int) entry.getPublicKeyLength().getValue());
-        assertArrayEquals(entry.getMLKEMPublicKey().getValue(), publicKey);
+        assertArrayEquals(entry.getMlKemPublicKey().getValue(), publicKey);
         assertArrayEquals(namedGroup.getValue(), entry.getGroup().getValue());
     }
 
@@ -74,10 +74,10 @@ public class KeyShareEntryPqPreparatorTest {
 
         assertArrayEquals(
                 entry.getPublicKey().getValue(),
-                context.getClientMLKEMPublicKeys().get(namedGroup).getEncapsulationKey());
+                context.getClientMlKemPublicKeys().get(namedGroup).getEncapsulationKey());
         assertArrayEquals(
-                entry.getMLKEMPrivateKey(),
-                context.getClientMLKEMPrivateKeys().get(namedGroup).getDecapsulationKey());
+                entry.getMlKemPrivateKey(),
+                context.getClientMlKemPrivateKeys().get(namedGroup).getDecapsulationKey());
     }
 
     @ParameterizedTest
@@ -100,7 +100,7 @@ public class KeyShareEntryPqPreparatorTest {
         byte[][] splitKeyShare =
                 PQUtils.splitKeyShare(namedGroup, ConnectionEndType.CLIENT, publicKey);
         assertArrayEquals(expectedClassicalPublicKey(context, namedGroup), splitKeyShare[0]);
-        assertArrayEquals(entry.getMLKEMPublicKey().getValue(), splitKeyShare[1]);
+        assertArrayEquals(entry.getMlKemPublicKey().getValue(), splitKeyShare[1]);
     }
 
     @ParameterizedTest
@@ -113,13 +113,13 @@ public class KeyShareEntryPqPreparatorTest {
 
         new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
 
-        assertNotNull(context.getClientMLKEMPrivateKeys().get(namedGroup));
-        assertNotNull(context.getClientMLKEMPublicKeys().get(namedGroup));
+        assertNotNull(context.getClientMlKemPrivateKeys().get(namedGroup));
+        assertNotNull(context.getClientMlKemPublicKeys().get(namedGroup));
         assertNull(
-                context.getClientMLKEMPrivateKeys()
+                context.getClientMlKemPrivateKeys()
                         .get(namedGroup.getHybridPostQuantumNamedGroup()));
         assertNull(
-                context.getClientMLKEMPublicKeys()
+                context.getClientMlKemPublicKeys()
                         .get(namedGroup.getHybridPostQuantumNamedGroup()));
     }
 
@@ -139,9 +139,9 @@ public class KeyShareEntryPqPreparatorTest {
         assertEquals(
                 PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.SERVER),
                 ciphertext.length);
-        assertArrayEquals(ciphertext, context.getServerMLKEMCiphertext());
+        assertArrayEquals(ciphertext, context.getServerMlKemCiphertext());
         assertArrayEquals(
-                KeyShareCalculator.mlkemDecaps(namedGroup, clientKeyPair.privateKey, ciphertext),
+                KeyShareCalculator.mlKemDecaps(namedGroup, clientKeyPair.privateKey, ciphertext),
                 context.getPQSharedSecret());
     }
 
@@ -171,9 +171,9 @@ public class KeyShareEntryPqPreparatorTest {
         byte[][] splitKeyShare =
                 PQUtils.splitKeyShare(namedGroup, ConnectionEndType.SERVER, publicKey);
         assertArrayEquals(expectedClassicalPublicKey(context, namedGroup), splitKeyShare[0]);
-        assertArrayEquals(splitKeyShare[1], context.getServerMLKEMCiphertext());
+        assertArrayEquals(splitKeyShare[1], context.getServerMlKemCiphertext());
         assertArrayEquals(
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         namedGroup, clientKeyPair.privateKey, splitKeyShare[1]),
                 context.getPQSharedSecret());
     }
@@ -196,7 +196,7 @@ public class KeyShareEntryPqPreparatorTest {
                 filled(
                         PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.SERVER),
                         (byte) 0x22);
-        context.getConfig().setDefaultServerMLKEMCiphertext(override);
+        context.getConfig().setDefaultServerMlKemCiphertext(override);
         KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
 
         new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
@@ -209,7 +209,7 @@ public class KeyShareEntryPqPreparatorTest {
                                 entry.getPublicKey().getValue())[1]
                         : entry.getPublicKey().getValue();
         assertArrayEquals(override, sentCiphertext);
-        assertArrayEquals(override, context.getServerMLKEMCiphertext());
+        assertArrayEquals(override, context.getServerMlKemCiphertext());
         assertEquals(32, context.getPQSharedSecret().length);
     }
 
@@ -235,8 +235,8 @@ public class KeyShareEntryPqPreparatorTest {
         MlKemPrivateKey expected =
                 new MlKemPrivateKey(
                         KeyShareCalculator.getMlKemParameters(namedGroup), decapsulationKey);
-        assertArrayEquals(decapsulationKey, entry.getMLKEMPrivateKey());
-        assertArrayEquals(expected.getEncapsulationKey(), entry.getMLKEMPublicKey().getValue());
+        assertArrayEquals(decapsulationKey, entry.getMlKemPrivateKey());
+        assertArrayEquals(expected.getEncapsulationKey(), entry.getMlKemPublicKey().getValue());
         assertArrayEquals(expected.getEncapsulationKey(), sentPqKeyShare(namedGroup, entry));
     }
 
@@ -294,13 +294,13 @@ public class KeyShareEntryPqPreparatorTest {
         new KeyShareEntryPreparator(context.getChooser(), entry).prepare();
 
         MlKemEncapsulation encapsulation =
-                KeyShareCalculator.mlkemEncaps(
-                        namedGroup, entry.getMLKEMPublicKey().getValue(), new SecureRandom());
+                KeyShareCalculator.mlKemEncaps(
+                        namedGroup, entry.getMlKemPublicKey().getValue(), new SecureRandom());
         assertArrayEquals(
                 encapsulation.getSharedSecret(),
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         namedGroup,
-                        entry.getMLKEMPrivateKeyContainer(),
+                        entry.getMlKemPrivateKeyContainer(),
                         encapsulation.getCiphertext()));
     }
 
@@ -330,16 +330,16 @@ public class KeyShareEntryPqPreparatorTest {
         assertEquals(
                 KeyShareCalculator.getMlKemParameters(namedGroup).getDecapsulationKeySizeBytes(),
                 applicableDefaultKey.length);
-        assertArrayEquals(applicableDefaultKey, entry.getMLKEMPrivateKey());
+        assertArrayEquals(applicableDefaultKey, entry.getMlKemPrivateKey());
 
         MlKemEncapsulation encapsulation =
-                KeyShareCalculator.mlkemEncaps(
-                        namedGroup, entry.getMLKEMPublicKey().getValue(), new SecureRandom());
+                KeyShareCalculator.mlKemEncaps(
+                        namedGroup, entry.getMlKemPublicKey().getValue(), new SecureRandom());
         assertArrayEquals(
                 encapsulation.getSharedSecret(),
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         namedGroup,
-                        entry.getMLKEMPrivateKeyContainer(),
+                        entry.getMlKemPrivateKeyContainer(),
                         encapsulation.getCiphertext()));
     }
 
@@ -366,8 +366,8 @@ public class KeyShareEntryPqPreparatorTest {
 
     private static byte[] generateDecapsulationKey(NamedGroup namedGroup) {
         KeyShareEntry entry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(namedGroup, entry, new SecureRandom());
-        return entry.getMLKEMPrivateKey();
+        KeyShareCalculator.createMlKemKeyShare(namedGroup, entry, new SecureRandom());
+        return entry.getMlKemPrivateKey();
     }
 
     private static byte[] sentPqKeyShare(NamedGroup namedGroup, KeyShareEntry entry) {
@@ -396,7 +396,7 @@ public class KeyShareEntryPqPreparatorTest {
                 PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.SERVER),
                 ciphertext.length);
         assertArrayEquals(
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         namedGroup,
                         defaultClientPrivateKey(context, namedGroup, preparator),
                         ciphertext),
@@ -424,7 +424,7 @@ public class KeyShareEntryPqPreparatorTest {
         byte[][] splitKeyShare =
                 PQUtils.splitKeyShare(namedGroup, ConnectionEndType.SERVER, publicKey);
         assertArrayEquals(
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         namedGroup,
                         defaultClientPrivateKey(context, namedGroup, preparator),
                         splitKeyShare[1]),
@@ -455,10 +455,10 @@ public class KeyShareEntryPqPreparatorTest {
 
     private static ClientKeyPair generateClientKeyPair(NamedGroup namedGroup) {
         KeyShareEntry clientEntry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(namedGroup, clientEntry, new SecureRandom());
+        KeyShareCalculator.createMlKemKeyShare(namedGroup, clientEntry, new SecureRandom());
         return new ClientKeyPair(
-                clientEntry.getMLKEMPublicKey().getValue(),
-                clientEntry.getMLKEMPrivateKeyContainer());
+                clientEntry.getMlKemPublicKey().getValue(),
+                clientEntry.getMlKemPrivateKeyContainer());
     }
 
     private static class ClientKeyPair {

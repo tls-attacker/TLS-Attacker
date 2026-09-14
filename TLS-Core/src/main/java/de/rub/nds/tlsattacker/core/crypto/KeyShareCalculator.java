@@ -109,43 +109,44 @@ public class KeyShareCalculator {
     }
 
     /**
-     * Creates a post-quantum mlkem key share for the client and sets both values in the
+     * Creates a post-quantum ML-KEM key share for the client and sets both values in the
      * keyShareEntry
      *
      * @param namedGroup The namedGroup that should be used.
      * @param keyShareEntry The keyShareEntry that should be used.
      * @param random The secure random that should be used.
      */
-    public static void createMLKEMKeyShare(
+    public static void createMlKemKeyShare(
             NamedGroup namedGroup, KeyShareEntry keyShareEntry, SecureRandom random) {
         LOGGER.debug("Using group: {}", namedGroup);
         Pair<MlKemPublicKey, MlKemPrivateKey> keyPair =
                 MlKemCalculator.generateKeyPair(getMlKemParameters(namedGroup), random);
 
-        keyShareEntry.setMLKEMPublicKey(keyPair.getLeft());
-        keyShareEntry.setMLKEMPrivateKey(keyPair.getRight());
-        LOGGER.debug("KeyShare: {}", keyShareEntry.getMLKEMPublicKey().getValue());
+        keyShareEntry.setMlKemPublicKey(keyPair.getLeft());
+        keyShareEntry.setMlKemPrivateKey(keyPair.getRight());
+        LOGGER.debug("KeyShare: {}", keyShareEntry.getMlKemPublicKey().getValue());
     }
 
     /**
-     * Creates a post-quantum mlkem key share for the client from a fixed decapsulation key and sets
-     * both values in the keyShareEntry. The encapsulation key is taken from the decapsulation key,
-     * which embeds it. The decapsulation key must have the length defined by the parameter set.
+     * Creates a post-quantum ML-KEM key share for the client from a fixed decapsulation key and
+     * sets both values in the keyShareEntry. The encapsulation key is taken from the decapsulation
+     * key, which embeds it. The decapsulation key must have the length defined by the parameter
+     * set.
      *
      * @param namedGroup The namedGroup that should be used.
      * @param keyShareEntry The keyShareEntry that should be used.
      * @param decapsulationKey The encoded decapsulation key that should be used.
      */
-    public static void createMLKEMKeyShare(
+    public static void createMlKemKeyShare(
             NamedGroup namedGroup, KeyShareEntry keyShareEntry, byte[] decapsulationKey) {
         LOGGER.debug("Using group: {}", namedGroup);
         MlKemParameters parameters = getMlKemParameters(namedGroup);
         MlKemPrivateKey privateKey = new MlKemPrivateKey(parameters, decapsulationKey);
 
-        keyShareEntry.setMLKEMPrivateKey(privateKey);
-        keyShareEntry.setMLKEMPublicKey(
+        keyShareEntry.setMlKemPrivateKey(privateKey);
+        keyShareEntry.setMlKemPublicKey(
                 new MlKemPublicKey(parameters, privateKey.getEncapsulationKey()));
-        LOGGER.debug("KeyShare: {}", keyShareEntry.getMLKEMPublicKey().getValue());
+        LOGGER.debug("KeyShare: {}", keyShareEntry.getMlKemPublicKey().getValue());
     }
 
     /**
@@ -157,7 +158,7 @@ public class KeyShareCalculator {
      * @param ciphertext The server's ciphertext that should be decapsulated.
      * @return The computed shared secret.
      */
-    public static byte[] mlkemDecaps(
+    public static byte[] mlKemDecaps(
             NamedGroup namedGroup, MlKemPrivateKey privateKey, byte[] ciphertext) {
         LOGGER.debug("Using group: {}", namedGroup);
         return MlKemCalculator.decapsulate(privateKey, ciphertext);
@@ -172,7 +173,7 @@ public class KeyShareCalculator {
      * @param random The secure random that should be used
      * @return The encapsulation result containing both the ciphertext and the shared secret.
      */
-    public static MlKemEncapsulation mlkemEncaps(
+    public static MlKemEncapsulation mlKemEncaps(
             NamedGroup namedGroup, byte[] clientPublicKeyBytes, SecureRandom random) {
         return MlKemCalculator.encapsulate(
                 getMlKemParameters(namedGroup), clientPublicKeyBytes, random);

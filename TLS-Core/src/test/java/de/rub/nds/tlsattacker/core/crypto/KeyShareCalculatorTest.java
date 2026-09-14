@@ -66,22 +66,22 @@ public class KeyShareCalculatorTest {
     }
 
     @Test
-    public void testMLKEMEncapsDecaps() {
+    public void testMlKemEncapsDecaps() {
         NamedGroup group = NamedGroup.MLKEM512;
         KeyShareEntry clientEntry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(group, clientEntry, new SecureRandom());
+        KeyShareCalculator.createMlKemKeyShare(group, clientEntry, new SecureRandom());
 
         MlKemEncapsulation encapsulationResult =
-                KeyShareCalculator.mlkemEncaps(
-                        group, clientEntry.getMLKEMPublicKey().getValue(), new SecureRandom());
+                KeyShareCalculator.mlKemEncaps(
+                        group, clientEntry.getMlKemPublicKey().getValue(), new SecureRandom());
 
         assertNotNull(encapsulationResult.getSharedSecret());
         assertNotNull(encapsulationResult.getCiphertext());
 
         byte[] decapsulatedSecret =
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         group,
-                        clientEntry.getMLKEMPrivateKeyContainer(),
+                        clientEntry.getMlKemPrivateKeyContainer(),
                         encapsulationResult.getCiphertext());
 
         assertArrayEquals(encapsulationResult.getSharedSecret(), decapsulatedSecret);

@@ -130,17 +130,17 @@ public class ServerHelloHandlerTest
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
 
         KeyShareEntry clientEntry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(
+        KeyShareCalculator.createMlKemKeyShare(
                 NamedGroup.MLKEM768, clientEntry, new SecureRandom());
 
         tlsContext
-                .getClientMLKEMPrivateKeys()
-                .put(NamedGroup.MLKEM768, clientEntry.getMLKEMPrivateKeyContainer());
+                .getClientMlKemPrivateKeys()
+                .put(NamedGroup.MLKEM768, clientEntry.getMlKemPrivateKeyContainer());
 
         MlKemEncapsulation encapsResult =
-                KeyShareCalculator.mlkemEncaps(
+                KeyShareCalculator.mlKemEncaps(
                         NamedGroup.MLKEM768,
-                        clientEntry.getMLKEMPublicKey().getValue(),
+                        clientEntry.getMlKemPublicKey().getValue(),
                         new SecureRandom());
 
         tlsContext.setServerKeyShareStoreEntry(
@@ -165,17 +165,17 @@ public class ServerHelloHandlerTest
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
 
         KeyShareEntry clientEntry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(
+        KeyShareCalculator.createMlKemKeyShare(
                 NamedGroup.MLKEM768, clientEntry, new SecureRandom());
 
         tlsContext
-                .getClientMLKEMPrivateKeys()
-                .put(NamedGroup.X25519_MLKEM768, clientEntry.getMLKEMPrivateKeyContainer());
+                .getClientMlKemPrivateKeys()
+                .put(NamedGroup.X25519_MLKEM768, clientEntry.getMlKemPrivateKeyContainer());
 
         MlKemEncapsulation encapsResult =
-                KeyShareCalculator.mlkemEncaps(
+                KeyShareCalculator.mlKemEncaps(
                         NamedGroup.MLKEM768,
-                        clientEntry.getMLKEMPublicKey().getValue(),
+                        clientEntry.getMlKemPublicKey().getValue(),
                         new SecureRandom());
 
         tlsContext

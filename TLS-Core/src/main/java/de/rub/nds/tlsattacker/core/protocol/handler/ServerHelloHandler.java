@@ -347,9 +347,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
      */
     private byte[] computePQSharedSecret(KeyShareStoreEntry keyShareStoreEntry) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return KeyShareCalculator.mlkemDecaps(
+            return KeyShareCalculator.mlKemDecaps(
                     keyShareStoreEntry.getGroup(),
-                    tlsContext.getClientMLKEMPrivateKeys().get(keyShareStoreEntry.getGroup()),
+                    tlsContext.getClientMlKemPrivateKeys().get(keyShareStoreEntry.getGroup()),
                     keyShareStoreEntry.getPublicKey());
         } else {
 
@@ -404,10 +404,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             LOGGER.debug("Computed Classical Shared Secret: {}", classicalSharedSecret);
 
             byte[] pqSharedSecret =
-                    KeyShareCalculator.mlkemDecaps(
+                    KeyShareCalculator.mlKemDecaps(
                             pqGroup,
                             tlsContext
-                                    .getClientMLKEMPrivateKeys()
+                                    .getClientMlKemPrivateKeys()
                                     .get(keyShareStoreEntry.getGroup()),
                             pqPubKey);
             LOGGER.debug("Computed ML-KEM Shared Secret: {}", pqSharedSecret);
