@@ -87,7 +87,7 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
         context.getConfig().getClientSupportedEsniCipherSuites().add(cipherSuite);
         context.getConfig().getClientSupportedEsniNamedGroups().add(namedGroup);
-        msg.getKeyShareEntry().setPrivateKey(privateKey);
+        msg.getKeyShareEntry().setDhPrivateKey(privateKey);
 
         context.setEsniRecordBytes(recordBytes);
 

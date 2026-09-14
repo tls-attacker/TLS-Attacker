@@ -23,22 +23,24 @@ import java.math.BigInteger;
 public class KeyShareEntry extends ModifiableVariableHolder {
 
     private NamedGroup groupConfig;
-    private BigInteger privateKey;
-    private MlKemPrivateKey mlkemPrivateKey;
-    private MlKemPublicKey mlkemPublicKeyContainer;
+    private BigInteger dhPrivateKey;
+    private MlKemPrivateKey mlKemPrivateKey;
+    private MlKemPublicKey mlKemPublicKeyContainer;
 
     private ModifiableByteArray group;
 
     private ModifiableInteger publicKeyLength;
 
     private ModifiableByteArray publicKey;
-    private ModifiableByteArray mlkemPublicKey;
+    private ModifiableByteArray dhPublicKey;
+    private ModifiableByteArray mlKemPublicKey;
+    private ModifiableByteArray mlKemCiphertext;
 
     public KeyShareEntry() {}
 
-    public KeyShareEntry(NamedGroup groupConfig, BigInteger privateKey) {
+    public KeyShareEntry(NamedGroup groupConfig, BigInteger dhPrivateKey) {
         this.groupConfig = groupConfig;
-        this.privateKey = privateKey;
+        this.dhPrivateKey = dhPrivateKey;
     }
 
     public NamedGroup getGroupConfig() {
@@ -73,6 +75,18 @@ public class KeyShareEntry extends ModifiableVariableHolder {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 
+    public ModifiableByteArray getDhPublicKey() {
+        return dhPublicKey;
+    }
+
+    public void setDhPublicKey(ModifiableByteArray dhPublicKey) {
+        this.dhPublicKey = dhPublicKey;
+    }
+
+    public void setDhPublicKey(byte[] dhPublicKey) {
+        this.dhPublicKey = ModifiableVariableFactory.safelySetValue(this.dhPublicKey, dhPublicKey);
+    }
+
     public ModifiableInteger getPublicKeyLength() {
         return publicKeyLength;
     }
@@ -86,38 +100,51 @@ public class KeyShareEntry extends ModifiableVariableHolder {
                 ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
-    public BigInteger getPrivateKey() {
-        return privateKey;
+    public BigInteger getDhPrivateKey() {
+        return dhPrivateKey;
     }
 
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = privateKey;
+    public void setDhPrivateKey(BigInteger dhPrivateKey) {
+        this.dhPrivateKey = dhPrivateKey;
     }
 
-    public byte[] getMLKEMPrivateKey() {
-        return mlkemPrivateKey.getDecapsulationKey();
+    public byte[] getMlKemPrivateKey() {
+        return mlKemPrivateKey.getDecapsulationKey();
     }
 
-    public MlKemPrivateKey getMLKEMPrivateKeyContainer() {
-        return mlkemPrivateKey;
+    public MlKemPrivateKey getMlKemPrivateKeyContainer() {
+        return mlKemPrivateKey;
     }
 
-    public void setMLKEMPrivateKey(MlKemPrivateKey mlkemPrivateKey) {
-        this.mlkemPrivateKey = mlkemPrivateKey;
+    public void setMlKemPrivateKey(MlKemPrivateKey mlKemPrivateKey) {
+        this.mlKemPrivateKey = mlKemPrivateKey;
     }
 
-    public ModifiableByteArray getMLKEMPublicKey() {
-        return mlkemPublicKey;
+    public ModifiableByteArray getMlKemPublicKey() {
+        return mlKemPublicKey;
     }
 
-    public void setMLKEMPublicKey(MlKemPublicKey mlkemPublicKeyContainer) {
-        this.mlkemPublicKeyContainer = mlkemPublicKeyContainer; // Store the object
-        this.mlkemPublicKey =
+    public void setMlKemPublicKey(MlKemPublicKey mlKemPublicKeyContainer) {
+        this.mlKemPublicKeyContainer = mlKemPublicKeyContainer; // Store the object
+        this.mlKemPublicKey =
                 ModifiableVariableFactory.safelySetValue(
-                        this.mlkemPublicKey, mlkemPublicKeyContainer.getEncapsulationKey());
+                        this.mlKemPublicKey, mlKemPublicKeyContainer.getEncapsulationKey());
     }
 
-    public MlKemPublicKey getMLKEMPublicKeyContainer() {
-        return mlkemPublicKeyContainer;
+    public MlKemPublicKey getMlKemPublicKeyContainer() {
+        return mlKemPublicKeyContainer;
+    }
+
+    public ModifiableByteArray getMlKemCiphertext() {
+        return mlKemCiphertext;
+    }
+
+    public void setMlKemCiphertext(ModifiableByteArray mlKemCiphertext) {
+        this.mlKemCiphertext = mlKemCiphertext;
+    }
+
+    public void setMlKemCiphertext(byte[] mlKemCiphertext) {
+        this.mlKemCiphertext =
+                ModifiableVariableFactory.safelySetValue(this.mlKemCiphertext, mlKemCiphertext);
     }
 }

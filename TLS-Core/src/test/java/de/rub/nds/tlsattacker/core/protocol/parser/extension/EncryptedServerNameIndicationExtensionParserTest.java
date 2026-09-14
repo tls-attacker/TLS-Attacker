@@ -138,7 +138,7 @@ public class EncryptedServerNameIndicationExtensionParserTest
     public static Stream<Arguments> provideTestVectors() {
         KeyShareEntry serverKeyShareEntry = new KeyShareEntry();
         serverKeyShareEntry.setGroup(NamedGroup.ECDH_X25519.getValue());
-        serverKeyShareEntry.setPrivateKey(
+        serverKeyShareEntry.setDhPrivateKey(
                 new BigInteger(
                         DataConverter.hexStringToByteArray(
                                 "b0b658b2287a55d9c261bb3feb0c55954be29366eb353b54f986acaa62f81e5A")));

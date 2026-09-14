@@ -110,7 +110,7 @@ public class HpkeUtil {
         byte[] dh =
                 KeyShareCalculator.computeDhSharedSecret(
                         this.hpkeKeyEncapsulationMechanism.getNamedGroup(),
-                        keyShareEntry.getPrivateKey(),
+                        keyShareEntry.getDhPrivateKey(),
                         echServerPublicKey);
         this.kemContext =
                 DataConverter.concatenate(
@@ -134,7 +134,7 @@ public class HpkeUtil {
         byte[] dh =
                 KeyShareCalculator.computeDhSharedSecret(
                         this.hpkeKeyEncapsulationMechanism.getNamedGroup(),
-                        keysReceiver.getPrivateKey(),
+                        keysReceiver.getDhPrivateKey(),
                         enc);
 
         // concatenate the two public keys

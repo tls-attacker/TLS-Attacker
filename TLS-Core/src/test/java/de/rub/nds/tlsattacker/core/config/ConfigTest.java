@@ -101,7 +101,7 @@ public class ConfigTest {
     public void generateEsniServerConfig() {
         config.setAddEncryptedServerNameIndicationExtension(true);
         KeyShareEntry keyShareEntry = new KeyShareEntry();
-        keyShareEntry.setPrivateKey(
+        keyShareEntry.setDhPrivateKey(
                 new BigInteger(
                         "-35862849564059803287082945144062507860160501396022878289617408550825798132134"));
         ModifiableByteArray publicKey = new ModifiableByteArray();
@@ -128,7 +128,7 @@ public class ConfigTest {
 
         KeyShareEntry keyShareEntry = new KeyShareEntry();
 
-        keyShareEntry.setPrivateKey(
+        keyShareEntry.setDhPrivateKey(
                 new BigInteger(
                         "-35862849564059803287082945144062507860160501396022878289617408550825798132134"));
 

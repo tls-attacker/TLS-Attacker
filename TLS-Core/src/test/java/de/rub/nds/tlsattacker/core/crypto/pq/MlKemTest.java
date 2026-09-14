@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Verifies that our NamedGroups are wired to the right ML-KEM parameter set. The ML-KEM
  * computations themselves are covered by the known answer tests of Protocol-Attacker.
  */
-public class MlkemTest {
+public class MlKemTest {
 
     /**
      * A hybrid group has to run the very same ML-KEM computation as the pure group it embeds, so
@@ -38,18 +38,18 @@ public class MlkemTest {
     public void testHybridGroupUsesItsMlKemParameterSet(NamedGroup hybridGroup) {
         NamedGroup pqGroup = hybridGroup.getHybridPostQuantumNamedGroup();
         KeyShareEntry clientEntry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(pqGroup, clientEntry, new SecureRandom());
-        byte[] encapsulationKey = clientEntry.getMLKEMPublicKey().getValue();
+        KeyShareCalculator.createMlKemKeyShare(pqGroup, clientEntry, new SecureRandom());
+        byte[] encapsulationKey = clientEntry.getMlKemPublicKey().getValue();
         byte[] encapsulationRandomness = new byte[32];
         new SecureRandom().nextBytes(encapsulationRandomness);
 
         MlKemEncapsulation viaHybridGroup =
-                KeyShareCalculator.mlkemEncaps(
+                KeyShareCalculator.mlKemEncaps(
                         hybridGroup,
                         encapsulationKey,
                         new FixedSecureRandom(encapsulationRandomness));
         MlKemEncapsulation viaPqGroup =
-                KeyShareCalculator.mlkemEncaps(
+                KeyShareCalculator.mlKemEncaps(
                         pqGroup, encapsulationKey, new FixedSecureRandom(encapsulationRandomness));
 
         assertArrayEquals(viaPqGroup.getCiphertext(), viaHybridGroup.getCiphertext());
@@ -73,17 +73,17 @@ public class MlkemTest {
                 (MlKemParameters) namedGroup.getAnyInvolvedPqGroup().getAsymmetricParameters();
         KeyShareEntry entry = new KeyShareEntry();
 
-        KeyShareCalculator.createMLKEMKeyShare(namedGroup, entry, new SecureRandom());
+        KeyShareCalculator.createMlKemKeyShare(namedGroup, entry, new SecureRandom());
 
         assertEquals(
                 parameters.getEncapsulationKeySizeBytes(),
-                entry.getMLKEMPublicKey().getValue().length);
-        assertEquals(parameters.getDecapsulationKeySizeBytes(), entry.getMLKEMPrivateKey().length);
+                entry.getMlKemPublicKey().getValue().length);
+        assertEquals(parameters.getDecapsulationKeySizeBytes(), entry.getMlKemPrivateKey().length);
         assertEquals(
                 parameters.getCiphertextSizeBytes(),
-                KeyShareCalculator.mlkemEncaps(
+                KeyShareCalculator.mlKemEncaps(
                                 namedGroup,
-                                entry.getMLKEMPublicKey().getValue(),
+                                entry.getMlKemPublicKey().getValue(),
                                 new SecureRandom())
                         .getCiphertext()
                         .length);
@@ -96,17 +96,17 @@ public class MlkemTest {
             names = {"MLKEM512", "MLKEM768", "MLKEM1024"})
     public void testEncapsAndDecapsAgreeOnSharedSecret(NamedGroup namedGroup) {
         KeyShareEntry entry = new KeyShareEntry();
-        KeyShareCalculator.createMLKEMKeyShare(namedGroup, entry, new SecureRandom());
+        KeyShareCalculator.createMlKemKeyShare(namedGroup, entry, new SecureRandom());
 
         MlKemEncapsulation encapsulation =
-                KeyShareCalculator.mlkemEncaps(
-                        namedGroup, entry.getMLKEMPublicKey().getValue(), new SecureRandom());
+                KeyShareCalculator.mlKemEncaps(
+                        namedGroup, entry.getMlKemPublicKey().getValue(), new SecureRandom());
 
         assertArrayEquals(
                 encapsulation.getSharedSecret(),
-                KeyShareCalculator.mlkemDecaps(
+                KeyShareCalculator.mlKemDecaps(
                         namedGroup,
-                        entry.getMLKEMPrivateKeyContainer(),
+                        entry.getMlKemPrivateKeyContainer(),
                         encapsulation.getCiphertext()));
     }
 

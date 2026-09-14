@@ -346,8 +346,8 @@ public class WorkflowTraceSerializerTest {
         random.nextBytes(encapsulationKey);
 
         KeyShareEntry entry = new KeyShareEntry(group, BigInteger.TEN);
-        entry.setMLKEMPrivateKey(new MlKemPrivateKey(parameters, decapsulationKey));
-        entry.setMLKEMPublicKey(new MlKemPublicKey(parameters, encapsulationKey));
+        entry.setMlKemPrivateKey(new MlKemPrivateKey(parameters, decapsulationKey));
+        entry.setMlKemPublicKey(new MlKemPublicKey(parameters, encapsulationKey));
         KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
         extension.setKeyShareList(List.of(entry));
         ClientHelloMessage clientHello = new ClientHelloMessage();
@@ -368,12 +368,12 @@ public class WorkflowTraceSerializerTest {
         KeyShareEntry readEntry = readExtension.getKeyShareList().get(0);
 
         assertEquals(group, readEntry.getGroupConfig());
-        assertEquals(BigInteger.TEN, readEntry.getPrivateKey());
-        assertEquals(parameters, readEntry.getMLKEMPrivateKeyContainer().getParameters());
-        assertArrayEquals(decapsulationKey, readEntry.getMLKEMPrivateKey());
-        assertEquals(parameters, readEntry.getMLKEMPublicKeyContainer().getParameters());
+        assertEquals(BigInteger.TEN, readEntry.getDhPrivateKey());
+        assertEquals(parameters, readEntry.getMlKemPrivateKeyContainer().getParameters());
+        assertArrayEquals(decapsulationKey, readEntry.getMlKemPrivateKey());
+        assertEquals(parameters, readEntry.getMlKemPublicKeyContainer().getParameters());
         assertArrayEquals(
-                encapsulationKey, readEntry.getMLKEMPublicKeyContainer().getEncapsulationKey());
-        assertArrayEquals(encapsulationKey, readEntry.getMLKEMPublicKey().getValue());
+                encapsulationKey, readEntry.getMlKemPublicKeyContainer().getEncapsulationKey());
+        assertArrayEquals(encapsulationKey, readEntry.getMlKemPublicKey().getValue());
     }
 }

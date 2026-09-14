@@ -539,8 +539,8 @@ public enum NamedGroup {
     /**
      * Shorthand to handle PQ and hybrid PQ groups identically.
      *
-     * @return The post quantum NamedGroup used by this NamedGroup construction. Both plain MLKEM
-     *     and SECP_MLKEM constructions will yield the appropriate MLKEM group
+     * @return The post quantum NamedGroup used by this NamedGroup construction. Both plain ML-KEM
+     *     and SECP_MLKEM constructions will yield the appropriate ML-KEM group
      */
     public NamedGroup getAnyInvolvedPqGroup() {
         if (isHybridPQGroup()) {

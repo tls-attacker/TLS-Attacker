@@ -140,7 +140,7 @@ public class EncryptedClientHelloPreparator
         // log own private and public key
         LOGGER.debug(
                 "ClientPrivateKey: {}",
-                chooser.getEchClientKeyShareEntry().getPrivateKey().toByteArray());
+                chooser.getEchClientKeyShareEntry().getDhPrivateKey().toByteArray());
         LOGGER.debug(
                 "ClientPublicKey: {}",
                 chooser.getEchClientKeyShareEntry().getPublicKey().getValue());
