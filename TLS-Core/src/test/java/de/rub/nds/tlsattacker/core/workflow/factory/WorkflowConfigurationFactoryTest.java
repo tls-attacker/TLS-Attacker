@@ -43,9 +43,12 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -53,6 +56,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class WorkflowConfigurationFactoryTest {
 
@@ -761,5 +765,229 @@ public class WorkflowConfigurationFactoryTest {
 
         // done
         assertEquals(index, trace.getTlsActions().size());
+    }
+
+    /** The STARTTLS protocols whose server greets of its own accord once the handshake is done. */
+    private static Stream<StarttlsType> unpromptedGreetingTypes() {
+        return Arrays.stream(StarttlsType.values())
+                .filter(StarttlsType::sendsUnpromptedPostHandshakeGreeting);
+    }
+
+    private WorkflowTrace createTrace(
+            StarttlsType type, ProtocolVersion version, WorkflowTraceType traceType) {
+        config.setStarttlsType(type);
+        config.setHighestProtocolVersion(version);
+        config.setDefaultSelectedProtocolVersion(version);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        return workflowConfigurationFactory.createWorkflowTrace(traceType, RunningModeType.CLIENT);
+    }
+
+    private TlsAction lastAction(WorkflowTrace trace) {
+        return trace.getTlsActions().get(trace.getTlsActions().size() - 1);
+    }
+
+    /**
+     * A server that greets unprompted does so right behind its Finished. The handshake trace takes
+     * the greeting in the receive that takes the server's ChangeCipherSpec and Finished rather than
+     * trailing it, so callers that drop the last action to undo that receive drop the greeting
+     * along with it.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testHandshakeMergesUnpromptedGreetingIntoServerFinishedReceive(StarttlsType type) {
+        WorkflowTrace trace = createTrace(type, ProtocolVersion.TLS12, WorkflowTraceType.HANDSHAKE);
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveAction.class, last.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) last);
+        assertEquals(3, expected.size());
+        assertEquals(ChangeCipherSpecMessage.class, expected.get(0).getClass());
+        assertEquals(FinishedMessage.class, expected.get(1).getClass());
+        assertEquals(ApplicationMessage.class, expected.get(2).getClass());
+    }
+
+    /**
+     * The upgrade completes again on the resumed connection, so the greeting is sent again and has
+     * to be read there as well. It follows the client's Finished, so it needs a receive of its own.
+     * The abbreviated handshake is TLS 1.2, where the server cannot send the greeting any sooner,
+     * so the receive has to find it and must not be allowed to come up empty.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testResumptionExpectsUnpromptedGreeting(StarttlsType type) {
+        WorkflowTrace trace =
+                createTrace(type, ProtocolVersion.TLS12, WorkflowTraceType.RESUMPTION);
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveAction.class, last.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) last);
+        assertEquals(1, expected.size());
+        assertEquals(ApplicationMessage.class, expected.get(0).getClass());
+        assertFalse(last.getActionOptions().contains(ActionOption.MAY_FAIL));
+    }
+
+    /**
+     * In TLS 1.3 the server holds its application keys once it has sent its Finished, so it may
+     * greet right behind it before the client's Finished. The receive of the server's flight
+     * tolerates the greeting without waiting for it, and the receive after the client's Finished
+     * skips itself when the greeting was already taken instead of waiting out its timeout. Only
+     * NewSessionTickets may still turn up unasked there, so those are ignored rather than the whole
+     * receive being allowed to fail.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testHandshakeTls13ToleratesGreetingWithServerFinished(StarttlsType type) {
+        WorkflowTrace trace = createTrace(type, ProtocolVersion.TLS13, WorkflowTraceType.HANDSHAKE);
+
+        List<TlsAction> actions = trace.getTlsActions();
+        TlsAction serverFlight = actions.get(actions.size() - 3);
+        assertEquals(ReceiveAction.class, serverFlight.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) serverFlight);
+        ProtocolMessage greeting = expected.get(expected.size() - 1);
+        assertEquals(ApplicationMessage.class, greeting.getClass());
+        assertFalse(greeting.isRequired());
+        assertEquals(FinishedMessage.class, expected.get(expected.size() - 2).getClass());
+
+        TlsAction clientFinished = actions.get(actions.size() - 2);
+        assertEquals(SendAction.class, clientFinished.getClass());
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveUnlessAlreadyReceivedAction.class, last.getClass());
+        List<ProtocolMessage> trailing = extractMessages((MessageAction) last);
+        assertEquals(1, trailing.size());
+        assertEquals(ApplicationMessage.class, trailing.get(0).getClass());
+        assertTrue(
+                last.getActionOptions()
+                        .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS));
+        assertFalse(last.getActionOptions().contains(ActionOption.MAY_FAIL));
+    }
+
+    /**
+     * The greeting follows the server's Finished, often in the same segment. Reading till the
+     * greeting takes the Finished along and ends at the same point whether or not the two arrive
+     * together. A trailing receive for the greeting would wait out the timeout whenever the receive
+     * before it had already taken the greeting with the Finished.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testDynamicHandshakeReadsTillUnpromptedGreeting(StarttlsType type) {
+        WorkflowTrace trace =
+                createTrace(type, ProtocolVersion.TLS12, WorkflowTraceType.DYNAMIC_HANDSHAKE);
+
+        List<TlsAction> actions = trace.getTlsActions();
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveTillAction.class, last.getClass());
+        assertEquals(
+                ApplicationMessage.class,
+                ((ReceiveTillAction) last).getWaitTillMessage().getClass());
+        TlsAction clientFinished = actions.get(actions.size() - 2);
+        assertEquals(SendAction.class, clientFinished.getClass());
+        List<ProtocolMessage> sent = extractMessages((MessageAction) clientFinished);
+        assertEquals(FinishedMessage.class, sent.get(sent.size() - 1).getClass());
+    }
+
+    /**
+     * In TLS 1.3 the client's Finished ends the handshake, so the greeting gets a receive of its
+     * own after it. The receive till the Finished before it tolerates an early greeting, so the
+     * trailing receive skips itself when that already happened.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testDynamicHandshakeTls13AppendsUnpromptedGreeting(StarttlsType type) {
+        WorkflowTrace trace =
+                createTrace(type, ProtocolVersion.TLS13, WorkflowTraceType.DYNAMIC_HANDSHAKE);
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveUnlessAlreadyReceivedAction.class, last.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) last);
+        assertEquals(1, expected.size());
+        assertEquals(ApplicationMessage.class, expected.get(0).getClass());
+        assertTrue(
+                last.getActionOptions()
+                        .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS));
+        assertFalse(last.getActionOptions().contains(ActionOption.MAY_FAIL));
+    }
+
+    /**
+     * The hello workflows stop before the upgrade has finished, so the greeting has not been sent
+     * by the time they end. Adding a receive for it there would wait for data that cannot arrive.
+     */
+    @ParameterizedTest(allowZeroInvocations = true)
+    @MethodSource("unpromptedGreetingTypes")
+    public void testHelloWorkflowExpectsNoUnpromptedGreeting(StarttlsType type) {
+        WorkflowTrace trace =
+                createTrace(type, ProtocolVersion.TLS12, WorkflowTraceType.DYNAMIC_HELLO);
+
+        assertNotEquals(ReceiveAction.class, lastAction(trace).getClass());
+    }
+
+    /**
+     * FTP answers the upgrade and then waits, so its traces have to end where they always did. Only
+     * the protocols that greet unprompted state a greeting.
+     */
+    @Test
+    public void testFtpHandshakeLeavesServerFinishedReceiveAlone() {
+        WorkflowTrace trace =
+                createTrace(StarttlsType.FTP, ProtocolVersion.TLS12, WorkflowTraceType.HANDSHAKE);
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveAction.class, last.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) last);
+        assertEquals(2, expected.size());
+        assertEquals(ChangeCipherSpecMessage.class, expected.get(0).getClass());
+        assertEquals(FinishedMessage.class, expected.get(1).getClass());
+    }
+
+    @Test
+    public void testFtpHandshakeTls13LeavesServerFlightReceiveAlone() {
+        WorkflowTrace trace =
+                createTrace(StarttlsType.FTP, ProtocolVersion.TLS13, WorkflowTraceType.HANDSHAKE);
+
+        List<TlsAction> actions = trace.getTlsActions();
+        TlsAction serverFlight = actions.get(actions.size() - 2);
+        assertEquals(ReceiveAction.class, serverFlight.getClass());
+        List<ProtocolMessage> expected = extractMessages((MessageAction) serverFlight);
+        assertEquals(FinishedMessage.class, expected.get(expected.size() - 1).getClass());
+        assertEquals(SendAction.class, lastAction(trace).getClass());
+    }
+
+    @Test
+    public void testFtpResumptionExpectsNoGreeting() {
+        WorkflowTrace trace =
+                createTrace(StarttlsType.FTP, ProtocolVersion.TLS12, WorkflowTraceType.RESUMPTION);
+
+        List<ProtocolMessage> expected = extractMessages((MessageAction) lastAction(trace));
+        assertEquals(2, expected.size());
+        assertEquals(ChangeCipherSpecMessage.class, expected.get(0).getClass());
+        assertEquals(FinishedMessage.class, expected.get(1).getClass());
+    }
+
+    @Test
+    public void testFtpDynamicHandshakeReadsTillServerFinished() {
+        WorkflowTrace trace =
+                createTrace(
+                        StarttlsType.FTP,
+                        ProtocolVersion.TLS12,
+                        WorkflowTraceType.DYNAMIC_HANDSHAKE);
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveTillAction.class, last.getClass());
+        assertEquals(
+                FinishedMessage.class, ((ReceiveTillAction) last).getWaitTillMessage().getClass());
+    }
+
+    /** A connection that never upgrades has no greeting to read, whatever the trace type. */
+    @Test
+    public void testHandshakeWithoutStartTlsExpectsNoGreeting() {
+        WorkflowTrace trace =
+                createTrace(
+                        StarttlsType.NONE,
+                        ProtocolVersion.TLS12,
+                        WorkflowTraceType.DYNAMIC_HANDSHAKE);
+
+        TlsAction last = lastAction(trace);
+        assertEquals(ReceiveTillAction.class, last.getClass());
+        assertEquals(
+                FinishedMessage.class, ((ReceiveTillAction) last).getWaitTillMessage().getClass());
     }
 }
