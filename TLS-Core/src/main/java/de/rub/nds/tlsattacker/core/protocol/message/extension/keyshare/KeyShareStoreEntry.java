@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -26,11 +27,39 @@ public class KeyShareStoreEntry implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] publicKey;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] dhPublicKey;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] mlKemPublicKey;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] mlKemCiphertext;
+
     public KeyShareStoreEntry() {}
 
     public KeyShareStoreEntry(NamedGroup group, byte[] publicKey) {
         this.group = group;
         this.publicKey = publicKey;
+    }
+
+    /**
+     * Creates a store entry from a parsed or prepared KeyShareEntry, carrying over the components
+     * the key share consists of. Components the entry does not provide remain null.
+     */
+    public KeyShareStoreEntry(KeyShareEntry entry) {
+        this.group = entry.getGroupConfig();
+        this.publicKey = valueOrNull(entry.getPublicKey());
+        this.dhPublicKey = valueOrNull(entry.getDhPublicKey());
+        this.mlKemPublicKey = valueOrNull(entry.getMlKemPublicKey());
+        this.mlKemCiphertext = valueOrNull(entry.getMlKemCiphertext());
+    }
+
+    private static byte[] valueOrNull(ModifiableByteArray modifiableByteArray) {
+        if (modifiableByteArray == null) {
+            return null;
+        }
+        return modifiableByteArray.getValue();
     }
 
     public NamedGroup getGroup() {
@@ -47,6 +76,33 @@ public class KeyShareStoreEntry implements Serializable {
 
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = publicKey;
+    }
+
+    /** The classical (EC)DH share of this key share, or null if the group has no classical part. */
+    public byte[] getDhPublicKey() {
+        return dhPublicKey;
+    }
+
+    public void setDhPublicKey(byte[] dhPublicKey) {
+        this.dhPublicKey = dhPublicKey;
+    }
+
+    /** The ML-KEM encapsulation key, set for client key shares of ML-KEM and hybrid groups. */
+    public byte[] getMlKemPublicKey() {
+        return mlKemPublicKey;
+    }
+
+    public void setMlKemPublicKey(byte[] mlKemPublicKey) {
+        this.mlKemPublicKey = mlKemPublicKey;
+    }
+
+    /** The ML-KEM ciphertext, set for server key shares of ML-KEM and hybrid groups. */
+    public byte[] getMlKemCiphertext() {
+        return mlKemCiphertext;
+    }
+
+    public void setMlKemCiphertext(byte[] mlKemCiphertext) {
+        this.mlKemCiphertext = mlKemCiphertext;
     }
 
     @Override

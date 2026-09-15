@@ -68,7 +68,9 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     }
 
     private KeyShareEntry parseKeyShareEntry(ByteArrayInputStream innerStream) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(innerStream, helloRetryRequestHint);
+        KeyShareEntryParser parser =
+                new KeyShareEntryParser(
+                        innerStream, helloRetryRequestHint, talkingConnectionEndType);
         KeyShareEntry entry = new KeyShareEntry();
         parser.parse(entry);
         return entry;
