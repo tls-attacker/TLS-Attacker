@@ -25,11 +25,6 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     private static final Logger LOGGER = LogManager.getLogger();
     private final boolean helloRetryRequestForm;
 
-    /**
-     * The end type that issued the key share. ML-KEM key shares of one group have a different
-     * meaning and length depending on the issuer: the client sends an encapsulation key, the server
-     * sends a ciphertext.
-     */
     private final ConnectionEndType issuerEndType;
 
     public KeyShareEntryParser(
