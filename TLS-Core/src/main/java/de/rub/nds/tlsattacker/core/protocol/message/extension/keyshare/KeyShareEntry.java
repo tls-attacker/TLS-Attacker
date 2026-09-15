@@ -131,6 +131,10 @@ public class KeyShareEntry extends ModifiableVariableHolder {
                         this.mlKemPublicKey, mlKemPublicKeyContainer.getEncapsulationKey());
     }
 
+    public void setMlKemPublicKey(ModifiableByteArray mlKemPublicKey) {
+        this.mlKemPublicKey = mlKemPublicKey;
+    }
+
     public MlKemPublicKey getMlKemPublicKeyContainer() {
         return mlKemPublicKeyContainer;
     }

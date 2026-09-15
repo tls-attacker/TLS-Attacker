@@ -53,7 +53,9 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             NamedGroup type = NamedGroup.getNamedGroup(pair.getGroup().getValue());
             if (type != null) {
                 if (pair.getPublicKey() != null && pair.getPublicKey().getValue() != null) {
-                    ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
+                    KeyShareStoreEntry storeEntry = new KeyShareStoreEntry(pair);
+                    storeEntry.setGroup(type);
+                    ksEntryList.add(storeEntry);
                 } else {
                     LOGGER.warn(
                             "Empty KeyShare - Setting only selected KeyShareType: to {}",
@@ -70,9 +72,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     private void adjustServerKeyShareStore(List<KeyShareStoreEntry> ksEntryList) {
         // The server has only one key
         if (!ksEntryList.isEmpty()) {
-            tlsContext.setServerKeyShareStoreEntry(
-                    new KeyShareStoreEntry(
-                            ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
+            tlsContext.setServerKeyShareStoreEntry(ksEntryList.get(0));
             NamedGroup selectedGroup = tlsContext.getServerKeyShareStoreEntry().getGroup();
             LOGGER.debug("Setting selected NamedGroup in context to {}", selectedGroup);
             tlsContext.setSelectedGroup(selectedGroup);

@@ -58,6 +58,17 @@ public class WorkflowTraceConfigurationUtil {
         return null;
     }
 
+    public static <T extends ProtocolMessage> T getFirstStaticConfiguredSendMessage(
+            WorkflowTrace trace, Class<T> msgClass) {
+        List<ProtocolMessage> messageList = getAllStaticConfiguredSendMessages(trace);
+        for (ProtocolMessage message : messageList) {
+            if (msgClass.isAssignableFrom(message.getClass())) {
+                return msgClass.cast(message);
+            }
+        }
+        return null;
+    }
+
     public static StaticReceivingAction getFirstStaticConfiguredReceiveAction(
             WorkflowTrace trace, ProtocolMessageType type) {
         List<StaticReceivingAction> actionList = trace.getStaticConfiguredReceivingActions();

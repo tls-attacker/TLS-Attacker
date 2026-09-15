@@ -350,7 +350,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             return KeyShareCalculator.mlKemDecaps(
                     keyShareStoreEntry.getGroup(),
                     tlsContext.getClientMlKemPrivateKeys().get(keyShareStoreEntry.getGroup()),
-                    keyShareStoreEntry.getPublicKey());
+                    getMlKemCiphertext(keyShareStoreEntry));
         } else {
 
             if (tlsContext.getPQSharedSecret() == null) {
@@ -378,16 +378,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         NamedGroup pqGroup = keyShareStoreEntry.getGroup().getHybridPostQuantumNamedGroup();
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            byte[] classicalPubKey;
-            byte[] pqPubKey;
-            byte[][] splitKeyShare =
-                    PQUtils.splitKeyShare(
-                            keyShareStoreEntry.getGroup(),
-                            ConnectionEndType.SERVER,
-                            keyShareStoreEntry.getPublicKey());
-
-            classicalPubKey = splitKeyShare[0];
-            pqPubKey = splitKeyShare[1];
+            byte[] classicalPubKey =
+                    getClassicalPublicKey(keyShareStoreEntry, ConnectionEndType.SERVER);
+            byte[] mlKemCiphertext = getMlKemCiphertext(keyShareStoreEntry);
 
             BigInteger classicalPrivateKey =
                     tlsContext
@@ -409,7 +402,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             tlsContext
                                     .getClientMlKemPrivateKeys()
                                     .get(keyShareStoreEntry.getGroup()),
-                            pqPubKey);
+                            mlKemCiphertext);
             LOGGER.debug("Computed ML-KEM Shared Secret: {}", pqSharedSecret);
 
             byte[] sharedSecret =
@@ -423,13 +416,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             .getConfig()
                             .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
 
-            byte[][] splitClientKeyShare =
-                    PQUtils.splitKeyShare(
-                            keyShareStoreEntry.getGroup(),
-                            ConnectionEndType.CLIENT,
-                            keyShareStoreEntry.getPublicKey());
-
-            byte[] clientClassicalPubKey = splitClientKeyShare[0];
+            byte[] clientClassicalPubKey =
+                    getClassicalPublicKey(keyShareStoreEntry, ConnectionEndType.CLIENT);
 
             byte[] classicalSharedSecret =
                     KeyShareCalculator.computeDhSharedSecret(
@@ -444,6 +432,48 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             keyShareStoreEntry.getGroup(), classicalSharedSecret, pqSharedSecret);
             return sharedSecret;
         }
+    }
+
+    /**
+     * Returns the classical share of a key share. Key shares parsed from the wire carry their
+     * components in dedicated fields. Entries that never passed the parser, e.g. defaults taken
+     * from the config, do not, and are split here.
+     *
+     * @param keyShareStoreEntry The keyShareStoreEntry that should be used.
+     * @param issuerEndType The end type that issued the key share.
+     * @return The classical (EC)DH share of the key share.
+     */
+    private byte[] getClassicalPublicKey(
+            KeyShareStoreEntry keyShareStoreEntry, ConnectionEndType issuerEndType) {
+        if (keyShareStoreEntry.getDhPublicKey() != null) {
+            return keyShareStoreEntry.getDhPublicKey();
+        }
+        LOGGER.debug("KeyShare carries no separate classical share, splitting the raw key share");
+        return PQUtils.splitKeyShare(
+                keyShareStoreEntry.getGroup(), issuerEndType, keyShareStoreEntry.getPublicKey())[0];
+    }
+
+    /**
+     * Returns the ML-KEM ciphertext of a key share. A ciphertext is always issued by the server.
+     * Key shares parsed from the wire carry it in a dedicated field, entries that never passed the
+     * parser do not, and are split here.
+     *
+     * @param keyShareStoreEntry The keyShareStoreEntry that should be used.
+     * @return The ML-KEM ciphertext of the key share.
+     */
+    private byte[] getMlKemCiphertext(KeyShareStoreEntry keyShareStoreEntry) {
+        if (keyShareStoreEntry.getMlKemCiphertext() != null) {
+            return keyShareStoreEntry.getMlKemCiphertext();
+        }
+        LOGGER.debug(
+                "KeyShare carries no separate ML-KEM ciphertext, deriving it from the raw key share");
+        if (keyShareStoreEntry.getGroup().isHybridPQGroup()) {
+            return PQUtils.splitKeyShare(
+                    keyShareStoreEntry.getGroup(),
+                    ConnectionEndType.SERVER,
+                    keyShareStoreEntry.getPublicKey())[1];
+        }
+        return keyShareStoreEntry.getPublicKey();
     }
 
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
