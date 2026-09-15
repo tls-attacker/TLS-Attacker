@@ -10,19 +10,26 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.crypto.kem.MlKemEncapsulation;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.pq.PQUtils;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 public class ServerHelloHandlerTest
@@ -200,5 +207,117 @@ public class ServerHelloHandlerTest
         assertNotNull(tlsContext.getHandshakeSecret());
         assertNotNull(tlsContext.getClientHandshakeTrafficSecret());
         assertNotNull(tlsContext.getServerHandshakeTrafficSecret());
+    }
+
+    @Test
+    public void testadjustContextTls13HybridPQReadsBothKeyShareComponents() {
+        NamedGroup namedGroup = NamedGroup.X25519_MLKEM768;
+        KeyShareEntry clientEntry = new KeyShareEntry();
+        KeyShareCalculator.createMlKemKeyShare(
+                NamedGroup.MLKEM768, clientEntry, new SecureRandom());
+        byte[] ciphertext =
+                KeyShareCalculator.mlKemEncaps(
+                                NamedGroup.MLKEM768,
+                                clientEntry.getMlKemPublicKey().getValue(),
+                                new SecureRandom())
+                        .getCiphertext();
+        byte[] classicalPublicKey =
+                DataConverter.hexStringToByteArray(
+                        "9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c");
+        // fill to fail test if hybrid PQ component fields are not read
+        byte[] dummyKeyShare =
+                PQUtils.concatenateHybridKeyShare(
+                        namedGroup,
+                        fillArray(classicalPublicKey.length, (byte) 0x42),
+                        fillArray(ciphertext.length, (byte) 0x43));
+
+        byte[] expected =
+                handshakeSecretFor(
+                        new KeyShareStoreEntry(
+                                namedGroup,
+                                PQUtils.concatenateHybridKeyShare(
+                                        namedGroup, classicalPublicKey, ciphertext)),
+                        clientEntry);
+
+        KeyShareEntry serverEntry = new KeyShareEntry();
+        serverEntry.setGroupConfig(namedGroup);
+        serverEntry.setPublicKey(dummyKeyShare);
+        serverEntry.setDhPublicKey(classicalPublicKey);
+        serverEntry.setMlKemCiphertext(ciphertext);
+
+        assertNotNull(expected);
+        assertArrayEquals(
+                expected, handshakeSecretFor(new KeyShareStoreEntry(serverEntry), clientEntry));
+        assertFalse(
+                Arrays.equals(
+                        expected,
+                        handshakeSecretFor(
+                                new KeyShareStoreEntry(namedGroup, dummyKeyShare), clientEntry)));
+    }
+
+    @Test
+    public void testadjustContextTls13PQReadsMlKemCiphertext() {
+        NamedGroup namedGroup = NamedGroup.MLKEM768;
+        KeyShareEntry clientEntry = new KeyShareEntry();
+        KeyShareCalculator.createMlKemKeyShare(namedGroup, clientEntry, new SecureRandom());
+        byte[] ciphertext =
+                KeyShareCalculator.mlKemEncaps(
+                                namedGroup,
+                                clientEntry.getMlKemPublicKey().getValue(),
+                                new SecureRandom())
+                        .getCiphertext();
+        // fill to fail test if mlKemCiphertext field is not read
+        byte[] dummyCiphertext = fillArray(ciphertext.length, (byte) 0x43);
+
+        byte[] expected =
+                handshakeSecretFor(new KeyShareStoreEntry(namedGroup, ciphertext), clientEntry);
+
+        KeyShareEntry serverEntry = new KeyShareEntry();
+        serverEntry.setGroupConfig(namedGroup);
+        serverEntry.setPublicKey(dummyCiphertext);
+        serverEntry.setMlKemCiphertext(ciphertext);
+
+        assertNotNull(expected);
+        assertArrayEquals(
+                expected, handshakeSecretFor(new KeyShareStoreEntry(serverEntry), clientEntry));
+        assertFalse(
+                Arrays.equals(
+                        expected,
+                        handshakeSecretFor(
+                                new KeyShareStoreEntry(namedGroup, dummyCiphertext), clientEntry)));
+    }
+
+    private static byte[] handshakeSecretFor(
+            KeyShareStoreEntry serverKeyShare, KeyShareEntry clientEntry) {
+        TlsContext context =
+                new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        context.getClientMlKemPrivateKeys()
+                .put(serverKeyShare.getGroup(), clientEntry.getMlKemPrivateKeyContainer());
+        context.getConfig()
+                .setDefaultKeySharePrivateKey(
+                        NamedGroup.ECDH_X25519,
+                        new BigInteger(
+                                DataConverter.hexStringToByteArray(
+                                        "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
+        context.setServerKeyShareStoreEntry(serverKeyShare);
+        context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
+
+        ServerHelloMessage message = new ServerHelloMessage();
+        message.setUnixTime(new byte[] {0, 1, 2});
+        message.setRandom(new byte[] {0, 1, 2, 3, 4, 5});
+        message.setSelectedCompressionMethod(CompressionMethod.DEFLATE.getValue());
+        message.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256.getByteValue());
+        message.setSessionId(new byte[] {6, 6, 6});
+        message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        new ServerHelloHandler(context).adjustContext(message);
+
+        return context.getHandshakeSecret();
+    }
+
+    private static byte[] fillArray(int length, byte value) {
+        byte[] bytes = new byte[length];
+        Arrays.fill(bytes, value);
+        return bytes;
     }
 }
