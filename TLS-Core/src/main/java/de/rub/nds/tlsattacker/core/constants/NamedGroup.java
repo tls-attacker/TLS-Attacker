@@ -91,6 +91,18 @@ public enum NamedGroup {
     MLKEM512(new byte[] {(byte) 2, (byte) 0}, MlKemParameters.ML_KEM_512),
     MLKEM768(new byte[] {(byte) 2, (byte) 1}, MlKemParameters.ML_KEM_768),
     MLKEM1024(new byte[] {(byte) 2, (byte) 2}, MlKemParameters.ML_KEM_1024),
+    SECP256R1_MLKEM512(
+            new byte[] {0x11, (byte) 0xE9},
+            new HybridPostQuantumParameters(
+                    NamedEllipticCurveParameters.SECP256R1,
+                    MlKemParameters.ML_KEM_512,
+                    "secp256r1_mlkem512")),
+    MLKEM512_X25519(
+            new byte[] {0x11, (byte) 0xEA},
+            new HybridPostQuantumParameters(
+                    NamedEllipticCurveParameters.CURVE_X25519,
+                    MlKemParameters.ML_KEM_512,
+                    "mlkem512_x25519")),
     SECP256R1_MLKEM768(
             new byte[] {0x11, (byte) 0xEB},
             new HybridPostQuantumParameters(
@@ -109,7 +121,17 @@ public enum NamedGroup {
                     NamedEllipticCurveParameters.SECP384R1,
                     MlKemParameters.ML_KEM_1024,
                     "secp384r1_mlkem1024")),
+    CURVE_SM2_MLKEM768(
+            new byte[] {0x11, (byte) 0xEE},
+            new HybridPostQuantumParameters(
+                    NamedEllipticCurveParameters.CURVE_SM2,
+                    MlKemParameters.ML_KEM_768,
+                    "curvesm2_mlkem768")),
     X25519_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x99}, null),
+    SECP256R1_KYBER768_DRAFT00(new byte[] {0x63, (byte) 0x9A}, null),
+    // Private use codepoints used before the 0x63xx assignments
+    X25519_KYBER512_DRAFT00(new byte[] {(byte) 0xFE, 0x30}, null),
+    X25519_KYBER768_DRAFT00_OLD(new byte[] {(byte) 0xFE, 0x31}, null),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
     EXPLICIT_CHAR2(new byte[] {(byte) 0xFF, (byte) 2}, null),
@@ -159,8 +181,15 @@ public enum NamedGroup {
                             BRAINPOOLP384R1TLS13,
                             BRAINPOOLP512R1TLS13,
                             X25519_MLKEM768,
+                            SECP256R1_MLKEM512,
                             SECP256R1_MLKEM768,
-                            SECP384R1_MLKEM1024));
+                            SECP384R1_MLKEM1024,
+                            MLKEM512_X25519,
+                            CURVE_SM2_MLKEM768,
+                            X25519_KYBER768_DRAFT00,
+                            SECP256R1_KYBER768_DRAFT00,
+                            X25519_KYBER512_DRAFT00,
+                            X25519_KYBER768_DRAFT00_OLD));
 
     NamedGroup(byte[] value, AsymmetricParameters group) {
         this.value = value;
@@ -389,11 +418,15 @@ public enum NamedGroup {
     public NamedGroup getHybridPostQuantumClassicNamedGroup() {
         switch (this) {
             case X25519_MLKEM768:
+            case MLKEM512_X25519:
                 return NamedGroup.ECDH_X25519;
+            case SECP256R1_MLKEM512:
             case SECP256R1_MLKEM768:
                 return NamedGroup.SECP256R1;
             case SECP384R1_MLKEM1024:
                 return NamedGroup.SECP384R1;
+            case CURVE_SM2_MLKEM768:
+                return NamedGroup.CURVE_SM2;
             default:
                 throw new UnsupportedOperationException("This group is no hybrid PQ NamedGroup.");
         }
@@ -401,9 +434,12 @@ public enum NamedGroup {
 
     public NamedGroup getHybridPostQuantumNamedGroup() {
         switch (this) {
+            case SECP256R1_MLKEM512:
+            case MLKEM512_X25519:
+                return NamedGroup.MLKEM512;
             case X25519_MLKEM768:
-                return NamedGroup.MLKEM768;
             case SECP256R1_MLKEM768:
+            case CURVE_SM2_MLKEM768:
                 return NamedGroup.MLKEM768;
             case SECP384R1_MLKEM1024:
                 return NamedGroup.MLKEM1024;
@@ -526,7 +562,17 @@ public enum NamedGroup {
     }
 
     public boolean isHybridPQGroup() {
-        return this == SECP256R1_MLKEM768 || this == X25519_MLKEM768 || this == SECP384R1_MLKEM1024;
+        switch (this) {
+            case SECP256R1_MLKEM512:
+            case MLKEM512_X25519:
+            case SECP256R1_MLKEM768:
+            case X25519_MLKEM768:
+            case SECP384R1_MLKEM1024:
+            case CURVE_SM2_MLKEM768:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isMlKemGroup() {
@@ -595,9 +641,12 @@ public enum NamedGroup {
         list.add(MLKEM512);
         list.add(MLKEM768);
         list.add(MLKEM1024);
+        list.add(SECP256R1_MLKEM512);
+        list.add(MLKEM512_X25519);
         list.add(SECP256R1_MLKEM768);
         list.add(X25519_MLKEM768);
         list.add(SECP384R1_MLKEM1024);
+        list.add(CURVE_SM2_MLKEM768);
         return list;
     }
 

@@ -80,6 +80,20 @@ public enum SignatureAndHashAlgorithm {
     MLDSA65(0x0905, null, null),
     MLDSA87(0x0906, null, null),
 
+    // SLH-DSA IETF Draft https://datatracker.ietf.org/doc/draft-reddy-tls-slhdsa/
+    SLHDSA_SHA2_128S(0x0911, null, null),
+    SLHDSA_SHA2_128F(0x0912, null, null),
+    SLHDSA_SHA2_192S(0x0913, null, null),
+    SLHDSA_SHA2_192F(0x0914, null, null),
+    SLHDSA_SHA2_256S(0x0915, null, null),
+    SLHDSA_SHA2_256F(0x0916, null, null),
+    SLHDSA_SHAKE_128S(0x0917, null, null),
+    SLHDSA_SHAKE_128F(0x0918, null, null),
+    SLHDSA_SHAKE_192S(0x0919, null, null),
+    SLHDSA_SHAKE_192F(0x091A, null, null),
+    SLHDSA_SHAKE_256S(0x091B, null, null),
+    SLHDSA_SHAKE_256F(0x091C, null, null),
+
     // GREASE constants
     GREASE_00(0x0A0A, null, null),
     GREASE_01(0x1A1A, null, null),
@@ -155,6 +169,21 @@ public enum SignatureAndHashAlgorithm {
         algos.add(SignatureAndHashAlgorithm.ECDSA_BRAINPOOL_P384R1_TLS13_SHA384);
         algos.add(SignatureAndHashAlgorithm.ECDSA_BRAINPOOL_P512R1_TLS13_SHA512);
         algos.add(SignatureAndHashAlgorithm.SM2_SM3);
+        algos.add(SignatureAndHashAlgorithm.MLDSA44);
+        algos.add(SignatureAndHashAlgorithm.MLDSA65);
+        algos.add(SignatureAndHashAlgorithm.MLDSA87);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHA2_128S);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHA2_128F);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHA2_192S);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHA2_192F);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHA2_256S);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHA2_256F);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHAKE_128S);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHAKE_128F);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHAKE_192S);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHAKE_192F);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHAKE_256S);
+        algos.add(SignatureAndHashAlgorithm.SLHDSA_SHAKE_256F);
         return algos;
     }
 
@@ -295,6 +324,41 @@ public enum SignatureAndHashAlgorithm {
 
     public boolean isGrease() {
         return this.name().startsWith("GREASE");
+    }
+
+    public boolean isPostQuantum() {
+        return this.isMlDsa() || this.isSlhDsa();
+    }
+
+    public boolean isMlDsa() {
+        switch (this) {
+            case MLDSA44:
+            case MLDSA65:
+            case MLDSA87:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isSlhDsa() {
+        switch (this) {
+            case SLHDSA_SHA2_128S:
+            case SLHDSA_SHA2_128F:
+            case SLHDSA_SHA2_192S:
+            case SLHDSA_SHA2_192F:
+            case SLHDSA_SHA2_256S:
+            case SLHDSA_SHA2_256F:
+            case SLHDSA_SHAKE_128S:
+            case SLHDSA_SHAKE_128F:
+            case SLHDSA_SHAKE_192S:
+            case SLHDSA_SHAKE_192F:
+            case SLHDSA_SHAKE_256S:
+            case SLHDSA_SHAKE_256F:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isRsaPssRsae() {
