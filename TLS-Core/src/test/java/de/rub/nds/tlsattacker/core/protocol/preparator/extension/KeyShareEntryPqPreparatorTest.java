@@ -83,7 +83,14 @@ public class KeyShareEntryPqPreparatorTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testPrepareClientHybridKeyShare(NamedGroup namedGroup) {
         TlsContext context = clientContext();
         KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
@@ -106,7 +113,14 @@ public class KeyShareEntryPqPreparatorTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testPrepareClientHybridKeyShareKeysContextByHybridGroup(NamedGroup namedGroup) {
         TlsContext context = clientContext();
         KeyShareEntry entry = new KeyShareEntry(namedGroup, CLASSICAL_PRIVATE_KEY);
@@ -148,7 +162,14 @@ public class KeyShareEntryPqPreparatorTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testPrepareServerHybridKeyShare(NamedGroup namedGroup) {
         ClientKeyPair clientKeyPair = generateClientKeyPair(namedGroup);
         TlsContext context =
@@ -181,7 +202,15 @@ public class KeyShareEntryPqPreparatorTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"MLKEM768", "X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "MLKEM768",
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testDefaultServerMlKemCiphertextOverridesWireBytesOnly(NamedGroup namedGroup) {
         ClientKeyPair clientKeyPair = generateClientKeyPair(namedGroup);
         byte[] clientKeyShare =
@@ -222,7 +251,10 @@ public class KeyShareEntryPqPreparatorTest {
                 "MLKEM1024",
                 "X25519_MLKEM768",
                 "SECP256R1_MLKEM768",
-                "SECP384R1_MLKEM1024"
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
             })
     public void testConfiguredDecapsulationKeyIsUsedForClientKeyShare(NamedGroup namedGroup) {
         TlsContext context = clientContext();
@@ -249,7 +281,10 @@ public class KeyShareEntryPqPreparatorTest {
                 "MLKEM1024",
                 "X25519_MLKEM768",
                 "SECP256R1_MLKEM768",
-                "SECP384R1_MLKEM1024"
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
             })
     public void testConfiguredDecapsulationKeyMakesClientKeyShareStable(NamedGroup namedGroup) {
         TlsContext context = clientContext();
@@ -268,7 +303,10 @@ public class KeyShareEntryPqPreparatorTest {
                 "MLKEM1024",
                 "X25519_MLKEM768",
                 "SECP256R1_MLKEM768",
-                "SECP384R1_MLKEM1024"
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
             })
     public void testClearedDecapsulationKeyFallsBackToGeneratedKeyShare(NamedGroup namedGroup) {
         TlsContext context = clientContext();
@@ -313,7 +351,10 @@ public class KeyShareEntryPqPreparatorTest {
                 "MLKEM1024",
                 "X25519_MLKEM768",
                 "SECP256R1_MLKEM768",
-                "SECP384R1_MLKEM1024"
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
             })
     public void testDefaultConfigUsesHardCodedDecapsulationKey(NamedGroup namedGroup) {
         TlsContext context = clientContext();
@@ -406,7 +447,14 @@ public class KeyShareEntryPqPreparatorTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testPrepareServerHybridKeyShareWithoutClientKeyShareUsesDefaultKey(
             NamedGroup namedGroup) {
         TlsContext context = serverContext();

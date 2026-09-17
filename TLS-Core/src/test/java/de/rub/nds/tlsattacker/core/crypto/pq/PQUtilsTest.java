@@ -26,7 +26,14 @@ public class PQUtilsTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testSplitClientKeyShare(NamedGroup namedGroup) {
         SecureRandom secureRandom = new SecureRandom();
         ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
@@ -41,7 +48,7 @@ public class PQUtilsTest {
         secureRandom.nextBytes(pqKeyShare);
 
         byte[] keyShare;
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+        if (PQUtils.isPqShareFirst(namedGroup)) {
             keyShare = DataConverter.concatenate(pqKeyShare, classicalKeyShare);
         } else {
             keyShare = DataConverter.concatenate(classicalKeyShare, pqKeyShare);
@@ -55,7 +62,14 @@ public class PQUtilsTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testSplitServerKeyShare(NamedGroup namedGroup) {
         SecureRandom secureRandom = new SecureRandom();
         ConnectionEndType connectionEndType = ConnectionEndType.SERVER;
@@ -70,7 +84,7 @@ public class PQUtilsTest {
         secureRandom.nextBytes(pqKeyShare);
 
         byte[] keyShare;
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+        if (PQUtils.isPqShareFirst(namedGroup)) {
             keyShare = DataConverter.concatenate(pqKeyShare, classicalKeyShare);
         } else {
             keyShare = DataConverter.concatenate(classicalKeyShare, pqKeyShare);
@@ -84,7 +98,14 @@ public class PQUtilsTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testConcatenateKeyShare(NamedGroup namedGroup) {
         SecureRandom secureRandom = new SecureRandom();
 
@@ -100,7 +121,7 @@ public class PQUtilsTest {
         byte[] concatenatedHybridKeyShare =
                 PQUtils.concatenateHybridKeyShare(namedGroup, classicalKeyShare, pqKeyShare);
 
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+        if (PQUtils.isPqShareFirst(namedGroup)) {
             assertArrayEquals(
                     pqKeyShare,
                     Arrays.copyOfRange(concatenatedHybridKeyShare, 0, pqKeyShareLength));
@@ -174,7 +195,14 @@ public class PQUtilsTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testSplitKeyShareRejectsKeyShareShorterThanSplitIndex(NamedGroup namedGroup) {
         for (ConnectionEndType connectionEndType :
                 new ConnectionEndType[] {ConnectionEndType.CLIENT, ConnectionEndType.SERVER}) {
@@ -187,7 +215,14 @@ public class PQUtilsTest {
     @ParameterizedTest
     @EnumSource(
             value = NamedGroup.class,
-            names = {"X25519_MLKEM768", "SECP256R1_MLKEM768", "SECP384R1_MLKEM1024"})
+            names = {
+                "X25519_MLKEM768",
+                "SECP256R1_MLKEM768",
+                "SECP384R1_MLKEM1024",
+                "SECP256R1_MLKEM512",
+                "MLKEM512_X25519",
+                "CURVE_SM2_MLKEM768"
+            })
     public void testSplitKeyShareAcceptsOversizedKeyShare(NamedGroup namedGroup) {
         int classicalKeyShareLength = PQUtils.getEcPublicKeyLength(namedGroup);
         int pqKeyShareLength = PQUtils.getPQKeyShareLength(namedGroup, ConnectionEndType.CLIENT);
@@ -199,7 +234,7 @@ public class PQUtilsTest {
                         ConnectionEndType.CLIENT,
                         new byte[classicalKeyShareLength + pqKeyShareLength + surplus]);
 
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+        if (PQUtils.isPqShareFirst(namedGroup)) {
             assertEquals(classicalKeyShareLength + surplus, splitKeyShare[0].length);
             assertEquals(pqKeyShareLength, splitKeyShare[1].length);
         } else {

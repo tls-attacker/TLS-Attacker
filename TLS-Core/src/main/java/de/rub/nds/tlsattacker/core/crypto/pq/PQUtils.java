@@ -47,6 +47,17 @@ public class PQUtils {
     }
 
     /**
+     * Returns whether the post-quantum share precedes the classical share in the concatenations of
+     * the given hybrid group. Early group definitions implemented this.
+     *
+     * @param namedGroup The namedGroup that should be used.
+     * @return True if the post-quantum share comes first.
+     */
+    public static boolean isPqShareFirst(NamedGroup namedGroup) {
+        return namedGroup == NamedGroup.X25519_MLKEM768 || namedGroup == NamedGroup.MLKEM512_X25519;
+    }
+
+    /**
      * Splits the keyShare for the respective hybrid pq group and stores the individual shares in
      * classicalKeyShare and pqKeyShare.
      *
@@ -56,28 +67,26 @@ public class PQUtils {
      */
     public static byte[][] splitKeyShare(
             NamedGroup namedGroup, ConnectionEndType connectionEndType, byte[] keyShare) {
-        int splitAtIndex;
-        switch (namedGroup) {
-            case X25519_MLKEM768:
-                splitAtIndex = getPQKeyShareLength(namedGroup, connectionEndType);
-                return new byte[][] {
-                    Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length),
-                    Arrays.copyOfRange(keyShare, 0, splitAtIndex)
-                };
-            case SECP256R1_MLKEM768:
-            case SECP384R1_MLKEM1024:
-                splitAtIndex = getEcPublicKeyLength(namedGroup);
-                return new byte[][] {
-                    Arrays.copyOfRange(keyShare, 0, splitAtIndex),
-                    Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
-                };
-            default:
-                throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
+        if (!namedGroup.isHybridPQGroup()) {
+            throw new IllegalArgumentException("Unsupported Hybrid PQ group: " + namedGroup);
         }
+        if (isPqShareFirst(namedGroup)) {
+            int splitAtIndex = getPQKeyShareLength(namedGroup, connectionEndType);
+            return new byte[][] {
+                Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length),
+                Arrays.copyOfRange(keyShare, 0, splitAtIndex)
+            };
+        }
+        int splitAtIndex = getEcPublicKeyLength(namedGroup);
+        return new byte[][] {
+            Arrays.copyOfRange(keyShare, 0, splitAtIndex),
+            Arrays.copyOfRange(keyShare, splitAtIndex, keyShare.length)
+        };
     }
 
     /**
-     * Concatenates the two key shares as specified in draft-ietf-tls-ecdhe-mlkem-04
+     * Concatenates the two key shares as specified in RFC 10024, draft-rosomakho-tls-ecdhe-mlkem512
+     * and draft-yang-tls-hybrid-sm2-mlkem
      *
      * @param namedGroup The namedGroup that should be used
      * @param classicalKeyShare The classical key share to be used
@@ -86,7 +95,7 @@ public class PQUtils {
      */
     public static byte[] concatenateHybridKeyShare(
             NamedGroup namedGroup, byte[] classicalKeyShare, byte[] pqKeyShare) {
-        if (namedGroup.equals(NamedGroup.X25519_MLKEM768)) {
+        if (isPqShareFirst(namedGroup)) {
             return DataConverter.concatenate(pqKeyShare, classicalKeyShare);
         } else {
             return DataConverter.concatenate(classicalKeyShare, pqKeyShare);
