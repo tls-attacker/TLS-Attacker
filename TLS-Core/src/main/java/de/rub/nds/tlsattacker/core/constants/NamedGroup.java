@@ -415,13 +415,31 @@ public enum NamedGroup {
         return null;
     }
 
+    public boolean isKyber() {
+        // Strictly speaking, ML-KEM groups are also Kyber but we refer to the group name definition
+        // here
+        switch (this) {
+            case X25519_KYBER512_DRAFT00:
+            case X25519_KYBER768_DRAFT00:
+            case X25519_KYBER768_DRAFT00_OLD:
+            case SECP256R1_KYBER768_DRAFT00:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public NamedGroup getHybridPostQuantumClassicNamedGroup() {
         switch (this) {
             case X25519_MLKEM768:
             case MLKEM512_X25519:
+            case X25519_KYBER512_DRAFT00:
+            case X25519_KYBER768_DRAFT00:
+            case X25519_KYBER768_DRAFT00_OLD:
                 return NamedGroup.ECDH_X25519;
             case SECP256R1_MLKEM512:
             case SECP256R1_MLKEM768:
+            case SECP256R1_KYBER768_DRAFT00:
                 return NamedGroup.SECP256R1;
             case SECP384R1_MLKEM1024:
                 return NamedGroup.SECP384R1;
@@ -569,6 +587,10 @@ public enum NamedGroup {
             case X25519_MLKEM768:
             case SECP384R1_MLKEM1024:
             case CURVE_SM2_MLKEM768:
+            case X25519_KYBER512_DRAFT00:
+            case X25519_KYBER768_DRAFT00:
+            case X25519_KYBER768_DRAFT00_OLD:
+            case SECP256R1_KYBER768_DRAFT00:
                 return true;
             default:
                 return false;
@@ -576,6 +598,10 @@ public enum NamedGroup {
     }
 
     public boolean isMlKemGroup() {
+        if (this.isKyber()) {
+            // filter kyber here as we do not have a NamedGroup-backed entry for its PQ group
+            return false;
+        }
         if (this.isHybridPQGroup()) {
             return this.getHybridPostQuantumNamedGroup().isMlKemGroup();
         }
