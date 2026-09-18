@@ -185,7 +185,7 @@ public class LayerStack {
             ProtocolLayer<?, ?, ?> layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null
                     && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)
-                    && !layer.executedAsPlanned()) {
+                    && layer.shouldContinueProcessing()) {
                 try {
                     layer.receiveData();
                 } catch (UnsupportedOperationException e) {

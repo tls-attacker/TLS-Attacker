@@ -157,7 +157,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         if (this.allowAdditionalData && dataLeftToProcess) {
             return true;
         }
-        return !executedAsPlanned(list);
+        return evaluateReceivedContainers(list) == ExecutionStatus.PENDING_MISSING_CONTAINERS;
     }
 
     @Override
