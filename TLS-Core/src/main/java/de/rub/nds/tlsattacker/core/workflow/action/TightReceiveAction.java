@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.TightReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -46,9 +46,11 @@ public class TightReceiveAction extends CommonReceiveAction {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
-                new TightReceiveLayerConfiguration(ImplementedLayers.SSL2, expectedMessages));
+                new SpecificReceiveLayerConfiguration(
+                        ImplementedLayers.SSL2, false, expectedMessages));
         configurationList.add(
-                new TightReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages));
+                new SpecificReceiveLayerConfiguration(
+                        ImplementedLayers.MESSAGE, false, expectedMessages));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
