@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 
 /**
- * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
- * containers are marked as such.
+ * ReceiveConfiguration that receives a specific list of DataContainers. By default, it additional
+ * trailing containers.
  */
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
@@ -48,13 +48,28 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         }
     }
 
+    protected final boolean allowAdditionalData;
+
     public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
-        super(layerType, containerList);
+        this(layerType, true, containerList);
     }
 
     @SafeVarargs
     public SpecificReceiveLayerConfiguration(LayerType layerType, Container... containers) {
+        this(layerType, true, containers);
+    }
+
+    public SpecificReceiveLayerConfiguration(
+            LayerType layerType, boolean allowAdditionalData, List<Container> containerList) {
+        super(layerType, containerList);
+        this.allowAdditionalData = allowAdditionalData;
+    }
+
+    @SafeVarargs
+    public SpecificReceiveLayerConfiguration(
+            LayerType layerType, boolean allowAdditionalData, Container... containers) {
         super(layerType, containers);
+        this.allowAdditionalData = allowAdditionalData;
     }
 
     @Override
@@ -118,22 +133,6 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         return ExecutionStatus.AS_PLANNED;
     }
 
-    /**
-     * @deprecated Use {@link #evaluateReceivedContainers(List)} instead as its return value is more
-     *     expressive.
-     */
-    @Deprecated(since = "2026-08-17")
-    protected boolean evaluateReceivedContainers(
-            List<Container> list, boolean mayReceiveMoreContainers) {
-        var analysisResult = evaluateReceivedContainers(list);
-        if (analysisResult.in(
-                ExecutionStatus.ADDITIONAL_CONTAINERS,
-                ExecutionStatus.PENDING_MISSING_CONTAINERS)) {
-            return mayReceiveMoreContainers;
-        }
-        return analysisResult == ExecutionStatus.AS_PLANNED;
-    }
-
     public void setContainerFilterList(DataContainerFilter... containerFilters) {
         this.setContainerFilterList(Arrays.asList(containerFilters));
     }
@@ -155,7 +154,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         if (receivedTimeout && !dataLeftToProcess) {
             return false;
         }
-        if (dataLeftToProcess) {
+        if (this.allowAdditionalData && dataLeftToProcess) {
             return true;
         }
         return !executedAsPlanned(list);
@@ -165,7 +164,9 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
     public String toCompactString() {
         return "("
                 + getLayerType().getName()
-                + ") Receive:"
+                + ") Receive"
+                + (allowAdditionalData ? "" : "(Tight)")
+                + ":"
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
