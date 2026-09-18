@@ -10,15 +10,11 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import static org.junit.Assert.*;
 
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration.ExecutionStatus;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -103,5 +99,124 @@ public class SpecificReceiveLayerConfigurationTest {
         List<ProtocolMessage> additionalInbetween = new ArrayList(expectedMessages);
         additionalInbetween.add(1, new ServerHelloDoneMessage());
         assertFalse(receiveConfig.executedAsPlanned(additionalInbetween));
+    }
+
+    private static class SpecificReceiveLayerConfigurationWithPublicEvaluate<
+                    Container extends DataContainer>
+            extends SpecificReceiveLayerConfiguration<Container> {
+        public SpecificReceiveLayerConfigurationWithPublicEvaluate(
+                ImplementedLayers layerType, List<Container> containerList) {
+            super(layerType, containerList);
+        }
+
+        @Override
+        public ExecutionStatus evaluateReceivedContainers(List<Container> list) {
+            return super.evaluateReceivedContainers(list);
+        }
+    }
+
+    @Test
+    public void testEvaluateReceivedContainers() {
+        List<ProtocolMessage> expectedMessages =
+                Arrays.asList(
+                        new ProtocolMessage[] {
+                            new ServerHelloMessage(),
+                            new CertificateMessage(),
+                            new ECDHEServerKeyExchangeMessage(),
+                            new ServerHelloDoneMessage()
+                        });
+        var receiveConfig =
+                new SpecificReceiveLayerConfigurationWithPublicEvaluate<>(
+                        ImplementedLayers.MESSAGE, expectedMessages);
+        assertEquals(
+                ExecutionStatus.AS_PLANNED,
+                receiveConfig.evaluateReceivedContainers(expectedMessages));
+
+        List<ProtocolMessage> missingLastMessage = new ArrayList<>(expectedMessages);
+        missingLastMessage.remove(missingLastMessage.size() - 1);
+        assertEquals(
+                ExecutionStatus.PENDING_MISSING_CONTAINERS,
+                receiveConfig.evaluateReceivedContainers(missingLastMessage));
+
+        List<ProtocolMessage> missingMessageInbetween = new ArrayList<>(expectedMessages);
+        missingMessageInbetween.remove(1);
+        assertEquals(
+                ExecutionStatus.UNEXPECTED_CONTAINER,
+                receiveConfig.evaluateReceivedContainers(missingMessageInbetween));
+
+        List<ProtocolMessage> missingFirstMessage = new ArrayList<>(expectedMessages);
+        missingFirstMessage.remove(0);
+        assertEquals(
+                ExecutionStatus.UNEXPECTED_CONTAINER,
+                receiveConfig.evaluateReceivedContainers(missingFirstMessage));
+
+        List<ProtocolMessage> additionalLast = new ArrayList<>(expectedMessages);
+        additionalLast.add(new ServerHelloDoneMessage());
+        assertEquals(
+                ExecutionStatus.ADDITIONAL_CONTAINERS,
+                receiveConfig.evaluateReceivedContainers(additionalLast));
+
+        List<ProtocolMessage> additionalInbetween = new ArrayList<>(expectedMessages);
+        additionalInbetween.add(1, new ServerHelloDoneMessage());
+        assertEquals(
+                ExecutionStatus.UNEXPECTED_CONTAINER,
+                receiveConfig.evaluateReceivedContainers(additionalInbetween));
+    }
+
+    @Test
+    public void testEvaluateReceivedContainersWithOptional() {
+        ChangeCipherSpecMessage optionalChangeCipherSpec = new ChangeCipherSpecMessage();
+        optionalChangeCipherSpec.setRequired(false);
+        List<ProtocolMessage> expectedMessages =
+                Arrays.asList(
+                        new ProtocolMessage[] {
+                            new ServerHelloMessage(),
+                            optionalChangeCipherSpec,
+                            new CertificateMessage(),
+                            new CertificateVerifyMessage(),
+                            new FinishedMessage()
+                        });
+        var receiveConfig =
+                new SpecificReceiveLayerConfigurationWithPublicEvaluate<>(
+                        ImplementedLayers.MESSAGE, expectedMessages);
+        assertEquals(
+                ExecutionStatus.AS_PLANNED,
+                receiveConfig.evaluateReceivedContainers(expectedMessages));
+
+        List<ProtocolMessage> missingOptional = new ArrayList<>(expectedMessages);
+        missingOptional.remove(1);
+        assertEquals(
+                ExecutionStatus.AS_PLANNED,
+                receiveConfig.evaluateReceivedContainers(missingOptional));
+
+        List<ProtocolMessage> missingLastMessage = new ArrayList<>(expectedMessages);
+        missingLastMessage.remove(missingLastMessage.size() - 1);
+        assertEquals(
+                ExecutionStatus.PENDING_MISSING_CONTAINERS,
+                receiveConfig.evaluateReceivedContainers(missingLastMessage));
+
+        List<ProtocolMessage> missingMessageInbetween = new ArrayList<>(expectedMessages);
+        missingMessageInbetween.remove(2);
+        assertEquals(
+                ExecutionStatus.UNEXPECTED_CONTAINER,
+                receiveConfig.evaluateReceivedContainers(missingMessageInbetween));
+
+        List<ProtocolMessage> missingFirstMessage = new ArrayList<>(expectedMessages);
+        missingFirstMessage.remove(0);
+        assertEquals(
+                ExecutionStatus.UNEXPECTED_CONTAINER,
+                receiveConfig.evaluateReceivedContainers(missingFirstMessage));
+
+        List<ProtocolMessage> additionalLast = new ArrayList<>(expectedMessages);
+        additionalLast.add(new ServerHelloDoneMessage());
+        assertEquals(
+                ExecutionStatus.ADDITIONAL_CONTAINERS,
+                receiveConfig.evaluateReceivedContainers(additionalLast));
+
+        List<ProtocolMessage> additionalInbetween = new ArrayList<>(expectedMessages);
+        additionalInbetween.add(1, new ServerHelloDoneMessage());
+        assertEquals(
+                ExecutionStatus.UNEXPECTED_CONTAINER,
+                receiveConfig.evaluateReceivedContainers(additionalInbetween));
     }
 }

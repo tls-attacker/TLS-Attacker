@@ -16,24 +16,65 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.Level;
 
 /**
- * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
- * containers are marked as such.
+ * ReceiveConfiguration that receives a specific list of DataContainers. By default, it additional
+ * trailing containers.
  */
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
+    protected enum ExecutionStatus {
+        /** All containers were received as configured. */
+        AS_PLANNED,
+        /**
+         * Thus far all received containers were expected, but some expected containers were not
+         * (yet) received.
+         */
+        PENDING_MISSING_CONTAINERS,
+        /** A container that was not expected was encountered. */
+        UNEXPECTED_CONTAINER,
+        /**
+         * All expected containers were received, but also additional unexpected containers were
+         * received afterwards.
+         */
+        ADDITIONAL_CONTAINERS;
+
+        public boolean in(ExecutionStatus... statuses) {
+            for (ExecutionStatus status : statuses) {
+                if (this == status) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    protected final boolean allowAdditionalData;
+
     public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
-        super(layerType, containerList);
+        this(layerType, true, containerList);
     }
 
     @SafeVarargs
     public SpecificReceiveLayerConfiguration(LayerType layerType, Container... containers) {
+        this(layerType, true, containers);
+    }
+
+    public SpecificReceiveLayerConfiguration(
+            LayerType layerType, boolean allowAdditionalData, List<Container> containerList) {
+        super(layerType, containerList);
+        this.allowAdditionalData = allowAdditionalData;
+    }
+
+    @SafeVarargs
+    public SpecificReceiveLayerConfiguration(
+            LayerType layerType, boolean allowAdditionalData, Container... containers) {
         super(layerType, containers);
+        this.allowAdditionalData = allowAdditionalData;
     }
 
     @Override
     public boolean executedAsPlanned(List<Container> list) {
-        return evaluateReceivedContainers(list, false);
+        return evaluateReceivedContainers(list) == ExecutionStatus.AS_PLANNED;
     }
 
     /**
@@ -41,48 +82,55 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
      * DataContainer may be skipped if it is not marked as required. An unexpected DataContainer may
      * be ignored if a DataContainerFilter applies.
      *
-     * @param list The list of DataContainers
-     * @param mayReceiveMoreContainers Determines if an incomplete result is acceptable. This is the
-     *     case if no contradictory DataContainer has been received yet and the LayerConfiguration
-     *     can be satisfied if additional DataContainers get provided
+     * @param receivedContainers The list of DataContainers
      */
-    protected boolean evaluateReceivedContainers(
-            List<Container> list, boolean mayReceiveMoreContainers) {
-        if (list == null) {
-            return false;
+    protected ExecutionStatus evaluateReceivedContainers(List<Container> receivedContainers) {
+        if (receivedContainers == null) {
+            return ExecutionStatus.PENDING_MISSING_CONTAINERS;
         }
-        int j = 0;
         List<Container> expectedContainers = getContainerList();
-        if (expectedContainers != null) {
-            for (int i = 0; i < expectedContainers.size(); i++) {
-                if (j >= list.size() && expectedContainers.get(i).isRequired()) {
-                    return mayReceiveMoreContainers;
-                } else if (j < list.size()) {
-                    if (!expectedContainers.get(i).getClass().equals(list.get(j).getClass())
-                            && expectedContainers.get(i).isRequired()) {
-                        if (containerCanBeFiltered(list.get(j))) {
-                            j++;
-                            i--;
-                        } else {
-                            return false;
-                        }
+        if (expectedContainers == null) {
+            return ExecutionStatus.AS_PLANNED;
+        }
 
-                    } else if (expectedContainers
-                            .get(i)
-                            .getClass()
-                            .equals(list.get(j).getClass())) {
-                        j++;
-                    }
+        int i = 0;
+        int j = 0;
+        while (i < expectedContainers.size() && j < receivedContainers.size()) {
+            var expected = expectedContainers.get(i);
+            var received = receivedContainers.get(j);
+            if (expected.getClass().equals(receivedContainers.get(j).getClass())) {
+                // got an expected container -> increase reference
+                i++;
+                j++;
+            } else if (expected.isRequired()) {
+                if (!containerCanBeFiltered(received)) {
+                    return ExecutionStatus.UNEXPECTED_CONTAINER;
                 }
-            }
-
-            for (; j < list.size(); j++) {
-                if (!containerCanBeFiltered(list.get(j)) && !mayReceiveMoreContainers) {
-                    return false;
-                }
+                // received something unexpected; but we can filter it
+                j++;
+            } else {
+                // current message is not required - skip
+                i++;
             }
         }
-        return true;
+
+        if (i < expectedContainers.size()) {
+            // we have not received all expected containers
+            if (expectedContainers.subList(i, expectedContainers.size()).stream()
+                    .anyMatch(DataContainer::isRequired)) {
+                // and one of them is required
+                return ExecutionStatus.PENDING_MISSING_CONTAINERS;
+            }
+        }
+
+        // we got all required containers, check if there are unexpected trailing containers
+        for (; j < receivedContainers.size(); j++) {
+            if (!containerCanBeFiltered(receivedContainers.get(j))) {
+                return ExecutionStatus.ADDITIONAL_CONTAINERS;
+            }
+        }
+
+        return ExecutionStatus.AS_PLANNED;
     }
 
     public void setContainerFilterList(DataContainerFilter... containerFilters) {
@@ -106,7 +154,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         if (receivedTimeout && !dataLeftToProcess) {
             return false;
         }
-        if (dataLeftToProcess) {
+        if (this.allowAdditionalData && dataLeftToProcess) {
             return true;
         }
         return !executedAsPlanned(list);
@@ -116,7 +164,9 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
     public String toCompactString() {
         return "("
                 + getLayerType().getName()
-                + ") Receive:"
+                + ") Receive"
+                + (allowAdditionalData ? "" : "(Tight)")
+                + ":"
                 + getContainerList().stream()
                         .map(DataContainer::toCompactString)
                         .collect(Collectors.joining(","));
