@@ -49,7 +49,6 @@ public class ProtocolVersionDelegate extends Delegate {
             th = TransportHandlerType.UDP;
             config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
-            config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCssInDtls(true);
         }
 
