@@ -28,6 +28,8 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.quic.QuicTransportParametersExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -169,6 +171,8 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
         private byte[] connectionId;
         private byte[] statelessResetToken;
 
+        public PreferredAddress() {}
+
         public PreferredAddress(byte[] entryValue) {
             try {
                 this.ipv4Address = InetAddress.getByAddress(Arrays.copyOfRange(entryValue, 0, 4));
@@ -190,6 +194,18 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
                             entryValue,
                             25 + this.connectionIdLength,
                             25 + this.connectionIdLength + 16);
+        }
+
+        public static class InetAddressXmlAdapter extends XmlAdapter<byte[], InetAddress> {
+            @Override
+            public InetAddress unmarshal(byte[] address) throws UnknownHostException {
+                return address == null ? null : InetAddress.getByAddress(address);
+            }
+
+            @Override
+            public byte[] marshal(InetAddress address) {
+                return address == null ? null : address.getAddress();
+            }
         }
 
         @Override
@@ -222,6 +238,7 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
             return byteArrayOutputStream.toByteArray();
         }
 
+        @XmlJavaTypeAdapter(InetAddressXmlAdapter.class)
         public InetAddress getIpv4Address() {
             return ipv4Address;
         }
@@ -238,6 +255,7 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
             this.ipv4Port = ipv4Port;
         }
 
+        @XmlJavaTypeAdapter(InetAddressXmlAdapter.class)
         public InetAddress getIpv6Address() {
             return ipv6Address;
         }
