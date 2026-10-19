@@ -24,8 +24,8 @@ public class Dtls13MaskConstans {
      */
     public static final int REQUIRED_BYTES_CHACHA20 = 16;
 
-    public static final int REQUIRED_NONCE_SIZE_CHACHA20 = 4;
-    public static final int REQUIRED_COUNTER_SIZE_CHACHA20 = 12;
+    public static final int REQUIRED_NONCE_SIZE_CHACHA20 = 12;
+    public static final int REQUIRED_COUNTER_SIZE_CHACHA20 = 4;
 
     private Dtls13MaskConstans() {}
 }

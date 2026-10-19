@@ -12,7 +12,8 @@ import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.protocol.exception.CryptoException;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.Dtls13MaskConstans;
-import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -287,14 +288,16 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
             // nonce
             byte[] counter =
                     Arrays.copyOfRange(
-                            tempCiphertext, 0, Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20);
+                            tempCiphertext, 0, Dtls13MaskConstans.REQUIRED_COUNTER_SIZE_CHACHA20);
             byte[] nonce =
                     Arrays.copyOfRange(
                             tempCiphertext,
-                            Dtls13MaskConstans.REQUIRED_NONCE_SIZE_CHACHA20,
-                            Dtls13MaskConstans.REQUIRED_COUNTER_SIZE_CHACHA20);
+                            Dtls13MaskConstans.REQUIRED_COUNTER_SIZE_CHACHA20,
+                            Dtls13MaskConstans.REQUIRED_BYTES_CHACHA20);
             ChaCha20ParameterSpec parameterSpec =
-                    new ChaCha20ParameterSpec(nonce, new BigInteger(counter).intValue());
+                    new ChaCha20ParameterSpec(
+                            nonce,
+                            ByteBuffer.wrap(counter).order(ByteOrder.LITTLE_ENDIAN).getInt());
             SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
             recordNumberCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
             byte[] toEncrypt = new byte[BLOCK_SIZE];
