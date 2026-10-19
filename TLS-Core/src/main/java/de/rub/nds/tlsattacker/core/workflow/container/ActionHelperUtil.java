@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.DiscardExceptFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
+import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
@@ -80,6 +81,9 @@ public class ActionHelperUtil {
             LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
         List<DataContainerFilter> containerFilters = new LinkedList<>();
         if (actionOptions != null) {
+            if (actionOptions.contains(ActionOption.IGNORE_ACK_MESSAGES)) {
+                containerFilters.add(new GenericDataContainerFilter(AckMessage.class));
+            }
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
                 containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
             }

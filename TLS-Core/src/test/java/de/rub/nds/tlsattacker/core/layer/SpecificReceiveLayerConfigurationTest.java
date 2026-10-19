@@ -15,14 +15,46 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.junit.Test;
 
 public class SpecificReceiveLayerConfigurationTest {
 
     public SpecificReceiveLayerConfigurationTest() {}
+
+    @Test
+    public void testIgnoreAckMessagesPreservesHandshakeChecks() {
+        var receiveConfig =
+                new SpecificReceiveLayerConfiguration<ProtocolMessage>(
+                        ImplementedLayers.MESSAGE, new FinishedMessage());
+        List<ProtocolMessage> flight =
+                List.of(
+                        new AckMessage(),
+                        new AckMessage(),
+                        new FinishedMessage(),
+                        new AckMessage());
+        assertFalse(receiveConfig.executedAsPlanned(flight));
+
+        ActionHelperUtil.applyMessageFilters(
+                receiveConfig, Set.of(ActionOption.IGNORE_ACK_MESSAGES));
+        assertTrue(receiveConfig.executedAsPlanned(flight));
+        assertFalse(receiveConfig.executedAsPlanned(List.of(new AckMessage())));
+        assertFalse(
+                receiveConfig.executedAsPlanned(
+                        List.of(new AckMessage(), new AlertMessage(), new FinishedMessage())));
+
+        var expectedAck =
+                new SpecificReceiveLayerConfiguration<ProtocolMessage>(
+                        ImplementedLayers.MESSAGE, new AckMessage());
+        ActionHelperUtil.applyMessageFilters(expectedAck, Set.of(ActionOption.IGNORE_ACK_MESSAGES));
+        assertFalse(expectedAck.executedAsPlanned(List.of()));
+        assertTrue(expectedAck.executedAsPlanned(List.of(new AckMessage())));
+    }
 
     @Test
     public void testExecutedAsPlanned() {
