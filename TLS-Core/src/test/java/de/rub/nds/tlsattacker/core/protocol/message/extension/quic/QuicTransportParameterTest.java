@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension.quic;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.DataConverter;
@@ -16,6 +17,19 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class QuicTransportParameterTest {
+
+    @Test
+    public void testPreferredAddressSerializationRetainsBothPortBytes() throws Exception {
+        byte[] preferredAddressBytes =
+                DataConverter.hexStringToByteArray(
+                        "01020304123400000000000000000000000000000000abcd00"
+                                + "000102030405060708090a0b0c0d0e0f");
+
+        QuicTransportParametersExtensionMessage.PreferredAddress preferredAddress =
+                new QuicTransportParametersExtensionMessage.PreferredAddress(preferredAddressBytes);
+
+        assertArrayEquals(preferredAddressBytes, preferredAddress.serialize());
+    }
 
     @Test
     public void testQuicTransportParametersObjectToEntryListConversion() {

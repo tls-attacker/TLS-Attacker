@@ -213,9 +213,9 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
         public byte[] serialize() throws IOException {
             SilentByteArrayOutputStream byteArrayOutputStream = new SilentByteArrayOutputStream();
             byteArrayOutputStream.write(this.ipv4Address.getAddress());
-            byteArrayOutputStream.write(this.ipv4Port);
+            byteArrayOutputStream.write(DataConverter.intToBytes(this.ipv4Port, 2));
             byteArrayOutputStream.write(this.ipv6Address.getAddress());
-            byteArrayOutputStream.write(this.ipv6Port);
+            byteArrayOutputStream.write(DataConverter.intToBytes(this.ipv6Port, 2));
             byteArrayOutputStream.write(this.connectionId.length);
             byteArrayOutputStream.write(this.connectionId);
             byteArrayOutputStream.write(this.statelessResetToken);
