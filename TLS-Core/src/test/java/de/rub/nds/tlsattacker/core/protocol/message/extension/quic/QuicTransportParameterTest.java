@@ -18,6 +18,25 @@ import org.junit.jupiter.api.Test;
 public class QuicTransportParameterTest {
 
     @Test
+    public void testPreferredAddressSerializationUsesConfiguredConnectionIdLength()
+            throws Exception {
+        byte[] preferredAddressBytes = new byte[43];
+        preferredAddressBytes[24] = 2;
+        preferredAddressBytes[25] = 0x11;
+        preferredAddressBytes[26] = 0x22;
+
+        QuicTransportParametersExtensionMessage.PreferredAddress preferredAddress =
+                new QuicTransportParametersExtensionMessage.PreferredAddress(preferredAddressBytes);
+        preferredAddress.setConnectionIdLength(3);
+
+        byte[] serialized = preferredAddress.serialize();
+        int connectionIdLengthOffset =
+                serialized.length - 16 - preferredAddress.getConnectionId().length - 1;
+
+        assertEquals(3, serialized[connectionIdLengthOffset]);
+    }
+
+    @Test
     public void testQuicTransportParametersObjectToEntryListConversion() {
         QuicTransportParameters quicTransportParameters = new QuicTransportParameters();
         quicTransportParameters.setMaxIdleTimeout(60000L);

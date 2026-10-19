@@ -216,7 +216,7 @@ public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
             byteArrayOutputStream.write(this.ipv4Port);
             byteArrayOutputStream.write(this.ipv6Address.getAddress());
             byteArrayOutputStream.write(this.ipv6Port);
-            byteArrayOutputStream.write(this.connectionId.length);
+            byteArrayOutputStream.write(this.connectionIdLength);
             byteArrayOutputStream.write(this.connectionId);
             byteArrayOutputStream.write(this.statelessResetToken);
             return byteArrayOutputStream.toByteArray();
