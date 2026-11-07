@@ -18,6 +18,15 @@ public class WorkflowExecutorFactory {
             case DEFAULT:
                 return new DefaultWorkflowExecutor(state);
             case THREADED_SERVER:
+                if (state.getConfig().getHighestProtocolVersion() != null
+                        && state.getConfig().getHighestProtocolVersion().isDTLS()) {
+                    throw new UnsupportedOperationException(
+                            "ThreadedServerWorkflowExecutor is not supported for DTLS protocols. "
+                                    + "For UDP/DTLS, Java's DatagramSocket API does not allow spawning "
+                                    + "new sockets for each client connection. Use the default DTLS "
+                                    + "executor instead by removing the -executor_type parameter or "
+                                    + "setting it to DTLS.");
+                }
                 return new ThreadedServerWorkflowExecutor(state);
             case DTLS:
                 return new DTLSWorkflowExecutor(state);
